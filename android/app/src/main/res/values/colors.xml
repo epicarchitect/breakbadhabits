@@ -1,0 +1,20 @@
+<resources>
+    <color name="ripple_red">#33F44336</color>
+    <color name="launcher_background_night">#1F1F1F</color>
+    <color name="launcher_background_not_night">#FFF</color>
+    <color name="red">#F44336</color>
+    <color name="red_dark">#800900</color>
+    <color name="green">#1BC50E</color>
+    <color name="white">#fefefe</color>
+    <color name="black">#333</color>
+
+    <color name="light_textColorPrimary">#333</color>
+    <color name="light_textColorSecondary">#333</color>
+    <color name="light_textColorTertiary">#B3333333</color>
+    <color name="light_textColorTertiaryInverse">#B3FEFEFE</color>
+
+    <color name="dark_textColorPrimary">#fefefe</color>
+    <color name="dark_textColorSecondary">#fefefe</color>
+    <color name="dark_textColorTertiary">#B3FEFEFE</color>
+    <color name="dark_textColorTertiaryInverse">#B3333333</color>
+</resources>

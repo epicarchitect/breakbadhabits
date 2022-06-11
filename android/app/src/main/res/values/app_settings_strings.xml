@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appSettings_themeSelection_description">Select a theme for the application.</string>
+    <string name="appSettings_themeSelection_systemTheme">As in the system</string>
+    <string name="appSettings_themeSelection_darkTheme">Dark theme</string>
+    <string name="appSettings_themeSelection_lightTheme">Light theme</string>
+    <string name="appSettings_widgets_description">Customize your widgets.</string>
+    <string name="appSettings_widgets_button">Widget settings</string>
+</resources>

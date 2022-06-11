@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitEventCreation_title">Новое событие</string>
+    <string name="habitEventCreation_habitName">Привычка: %s</string>
+    <string name="habitEventCreation_event_description">Выберите дату и время когда произошло событие.</string>
+    <string name="habitEventCreation_comment_description">Вы можете написать комментарий, но это не обязательно.</string>
+    <string name="habitEventCreation_comment">Комментарий</string>
+    <string name="habitEventCreation_finish_description">Вы всегда сможете изменить или удалить это событие.</string>
+    <string name="habitEventCreation_finish">Записать событие</string>
+    <string name="habitEventCreation_eventTimeValidation_biggestThenCurrentTime">Дата и время события не могут быть больше текущего времени.</string>
+    <string name="habitEventCreation_selectEventTime">Выбрать дату и время</string>
+    <string name="habitEventCreation_eventDate">Дата события: %s</string>
+    <string name="habitEventCreation_eventTime">Время события: %s</string>
+</resources>

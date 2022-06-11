@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitCreation_title">Новая привычка</string>
+    <string name="habitCreation_habitName_description">Введите название привычки, например курение.</string>
+    <string name="habitCreation_habitName">Название привычки</string>
+    <string name="habitCreation_habitIcon_description">Выберите подходящую иконку для привычки.</string>
+    <string name="habitCreation_lastEvent_description">Укажите дату и время последнего события, с этой минуты начнется отсчет времени воздержания.</string>
+    <string name="habitCreation_finish_description">Вы всегда сможете изменить все введённые данные после создания привычки.</string>
+    <string name="habitCreation_finish">Создать привычку</string>
+    <string name="habitCreation_habitNameValidation_empty">Название не может быть пустым.</string>
+    <string name="habitCreation_habitNameValidation_tooLong">Название не может быть длиннее чем %d символов.</string>
+    <string name="habitCreation_habitNameValidation_used">Это название уже используется.</string>
+    <string name="habitCreation_selectLastEventTime">Выбрать дату и время последнего события</string>
+    <string name="habitCreation_lastEventTime_date">Дата события: %s</string>
+    <string name="habitCreation_lastEventTime_time">Время события: %s</string>
+    <string name="habitCreation_lastEventTimeValidation_biggestThenCurrentTime">Дата и время события не могут быть больше текущего времени.</string>
+</resources>

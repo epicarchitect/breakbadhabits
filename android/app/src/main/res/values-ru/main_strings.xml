@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_habits">Привычки</string>
+    <string name="main_settings">Настройки</string>
+    <string name="main_widgets">Виджеты</string>
+</resources>

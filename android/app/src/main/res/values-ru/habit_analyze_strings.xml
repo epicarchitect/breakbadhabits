@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitAnalyze_abstinenceChart_title">График воздержания</string>
+    <string name="habitAnalyze_abstinenceChart_last7Days">Последние 7 дней</string>
+    <string name="habitAnalyze_abstinenceChart_last30Days">Последние 30 дней</string>
+    <string name="habitAnalyze_abstinenceChart_last60Days">Последние 60 дней</string>
+    <string name="habitAnalyze_abstinenceChart_last90Days">Последние 90 дней</string>
+    <string name="habitAnalyze_abstinenceChart_allDays">Весь период</string>
+    <string name="habitAnalyze_abstinenceChart_notEnoughData">Недостаточно данных в указанном интервале для построения графика.</string>
+    <string name="habitAnalyze_abstinenceChart_marker_startAbstinence">Начало: %s</string>
+    <string name="habitAnalyze_abstinenceChart_marker_endAbstinence">Конец: %s</string>
+    <string name="habitAnalyze_statistics_title">Статистика</string>
+    <string name="habitAnalyze_statistics_averageAbstinenceTime">Среднее время воздержания</string>
+    <string name="habitAnalyze_statistics_maxAbstinenceTime">Максимальное время воздержания</string>
+    <string name="habitAnalyze_statistics_minAbstinenceTime">Минимальное время воздержания</string>
+    <string name="habitAnalyze_statistics_timeFromFirstEvent">Времени с первого события</string>
+    <string name="habitAnalyze_statistics_countEventsInCurrentMonth">Количество событий в текущем месяце</string>
+    <string name="habitAnalyze_statistics_countEventsInPreviousMonth">Количество событий в прошлом месяце</string>
+    <string name="habitAnalyze_statistics_countEvents">Всего событий</string>
+</resources>

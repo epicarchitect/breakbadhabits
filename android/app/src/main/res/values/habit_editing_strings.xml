@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitEditing_title">Editing a habit</string>
+    <string name="habitEditing_habitName_description">Enter a name for the habit.</string>
+    <string name="habitEditing_habitIcon_description">Select the habit icon.</string>
+    <string name="habitEditing_habitName">Habit name</string>
+    <string name="habitEditing_finish">Save changes</string>
+    <string name="habitEditing_habitNameValidation_empty">The name cannot be empty.</string>
+    <string name="habitEditing_habitNameValidation_tooLong">The name cannot be longer than %d characters.</string>
+    <string name="habitEditing_habitNameValidation_used">This name has already been used.</string>
+    <string name="habitEditing_deletion_description">You can delete this habit.</string>
+    <string name="habitEditing_deletion_button">Delete this habit</string>
+</resources>

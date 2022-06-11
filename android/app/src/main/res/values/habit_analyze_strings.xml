@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitAnalyze_abstinenceChart_title">Abstinence chart</string>
+    <string name="habitAnalyze_abstinenceChart_last7Days">Last 7 days</string>
+    <string name="habitAnalyze_abstinenceChart_last30Days">Last 30 days</string>
+    <string name="habitAnalyze_abstinenceChart_last60Days">Last 60 days</string>
+    <string name="habitAnalyze_abstinenceChart_last90Days">Last 90 days</string>
+    <string name="habitAnalyze_abstinenceChart_allDays">All period</string>
+    <string name="habitAnalyze_abstinenceChart_notEnoughData">There is not enough data in the specified interval to plot the chart.</string>
+    <string name="habitAnalyze_abstinenceChart_marker_startAbstinence">Start: %s</string>
+    <string name="habitAnalyze_abstinenceChart_marker_endAbstinence">End: %s</string>
+    <string name="habitAnalyze_statistics_title">Statistics</string>
+    <string name="habitAnalyze_statistics_averageAbstinenceTime">Average time of abstinence</string>
+    <string name="habitAnalyze_statistics_maxAbstinenceTime">Maximum abstinence time</string>
+    <string name="habitAnalyze_statistics_minAbstinenceTime">Minimum abstinence time</string>
+    <string name="habitAnalyze_statistics_timeFromFirstEvent">Time since the first event</string>
+    <string name="habitAnalyze_statistics_countEventsInCurrentMonth">Number of events in the current month</string>
+    <string name="habitAnalyze_statistics_countEventsInPreviousMonth">Number of events in the last month</string>
+    <string name="habitAnalyze_statistics_countEvents">Total events</string>
+</resources>
