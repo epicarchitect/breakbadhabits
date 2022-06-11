@@ -7,6 +7,9 @@
 *.apk
 *.ap_
 
+android/app/release
+android/app/debug
+
 # Files for the ART/Dalvik VM
 *.dex
 
@@ -22,9 +25,6 @@ out/
 .gradle
 .gradle/
 build/
-
-# Signing files
-.signing/
 
 # Local configuration file (sdk path, etc)
 local.properties
