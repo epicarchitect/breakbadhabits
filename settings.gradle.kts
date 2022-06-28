@@ -1,3 +1,4 @@
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -7,7 +8,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BreakBadHabits"
 include(":android:app")
 include(":android:compose:molecules")
 include(":android:compose:organisms:histogram")

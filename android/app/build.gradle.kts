@@ -1,13 +1,10 @@
-import breakbadhabits.config.android.application.composeApplicationConfig
-
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    id("breakbadhabits.android.application")
+    id("breakbadhabits.android.compose")
     id("kotlin-kapt")
 }
 
 android {
-    composeApplicationConfig()
     namespace = "breakbadhabits.android.app"
 
     defaultConfig {

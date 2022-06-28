@@ -1,10 +1,10 @@
-package breakbadhabits.config.android.base
+package breakbadhabits.android
 
 import com.android.build.gradle.BaseExtension
-import org.gradle.api.JavaVersion
 
-fun BaseExtension.baseConfig() {
+configure<BaseExtension> {
     compileSdkVersion(32)
+
     defaultConfig {
         minSdk = 26
         targetSdk = 32

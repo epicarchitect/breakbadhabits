@@ -1,12 +1,9 @@
-import breakbadhabits.config.android.library.composeLibraryConfig
-
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
+    id("breakbadhabits.android.library")
+    id("breakbadhabits.android.compose")
 }
 
 android {
-    composeLibraryConfig()
     namespace = "breakbadhabits.compose.organism.icons.selection"
 }
 
