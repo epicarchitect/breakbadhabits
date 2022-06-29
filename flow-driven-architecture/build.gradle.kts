@@ -1,12 +1,8 @@
 plugins {
-    id("org.jetbrains.kotlin.multiplatform")
-}
-
-kotlin {
-    jvm()
+    id("org.jetbrains.kotlin.jvm")
 }
 
 dependencies {
-    commonMainApi(project(":architecture-core"))
-    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+    api(project(":architecture-core"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 }

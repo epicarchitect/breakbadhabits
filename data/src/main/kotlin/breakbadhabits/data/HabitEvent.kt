@@ -1,4 +1,4 @@
-package breakbadhabits
+package breakbadhabits.data
 
 interface HabitEvent {
     interface Id

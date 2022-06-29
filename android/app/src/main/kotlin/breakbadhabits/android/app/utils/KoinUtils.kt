@@ -11,7 +11,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 inline fun <reified VM : ViewModel> composeViewModel(vararg parameters: Any?) = viewModel<VM>(
     factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>) = get<VM>(parameters = parameters) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>) = get<VM>(parameters = parameters) as T
     }
 )
 

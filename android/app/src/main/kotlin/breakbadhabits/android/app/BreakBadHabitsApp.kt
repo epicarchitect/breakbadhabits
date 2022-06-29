@@ -38,6 +38,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
+import epicarchitect.architecture.FlowDrivenArchitecture
 import org.koin.dsl.module
 
 class BreakBadHabitsApp : Application() {
@@ -67,6 +68,14 @@ class BreakBadHabitsApp : Application() {
         ) { _, _, _ ->
             HabitsAppWidgetProvider.sendUpdateIntent(this@BreakBadHabitsApp)
         }.launchIn(coroutineScope)
+    }
+
+    companion object {
+        val architecture by lazy {
+            FlowDrivenArchitecture {
+
+            }
+        }
     }
 }
 

@@ -2,6 +2,7 @@ include(
     ":domain",
     ":architecture-core",
     ":flow-driven-architecture",
+    ":android:data",
     ":android:compose:theme",
     ":android:compose:molecules",
     ":android:compose:organisms:histogram",
