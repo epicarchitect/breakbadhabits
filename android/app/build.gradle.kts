@@ -45,6 +45,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+    implementation(project(":flow-driven-architecture"))
     implementation(project(":android:compose:theme"))
     implementation(project(":android:compose:molecules"))
     implementation(project(":android:compose:organisms:histogram"))
