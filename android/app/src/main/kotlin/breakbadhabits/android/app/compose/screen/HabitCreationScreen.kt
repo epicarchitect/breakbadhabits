@@ -1,11 +1,15 @@
 package breakbadhabits.android.app.compose.screen
 
 import android.text.format.DateFormat
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,9 +25,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import breakbadhabits.android.app.App
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.formatter.DateTimeFormatter
-import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.viewmodel.HabitCreationViewModel
 import breakbadhabits.android.compose.molecule.ActionType
 import breakbadhabits.android.compose.molecule.Button
@@ -43,12 +47,11 @@ import java.util.Calendar
 
 
 @Composable
-fun HabitCreationScreen(
-    habitCreationViewModel: HabitCreationViewModel,
-    dateTimeFormatter: DateTimeFormatter,
-    habitIconResources: HabitIconResources,
-    onFinished: () -> Unit
-) {
+fun HabitCreationScreen(onFinished: () -> Unit) {
+    val habitCreationViewModel = viewModel { App.architecture.createHabitCreationViewModel() }
+    val dateTimeFormatter = App.architecture.dateTimeFormatter
+    val habitIconResources = App.architecture.habitIconResources
+
     val habitName by habitCreationViewModel.habitNameStateFlow().collectAsState()
     val lastEventTime by habitCreationViewModel.lastHabitEventTimeStateFlow().collectAsState()
     val selectedIcon by habitCreationViewModel.habitIconIdStateFlow().collectAsState()
@@ -127,168 +130,174 @@ fun HabitCreationScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Title(
-            modifier = Modifier.padding(start = 18.dp, top = 18.dp, end = 18.dp, bottom = 4.dp),
-            text = stringResource(R.string.habitCreation_title)
-        )
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitCreation_habitName_description)
-        )
-
-        TextField(
+        Column(
             modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                .fillMaxWidth(),
-            value = habitName ?: "",
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            ),
-            onValueChange = {
-                habitCreationViewModel.changeHabitNameStateFlow(it)
-            },
-            label = stringResource(R.string.habitCreation_habitName),
-            isError = habitNameValidation is HabitCreationViewModel.HabitNameValidationState.Executed
-                    && (habitNameValidation as? HabitCreationViewModel.HabitNameValidationState.Executed)
-                ?.result !is HabitCreationViewModel.HabitNameValidationResult.Valid
-        )
+                .padding(WindowInsets.systemBars.asPaddingValues())
+                .fillMaxSize()
+        ) {
+            Title(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 4.dp),
+                text = stringResource(R.string.habitCreation_title)
+            )
 
-        (habitNameValidation as? HabitCreationViewModel.HabitNameValidationState.Executed)?.let {
-            when (it.result) {
-                is HabitCreationViewModel.HabitNameValidationResult.Empty -> {
-                    ErrorText(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitCreation_habitNameValidation_empty),
-                    )
-                }
-                is HabitCreationViewModel.HabitNameValidationResult.TooLong -> {
-                    ErrorText(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitCreation_habitNameValidation_tooLong, it.result.maxHabitNameLength)
-                    )
-                }
-                is HabitCreationViewModel.HabitNameValidationResult.Used -> {
-                    ErrorText(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitCreation_habitNameValidation_used)
-                    )
-                }
-                else -> {
-                    /* no-op */
-                }
-            }
-        }
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitCreation_habitIcon_description)
-        )
-
-        IconsSelection(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                .fillMaxWidth(),
-            icons = habitIconResources.icons.map {
-                IconData(
-                    it.iconId,
-                    it.resourceId
-                )
-            },
-            selectedIcon = habitIconResources.icons.first { it.iconId == selectedIcon }.let {
-                IconData(
-                    it.iconId,
-                    it.resourceId
-                )
-            },
-            onSelect = {
-                habitCreationViewModel.changeHabitIconIdStateFlow(it.id)
-            }
-        )
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitCreation_lastEvent_description)
-        )
-
-        if (lastEventTime == null) {
-            Button(
+            Text(
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                onClick = {
-                    dateSelectionState.show()
-                },
-                text = stringResource(R.string.habitCreation_selectLastEventTime)
+                text = stringResource(R.string.habitCreation_habitName_description)
             )
-        } else {
-            val calendar = Calendar.getInstance().apply {
-                timeInMillis = lastEventTime!!
+
+            TextField(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                    .fillMaxWidth(),
+                value = habitName ?: "",
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                onValueChange = {
+                    habitCreationViewModel.changeHabitNameStateFlow(it)
+                },
+                label = stringResource(R.string.habitCreation_habitName),
+                isError = habitNameValidation is HabitCreationViewModel.HabitNameValidationState.Executed
+                        && (habitNameValidation as? HabitCreationViewModel.HabitNameValidationState.Executed)
+                    ?.result !is HabitCreationViewModel.HabitNameValidationResult.Valid
+            )
+
+            (habitNameValidation as? HabitCreationViewModel.HabitNameValidationState.Executed)?.let {
+                when (it.result) {
+                    is HabitCreationViewModel.HabitNameValidationResult.Empty -> {
+                        ErrorText(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                            text = stringResource(R.string.habitCreation_habitNameValidation_empty),
+                        )
+                    }
+                    is HabitCreationViewModel.HabitNameValidationResult.TooLong -> {
+                        ErrorText(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                            text = stringResource(R.string.habitCreation_habitNameValidation_tooLong, it.result.maxHabitNameLength)
+                        )
+                    }
+                    is HabitCreationViewModel.HabitNameValidationResult.Used -> {
+                        ErrorText(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                            text = stringResource(R.string.habitCreation_habitNameValidation_used)
+                        )
+                    }
+                    else -> {
+                        /* no-op */
+                    }
+                }
             }
 
-            Button(
+            Text(
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                onClick = {
-                    dateSelectionState.show()
+                text = stringResource(R.string.habitCreation_habitIcon_description)
+            )
+
+            IconsSelection(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                    .fillMaxWidth(),
+                icons = habitIconResources.icons.map {
+                    IconData(
+                        it.iconId,
+                        it.resourceId
+                    )
                 },
-                text = stringResource(
-                    R.string.habitCreation_lastEventTime_date,
-                    dateTimeFormatter.formatDate(calendar)
+                selectedIcon = habitIconResources.icons.first { it.iconId == selectedIcon }.let {
+                    IconData(
+                        it.iconId,
+                        it.resourceId
+                    )
+                },
+                onSelect = {
+                    habitCreationViewModel.changeHabitIconIdStateFlow(it.id)
+                }
+            )
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                text = stringResource(R.string.habitCreation_lastEvent_description)
+            )
+
+            if (lastEventTime == null) {
+                Button(
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    onClick = {
+                        dateSelectionState.show()
+                    },
+                    text = stringResource(R.string.habitCreation_selectLastEventTime)
                 )
+            } else {
+                val calendar = Calendar.getInstance().apply {
+                    timeInMillis = lastEventTime!!
+                }
+
+                Button(
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    onClick = {
+                        dateSelectionState.show()
+                    },
+                    text = stringResource(
+                        R.string.habitCreation_lastEventTime_date,
+                        dateTimeFormatter.formatDate(calendar)
+                    )
+                )
+
+                Button(
+                    modifier = Modifier.padding(start = 16.dp, top = 2.dp, end = 16.dp),
+                    onClick = {
+                        timeSelectionState.show()
+                    },
+                    text = stringResource(
+                        R.string.habitCreation_lastEventTime_time,
+                        dateTimeFormatter.formatTime(calendar)
+                    )
+                )
+            }
+
+            (lastHabitEventTimeValidation as? HabitCreationViewModel.LastEventTimeValidationState.Executed)?.let {
+                when (it.result) {
+                    is HabitCreationViewModel.LastEventTimeValidationResult.BiggestThenCurrentTime -> {
+                        ErrorText(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                            text = stringResource(R.string.habitCreation_lastEventTimeValidation_biggestThenCurrentTime)
+                        )
+                    }
+                    else -> {
+                        /* no-op */
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1.0f))
+
+            Text(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(start = 16.dp, end = 16.dp, top = 32.dp),
+                text = stringResource(R.string.habitCreation_finish_description)
             )
 
             Button(
-                modifier = Modifier.padding(start = 16.dp, top = 2.dp, end = 16.dp),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.End),
                 onClick = {
-                    timeSelectionState.show()
+                    habitCreationViewModel.startHabitCreation()
                 },
-                text = stringResource(
-                    R.string.habitCreation_lastEventTime_time,
-                    dateTimeFormatter.formatTime(calendar)
-                )
+                enabled = creationAllowed,
+                text = stringResource(R.string.habitCreation_finish),
+                actionType = ActionType.MAIN
             )
         }
-
-        (lastHabitEventTimeValidation as? HabitCreationViewModel.LastEventTimeValidationState.Executed)?.let {
-            when (it.result) {
-                is HabitCreationViewModel.LastEventTimeValidationResult.BiggestThenCurrentTime -> {
-                    ErrorText(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitCreation_lastEventTimeValidation_biggestThenCurrentTime)
-                    )
-                }
-                else -> {
-                    /* no-op */
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.weight(1.0f))
-
-        Text(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(start = 16.dp, end = 16.dp, top = 32.dp),
-            text = stringResource(R.string.habitCreation_finish_description)
-        )
-
-        Button(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.End),
-            onClick = {
-                habitCreationViewModel.startHabitCreation()
-            },
-            enabled = creationAllowed,
-            text = stringResource(R.string.habitCreation_finish),
-            actionType = ActionType.MAIN
-        )
     }
 }

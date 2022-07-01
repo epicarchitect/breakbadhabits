@@ -8,5 +8,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.material:material:1.1.1")
+    api("androidx.compose.material:material:1.1.1")
+    api("com.google.accompanist:accompanist-insets:0.24.13-rc")
 }

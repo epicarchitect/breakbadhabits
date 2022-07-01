@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
 @SuppressLint("SimpleDateFormat")
 class DateTimeFormatter(context: Context) {

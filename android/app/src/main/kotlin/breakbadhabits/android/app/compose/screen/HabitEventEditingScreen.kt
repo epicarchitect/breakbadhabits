@@ -1,11 +1,15 @@
 package breakbadhabits.android.app.compose.screen
 
 import android.text.format.DateFormat
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -17,9 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import breakbadhabits.android.app.App
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.formatter.DateTimeFormatter
-import breakbadhabits.android.app.utils.AlertDialogManager
 import breakbadhabits.android.app.viewmodel.HabitEventEditingViewModel
 import breakbadhabits.android.compose.molecule.ActionType
 import breakbadhabits.android.compose.molecule.Button
@@ -37,12 +41,16 @@ import java.util.Calendar
 
 @Composable
 fun HabitEventEditingScreen(
-    habitEventEditingViewModel: HabitEventEditingViewModel,
-    dateTimeFormatter: DateTimeFormatter,
-    alertDialogManager: AlertDialogManager,
+    habitEventId: Int,
     onFinished: () -> Unit,
     onHabitEventDeleted: () -> Unit
 ) {
+    val habitEventEditingViewModel = viewModel {
+        App.architecture.createHabitEventEditingViewModel(habitEventId)
+    }
+    val dateTimeFormatter = App.architecture.dateTimeFormatter
+    val alertDialogManager = App.architecture.alertDialogManager
+
     val comment by habitEventEditingViewModel.commentStateFlow.collectAsState()
     val habitEventUpdatingAllowed by habitEventEditingViewModel.habitEventUpdatingAllowedStateFlow.collectAsState()
     val habitEventUpdating by habitEventEditingViewModel.habitEventUpdatingStateFlow.collectAsState()
@@ -118,118 +126,124 @@ fun HabitEventEditingScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Title(
-            modifier = Modifier.padding(start = 18.dp, top = 18.dp, end = 18.dp, bottom = 4.dp),
-            text = stringResource(R.string.habitEventEditing_title)
-        )
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
-            text = stringResource(R.string.habitEventEditing_habitName, habit?.name ?: "")
-        )
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitEventEditing_event_description)
-        )
-
-        val calendar = Calendar.getInstance().apply {
-            eventTime.let(::setTimeInMillis)
-        }
-
-        Button(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            onClick = {
-                dateSelectionState.show()
-            },
-            text = stringResource(
-                R.string.habitEventEditing_eventDate,
-                dateTimeFormatter.formatDate(calendar)
+        Column(
+            modifier = Modifier
+                .padding(WindowInsets.systemBars.asPaddingValues())
+                .fillMaxSize()
+        ) {
+            Title(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 4.dp),
+                text = stringResource(R.string.habitEventEditing_title)
             )
-        )
 
-        Button(
-            modifier = Modifier.padding(start = 16.dp, top = 2.dp, end = 16.dp),
-            onClick = {
-                timeSelectionState.show()
-            },
-            text = stringResource(
-                R.string.habitEventEditing_eventTime,
-                dateTimeFormatter.formatTime(calendar)
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+                text = stringResource(R.string.habitEventEditing_habitName, habit?.name ?: "")
             )
-        )
 
-        (eventTimeValidation as? HabitEventEditingViewModel.EventTimeValidationState.Executed)?.let {
-            when (it.result) {
-                is HabitEventEditingViewModel.EventTimeValidationResult.BiggestThenCurrentTime -> {
-                    ErrorText(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitEventEditing_eventTimeValidation_biggestThenCurrentTime),
-                    )
-                }
-                else -> {
-                    /* no-op */
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                text = stringResource(R.string.habitEventEditing_event_description)
+            )
+
+            val calendar = Calendar.getInstance().apply {
+                eventTime.let(::setTimeInMillis)
+            }
+
+            Button(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                onClick = {
+                    dateSelectionState.show()
+                },
+                text = stringResource(
+                    R.string.habitEventEditing_eventDate,
+                    dateTimeFormatter.formatDate(calendar)
+                )
+            )
+
+            Button(
+                modifier = Modifier.padding(start = 16.dp, top = 2.dp, end = 16.dp),
+                onClick = {
+                    timeSelectionState.show()
+                },
+                text = stringResource(
+                    R.string.habitEventEditing_eventTime,
+                    dateTimeFormatter.formatTime(calendar)
+                )
+            )
+
+            (eventTimeValidation as? HabitEventEditingViewModel.EventTimeValidationState.Executed)?.let {
+                when (it.result) {
+                    is HabitEventEditingViewModel.EventTimeValidationResult.BiggestThenCurrentTime -> {
+                        ErrorText(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                            text = stringResource(R.string.habitEventEditing_eventTimeValidation_biggestThenCurrentTime),
+                        )
+                    }
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                text = stringResource(R.string.habitEventEditing_comment_description)
+            )
+
+            TextField(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                    .fillMaxWidth(),
+                value = comment ?: "",
+                onValueChange = {
+                    habitEventEditingViewModel.updateComment(it)
+                },
+                label = stringResource(R.string.habitEventEditing_comment)
+            )
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                text = stringResource(R.string.habitEventEditing_deletion_description)
+            )
+
+            Button(
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
+                onClick = {
+                    alertDialogManager.showAlert(
+                        context,
+                        title = null,
+                        message = context.getString(R.string.habitEvents_deleteConfirmation),
+                        positiveButtonTitle = context.getString(R.string.yes),
+                        negativeButtonTitle = context.getString(R.string.cancel),
+                        onPositive = {
+                            habitEventEditingViewModel.deleteEvent()
+                            onHabitEventDeleted()
+                        },
+                    )
+                },
+                text = stringResource(R.string.habitEventEditing_deletion_button),
+                actionType = ActionType.DANGEROUS
+            )
+
+            Spacer(modifier = Modifier.weight(1.0f))
+
+            Button(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.End),
+                onClick = {
+                    habitEventEditingViewModel.startHabitEventUpdating()
+                },
+                enabled = habitEventUpdatingAllowed,
+                text = stringResource(R.string.habitEventEditing_finish),
+                actionType = ActionType.MAIN
+            )
         }
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitEventEditing_comment_description)
-        )
-
-        TextField(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                .fillMaxWidth(),
-            value = comment ?: "",
-            onValueChange = {
-                habitEventEditingViewModel.updateComment(it)
-            },
-            label = stringResource(R.string.habitEventEditing_comment)
-        )
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitEventEditing_deletion_description)
-        )
-
-        Button(
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
-            onClick = {
-                alertDialogManager.showAlert(
-                    context,
-                    title = null,
-                    message = context.getString(R.string.habitEvents_deleteConfirmation),
-                    positiveButtonTitle = context.getString(R.string.yes),
-                    negativeButtonTitle = context.getString(R.string.cancel),
-                    onPositive = {
-                        habitEventEditingViewModel.deleteEvent()
-                        onHabitEventDeleted()
-                    },
-                )
-            },
-            text = stringResource(R.string.habitEventEditing_deletion_button),
-            actionType = ActionType.DANGEROUS
-        )
-
-        Spacer(modifier = Modifier.weight(1.0f))
-
-        Button(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.End),
-            onClick = {
-                habitEventEditingViewModel.startHabitEventUpdating()
-            },
-            enabled = habitEventUpdatingAllowed,
-            text = stringResource(R.string.habitEventEditing_finish),
-            actionType = ActionType.MAIN
-        )
     }
 }

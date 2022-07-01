@@ -9,18 +9,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
+import breakbadhabits.android.app.App
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.repository.AppWidgetsRepository
-import breakbadhabits.android.app.utils.NightModeManager
 import kotlinx.coroutines.runBlocking
-import org.koin.core.context.GlobalContext
 
 
 class HabitsAppWidgetProvider : AppWidgetProvider() {
-
-    private val koin by lazy { GlobalContext.get() }
-    private val nightModeManager by lazy { koin.get<NightModeManager>() }
-    private val appWidgetsRepository by lazy { koin.get<AppWidgetsRepository>() }
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, appWidgetIds: IntArray) {
         super.onUpdate(context, manager, appWidgetIds)
@@ -36,7 +30,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) = runBlocking {
         super.onDeleted(context, appWidgetIds)
-        appWidgetsRepository.deleteHabitsAppWidgetConfigByAppWidgetIds(appWidgetIds.toList())
+        App.architecture.appWidgetsRepository.deleteHabitsAppWidgetConfigByAppWidgetIds(appWidgetIds.toList())
     }
 
     private fun updateAppWidget(
@@ -44,14 +38,16 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         manager: AppWidgetManager,
         appWidgetId: Int
     ) = runBlocking {
-        val config = appWidgetsRepository.habitsAppWidgetConfigByAppWidgetId(appWidgetId) ?: let {
+        fun resolveLayoutId() = if (App.architecture.nightModeManager.isNightModeActive)
+            R.layout.habits_app_widget_dark
+        else
+            R.layout.habits_app_widget_light
+
+        val config = App.architecture.appWidgetsRepository.habitsAppWidgetConfigByAppWidgetId(appWidgetId) ?: let {
             manager.updateAppWidget(
                 appWidgetId, RemoteViews(
                     context.packageName,
-                    if (nightModeManager.isNightModeActive)
-                        R.layout.habits_app_widget_dark
-                    else
-                        R.layout.habits_app_widget_light
+                    resolveLayoutId()
                 ).apply {
                     setTextViewText(R.id.title_textView, "Not found")
                     setViewVisibility(R.id.title_textView, View.VISIBLE)
@@ -64,10 +60,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
 
         val views = RemoteViews(
             context.packageName,
-            if (nightModeManager.isNightModeActive)
-                R.layout.habits_app_widget_dark
-            else
-                R.layout.habits_app_widget_light
+            resolveLayoutId()
         ).apply {
             setTextViewText(R.id.title_textView, config.title)
             setViewVisibility(R.id.divider, if (config.title.isEmpty()) View.GONE else View.VISIBLE)

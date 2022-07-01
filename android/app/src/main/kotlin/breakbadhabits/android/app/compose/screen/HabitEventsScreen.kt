@@ -3,11 +3,14 @@ package breakbadhabits.android.app.compose.screen
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -18,10 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import breakbadhabits.android.app.App
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.formatter.DateTimeFormatter
-import breakbadhabits.android.app.resources.HabitIconResources
-import breakbadhabits.android.app.viewmodel.HabitEventsViewModel
 import breakbadhabits.android.app.viewmodel.HabitViewModel
 import breakbadhabits.android.compose.molecule.Icon
 import breakbadhabits.android.compose.molecule.Text
@@ -35,12 +37,18 @@ import java.util.Calendar
 
 @Composable
 fun HabitEventsScreen(
-    habitViewModel: HabitViewModel,
-    habitEventsViewModel: HabitEventsViewModel,
-    dateTimeFormatter: DateTimeFormatter,
-    habitIconResources: HabitIconResources,
+    habitId: Int,
     openHabitEventEditing: (habitEventId: Int) -> Unit,
 ) {
+    val habitViewModel = viewModel {
+        App.architecture.createHabitViewModel(habitId)
+    }
+    val habitEventsViewModel = viewModel {
+        App.architecture.createHabitEventsViewModel(habitId)
+    }
+    val dateTimeFormatter = App.architecture.dateTimeFormatter
+    val habitIconResources = App.architecture.habitIconResources
+
     val habitState by habitViewModel.habitFlow.collectAsState()
     val calendarState = rememberEventsCalendarState()
     val allHabitEvents by habitEventsViewModel.habitEventStateFlow.collectAsState()
@@ -55,7 +63,14 @@ fun HabitEventsScreen(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 32.dp)
+        contentPadding = WindowInsets.systemBars.add(
+            WindowInsets(
+                top = 32.dp,
+                left = 16.dp,
+                right = 16.dp,
+                bottom = 32.dp
+            )
+        ).asPaddingValues()
     ) {
         if (habit != null) {
             item {

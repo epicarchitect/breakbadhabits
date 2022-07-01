@@ -6,17 +6,13 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import breakbadhabits.android.app.App
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.compose.screen.HabitsAppWidgetConfigCreationScreen
 import breakbadhabits.android.app.utils.NightModeManager
-import breakbadhabits.android.app.utils.composeViewModel
 import breakbadhabits.compose.theme.BreakBadHabitsTheme
-import org.koin.android.ext.android.inject
-
 
 class HabitsAppWidgetConfigCreationActivity : AppCompatActivity() {
-
-    private val nightModeManager: NightModeManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,14 +20,14 @@ class HabitsAppWidgetConfigCreationActivity : AppCompatActivity() {
         val appWidgetId = intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
         setContent {
             BreakBadHabitsTheme(
-                isDarkTheme = when (nightModeManager.mode) {
+                isDarkTheme = when (App.architecture.nightModeManager.mode) {
                     NightModeManager.Mode.NIGHT -> true
                     NightModeManager.Mode.NOT_NIGHT -> false
                     NightModeManager.Mode.FOLLOW_SYSTEM -> isSystemInDarkTheme()
                 }
             ) {
                 HabitsAppWidgetConfigCreationScreen(
-                    habitsAppWidgetConfigCreationViewModel = composeViewModel(appWidgetId),
+                    appWidgetId = appWidgetId,
                     onFinished = {
                         setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId))
                         finish()

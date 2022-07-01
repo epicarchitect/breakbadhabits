@@ -1,11 +1,15 @@
 package breakbadhabits.android.app.compose.screen
 
 import android.text.format.DateFormat
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -17,8 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import breakbadhabits.android.app.App
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.viewmodel.HabitEventCreationViewModel
 import breakbadhabits.android.app.viewmodel.HabitViewModel
 import breakbadhabits.android.compose.molecule.ActionType
@@ -37,11 +42,17 @@ import java.util.Calendar
 
 @Composable
 fun HabitEventCreationScreen(
-    habitViewModel: HabitViewModel,
-    habitEventCreationViewModel: HabitEventCreationViewModel,
-    dateTimeFormatter: DateTimeFormatter,
+    habitId: Int,
     onFinished: () -> Unit
 ) {
+    val habitViewModel = viewModel {
+        App.architecture.createHabitViewModel(habitId)
+    }
+    val habitEventCreationViewModel = viewModel {
+        App.architecture.createHabitEventCreationViewModel(habitId)
+    }
+    val dateTimeFormatter = App.architecture.dateTimeFormatter
+
     val comment by habitEventCreationViewModel.commentStateFlow.collectAsState()
     val creationAllowed by habitEventCreationViewModel.creationAllowedStateFlow.collectAsState()
     val creationDeferred by habitEventCreationViewModel.creationStateFlow.collectAsState()
@@ -116,107 +127,113 @@ fun HabitEventCreationScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Title(
-            modifier = Modifier.padding(start = 18.dp, top = 18.dp, end = 18.dp, bottom = 4.dp),
-            text = stringResource(R.string.habitEventCreation_title)
-        )
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
-            text = when (val state = habitState) {
-                is HabitViewModel.HabitState.Loaded -> stringResource(
-                    R.string.habitEventCreation_habitName,
-                    state.habit?.name ?: ""
-                )
-                is HabitViewModel.HabitState.Loading -> ""
-            }
-        )
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitEventCreation_event_description)
-        )
-
-        val calendar = Calendar.getInstance().apply {
-            time.let(::setTimeInMillis)
-        }
-
-        Button(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            onClick = {
-                dateSelectionState.show()
-            },
-            text = stringResource(
-                R.string.habitEventCreation_eventDate,
-                dateTimeFormatter.formatDate(calendar)
+        Column(
+            modifier = Modifier
+                .padding(WindowInsets.systemBars.asPaddingValues())
+                .fillMaxSize()
+        ) {
+            Title(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 4.dp),
+                text = stringResource(R.string.habitEventCreation_title)
             )
-        )
 
-        Button(
-            modifier = Modifier.padding(start = 16.dp, top = 2.dp, end = 16.dp),
-            onClick = {
-                timeSelectionState.show()
-            },
-            text = stringResource(
-                R.string.habitEventCreation_eventTime,
-                dateTimeFormatter.formatTime(calendar)
-            )
-        )
-
-        (timeValidation as? HabitEventCreationViewModel.TimeValidationState.Executed)?.let {
-            when (it.result) {
-                is HabitEventCreationViewModel.TimeValidationResult.BiggestThenCurrentTime -> {
-                    ErrorText(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitEventCreation_eventTimeValidation_biggestThenCurrentTime)
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
+                text = when (val state = habitState) {
+                    is HabitViewModel.HabitState.Loaded -> stringResource(
+                        R.string.habitEventCreation_habitName,
+                        state.habit?.name ?: ""
                     )
+                    is HabitViewModel.HabitState.Loading -> ""
                 }
-                else -> {
-                    /* no-op */
+            )
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                text = stringResource(R.string.habitEventCreation_event_description)
+            )
+
+            val calendar = Calendar.getInstance().apply {
+                time.let(::setTimeInMillis)
+            }
+
+            Button(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                onClick = {
+                    dateSelectionState.show()
+                },
+                text = stringResource(
+                    R.string.habitEventCreation_eventDate,
+                    dateTimeFormatter.formatDate(calendar)
+                )
+            )
+
+            Button(
+                modifier = Modifier.padding(start = 16.dp, top = 2.dp, end = 16.dp),
+                onClick = {
+                    timeSelectionState.show()
+                },
+                text = stringResource(
+                    R.string.habitEventCreation_eventTime,
+                    dateTimeFormatter.formatTime(calendar)
+                )
+            )
+
+            (timeValidation as? HabitEventCreationViewModel.TimeValidationState.Executed)?.let {
+                when (it.result) {
+                    is HabitEventCreationViewModel.TimeValidationResult.BiggestThenCurrentTime -> {
+                        ErrorText(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                            text = stringResource(R.string.habitEventCreation_eventTimeValidation_biggestThenCurrentTime)
+                        )
+                    }
+                    else -> {
+                        /* no-op */
+                    }
                 }
             }
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                text = stringResource(R.string.habitEventCreation_comment_description)
+            )
+
+            TextField(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                    .fillMaxWidth(),
+                value = comment ?: "",
+                onValueChange = {
+                    habitEventCreationViewModel.updateComment(it)
+                },
+                label = stringResource(R.string.habitEventCreation_comment)
+            )
+
+            Spacer(modifier = Modifier.weight(1.0f))
+
+            Text(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, top = 32.dp)
+                    .align(Alignment.End),
+                text = stringResource(R.string.habitEventCreation_finish_description)
+            )
+
+            Button(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.End),
+                onClick = {
+                    habitEventCreationViewModel.startCreation()
+                },
+                enabled = creationAllowed,
+                text = stringResource(R.string.habitEventCreation_finish),
+                actionType = ActionType.MAIN
+            )
         }
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitEventCreation_comment_description)
-        )
-
-        TextField(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                .fillMaxWidth(),
-            value = comment ?: "",
-            onValueChange = {
-                habitEventCreationViewModel.updateComment(it)
-            },
-            label = stringResource(R.string.habitEventCreation_comment)
-        )
-
-        Spacer(modifier = Modifier.weight(1.0f))
-
-        Text(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 32.dp)
-                .align(Alignment.End),
-            text = stringResource(R.string.habitEventCreation_finish_description)
-        )
-
-        Button(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.End),
-            onClick = {
-                habitEventCreationViewModel.startCreation()
-            },
-            enabled = creationAllowed,
-            text = stringResource(R.string.habitEventCreation_finish),
-            actionType = ActionType.MAIN
-        )
     }
 }

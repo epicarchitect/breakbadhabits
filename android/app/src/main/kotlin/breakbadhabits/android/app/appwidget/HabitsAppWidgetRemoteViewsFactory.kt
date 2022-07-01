@@ -3,19 +3,14 @@ package breakbadhabits.android.app.appwidget
 import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import breakbadhabits.android.app.App
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.data.HabitEventData
-import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
-import breakbadhabits.android.app.repository.AppWidgetsRepository
-import breakbadhabits.android.app.repository.HabitsRepository
 import kotlinx.coroutines.runBlocking
 
 
 class HabitsAppWidgetRemoteViewsFactory(
     private val context: Context,
-    private val habitsRepository: HabitsRepository,
-    private val appWidgetsRepository: AppWidgetsRepository,
-    private val abstinenceTimeFormatter: AbstinenceTimeFormatter,
     private val appWidgetId: Int
 ) : RemoteViewsService.RemoteViewsFactory {
 
@@ -24,17 +19,17 @@ class HabitsAppWidgetRemoteViewsFactory(
     override fun onCreate() {}
 
     override fun onDataSetChanged() = runBlocking {
-        val config = appWidgetsRepository.habitsAppWidgetConfigByAppWidgetId(appWidgetId) ?: let {
+        val config = App.architecture.appWidgetsRepository.habitsAppWidgetConfigByAppWidgetId(appWidgetId) ?: let {
             items = emptyList()
             return@runBlocking
         }
 
-        items = habitsRepository.habitListByIds(config.habitIds).map {
+        items = App.architecture.habitsRepository.habitListByIds(config.habitIds).map {
             Item(
                 it.id,
                 it.name,
                 it.iconId,
-                habitsRepository.lastByTimeHabitEventByHabitId(it.id)
+                App.architecture.habitsRepository.lastByTimeHabitEventByHabitId(it.id)
             )
         }
     }
@@ -56,7 +51,7 @@ class HabitsAppWidgetRemoteViewsFactory(
             if (item.lastHabitEvent == null) {
                 context.getString(R.string.habitsAppWidget_noAbstinenceTime)
             } else {
-                abstinenceTimeFormatter.format(
+                App.architecture.abstinenceTimeFormatter.format(
                     System.currentTimeMillis() - item.lastHabitEvent.time,
                     maxValueCount = 3
                 )
