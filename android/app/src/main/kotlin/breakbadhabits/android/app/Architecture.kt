@@ -34,13 +34,13 @@ import kotlinx.coroutines.flow.launchIn
 
 class Architecture(application: Application) {
 
+    private val breakBadHabitsConfig = BreakBadHabitsAppConfig(maxHabitNameLength = 30)
+    private val mainDatabase = Room.databaseBuilder(application, MainDatabase::class.java, "main.db").build()
+    private val idGenerator = IdGenerator(application)
     val abstinenceTimeFormatter = AbstinenceTimeFormatter(application)
     val dateTimeFormatter = DateTimeFormatter(application)
     val alertDialogManager = AlertDialogManager()
-    val breakBadHabitsConfig = BreakBadHabitsAppConfig(maxHabitNameLength = 30)
     val habitIconResources = HabitIconResources(application)
-    val mainDatabase = Room.databaseBuilder(application, MainDatabase::class.java, "main.db").build()
-    val idGenerator = IdGenerator(application)
     val nightModeManager = NightModeManager(application)
     val appWidgetsRepository = AppWidgetsRepository(idGenerator, mainDatabase)
     val habitsRepository = HabitsRepository(idGenerator, mainDatabase)
