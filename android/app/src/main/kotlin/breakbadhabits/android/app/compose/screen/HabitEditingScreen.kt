@@ -9,6 +9,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -105,19 +107,22 @@ fun HabitEditingScreen(
                 is HabitEditingViewModel.HabitNameValidationResult.Empty -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitEditing_habitNameValidation_empty)
+                        text = stringResource(R.string.habitEditing_habitNameValidation_empty),
+                        icon = Icons.Default.Error
                     )
                 }
                 is HabitEditingViewModel.HabitNameValidationResult.TooLong -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEditing_habitNameValidation_tooLong, it.result.maxHabitNameLength),
+                        icon = Icons.Default.Error
                     )
                 }
                 is HabitEditingViewModel.HabitNameValidationResult.Used -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEditing_habitNameValidation_used),
+                        icon = Icons.Default.Error
                     )
                 }
                 else -> {
