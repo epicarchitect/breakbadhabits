@@ -45,8 +45,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":android:compose:molecules"))
     implementation(project(":android:compose:theme"))
+    implementation(project(":android:compose:molecules"))
     implementation(project(":android:compose:organisms:histogram"))
     implementation(project(":android:compose:organisms:icons-selection"))
     implementation(project(":android:compose:organisms:events-calendar"))

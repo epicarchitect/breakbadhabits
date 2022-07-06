@@ -8,5 +8,5 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.material:material:1.1.1")
+    api("androidx.compose.material:material:1.1.1")
 }
