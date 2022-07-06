@@ -1,5 +1,5 @@
 include(
-    ":domain",
+    ":data",
     ":architecture-core",
     ":flow-driven-architecture",
     ":android:data",
