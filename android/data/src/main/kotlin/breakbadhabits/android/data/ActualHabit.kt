@@ -10,9 +10,11 @@ data class ActualHabit(
     data class Id(val value: Int) : Habit.Id
     data class Name(val value: String) : Habit.Name
     data class IconId(val value: Int) : Habit.IconId
+    data class AbstinenceTime(val value: Long) : Habit.AbstinenceTime
 }
 
 fun Habit.actual() = this as ActualHabit
 fun Habit.Id.actual() = (this as ActualHabit.Id).value
 fun Habit.Name.actual() = (this as ActualHabit.Name).value
 fun Habit.IconId.actual() = (this as ActualHabit.IconId).value
+fun Habit.AbstinenceTime.actual() = (this as ActualHabit.AbstinenceTime).value

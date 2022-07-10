@@ -27,6 +27,10 @@ import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigCreationViewMod
 import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigEditingViewModel
 import breakbadhabits.android.app.viewmodel.HabitsViewModel
 import breakbadhabits.android.app.viewmodel.WidgetsViewModel
+import breakbadhabits.android.data.ActualHabit
+import breakbadhabits.android.data.actual
+import breakbadhabits.data.Habit
+import breakbadhabits.data.HabitEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -39,6 +43,8 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import epicarchitect.architecture.FlowDrivenArchitecture
+import kotlinx.coroutines.flow.map
+import org.koin.android.ext.android.get
 import org.koin.dsl.module
 
 class BreakBadHabitsApp : Application() {
@@ -47,8 +53,52 @@ class BreakBadHabitsApp : Application() {
     private val habitsRepository: HabitsRepository by inject()
     private val habitAppWidgetsRepository: AppWidgetsRepository by inject()
 
+    val architecture by lazy {
+        FlowDrivenArchitecture {
+            output<Unit, List<Habit.Id>> {
+                get<HabitsRepository>().habitListFlow().map {
+                    it.map {
+                        ActualHabit.Id(
+                            it.id
+                        )
+                    }
+                }
+            }
+
+            output<Habit.Id, Habit.AbstinenceTime?> {
+                get<HabitsRepository>().lastByTimeHabitEventByHabitIdFlow(it.actual()).map {
+                    it?.let {
+                        ActualHabit.AbstinenceTime(
+                            it.time
+                        )
+                    }
+                }
+            }
+
+            output<Habit.Id, Habit.Name?> {
+                get<HabitsRepository>().habitByIdFlow(it.actual()).map {
+                    it?.let {
+                        ActualHabit.Name(
+                            it.name
+                        )
+                    }
+                }
+            }
+
+            output<Habit.Id, Habit.IconId?> {
+                get<HabitsRepository>().habitByIdFlow(it.actual()).map {
+                    it?.let {
+                        ActualHabit.IconId(
+                            it.iconId
+                        )
+                    }
+                }
+            }
+        }
+    }
     override fun onCreate() {
         super.onCreate()
+        instance = this
         startKoin {
             androidLogger(if (BuildConfig.DEBUG) Level.ERROR else Level.NONE)
             androidContext(this@BreakBadHabitsApp)
@@ -71,11 +121,7 @@ class BreakBadHabitsApp : Application() {
     }
 
     companion object {
-        val architecture by lazy {
-            FlowDrivenArchitecture {
-
-            }
-        }
+        lateinit var instance: BreakBadHabitsApp
     }
 }
 

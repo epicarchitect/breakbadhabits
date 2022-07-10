@@ -22,9 +22,11 @@ import breakbadhabits.android.app.compose.screen.HabitScreen
 import breakbadhabits.android.app.compose.screen.HabitsAppWidgetConfigEditingScreen
 import breakbadhabits.android.app.compose.screen.HabitsAppWidgetsScreen
 import breakbadhabits.android.app.compose.screen.HabitsScreen
+import breakbadhabits.android.app.compose.screen.NewHabitsScreen
 import breakbadhabits.android.app.utils.NightModeManager
 import breakbadhabits.android.app.utils.composeViewModel
 import breakbadhabits.android.app.utils.get
+import breakbadhabits.android.data.actual
 import breakbadhabits.compose.theme.BreakBadHabitsTheme
 import org.koin.android.ext.android.inject
 
@@ -188,15 +190,14 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable("habits") {
-                        HabitsScreen(
-                            habitsViewModel = composeViewModel(),
+                        NewHabitsScreen(
                             habitIconResources = get(),
                             abstinenceTimeFormatter = get(),
                             openHabit = { habitId ->
-                                navController.navigate("habit?habitId=$habitId")
+                                navController.navigate("habit?habitId=${habitId.actual()}")
                             },
                             openHabitEventCreation = { habitId ->
-                                navController.navigate("habitEventCreation?habitId=$habitId")
+                                navController.navigate("habitEventCreation?habitId=${habitId.actual()}")
                             },
                             openHabitCreation = {
                                 navController.navigate("habitCreation")
