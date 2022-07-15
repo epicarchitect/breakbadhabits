@@ -27,14 +27,14 @@ import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.AlertDialogManager
 import breakbadhabits.android.app.viewmodel.HabitDeletionViewModel
 import breakbadhabits.android.app.viewmodel.HabitEditingViewModel
-import breakbadhabits.android.compose.molecule.ActionType
-import breakbadhabits.android.compose.molecule.Button
-import breakbadhabits.android.compose.molecule.ErrorText
-import breakbadhabits.android.compose.molecule.Text
-import breakbadhabits.android.compose.molecule.TextField
-import breakbadhabits.android.compose.molecule.Title
-import breakbadhabits.compose.organism.icons.selection.IconData
-import breakbadhabits.compose.organism.icons.selection.IconsSelection
+import breakbadhabits.android.compose.component.ActionType
+import breakbadhabits.android.compose.component.Button
+import breakbadhabits.android.compose.component.ErrorText
+import breakbadhabits.android.compose.component.IconData
+import breakbadhabits.android.compose.component.IconsSelection
+import breakbadhabits.android.compose.component.Text
+import breakbadhabits.android.compose.component.TextField
+import breakbadhabits.android.compose.component.Title
 
 @Composable
 fun HabitEditingScreen(

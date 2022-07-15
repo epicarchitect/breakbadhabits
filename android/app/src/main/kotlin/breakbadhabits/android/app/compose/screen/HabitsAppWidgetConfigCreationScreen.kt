@@ -25,13 +25,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigCreationViewModel
-import breakbadhabits.android.compose.molecule.ActionType
-import breakbadhabits.android.compose.molecule.Button
-import breakbadhabits.android.compose.molecule.Card
-import breakbadhabits.android.compose.molecule.Checkbox
-import breakbadhabits.android.compose.molecule.Text
-import breakbadhabits.android.compose.molecule.TextField
-import breakbadhabits.android.compose.molecule.Title
+import breakbadhabits.android.compose.component.ActionType
+import breakbadhabits.android.compose.component.Button
+import breakbadhabits.android.compose.component.Card
+import breakbadhabits.android.compose.component.Checkbox
+import breakbadhabits.android.compose.component.Text
+import breakbadhabits.android.compose.component.TextField
+import breakbadhabits.android.compose.component.Title
 
 @Composable
 fun HabitsAppWidgetConfigCreationScreen(

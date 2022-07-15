@@ -23,15 +23,15 @@ import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.viewmodel.HabitEventsViewModel
 import breakbadhabits.android.app.viewmodel.HabitViewModel
-import breakbadhabits.android.compose.molecule.Icon
-import breakbadhabits.android.compose.molecule.Text
-import breakbadhabits.android.compose.molecule.Title
-import breakbadhabits.compose.organism.events.calendar.EventData
-import breakbadhabits.compose.organism.events.calendar.EventsCalendar
-import breakbadhabits.compose.organism.events.calendar.rememberEventsCalendarState
+import breakbadhabits.android.compose.component.EventData
+import breakbadhabits.android.compose.component.EventsCalendar
+import breakbadhabits.android.compose.component.Icon
+import breakbadhabits.android.compose.component.Text
+import breakbadhabits.android.compose.component.Title
+import breakbadhabits.android.compose.component.rememberEventsCalendarState
 import java.time.Instant
 import java.time.ZoneId
-import java.util.Calendar
+import java.util.*
 
 @Composable
 fun HabitEventsScreen(

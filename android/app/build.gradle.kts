@@ -46,11 +46,7 @@ android {
 
 dependencies {
     implementation(project(":android:compose:theme"))
-    implementation(project(":android:compose:molecules"))
-    implementation(project(":android:compose:organisms:histogram"))
-    implementation(project(":android:compose:organisms:icons-selection"))
-    implementation(project(":android:compose:organisms:events-calendar"))
-    implementation(project(":android:compose:organisms:statistics"))
+    implementation(project(":android:compose:components"))
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.4.2")

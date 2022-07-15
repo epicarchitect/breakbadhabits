@@ -16,10 +16,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.utils.NightModeManager
-import breakbadhabits.android.compose.molecule.Button
-import breakbadhabits.android.compose.molecule.RadioButton
-import breakbadhabits.android.compose.molecule.Text
-import breakbadhabits.android.compose.molecule.Title
+import breakbadhabits.android.compose.component.Button
+import breakbadhabits.android.compose.component.RadioButton
+import breakbadhabits.android.compose.component.Text
+import breakbadhabits.android.compose.component.Title
 
 @Composable
 fun AppSettingsScreen(

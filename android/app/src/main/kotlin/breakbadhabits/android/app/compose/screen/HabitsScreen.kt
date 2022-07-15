@@ -28,13 +28,13 @@ import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.TikTik
 import breakbadhabits.android.app.viewmodel.HabitsViewModel
-import breakbadhabits.android.compose.molecule.ActionType
-import breakbadhabits.android.compose.molecule.Button
-import breakbadhabits.android.compose.molecule.Card
-import breakbadhabits.android.compose.molecule.Icon
-import breakbadhabits.android.compose.molecule.IconButton
-import breakbadhabits.android.compose.molecule.Text
-import breakbadhabits.android.compose.molecule.Title
+import breakbadhabits.android.compose.component.ActionType
+import breakbadhabits.android.compose.component.Button
+import breakbadhabits.android.compose.component.Card
+import breakbadhabits.android.compose.component.Icon
+import breakbadhabits.android.compose.component.IconButton
+import breakbadhabits.android.compose.component.Text
+import breakbadhabits.android.compose.component.Title
 
 @Composable
 fun HabitsScreen(

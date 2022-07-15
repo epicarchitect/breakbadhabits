@@ -1,9 +1,7 @@
+rootProject.name = "Break Bad Habits"
+
 include(
     ":android:compose:theme",
-    ":android:compose:molecules",
-    ":android:compose:organisms:histogram",
-    ":android:compose:organisms:icons-selection",
-    ":android:compose:organisms:events-calendar",
-    ":android:compose:organisms:statistics",
+    ":android:compose:components",
     ":android:app"
 )
