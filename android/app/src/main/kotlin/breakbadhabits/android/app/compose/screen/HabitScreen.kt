@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,20 +29,20 @@ import breakbadhabits.android.app.utils.TikTik
 import breakbadhabits.android.app.viewmodel.HabitAnalyzeViewModel
 import breakbadhabits.android.app.viewmodel.HabitEventsViewModel
 import breakbadhabits.android.app.viewmodel.HabitViewModel
-import breakbadhabits.android.compose.component.ActionType
-import breakbadhabits.android.compose.component.Button
-import breakbadhabits.android.compose.component.Card
-import breakbadhabits.android.compose.component.EventData
-import breakbadhabits.android.compose.component.EventsCalendar
-import breakbadhabits.android.compose.component.Histogram
-import breakbadhabits.android.compose.component.HistogramState
-import breakbadhabits.android.compose.component.Icon
-import breakbadhabits.android.compose.component.IconButton
-import breakbadhabits.android.compose.component.StatisticData
-import breakbadhabits.android.compose.component.Statistics
-import breakbadhabits.android.compose.component.Text
-import breakbadhabits.android.compose.component.Title
-import breakbadhabits.android.compose.component.rememberEventsCalendarState
+import breakbadhabits.android.compose.ui.InteractionType
+import breakbadhabits.android.compose.ui.Button
+import breakbadhabits.android.compose.ui.Card
+import breakbadhabits.android.compose.ui.EventData
+import breakbadhabits.android.compose.ui.EventsCalendar
+import breakbadhabits.android.compose.ui.Histogram
+import breakbadhabits.android.compose.ui.HistogramState
+import breakbadhabits.android.compose.ui.Icon
+import breakbadhabits.android.compose.ui.IconButton
+import breakbadhabits.android.compose.ui.StatisticData
+import breakbadhabits.android.compose.ui.Statistics
+import breakbadhabits.android.compose.ui.Text
+import breakbadhabits.android.compose.ui.Title
+import breakbadhabits.android.compose.ui.rememberEventsCalendarState
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.TextStyle
@@ -105,7 +103,7 @@ fun HabitScreen(
                         modifier = Modifier.padding(top = 8.dp),
                         onClick = { openHabitEventCreation() },
                         text = stringResource(R.string.habit_resetTime),
-                        actionType = ActionType.MAIN
+                        interactionType = InteractionType.MAIN
                     )
                 }
 
@@ -115,9 +113,7 @@ fun HabitScreen(
                         openHabitEditing()
                     }
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                    )
+                    Icon(painterResource(R.drawable.ic_settings))
                 }
             }
         }

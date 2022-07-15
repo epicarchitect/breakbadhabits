@@ -15,18 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.utils.NightModeManager
-import breakbadhabits.android.compose.component.Button
-import breakbadhabits.android.compose.component.RadioButton
-import breakbadhabits.android.compose.component.Text
-import breakbadhabits.android.compose.component.Title
+import breakbadhabits.android.compose.activity.DarkMode
+import breakbadhabits.android.compose.activity.LocalDarkModeManager
+import breakbadhabits.android.compose.ui.Button
+import breakbadhabits.android.compose.ui.RadioButton
+import breakbadhabits.android.compose.ui.Text
+import breakbadhabits.android.compose.ui.Title
 
 @Composable
 fun AppSettingsScreen(
-    nightModeManager: NightModeManager,
     openWidgetSettings: () -> Unit
 ) {
-    var mode by remember { mutableStateOf(nightModeManager.mode) }
+    val darkModeManager = LocalDarkModeManager.current
+    val darkMode by darkModeManager.mode
 
     Column(
         modifier = Modifier
@@ -53,28 +54,25 @@ fun AppSettingsScreen(
 
         RadioButton(
             text = stringResource(R.string.appSettings_themeSelection_systemTheme),
-            selected = mode == NightModeManager.Mode.FOLLOW_SYSTEM,
+            selected = darkMode == DarkMode.SYSTEM,
             onSelect = {
-                mode = NightModeManager.Mode.FOLLOW_SYSTEM
-                nightModeManager.mode = mode
+                darkModeManager.changeMode(DarkMode.SYSTEM)
             }
         )
 
         RadioButton(
             text = stringResource(R.string.appSettings_themeSelection_lightTheme),
-            selected = mode == NightModeManager.Mode.NOT_NIGHT,
+            selected = darkMode == DarkMode.DISABLED,
             onSelect = {
-                mode = NightModeManager.Mode.NOT_NIGHT
-                nightModeManager.mode = mode
+                darkModeManager.changeMode(DarkMode.DISABLED)
             }
         )
 
         RadioButton(
             text = stringResource(R.string.appSettings_themeSelection_darkTheme),
-            selected = mode == NightModeManager.Mode.NIGHT,
+            selected = darkMode == DarkMode.ENABLED,
             onSelect = {
-                mode = NightModeManager.Mode.NIGHT
-                nightModeManager.mode = mode
+                darkModeManager.changeMode(DarkMode.ENABLED)
             }
         )
 

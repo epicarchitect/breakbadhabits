@@ -9,10 +9,10 @@ import org.koin.core.parameter.parametersOf
 
 @Suppress("UNCHECKED_CAST")
 @Composable
-inline fun <reified VM : ViewModel> composeViewModel(vararg parameters: Any?) = viewModel<VM>(
-    factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>) = get<VM>(parameters = parameters) as T
-    }
-)
+inline fun <reified VM : ViewModel> composeViewModel(vararg parameters: Any?) = viewModel<VM> {
+    get(parameters = parameters)
+}
 
-inline fun <reified T : Any> get(vararg parameters: Any?) = GlobalContext.get().get<T> { parametersOf(parameters = parameters) }
+inline fun <reified T : Any> get(vararg parameters: Any?) = GlobalContext.get().get<T> {
+    parametersOf(parameters = parameters)
+}

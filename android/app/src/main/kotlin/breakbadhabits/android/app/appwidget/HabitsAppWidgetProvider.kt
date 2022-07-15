@@ -5,13 +5,14 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.repository.AppWidgetsRepository
-import breakbadhabits.android.app.utils.NightModeManager
+import breakbadhabits.android.compose.activity.DarkModeManager
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.GlobalContext
 
@@ -19,7 +20,6 @@ import org.koin.core.context.GlobalContext
 class HabitsAppWidgetProvider : AppWidgetProvider() {
 
     private val koin by lazy { GlobalContext.get() }
-    private val nightModeManager by lazy { koin.get<NightModeManager>() }
     private val appWidgetsRepository by lazy { koin.get<AppWidgetsRepository>() }
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, appWidgetIds: IntArray) {
@@ -44,11 +44,13 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         manager: AppWidgetManager,
         appWidgetId: Int
     ) = runBlocking {
+        val isDarkModeEnabled = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
         val config = appWidgetsRepository.habitsAppWidgetConfigByAppWidgetId(appWidgetId) ?: let {
             manager.updateAppWidget(
                 appWidgetId, RemoteViews(
                     context.packageName,
-                    if (nightModeManager.isNightModeActive)
+                    if (isDarkModeEnabled)
                         R.layout.habits_app_widget_dark
                     else
                         R.layout.habits_app_widget_light
@@ -64,7 +66,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
 
         val views = RemoteViews(
             context.packageName,
-            if (nightModeManager.isNightModeActive)
+            if (isDarkModeEnabled)
                 R.layout.habits_app_widget_dark
             else
                 R.layout.habits_app_widget_light

@@ -10,8 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,14 +25,14 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.viewmodel.HabitCreationViewModel
-import breakbadhabits.android.compose.component.ActionType
-import breakbadhabits.android.compose.component.Button
-import breakbadhabits.android.compose.component.ErrorText
-import breakbadhabits.android.compose.component.IconData
-import breakbadhabits.android.compose.component.IconsSelection
-import breakbadhabits.android.compose.component.Text
-import breakbadhabits.android.compose.component.TextField
-import breakbadhabits.android.compose.component.Title
+import breakbadhabits.android.compose.ui.InteractionType
+import breakbadhabits.android.compose.ui.Button
+import breakbadhabits.android.compose.ui.ErrorText
+import breakbadhabits.android.compose.ui.IconData
+import breakbadhabits.android.compose.ui.IconsSelection
+import breakbadhabits.android.compose.ui.Text
+import breakbadhabits.android.compose.ui.TextField
+import breakbadhabits.android.compose.ui.Title
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
@@ -171,21 +169,18 @@ fun HabitCreationScreen(
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitCreation_habitNameValidation_empty),
-                        icon = Icons.Default.Error
                     )
                 }
                 is HabitCreationViewModel.HabitNameValidationResult.TooLong -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitCreation_habitNameValidation_tooLong, it.result.maxHabitNameLength),
-                        icon = Icons.Default.Error
                     )
                 }
                 is HabitCreationViewModel.HabitNameValidationResult.Used -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitCreation_habitNameValidation_used),
-                        icon = Icons.Default.Error
                     )
                 }
                 else -> {
@@ -267,7 +262,6 @@ fun HabitCreationScreen(
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitCreation_lastEventTimeValidation_biggestThenCurrentTime),
-                        icon = Icons.Default.Error
                     )
                 }
                 else -> {
@@ -294,7 +288,7 @@ fun HabitCreationScreen(
             },
             enabled = creationAllowed,
             text = stringResource(R.string.habitCreation_finish),
-            actionType = ActionType.MAIN
+            interactionType = InteractionType.MAIN
         )
     }
 }

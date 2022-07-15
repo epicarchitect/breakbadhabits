@@ -9,8 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,14 +25,14 @@ import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.AlertDialogManager
 import breakbadhabits.android.app.viewmodel.HabitDeletionViewModel
 import breakbadhabits.android.app.viewmodel.HabitEditingViewModel
-import breakbadhabits.android.compose.component.ActionType
-import breakbadhabits.android.compose.component.Button
-import breakbadhabits.android.compose.component.ErrorText
-import breakbadhabits.android.compose.component.IconData
-import breakbadhabits.android.compose.component.IconsSelection
-import breakbadhabits.android.compose.component.Text
-import breakbadhabits.android.compose.component.TextField
-import breakbadhabits.android.compose.component.Title
+import breakbadhabits.android.compose.ui.InteractionType
+import breakbadhabits.android.compose.ui.Button
+import breakbadhabits.android.compose.ui.ErrorText
+import breakbadhabits.android.compose.ui.IconData
+import breakbadhabits.android.compose.ui.IconsSelection
+import breakbadhabits.android.compose.ui.Text
+import breakbadhabits.android.compose.ui.TextField
+import breakbadhabits.android.compose.ui.Title
 
 @Composable
 fun HabitEditingScreen(
@@ -108,21 +106,18 @@ fun HabitEditingScreen(
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEditing_habitNameValidation_empty),
-                        icon = Icons.Default.Error
                     )
                 }
                 is HabitEditingViewModel.HabitNameValidationResult.TooLong -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEditing_habitNameValidation_tooLong, it.result.maxHabitNameLength),
-                        icon = Icons.Default.Error
                     )
                 }
                 is HabitEditingViewModel.HabitNameValidationResult.Used -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEditing_habitNameValidation_used),
-                        icon = Icons.Default.Error
                     )
                 }
                 else -> {
@@ -177,7 +172,7 @@ fun HabitEditingScreen(
                 )
             },
             text = stringResource(R.string.habitEditing_deletion_button),
-            actionType = ActionType.DANGEROUS
+            interactionType = InteractionType.DANGEROUS
         )
 
         Spacer(modifier = Modifier.weight(1.0f))
@@ -191,7 +186,7 @@ fun HabitEditingScreen(
             },
             enabled = habitUpdatingAllowed,
             text = stringResource(R.string.habitEditing_finish),
-            actionType = ActionType.MAIN
+            interactionType = InteractionType.MAIN
         )
     }
 }

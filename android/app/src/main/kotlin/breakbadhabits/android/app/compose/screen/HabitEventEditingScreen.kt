@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,12 +21,12 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.utils.AlertDialogManager
 import breakbadhabits.android.app.viewmodel.HabitEventEditingViewModel
-import breakbadhabits.android.compose.component.ActionType
-import breakbadhabits.android.compose.component.Button
-import breakbadhabits.android.compose.component.ErrorText
-import breakbadhabits.android.compose.component.Text
-import breakbadhabits.android.compose.component.TextField
-import breakbadhabits.android.compose.component.Title
+import breakbadhabits.android.compose.ui.InteractionType
+import breakbadhabits.android.compose.ui.Button
+import breakbadhabits.android.compose.ui.ErrorText
+import breakbadhabits.android.compose.ui.Text
+import breakbadhabits.android.compose.ui.TextField
+import breakbadhabits.android.compose.ui.Title
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
@@ -171,8 +169,7 @@ fun HabitEventEditingScreen(
                 is HabitEventEditingViewModel.EventTimeValidationResult.BiggestThenCurrentTime -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitEventEditing_eventTimeValidation_biggestThenCurrentTime),
-                        icon = Icons.Default.Error
+                        text = stringResource(R.string.habitEventEditing_eventTimeValidation_biggestThenCurrentTime)
                     )
                 }
                 else -> {
@@ -218,7 +215,7 @@ fun HabitEventEditingScreen(
                 )
             },
             text = stringResource(R.string.habitEventEditing_deletion_button),
-            actionType = ActionType.DANGEROUS
+            interactionType = InteractionType.DANGEROUS
         )
 
         Spacer(modifier = Modifier.weight(1.0f))
@@ -232,7 +229,7 @@ fun HabitEventEditingScreen(
             },
             enabled = habitEventUpdatingAllowed,
             text = stringResource(R.string.habitEventEditing_finish),
-            actionType = ActionType.MAIN
+            interactionType = InteractionType.MAIN
         )
     }
 }

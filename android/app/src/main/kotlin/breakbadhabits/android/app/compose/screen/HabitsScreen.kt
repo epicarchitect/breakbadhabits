@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,13 +26,13 @@ import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.TikTik
 import breakbadhabits.android.app.viewmodel.HabitsViewModel
-import breakbadhabits.android.compose.component.ActionType
-import breakbadhabits.android.compose.component.Button
-import breakbadhabits.android.compose.component.Card
-import breakbadhabits.android.compose.component.Icon
-import breakbadhabits.android.compose.component.IconButton
-import breakbadhabits.android.compose.component.Text
-import breakbadhabits.android.compose.component.Title
+import breakbadhabits.android.compose.ui.InteractionType
+import breakbadhabits.android.compose.ui.Button
+import breakbadhabits.android.compose.ui.Card
+import breakbadhabits.android.compose.ui.Icon
+import breakbadhabits.android.compose.ui.IconButton
+import breakbadhabits.android.compose.ui.Text
+import breakbadhabits.android.compose.ui.Title
 
 @Composable
 fun HabitsScreen(
@@ -70,9 +68,7 @@ fun HabitsScreen(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     onClick = openSettings
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                    )
+                    Icon(painterResource(R.drawable.ic_settings))
                 }
             }
 
@@ -81,7 +77,8 @@ fun HabitsScreen(
                     Text(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .padding(16.dp).align(Alignment.CenterHorizontally),
+                            .padding(16.dp)
+                            .align(Alignment.CenterHorizontally),
                         textAlign = TextAlign.Center,
                         text = stringResource(R.string.habits_empty)
                     )
@@ -121,7 +118,7 @@ fun HabitsScreen(
                 openHabitCreation()
             },
             text =  stringResource(R.string.habits_newHabit),
-            actionType = ActionType.MAIN
+            interactionType = InteractionType.MAIN
         )
     }
 }

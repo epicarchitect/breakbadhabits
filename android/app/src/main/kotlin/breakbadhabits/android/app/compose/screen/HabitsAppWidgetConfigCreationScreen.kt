@@ -25,13 +25,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigCreationViewModel
-import breakbadhabits.android.compose.component.ActionType
-import breakbadhabits.android.compose.component.Button
-import breakbadhabits.android.compose.component.Card
-import breakbadhabits.android.compose.component.Checkbox
-import breakbadhabits.android.compose.component.Text
-import breakbadhabits.android.compose.component.TextField
-import breakbadhabits.android.compose.component.Title
+import breakbadhabits.android.compose.ui.InteractionType
+import breakbadhabits.android.compose.ui.Button
+import breakbadhabits.android.compose.ui.Card
+import breakbadhabits.android.compose.Checkbox
+import breakbadhabits.android.compose.ui.Text
+import breakbadhabits.android.compose.ui.TextField
+import breakbadhabits.android.compose.ui.Title
 
 @Composable
 fun HabitsAppWidgetConfigCreationScreen(
@@ -138,7 +138,7 @@ fun HabitsAppWidgetConfigCreationScreen(
             },
             enabled = savingAllowed,
             text = stringResource(R.string.habitsAppWidgetConfigCreation_finish),
-            actionType = ActionType.MAIN
+            interactionType = InteractionType.MAIN
         )
     }
 }

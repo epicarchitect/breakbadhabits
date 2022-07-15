@@ -20,9 +20,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.viewmodel.WidgetsViewModel
-import breakbadhabits.android.compose.component.Card
-import breakbadhabits.android.compose.component.Text
-import breakbadhabits.android.compose.component.Title
+import breakbadhabits.android.compose.ui.Card
+import breakbadhabits.android.compose.ui.Text
+import breakbadhabits.android.compose.ui.Title
 
 @Composable
 fun HabitsAppWidgetsScreen(

@@ -12,7 +12,6 @@ import breakbadhabits.android.app.repository.HabitsRepository
 import breakbadhabits.android.app.repository.IdGenerator
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.AlertDialogManager
-import breakbadhabits.android.app.utils.NightModeManager
 import breakbadhabits.android.app.validator.HabitEventValidator
 import breakbadhabits.android.app.validator.HabitValidator
 import breakbadhabits.android.app.viewmodel.HabitAnalyzeViewModel
@@ -83,7 +82,6 @@ private fun Module.app() {
         Room.databaseBuilder(androidApplication(), MainDatabase::class.java, "main.db").build()
     }
     single { IdGenerator(androidApplication()) }
-    single(createdAtStart = true) { NightModeManager(androidApplication()) }
 }
 
 private fun Module.appWidgets() {
