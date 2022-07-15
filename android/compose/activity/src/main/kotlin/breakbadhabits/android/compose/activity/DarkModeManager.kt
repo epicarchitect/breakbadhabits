@@ -14,7 +14,7 @@ class DarkModeManager(context: Context) {
         preferences.getInt(
             KEY_MODE,
             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        ).toThemeMode()
+        ).toDarkMode()
     )
 
     val mode: State<DarkMode> = mutableMode
@@ -31,7 +31,7 @@ class DarkModeManager(context: Context) {
         AppCompatDelegate.setDefaultNightMode(mutableMode.value.toAppCompatDelegateInt())
     }
 
-    private fun Int.toThemeMode() = when (this) {
+    private fun Int.toDarkMode() = when (this) {
         AppCompatDelegate.MODE_NIGHT_YES -> DarkMode.ENABLED
         AppCompatDelegate.MODE_NIGHT_NO -> DarkMode.DISABLED
         else -> DarkMode.SYSTEM

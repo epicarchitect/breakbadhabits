@@ -1,4 +1,4 @@
-package breakbadhabits.android.compose
+package breakbadhabits.android.compose.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
