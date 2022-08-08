@@ -34,13 +34,13 @@ class DarkModeManager(context: Context) {
     private fun Int.toDarkMode() = when (this) {
         AppCompatDelegate.MODE_NIGHT_YES -> DarkMode.ENABLED
         AppCompatDelegate.MODE_NIGHT_NO -> DarkMode.DISABLED
-        else -> DarkMode.SYSTEM
+        else -> DarkMode.BY_SYSTEM
     }
 
     private fun DarkMode.toAppCompatDelegateInt() = when (this) {
         DarkMode.ENABLED -> AppCompatDelegate.MODE_NIGHT_YES
         DarkMode.DISABLED -> AppCompatDelegate.MODE_NIGHT_NO
-        DarkMode.SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        DarkMode.BY_SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     }
 
     companion object {

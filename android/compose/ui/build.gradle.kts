@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-    api("androidx.compose.foundation:foundation:1.1.1")
-    implementation("androidx.compose.material:material:1.1.1")
-    implementation("androidx.compose.material:material-icons-extended:1.1.1")
-    implementation("io.github.boguszpawlowski.composecalendar:composecalendar:0.4.2")
+    api("androidx.compose.foundation:foundation:1.2.0")
+    implementation("androidx.compose.material:material:1.2.0")
+    implementation("androidx.compose.material:material-icons-extended:1.2.0")
+    implementation("io.github.boguszpawlowski.composecalendar:composecalendar:0.6.0")
 }

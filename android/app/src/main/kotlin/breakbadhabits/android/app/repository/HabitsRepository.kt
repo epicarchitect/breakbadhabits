@@ -1,6 +1,6 @@
 package breakbadhabits.android.app.repository
 
-import breakbadhabits.android.app.coroutines.flow.mapItems
+import breakbadhabits.coroutines.flow.mapItems
 import breakbadhabits.android.app.data.HabitData
 import breakbadhabits.android.app.data.HabitEventData
 import breakbadhabits.android.app.database.HabitEntity

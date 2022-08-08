@@ -2,7 +2,7 @@ package breakbadhabits.android.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.android.app.coroutines.flow.mapItems
+import breakbadhabits.coroutines.flow.mapItems
 import breakbadhabits.android.app.data.HabitData
 import breakbadhabits.android.app.data.HabitsAppWidgetData
 import breakbadhabits.android.app.repository.AppWidgetsRepository

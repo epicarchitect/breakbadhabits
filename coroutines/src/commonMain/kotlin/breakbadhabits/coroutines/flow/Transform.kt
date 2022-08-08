@@ -1,4 +1,4 @@
-package breakbadhabits.android.app.coroutines.flow
+package breakbadhabits.coroutines.flow
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

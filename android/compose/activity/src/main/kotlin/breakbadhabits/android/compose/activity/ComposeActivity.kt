@@ -34,7 +34,7 @@ abstract class ComposeActivity : AppCompatActivity() {
                     isDarkTheme = when (darkModeManager.mode.value) {
                         DarkMode.ENABLED -> true
                         DarkMode.DISABLED -> false
-                        DarkMode.SYSTEM -> isSystemInDarkTheme()
+                        DarkMode.BY_SYSTEM -> isSystemInDarkTheme()
                     }
                 ) {
                     Content()

@@ -8,9 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -54,9 +51,9 @@ fun AppSettingsScreen(
 
         RadioButton(
             text = stringResource(R.string.appSettings_themeSelection_systemTheme),
-            selected = darkMode == DarkMode.SYSTEM,
+            selected = darkMode == DarkMode.BY_SYSTEM,
             onSelect = {
-                darkModeManager.changeMode(DarkMode.SYSTEM)
+                darkModeManager.changeMode(DarkMode.BY_SYSTEM)
             }
         )
 
