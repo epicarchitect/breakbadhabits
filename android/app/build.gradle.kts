@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":epic-store-compose"))
     implementation(project(":android:compose:ui"))
     implementation(project(":android:compose:activity"))
     implementation(project(":coroutines"))

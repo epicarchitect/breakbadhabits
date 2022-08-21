@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,21 +23,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.createHabitAbstinenceTimeFeature
+import breakbadhabits.android.app.createHabitIconIdFeature
+import breakbadhabits.android.app.createHabitIdsFeature
+import breakbadhabits.android.app.createHabitNameFeature
+import epicarchitect.epicstore.compose.EpicStore
+import epicarchitect.epicstore.compose.LocalEpicStore
 import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
-import breakbadhabits.android.app.utils.TikTik
-import breakbadhabits.android.app.viewmodel.HabitsViewModel
-import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Icon
 import breakbadhabits.android.compose.ui.IconButton
+import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.Title
+import epicarchitect.epicstore.getOrSet
+
 
 @Composable
 fun HabitsScreen(
-    habitsViewModel: HabitsViewModel,
     habitIconResources: HabitIconResources,
     abstinenceTimeFormatter: AbstinenceTimeFormatter,
     openHabit: (habitId: Int) -> Unit,
@@ -44,8 +50,9 @@ fun HabitsScreen(
     openHabitCreation: () -> Unit,
     openSettings: () -> Unit
 ) {
-    val habitState by habitsViewModel.habitsState.collectAsState()
-    val habits = habitState
+    val epicStore = LocalEpicStore.current
+    val habitIdsFeature = epicStore.getOrSet { createHabitIdsFeature() }
+    val habitIds by habitIdsFeature.state.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -72,36 +79,45 @@ fun HabitsScreen(
                 }
             }
 
-            if (habits != null) {
-                if (habits.isEmpty()) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(16.dp)
-                            .align(Alignment.CenterHorizontally),
-                        textAlign = TextAlign.Center,
-                        text = stringResource(R.string.habits_empty)
-                    )
-                } else {
-                    LazyColumn(
-                        contentPadding = PaddingValues(
-                            start = 16.dp,
-                            end = 16.dp,
-                            top = 4.dp,
-                            bottom = 100.dp
-                        ),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(habits) { habit ->
+            LaunchedEffect(habitIds.size) {
+                epicStore.clearIfNeeded()
+            }
+
+            if (habitIds.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    text = stringResource(R.string.habits_empty)
+                )
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 4.dp,
+                        bottom = 100.dp
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(habitIds.take(1), key = { it }) { habitId ->
+                        EpicStore(
+                            key = "habitItem:$habitId",
+                            isClearNeeded = {
+                                habitIds.find { it == habitId } == null
+                            }
+                        ) {
                             HabitItem(
-                                habit = habit,
+                                habitId = habitId,
                                 habitIconResources = habitIconResources,
                                 abstinenceTimeFormatter = abstinenceTimeFormatter,
                                 onItemClick = {
-                                    openHabit(habit.habitId)
+                                    openHabit(habitId)
                                 },
                                 onResetClick = {
-                                    openHabitEventCreation(habit.habitId)
+                                    openHabitEventCreation(habitId)
                                 }
                             )
                         }
@@ -117,7 +133,7 @@ fun HabitsScreen(
             onClick = {
                 openHabitCreation()
             },
-            text =  stringResource(R.string.habits_newHabit),
+            text = stringResource(R.string.habits_newHabit),
             interactionType = InteractionType.MAIN
         )
     }
@@ -125,14 +141,20 @@ fun HabitsScreen(
 
 @Composable
 private fun HabitItem(
-    habit: HabitsViewModel.Habit,
+    habitId: Int,
     habitIconResources: HabitIconResources,
     abstinenceTimeFormatter: AbstinenceTimeFormatter,
     onItemClick: () -> Unit,
     onResetClick: () -> Unit
 ) {
-    val lastHabitEvent by habit.lastHabitEvent.collectAsState(initial = null)
-    val currentTime by TikTik.everySecond().collectAsState(initial = System.currentTimeMillis())
+    val epicStore = LocalEpicStore.current
+    val habitNameFeature = epicStore.getOrSet { createHabitNameFeature(habitId) }
+    val habitIconIdFeature = epicStore.getOrSet { createHabitIconIdFeature(habitId) }
+    val habitAbstinenceTimeFeature = epicStore.getOrSet { createHabitAbstinenceTimeFeature(habitId) }
+
+    val habitName by habitNameFeature.state.collectAsState()
+    val habitIconId by habitIconIdFeature.state.collectAsState()
+    val habitAbstinenceTime by habitAbstinenceTimeFeature.state.collectAsState()
 
     Card(
         modifier = Modifier.fillMaxWidth()
@@ -152,11 +174,15 @@ private fun HabitItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(habitIconResources[habit.habitIconId]),
+                        painter = painterResource(
+                            habitIconId?.let {
+                                habitIconResources[it]
+                            } ?: R.drawable.ic_awesome
+                        ),
                     )
                     Title(
                         modifier = Modifier.padding(start = 12.dp),
-                        text = habit.habitName
+                        text = habitName ?: ""
                     )
                 }
                 Row(
@@ -168,9 +194,9 @@ private fun HabitItem(
                     )
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
-                        text = when (val event = lastHabitEvent) {
-                            null ->  stringResource(R.string.habits_noEvents)
-                            else -> abstinenceTimeFormatter.format(currentTime - event.time)
+                        text = when (val time = habitAbstinenceTime) {
+                            null -> stringResource(R.string.habits_noEvents)
+                            else -> abstinenceTimeFormatter.format(time)
                         }
                     )
                 }
