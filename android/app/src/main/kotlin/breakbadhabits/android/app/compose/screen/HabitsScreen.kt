@@ -1,5 +1,6 @@
 package breakbadhabits.android.app.compose.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,9 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,10 +27,9 @@ import breakbadhabits.android.app.createHabitAbstinenceTimeFeature
 import breakbadhabits.android.app.createHabitIconIdFeature
 import breakbadhabits.android.app.createHabitIdsFeature
 import breakbadhabits.android.app.createHabitNameFeature
-import epicarchitect.epicstore.compose.EpicStore
-import epicarchitect.epicstore.compose.LocalEpicStore
 import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
+import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Icon
@@ -38,20 +37,18 @@ import breakbadhabits.android.compose.ui.IconButton
 import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.Title
-import epicarchitect.epicstore.getOrSet
+import epicarchitect.epicstore.compose.epicStoreItems
+import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 
 
 @Composable
 fun HabitsScreen(
-    habitIconResources: HabitIconResources,
-    abstinenceTimeFormatter: AbstinenceTimeFormatter,
     openHabit: (habitId: Int) -> Unit,
     openHabitEventCreation: (habitId: Int) -> Unit,
     openHabitCreation: () -> Unit,
     openSettings: () -> Unit
 ) {
-    val epicStore = LocalEpicStore.current
-    val habitIdsFeature = epicStore.getOrSet { createHabitIdsFeature() }
+    val habitIdsFeature = rememberEpicStoreEntry { createHabitIdsFeature() }
     val habitIds by habitIdsFeature.state.collectAsState()
 
     Box(
@@ -66,8 +63,7 @@ fun HabitsScreen(
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
             ) {
                 Title(
-                    modifier = Modifier
-                        .align(Alignment.Center),
+                    modifier = Modifier.align(Alignment.Center),
                     text = stringResource(R.string.app_name)
                 )
 
@@ -77,10 +73,6 @@ fun HabitsScreen(
                 ) {
                     Icon(painterResource(R.drawable.ic_settings))
                 }
-            }
-
-            LaunchedEffect(habitIds.size) {
-                epicStore.clearIfNeeded()
             }
 
             if (habitIds.isEmpty()) {
@@ -102,25 +94,16 @@ fun HabitsScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(habitIds.take(1), key = { it }) { habitId ->
-                        EpicStore(
-                            key = "habitItem:$habitId",
-                            isClearNeeded = {
-                                habitIds.find { it == habitId } == null
+                    epicStoreItems(habitIds, key = { it }) { habitId ->
+                        HabitItem(
+                            habitId = habitId,
+                            onItemClick = {
+                                openHabit(habitId)
+                            },
+                            onResetClick = {
+                                openHabitEventCreation(habitId)
                             }
-                        ) {
-                            HabitItem(
-                                habitId = habitId,
-                                habitIconResources = habitIconResources,
-                                abstinenceTimeFormatter = abstinenceTimeFormatter,
-                                onItemClick = {
-                                    openHabit(habitId)
-                                },
-                                onResetClick = {
-                                    openHabitEventCreation(habitId)
-                                }
-                            )
-                        }
+                        )
                     }
                 }
             }
@@ -139,25 +122,33 @@ fun HabitsScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HabitItem(
+private fun LazyItemScope.HabitItem(
     habitId: Int,
-    habitIconResources: HabitIconResources,
-    abstinenceTimeFormatter: AbstinenceTimeFormatter,
     onItemClick: () -> Unit,
     onResetClick: () -> Unit
 ) {
-    val epicStore = LocalEpicStore.current
-    val habitNameFeature = epicStore.getOrSet { createHabitNameFeature(habitId) }
-    val habitIconIdFeature = epicStore.getOrSet { createHabitIconIdFeature(habitId) }
-    val habitAbstinenceTimeFeature = epicStore.getOrSet { createHabitAbstinenceTimeFeature(habitId) }
+    val habitIconResources: HabitIconResources = get()
+    val abstinenceTimeFormatter: AbstinenceTimeFormatter = get()
+    val habitNameFeature = rememberEpicStoreEntry {
+        createHabitNameFeature(habitId)
+    }
+    val habitIconIdFeature = rememberEpicStoreEntry {
+        createHabitIconIdFeature(habitId)
+    }
+    val habitAbstinenceTimeFeature = rememberEpicStoreEntry {
+        createHabitAbstinenceTimeFeature(habitId)
+    }
 
     val habitName by habitNameFeature.state.collectAsState()
     val habitIconId by habitIconIdFeature.state.collectAsState()
     val habitAbstinenceTime by habitAbstinenceTimeFeature.state.collectAsState()
 
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateItemPlacement()
     ) {
         Box(
             modifier = Modifier.clickable { onItemClick() },

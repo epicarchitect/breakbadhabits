@@ -1,8 +1,8 @@
 package breakbadhabits.android.app.repository
 
 import breakbadhabits.coroutines.flow.mapItems
-import breakbadhabits.android.app.data.HabitData
-import breakbadhabits.android.app.data.HabitEventData
+import breakbadhabits.android.app.data.Habit
+import breakbadhabits.android.app.data.HabitEvent
 import breakbadhabits.android.app.database.HabitEntity
 import breakbadhabits.android.app.database.HabitEventEntity
 import breakbadhabits.android.app.database.MainDatabase
@@ -112,11 +112,11 @@ class HabitsRepository(
 
     suspend fun habitNameExists(habitName: String) = habitDao.countEntitiesByName(habitName) > 0
 
-    private fun HabitEntity.toHabit() = HabitData(
+    private fun HabitEntity.toHabit() = Habit(
         id, name, iconId
     )
 
-    private fun HabitEventEntity.toHabitEvent() = HabitEventData(
+    private fun HabitEventEntity.toHabitEvent() = HabitEvent(
         id, habitId, time, comment
     )
 }

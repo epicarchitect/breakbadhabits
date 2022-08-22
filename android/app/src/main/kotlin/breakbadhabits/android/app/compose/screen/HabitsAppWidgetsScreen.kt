@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,22 +18,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.viewmodel.WidgetsViewModel
+import breakbadhabits.android.app.createHabitNameFeature
+import breakbadhabits.android.app.createHabitsAppWidgetConfigIdsFeature
+import breakbadhabits.android.app.createHabitsAppWidgetHabitIdsFeature
+import breakbadhabits.android.app.createHabitsAppWidgetTitleFeature
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.Title
+import epicarchitect.epicstore.compose.epicStoreItems
+import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 
 @Composable
 fun HabitsAppWidgetsScreen(
-    widgetsViewModel: WidgetsViewModel,
     openHabitAppWidgetConfigEditing: (configId: Int) -> Unit
 ) {
-    val widgets by widgetsViewModel.widgets.collectAsState()
+    val habitsAppWidgetConfigIdsFeature = rememberEpicStoreEntry {
+        createHabitsAppWidgetConfigIdsFeature()
+    }
+
+    val configIds by habitsAppWidgetConfigIdsFeature.state.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        if (widgets.isEmpty()) {
+        if (configIds.isEmpty()) {
             Text(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -62,11 +69,11 @@ fun HabitsAppWidgetsScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(widgets) { item ->
+                    epicStoreItems(configIds) {configid ->
                         WidgetConfigItem(
-                            item,
+                            configId = configid,
                             onClick = {
-                                openHabitAppWidgetConfigEditing(item.widgetConfig.id)
+                                openHabitAppWidgetConfigEditing(configid)
                             }
                         )
                     }
@@ -78,16 +85,29 @@ fun HabitsAppWidgetsScreen(
 
 @Composable
 fun WidgetConfigItem(
-    item: WidgetsViewModel.WidgetItem,
+    configId: Int,
     onClick: () -> Unit
 ) {
+    val habitsAppWidgetTitleFeature = rememberEpicStoreEntry {
+        createHabitsAppWidgetTitleFeature(configId)
+    }
+
+    val habitsAppWidgetHabitIdsFeature = rememberEpicStoreEntry {
+        createHabitsAppWidgetHabitIdsFeature(configId)
+    }
+
+    val title by habitsAppWidgetTitleFeature.state.collectAsState()
+    val habitIds by habitsAppWidgetHabitIdsFeature.state.collectAsState()
+
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().clickable {
-                onClick()
-            }
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable {
+                    onClick()
+                }
         ) {
             Title(
                 modifier = Modifier.padding(
@@ -95,9 +115,7 @@ fun WidgetConfigItem(
                     top = 16.dp,
                     end = 54.dp
                 ),
-                text = item.widgetConfig.title.ifEmpty {
-                    "#${item.widgetConfig.appWidgetId}"
-                }
+                text = title.orEmpty().ifEmpty { "#$configId" }
             )
 
             Text(
@@ -107,9 +125,13 @@ fun WidgetConfigItem(
                     end = 16.dp
                 ),
                 text = buildString {
-                    item.habits.forEachIndexed { index, habit ->
-                        append(habit.name)
-                        if (index != item.habits.lastIndex) {
+                    habitIds?.forEachIndexed { index, habitId ->
+                        val habitNameFeature = rememberEpicStoreEntry {
+                            createHabitNameFeature(habitId)
+                        }
+                        val habitName by habitNameFeature.state.collectAsState()
+                        append(habitName)
+                        if (index != habitIds?.lastIndex) {
                             appendLine()
                         }
                     }

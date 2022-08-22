@@ -2,7 +2,7 @@ package breakbadhabits.android.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.android.app.data.HabitEventData
+import breakbadhabits.android.app.data.HabitEvent
 import breakbadhabits.android.app.repository.HabitsRepository
 import breakbadhabits.android.app.time.copy
 import breakbadhabits.android.app.time.setEndDayValues
@@ -27,7 +27,7 @@ class HabitAnalyzeViewModel(
         SharingStarted.WhileSubscribed(),
         emptyList()
     )
-    val filteredEventsStateProcessFlow = MutableStateFlow<List<HabitEventData>>(emptyList())
+    val filteredEventsStateProcessFlow = MutableStateFlow<List<HabitEvent>>(emptyList())
     val timeIntervalsStateFlow = MutableStateFlow<List<TimeInterval>>(emptyList())
     val selectedTimeIntervalStateFlow = MutableStateFlow<TimeInterval?>(null)
 

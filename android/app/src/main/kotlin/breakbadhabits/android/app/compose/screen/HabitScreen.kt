@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.data.HabitEventData
+import breakbadhabits.android.app.data.HabitEvent
 import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
@@ -329,7 +329,7 @@ fun HabitScreen(
 }
 
 private fun calculateAbstinenceTimes(
-    habitEvents: List<HabitEventData>,
+    habitEvents: List<HabitEvent>,
     currentTime: Long
 ): List<Long> {
     val points = mutableListOf<Long>()

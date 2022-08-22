@@ -4,9 +4,6 @@ package breakbadhabits.android.app.activity
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.compose.screen.AppSettingsScreen
@@ -19,10 +16,13 @@ import breakbadhabits.android.app.compose.screen.HabitScreen
 import breakbadhabits.android.app.compose.screen.HabitsAppWidgetConfigEditingScreen
 import breakbadhabits.android.app.compose.screen.HabitsAppWidgetsScreen
 import breakbadhabits.android.app.compose.screen.HabitsScreen
-import epicarchitect.epicstore.compose.RootEpicStore
 import breakbadhabits.android.app.utils.composeViewModel
 import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.activity.ComposeActivity
+import epicarchitect.epicstore.compose.RootEpicStore
+import epicarchitect.epicstore.navigation.compose.EpicHavHost
+import epicarchitect.epicstore.navigation.compose.LocalNavController
+import epicarchitect.epicstore.navigation.compose.epicStoreComposable
 
 class MainActivity : ComposeActivity() {
 
@@ -31,13 +31,11 @@ class MainActivity : ComposeActivity() {
     @Composable
     override fun Content() {
         RootEpicStore {
-            val navController = rememberNavController()
-
-            NavHost(
-                navController = navController,
+            EpicHavHost(
                 startDestination = "habits"
             ) {
-                composable(route = "appSettings") {
+                epicStoreComposable(route = "appSettings") {
+                    val navController = LocalNavController.current
                     AppSettingsScreen(
                         openWidgetSettings = {
                             navController.navigate("habitsAppWidgets")
@@ -45,40 +43,37 @@ class MainActivity : ComposeActivity() {
                     )
                 }
 
-                composable(route = "habitCreation") {
+                epicStoreComposable(route = "habitCreation") {
+                    val navController = LocalNavController.current
                     HabitCreationScreen(
-                        habitCreationViewModel = composeViewModel(),
-                        dateTimeFormatter = get(),
-                        habitIconResources = get(),
                         onFinished = {
                             navController.popBackStack()
                         }
                     )
                 }
 
-                composable(
+                epicStoreComposable(
                     route = "habitEditing?habitId={habitId}",
                     arguments = listOf(navArgument("habitId") { type = NavType.IntType })
                 ) {
+                    val navController = LocalNavController.current
                     val habitId = it.arguments!!.getInt("habitId")
                     HabitEditingScreen(
-                        habitEditingViewModel = composeViewModel(habitId),
-                        habitIconResources = get(),
-                        alertDialogManager = get(),
+                        habitId = habitId,
                         onFinished = {
                             navController.popBackStack()
                         },
-                        habitDeletionViewModel = composeViewModel(habitId),
                         onHabitDeleted = {
                             navController.popBackStack(route = "habits", inclusive = false)
                         }
                     )
                 }
 
-                composable(
+                epicStoreComposable(
                     route = "habitEventCreation?habitId={habitId}",
                     arguments = listOf(navArgument("habitId") { type = NavType.IntType })
                 ) {
+                    val navController = LocalNavController.current
                     val habitId = it.arguments!!.getInt("habitId")
                     HabitEventCreationScreen(
                         habitViewModel = composeViewModel(habitId),
@@ -90,10 +85,11 @@ class MainActivity : ComposeActivity() {
                     )
                 }
 
-                composable(
+                epicStoreComposable(
                     route = "habitEventEditing?habitEventId={habitEventId}",
                     arguments = listOf(navArgument("habitEventId") { type = NavType.IntType })
                 ) {
+                    val navController = LocalNavController.current
                     val habitEventId = it.arguments!!.getInt("habitEventId")
                     HabitEventEditingScreen(
                         habitEventEditingViewModel = composeViewModel(habitEventId),
@@ -108,10 +104,11 @@ class MainActivity : ComposeActivity() {
                     )
                 }
 
-                composable(
+                epicStoreComposable(
                     route = "habitsAppWidgetConfigEditing?configId={configId}",
                     arguments = listOf(navArgument("configId") { type = NavType.IntType })
                 ) {
+                    val navController = LocalNavController.current
                     val configId = it.arguments!!.getInt("configId")
                     HabitsAppWidgetConfigEditingScreen(
                         habitsAppWidgetConfigEditingViewModel = composeViewModel(configId),
@@ -122,19 +119,20 @@ class MainActivity : ComposeActivity() {
                     )
                 }
 
-                composable("habitsAppWidgets") {
+                epicStoreComposable(route = "habitsAppWidgets") {
+                    val navController = LocalNavController.current
                     HabitsAppWidgetsScreen(
-                        widgetsViewModel = composeViewModel(),
                         openHabitAppWidgetConfigEditing = { configId ->
                             navController.navigate("habitsAppWidgetConfigEditing?configId=$configId")
                         }
                     )
                 }
 
-                composable(
+                epicStoreComposable(
                     route = "habit?habitId={habitId}",
                     arguments = listOf(navArgument("habitId") { type = NavType.IntType })
                 ) {
+                    val navController = LocalNavController.current
                     val habitId = it.arguments!!.getInt("habitId")
                     HabitScreen(
                         habitAnalyzeViewModel = composeViewModel(habitId),
@@ -158,10 +156,11 @@ class MainActivity : ComposeActivity() {
                     )
                 }
 
-                composable(
+                epicStoreComposable(
                     route = "habitEvents?habitId={habitId}",
                     arguments = listOf(navArgument("habitId") { type = NavType.IntType })
                 ) {
+                    val navController = LocalNavController.current
                     val habitId = it.arguments!!.getInt("habitId")
                     HabitEventsScreen(
                         habitViewModel = composeViewModel(habitId),
@@ -174,10 +173,9 @@ class MainActivity : ComposeActivity() {
                     )
                 }
 
-                composable("habits") {
+                epicStoreComposable(route = "habits") {
+                    val navController = LocalNavController.current
                     HabitsScreen(
-                        habitIconResources = get(),
-                        abstinenceTimeFormatter = get(),
                         openHabit = { habitId ->
                             navController.navigate("habit?habitId=$habitId")
                         },

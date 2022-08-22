@@ -16,7 +16,7 @@ class EpicStore(
         }
 
         if (isClearNeeded()) {
-            map.forEach(doBeforeClear)
+            map.forEach { doBeforeClear(it.key, it.value) }
             map.clear()
             doAfterClear()
         }

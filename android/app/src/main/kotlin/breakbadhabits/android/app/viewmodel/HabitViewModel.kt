@@ -2,7 +2,7 @@ package breakbadhabits.android.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.android.app.data.HabitEventData
+import breakbadhabits.android.app.data.HabitEvent
 import breakbadhabits.android.app.repository.HabitsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +33,7 @@ class HabitViewModel(
     data class Habit(
         val name: String,
         val iconId: Int,
-        val lastHabitEvent: Flow<HabitEventData?>
+        val lastHabitEvent: Flow<HabitEvent?>
     )
 
     sealed class HabitState {

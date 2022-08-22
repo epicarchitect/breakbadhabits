@@ -45,14 +45,13 @@ android {
 }
 
 dependencies {
-    implementation(project(":epic-store-compose"))
+    implementation(project(":epic-store-navigation-compose"))
     implementation(project(":android:compose:ui"))
     implementation(project(":android:compose:activity"))
     implementation(project(":coroutines"))
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.work:work-runtime-ktx:2.7.1")
-    implementation("androidx.navigation:navigation-compose:2.5.1")
 
     implementation("androidx.room:room-runtime:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")

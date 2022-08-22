@@ -15,17 +15,13 @@ import breakbadhabits.android.app.utils.AlertDialogManager
 import breakbadhabits.android.app.validator.HabitEventValidator
 import breakbadhabits.android.app.validator.HabitValidator
 import breakbadhabits.android.app.viewmodel.HabitAnalyzeViewModel
-import breakbadhabits.android.app.viewmodel.HabitCreationViewModel
 import breakbadhabits.android.app.viewmodel.HabitDeletionViewModel
-import breakbadhabits.android.app.viewmodel.HabitEditingViewModel
 import breakbadhabits.android.app.viewmodel.HabitEventCreationViewModel
 import breakbadhabits.android.app.viewmodel.HabitEventEditingViewModel
 import breakbadhabits.android.app.viewmodel.HabitEventsViewModel
 import breakbadhabits.android.app.viewmodel.HabitViewModel
 import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigCreationViewModel
 import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigEditingViewModel
-import breakbadhabits.android.app.viewmodel.HabitsViewModel
-import breakbadhabits.android.app.viewmodel.WidgetsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -88,7 +84,6 @@ private fun Module.appWidgets() {
     single { AppWidgetsRepository(get(), get()) }
     factory { (appWidgetId: Int) -> HabitsAppWidgetConfigCreationViewModel(get(), get(), appWidgetId) }
     factory { (configId: Int) -> HabitsAppWidgetConfigEditingViewModel(get(), get(), configId) }
-    factory { WidgetsViewModel(get(), get()) }
 }
 
 private fun Module.habits() {
@@ -96,13 +91,10 @@ private fun Module.habits() {
     single { HabitsRepository(get(), get()) }
     factory { HabitValidator(get<HabitsRepository>()::habitNameExists, get<BreakBadHabitsAppConfig>().maxHabitNameLength) }
     factory { HabitEventValidator { System.currentTimeMillis() } }
-    factory { HabitCreationViewModel(get(), get(), get()) }
-    factory { HabitsViewModel(get()) }
     factory { (habitId: Int) -> HabitViewModel(get(), habitId) }
     factory { (habitId: Int) -> HabitAnalyzeViewModel(get(), habitId) }
     factory { (habitId: Int) -> HabitEventCreationViewModel(get(), get(), habitId) }
     factory { (habitId: Int) -> HabitEventsViewModel(get(), habitId) }
-    factory { (habitId: Int) -> HabitEditingViewModel(get(), get(), habitId) }
     factory { (habitId: Int) -> HabitDeletionViewModel(get(), habitId) }
     factory { (habitEventId: Int) -> HabitEventEditingViewModel(get(), get(), habitEventId) }
 }

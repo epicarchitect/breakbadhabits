@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "epicarchitect.epicstore.compose"
+    namespace = "epicarchitect.epicstore.navigation.compose"
     compileSdk = 33
 
     defaultConfig {
@@ -17,6 +17,6 @@ android {
 }
 
 dependencies {
-    api(project(":epic-store"))
-    api("androidx.compose.foundation:foundation:1.2.1")
+    api(project(":epic-store-compose"))
+    api("androidx.navigation:navigation-compose:2.5.1")
 }

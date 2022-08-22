@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.data.HabitEventData
+import breakbadhabits.android.app.data.HabitEvent
 import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
 import breakbadhabits.android.app.repository.AppWidgetsRepository
 import breakbadhabits.android.app.repository.HabitsRepository
@@ -76,6 +76,6 @@ class HabitsAppWidgetRemoteViewsFactory(
         val habitId: Int,
         val habitName: String,
         val habitIconId: Int,
-        val lastHabitEvent: HabitEventData?
+        val lastHabitEvent: HabitEvent?
     )
 }

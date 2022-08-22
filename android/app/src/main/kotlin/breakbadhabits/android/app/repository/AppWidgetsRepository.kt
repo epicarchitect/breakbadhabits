@@ -1,7 +1,7 @@
 package breakbadhabits.android.app.repository
 
 import breakbadhabits.coroutines.flow.mapItems
-import breakbadhabits.android.app.data.HabitsAppWidgetData
+import breakbadhabits.android.app.data.HabitsAppWidgetConfig
 import breakbadhabits.android.app.database.HabitsAppWidgetConfigEntity
 import breakbadhabits.android.app.database.MainDatabase
 import kotlinx.coroutines.flow.map
@@ -21,7 +21,7 @@ class AppWidgetsRepository(
         habitIds: List<Int>
     ) {
         habitsAppWidgetConfigDao.insertEntity(
-            HabitsAppWidgetData(
+            HabitsAppWidgetConfig(
                 idGenerator.nextId(),
                 title,
                 appWidgetId,
@@ -55,7 +55,7 @@ class AppWidgetsRepository(
     fun habitsAppWidgetConfigListFlow() =
         habitsAppWidgetConfigDao.entityListFlow().mapItems { it.toHabitsAppWidgetConfig() }
 
-    private fun HabitsAppWidgetData.toHabitsAppWidgetConfigEntity() =
+    private fun HabitsAppWidgetConfig.toHabitsAppWidgetConfigEntity() =
         HabitsAppWidgetConfigEntity(
             id,
             title,
@@ -64,7 +64,7 @@ class AppWidgetsRepository(
         )
 
     private fun HabitsAppWidgetConfigEntity.toHabitsAppWidgetConfig() =
-        HabitsAppWidgetData(
+        HabitsAppWidgetConfig(
             id,
             title,
             appWidgetId,

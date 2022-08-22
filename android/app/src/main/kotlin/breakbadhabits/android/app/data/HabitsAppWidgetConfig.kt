@@ -1,6 +1,6 @@
 package breakbadhabits.android.app.data
 
-data class HabitsAppWidgetData(
+data class HabitsAppWidgetConfig(
     val id: Int,
     val title: String,
     val appWidgetId: Int,

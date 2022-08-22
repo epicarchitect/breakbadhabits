@@ -21,44 +21,70 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.createHabitDeletionFeature
+import breakbadhabits.android.app.createHabitIconSelectionFeature
+import breakbadhabits.android.app.createHabitNameInputFeature
+import breakbadhabits.android.app.createHabitUpdatingFeature
+import breakbadhabits.android.app.feature.HabitDeletionFeature
+import breakbadhabits.android.app.feature.HabitNameInputFeature
+import breakbadhabits.android.app.feature.HabitUpdatingFeature
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.AlertDialogManager
-import breakbadhabits.android.app.viewmodel.HabitDeletionViewModel
-import breakbadhabits.android.app.viewmodel.HabitEditingViewModel
-import breakbadhabits.android.compose.ui.InteractionType
+import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.ErrorText
 import breakbadhabits.android.compose.ui.IconData
 import breakbadhabits.android.compose.ui.IconsSelection
+import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.TextField
 import breakbadhabits.android.compose.ui.Title
+import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 
 @Composable
 fun HabitEditingScreen(
-    habitEditingViewModel: HabitEditingViewModel,
-    habitDeletionViewModel: HabitDeletionViewModel,
-    habitIconResources: HabitIconResources,
-    alertDialogManager: AlertDialogManager,
+    habitId: Int,
     onFinished: () -> Unit,
     onHabitDeleted: () -> Unit
 ) {
-    val habitName by habitEditingViewModel.habitNameStateFlow.collectAsState()
-    val selectedIcon by habitEditingViewModel.habitIconIdStateFlow.collectAsState()
-    val habitNameValidation by habitEditingViewModel.habitNameValidationStateFlow.collectAsState()
-    val habitUpdatingAllowed by habitEditingViewModel.habitUpdatingAllowedStateFlow.collectAsState()
-    val habitCreation by habitEditingViewModel.habitUpdatingStateFlow.collectAsState()
-    val habitDeletion by habitDeletionViewModel.habitDeleteStateFlow.collectAsState()
+    val habitIconResources: HabitIconResources = get()
+    val alertDialogManager: AlertDialogManager = get()
+    val habitDeletionFeature = rememberEpicStoreEntry {
+        createHabitDeletionFeature(habitId)
+    }
+    val habitNameInputFeature = rememberEpicStoreEntry {
+        createHabitNameInputFeature(habitId)
+    }
+    val habitUpdatingFeature = rememberEpicStoreEntry {
+        createHabitUpdatingFeature(habitId)
+    }
+    val habitIconSelectionFeature = rememberEpicStoreEntry {
+        createHabitIconSelectionFeature(habitId)
+    }
+
+    val habitName by habitNameInputFeature.input.collectAsState()
+    val habitNameValidation by habitNameInputFeature.validation.collectAsState()
+    val selectedIcon by habitIconSelectionFeature.selection.collectAsState()
+    val habitUpdating by habitUpdatingFeature.state.collectAsState()
+    val habitDeletion by habitDeletionFeature.state.collectAsState()
+
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
-    if (habitCreation is HabitEditingViewModel.HabitUpdatingState.Executed) {
+    val habitNameValidationResult =
+        (habitNameValidation as? HabitNameInputFeature.ValidationState.Executed)?.result
+
+    val habitUpdatingAllowed = (habitNameInputFeature.initialInput != habitName
+            || habitIconSelectionFeature.initialValue != selectedIcon)
+            && habitNameValidationResult is HabitNameInputFeature.ValidationResult.Valid
+
+    if (habitUpdating is HabitUpdatingFeature.State.Executed) {
         LaunchedEffect(true) {
             onFinished()
         }
     }
 
-    if (habitDeletion is HabitDeletionViewModel.HabitDeleteState.Executed) {
+    if (habitDeletion is HabitDeletionFeature.State.Executed) {
         LaunchedEffect(true) {
             onHabitDeleted()
         }
@@ -91,30 +117,31 @@ fun HabitEditingScreen(
                     focusManager.clearFocus()
                 }
             ),
-            onValueChange = {
-                habitEditingViewModel.updateHabitName(it)
-            },
+            onValueChange = habitNameInputFeature::changeInput,
             label = stringResource(R.string.habitEditing_habitName),
-            isError = habitNameValidation is HabitEditingViewModel.HabitNameValidationState.Executed
-                    && (habitNameValidation as? HabitEditingViewModel.HabitNameValidationState.Executed)
-                ?.result !is HabitEditingViewModel.HabitNameValidationResult.Valid
+            isError = habitNameValidation is HabitNameInputFeature.ValidationState.Executed
+                    && (habitNameValidation as? HabitNameInputFeature.ValidationState.Executed)
+                ?.result !is HabitNameInputFeature.ValidationResult.Valid
         )
 
-        (habitNameValidation as? HabitEditingViewModel.HabitNameValidationState.Executed)?.let {
+        (habitNameValidation as? HabitNameInputFeature.ValidationState.Executed)?.let {
             when (it.result) {
-                is HabitEditingViewModel.HabitNameValidationResult.Empty -> {
+                is HabitNameInputFeature.ValidationResult.Empty -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEditing_habitNameValidation_empty),
                     )
                 }
-                is HabitEditingViewModel.HabitNameValidationResult.TooLong -> {
+                is HabitNameInputFeature.ValidationResult.TooLong -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                        text = stringResource(R.string.habitEditing_habitNameValidation_tooLong, it.result.maxHabitNameLength),
+                        text = stringResource(
+                            R.string.habitEditing_habitNameValidation_tooLong,
+                            it.result.maxHabitNameLength
+                        ),
                     )
                 }
-                is HabitEditingViewModel.HabitNameValidationResult.Used -> {
+                is HabitNameInputFeature.ValidationResult.Used -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEditing_habitNameValidation_used),
@@ -148,7 +175,7 @@ fun HabitEditingScreen(
                 )
             },
             onSelect = {
-                habitEditingViewModel.updateHabitIconId(it.id)
+                habitIconSelectionFeature.changeSelection(it.id)
             }
         )
 
@@ -167,7 +194,7 @@ fun HabitEditingScreen(
                     positiveButtonTitle = context.getString(R.string.yes),
                     negativeButtonTitle = context.getString(R.string.cancel),
                     onPositive = {
-                        habitDeletionViewModel.deleteHabit()
+                        habitDeletionFeature.startDeletion()
                     },
                 )
             },
@@ -182,7 +209,10 @@ fun HabitEditingScreen(
                 .padding(16.dp)
                 .align(Alignment.End),
             onClick = {
-                habitEditingViewModel.saveHabit()
+                habitUpdatingFeature.startUpdating(
+                    habitName!!,
+                    selectedIcon
+                )
             },
             enabled = habitUpdatingAllowed,
             text = stringResource(R.string.habitEditing_finish),

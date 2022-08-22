@@ -2,7 +2,7 @@ package breakbadhabits.android.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.android.app.data.HabitData
+import breakbadhabits.android.app.data.Habit
 import breakbadhabits.android.app.repository.HabitsRepository
 import breakbadhabits.android.app.validator.HabitEventValidator
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +35,7 @@ class HabitEventEditingViewModel(
     private val _habitEventUpdatingAllowedStateFlow = MutableStateFlow(false)
     val habitEventUpdatingAllowedStateFlow = _habitEventUpdatingAllowedStateFlow.asStateFlow()
 
-    val habitFlow = MutableStateFlow<HabitData?>(null)
+    val habitFlow = MutableStateFlow<Habit?>(null)
 
     private suspend fun isHabitEventUpdatingAllowed() =
             _eventTimeValidationStateFlow.value.let {
