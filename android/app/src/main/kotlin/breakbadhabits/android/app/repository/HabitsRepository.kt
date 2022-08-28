@@ -1,11 +1,11 @@
 package breakbadhabits.android.app.repository
 
-import breakbadhabits.coroutines.flow.mapItems
 import breakbadhabits.android.app.data.Habit
 import breakbadhabits.android.app.data.HabitEvent
 import breakbadhabits.android.app.database.HabitEntity
 import breakbadhabits.android.app.database.HabitEventEntity
 import breakbadhabits.android.app.database.MainDatabase
+import breakbadhabits.coroutines.flow.mapItems
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -45,7 +45,7 @@ class HabitsRepository(
 
     suspend fun deleteHabitEventById(habitEventId: Int) = habitEventDao.deleteEntityById(habitEventId)
 
-    fun habitEventByIdFlow(habitEventId: Int) = habitEventDao.entityByIdFlow(habitEventId)
+    fun habitEventByIdFlow(habitEventId: Int) = habitEventDao.entityByIdFlow(habitEventId).map { it?.toHabitEvent() }
 
     fun habitEventListByHabitIdFlow(habitId: Int) = habitEventDao.entityListByHabitIdFlow(habitId).mapItems { it.toHabitEvent() }
 

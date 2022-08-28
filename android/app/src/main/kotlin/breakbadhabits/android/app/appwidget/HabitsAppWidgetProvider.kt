@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.RemoteViews
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.repository.AppWidgetsRepository
-import breakbadhabits.android.compose.activity.DarkModeManager
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.GlobalContext
 

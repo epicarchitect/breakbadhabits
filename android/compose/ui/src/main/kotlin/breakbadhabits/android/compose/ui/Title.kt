@@ -3,7 +3,6 @@ package breakbadhabits.android.compose.ui
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import breakbadhabits.android.compose.ui.Text
 
 @Composable
 fun Title(

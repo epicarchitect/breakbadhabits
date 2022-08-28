@@ -21,9 +21,9 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.viewmodel.HabitEventCreationViewModel
 import breakbadhabits.android.app.viewmodel.HabitViewModel
-import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.ErrorText
+import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.TextField
 import breakbadhabits.android.compose.ui.Title
@@ -33,7 +33,7 @@ import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.Calendar
+import java.util.*
 
 @Composable
 fun HabitEventCreationScreen(

@@ -1,19 +1,22 @@
 package breakbadhabits.android.app.feature
 
 import breakbadhabits.android.app.repository.HabitsRepository
+import breakbadhabits.android.app.time.monthEquals
+import breakbadhabits.coroutines.flow.mapItems
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import java.util.*
 
-class HabitIconIdFeature(
+class HabitEventTimesFeature(
     coroutineScope: CoroutineScope,
     habitsRepository: HabitsRepository,
     habitId: Int
 ) {
 
-    val state = habitsRepository.habitByIdFlow(habitId).map { habit ->
-        habit?.iconId
-    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), null)
+    val state = habitsRepository.habitEventListByHabitIdFlow(habitId).mapItems {
+        it.time
+    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), emptyList())
 
 }

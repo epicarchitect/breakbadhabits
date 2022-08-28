@@ -28,20 +28,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-data class HistogramState(
-    val items: List<Item>
-) {
-    data class Item(
-        val id: Int,
-        val value: Float,
-        val formattedValue: String
-    )
-}
-
 @Composable
 fun Histogram(
     modifier: Modifier = Modifier,
-    state: HistogramState,
+    values: List<Long>,
+    valueFormatter: (Long) -> String = Long::toString,
     barPadding: Dp = 12.dp,
     startPadding: Dp = 12.dp,
     endPadding: Dp = 12.dp,
@@ -63,7 +54,7 @@ fun Histogram(
             boxSize = it
         }
     ) {
-        val visibleBarCount = state.items.size.let {
+        val visibleBarCount = values.size.let {
             if (it > maxVisibleBarCount) maxVisibleBarCount else it
         }
 
@@ -74,7 +65,7 @@ fun Histogram(
         }
 
         val canvasWidth = with(LocalDensity.current) {
-            (barWidthPx * state.items.size + (state.items.size - 1) * barPaddingPx + startPaddingPx + endPaddingPx).toDp()
+            (barWidthPx * values.size + (values.size - 1) * barPaddingPx + startPaddingPx + endPaddingPx).toDp()
         }
 
         Canvas(
@@ -98,14 +89,14 @@ fun Histogram(
                     textSize = valueTextSizePx
                 }
 
-                val maxY = state.items.maxOf { it.value }
+                val maxY = values.max()
                 val minBarOffsetY = size.height - (size.height - valueTextPaddingPx * 2 - valueTextSizePx - barPaddingPx)
                 val maxBarOffsetY = size.height - size.height * 0.02f
 
-                state.items.forEachIndexed { index, bar ->
+                values.forEachIndexed { index, barValue ->
                     val barOffset = Offset(
                         x = barWidthPx * index + barPaddingPx * index,
-                        y = (size.height - bar.value / maxY * size.height).let {
+                        y = (size.height - barValue / maxY * size.height).let {
                             if (it < minBarOffsetY) minBarOffsetY else it
                         }.let {
                             if (it > maxBarOffsetY) maxBarOffsetY else it
@@ -115,7 +106,7 @@ fun Histogram(
                     val barHeightPx = size.height - barOffset.y
 
                     drawContext.canvas.nativeCanvas.drawText(
-                        bar.formattedValue,
+                        valueFormatter(barValue),
                         barOffset.x + barWidthPx / 2 - textPaint.textSize,
                         barOffset.y - valueTextPaddingPx,
                         textPaint

@@ -1,9 +1,9 @@
 package breakbadhabits.android.app.repository
 
-import breakbadhabits.coroutines.flow.mapItems
 import breakbadhabits.android.app.data.HabitsAppWidgetConfig
 import breakbadhabits.android.app.database.HabitsAppWidgetConfigEntity
 import breakbadhabits.android.app.database.MainDatabase
+import breakbadhabits.coroutines.flow.mapItems
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

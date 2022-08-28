@@ -25,10 +25,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigCreationViewModel
-import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Checkbox
+import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.TextField
 import breakbadhabits.android.compose.ui.Title

@@ -7,17 +7,23 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-class HabitAbstinenceTimeFeature(
+class HabitAbstinenceTimesFeature(
     coroutineScope: CoroutineScope,
     habitsRepository: HabitsRepository,
     habitId: Int
 ) {
 
     val state = combine(
-        habitsRepository.lastByTimeHabitEventByHabitIdFlow(habitId),
+        habitsRepository.habitEventListByHabitIdFlow(habitId),
         TikTik.everySecond()
-    ) { event, currentTime ->
-        event?.let { currentTime - it.time }
-    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), null)
+    ) { events, currentTime ->
+        List(events.size) { i ->
+            if (i != events.indices.last) {
+                events[i + 1].time - events[i].time
+            } else {
+                currentTime - events[i].time
+            }
+        }
+    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), emptyList())
 
 }

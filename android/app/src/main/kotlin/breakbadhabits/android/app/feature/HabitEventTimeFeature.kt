@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class HabitIconIdFeature(
+class HabitEventTimeFeature(
     coroutineScope: CoroutineScope,
     habitsRepository: HabitsRepository,
-    habitId: Int
+    habitEventId: Int
 ) {
 
-    val state = habitsRepository.habitByIdFlow(habitId).map { habit ->
-        habit?.iconId
+    val state = habitsRepository.habitEventByIdFlow(habitEventId).map {
+        it?.time
     }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), null)
 
 }

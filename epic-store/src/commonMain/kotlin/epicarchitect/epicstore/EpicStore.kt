@@ -1,12 +1,11 @@
 package epicarchitect.epicstore
 
-class EpicStore(
-    private val isClearNeeded: () -> Boolean = { false },
-    private val doBeforeClear: (key: Any?, value: Any?) -> Unit = { _, _ -> },
-    private val doAfterClear: () -> Unit = { },
-) {
+class EpicStore {
 
     private val map = mutableMapOf<Any?, Any?>()
+    var isClearNeeded: () -> Boolean = { false }
+    var doBeforeClear: (key: Any?, value: Any?) -> Unit = { _, _ -> }
+    var doAfterClear: () -> Unit = { }
 
     fun clearIfNeeded() {
         map.values.forEach {

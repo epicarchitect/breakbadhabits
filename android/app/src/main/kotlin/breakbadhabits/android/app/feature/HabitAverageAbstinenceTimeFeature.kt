@@ -1,19 +1,18 @@
 package breakbadhabits.android.app.feature
 
-import breakbadhabits.android.app.repository.HabitsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class HabitIconIdFeature(
+class HabitAverageAbstinenceTimeFeature(
     coroutineScope: CoroutineScope,
-    habitsRepository: HabitsRepository,
-    habitId: Int
+    habitAbstinenceTimesFeature: HabitAbstinenceTimesFeature
 ) {
 
-    val state = habitsRepository.habitByIdFlow(habitId).map { habit ->
-        habit?.iconId
+    val state = habitAbstinenceTimesFeature.state.map {
+        if (it.isEmpty()) null
+        else it.average().toLong()
     }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), null)
 
 }

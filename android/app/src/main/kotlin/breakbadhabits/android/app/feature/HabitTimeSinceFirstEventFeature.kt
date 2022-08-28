@@ -1,23 +1,21 @@
 package breakbadhabits.android.app.feature
 
-import breakbadhabits.android.app.repository.HabitsRepository
 import breakbadhabits.android.app.utils.TikTik
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-class HabitAbstinenceTimeFeature(
+class HabitTimeSinceFirstEventFeature(
     coroutineScope: CoroutineScope,
-    habitsRepository: HabitsRepository,
-    habitId: Int
+    habitEventTimesFeature: HabitEventTimesFeature
 ) {
 
     val state = combine(
-        habitsRepository.lastByTimeHabitEventByHabitIdFlow(habitId),
+        habitEventTimesFeature.state,
         TikTik.everySecond()
-    ) { event, currentTime ->
-        event?.let { currentTime - it.time }
+    ) { times, currentTime ->
+        times.minOrNull()?.let { currentTime - it }
     }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), null)
 
 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,63 +18,81 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.createHabitEventCommentFeature
+import breakbadhabits.android.app.createHabitEventIdsFeature
+import breakbadhabits.android.app.createHabitEventTimeFeature
+import breakbadhabits.android.app.createHabitEventTimesFeature
+import breakbadhabits.android.app.createHabitIconIdFeature
+import breakbadhabits.android.app.createHabitNameFeature
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
-import breakbadhabits.android.app.viewmodel.HabitEventsViewModel
-import breakbadhabits.android.app.viewmodel.HabitViewModel
-import breakbadhabits.android.compose.ui.EventData
+import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.EventsCalendar
 import breakbadhabits.android.compose.ui.Icon
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.Title
 import breakbadhabits.android.compose.ui.rememberEventsCalendarState
+import epicarchitect.epicstore.compose.epicStoreItems
+import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import java.time.Instant
 import java.time.ZoneId
 import java.util.*
 
 @Composable
 fun HabitEventsScreen(
-    habitViewModel: HabitViewModel,
-    habitEventsViewModel: HabitEventsViewModel,
-    dateTimeFormatter: DateTimeFormatter,
-    habitIconResources: HabitIconResources,
+    habitId: Int,
     openHabitEventEditing: (habitEventId: Int) -> Unit,
 ) {
-    val habitState by habitViewModel.habitFlow.collectAsState()
+    val dateTimeFormatter: DateTimeFormatter = get()
+    val habitIconResources: HabitIconResources = get()
+
+    val habitNameFeature = rememberEpicStoreEntry {
+        createHabitNameFeature(habitId)
+    }
+    val habitIconIdFeature = rememberEpicStoreEntry {
+        createHabitIconIdFeature(habitId)
+    }
+    val eventIdsFeature = rememberEpicStoreEntry {
+        createHabitEventIdsFeature(habitId)
+    }
+    val eventTimesFeature = rememberEpicStoreEntry {
+        createHabitEventTimesFeature(habitId)
+    }
+    val habitName by habitNameFeature.state.collectAsState()
+    val habitIconId by habitIconIdFeature.state.collectAsState()
+    val eventIds by eventIdsFeature.state.collectAsState()
+    val eventTimes by eventTimesFeature.state.collectAsState()
+
     val calendarState = rememberEventsCalendarState()
-    val allHabitEvents by habitEventsViewModel.habitEventStateFlow.collectAsState()
-    val habitEvents = allHabitEvents.filter {
-        Instant.ofEpochMilli(it.timeInMillis)
+
+    eventIdsFeature.setTimeFilter {
+        Instant.ofEpochMilli(it)
             .atZone(ZoneId.systemDefault())
             .toLocalDate()
             .monthValue == calendarState.value.monthValue
-    }.sortedByDescending { it.timeInMillis }
-
-    val habit = (habitState as? HabitViewModel.HabitState.Loaded)?.habit
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 32.dp)
     ) {
-        if (habit != null) {
-            item {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(44.dp)
-                            .align(Alignment.CenterHorizontally),
-                        painter = painterResource(habitIconResources[habit.iconId])
-                    )
+        item {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .align(Alignment.CenterHorizontally),
+                    painter = painterResource(habitIconResources[habitIconId ?: 0])
+                )
 
-                    Title(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .align(Alignment.CenterHorizontally),
-                        text = habit.name
-                    )
-                }
+                Title(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .align(Alignment.CenterHorizontally),
+                    text = habitName ?: ""
+                )
             }
         }
 
@@ -83,21 +100,25 @@ fun HabitEventsScreen(
             EventsCalendar(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 calendarState = calendarState,
-                events = habitEvents.map {
-                    EventData(
-                        it.id,
-                        it.timeInMillis
-                    )
-                }
+                events = eventTimes
             )
         }
 
-        items(habitEvents) { item ->
+        epicStoreItems(eventIds) { eventId ->
+            val timeFeature = rememberEpicStoreEntry {
+                createHabitEventTimeFeature(eventId)
+            }
+            val commentFeature = rememberEpicStoreEntry {
+                createHabitEventCommentFeature(eventId)
+            }
+            val time by timeFeature.state.collectAsState()
+            val comment by commentFeature.state.collectAsState()
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        openHabitEventEditing(item.id)
+                        openHabitEventEditing(eventId)
                     }
             ) {
                 Column(
@@ -105,21 +126,19 @@ fun HabitEventsScreen(
                 ) {
                     Text(
                         modifier = Modifier.padding(2.dp),
-                        text = dateTimeFormatter.formatDateTime(
-                            Calendar.getInstance().apply {
-                                timeInMillis = item.timeInMillis
-                            },
-                            withoutYear = true
-                        )
+                        text = time?.let {
+                            dateTimeFormatter.formatDateTime(
+                                Calendar.getInstance().apply {
+                                    timeInMillis = it
+                                },
+                                withoutYear = true
+                            )
+                        } ?: "-"
                     )
 
                     Text(
                         modifier = Modifier.padding(2.dp),
-                        text = if (item.comment.isNullOrEmpty()) {
-                            stringResource(R.string.habitEvents_noComment)
-                        } else {
-                            item.comment
-                        }
+                        text = comment ?: stringResource(R.string.habitEvents_noComment)
                     )
                 }
             }

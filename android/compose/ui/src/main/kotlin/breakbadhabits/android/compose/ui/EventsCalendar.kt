@@ -35,16 +35,11 @@ import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.*
 
-data class EventData(
-    val id: Int,
-    val timeInMillis: Long
-)
-
 @Composable
 fun EventsCalendar(
     modifier: Modifier = Modifier,
     calendarState: MutableState<YearMonth>,
-    events: List<EventData>,
+    events: List<Long>,
     canChangeMonth: Boolean = true,
     withHeader: Boolean = true,
     horizontalSwipeEnabled: Boolean = true
@@ -109,7 +104,7 @@ fun EventsCalendar(
         },
         dayContent = { state ->
             val eventsCount = events.count {
-                val itemDate = Instant.ofEpochMilli(it.timeInMillis)
+                val itemDate = Instant.ofEpochMilli(it)
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate()
 

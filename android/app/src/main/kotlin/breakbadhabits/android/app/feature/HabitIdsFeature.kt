@@ -1,6 +1,5 @@
 package breakbadhabits.android.app.feature
 
-import breakbadhabits.android.app.log
 import breakbadhabits.android.app.repository.HabitsRepository
 import breakbadhabits.coroutines.flow.mapItems
 import kotlinx.coroutines.CoroutineScope
@@ -11,8 +10,6 @@ class HabitIdsFeature(
     coroutineScope: CoroutineScope,
     habitsRepository: HabitsRepository
 ) {
-
-    init { log("init") }
 
     val state = habitsRepository.habitListFlow().mapItems { habit ->
         habit.id

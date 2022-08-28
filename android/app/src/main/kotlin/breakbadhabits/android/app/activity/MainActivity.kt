@@ -135,11 +135,7 @@ class MainActivity : ComposeActivity() {
                     val navController = LocalNavController.current
                     val habitId = it.arguments!!.getInt("habitId")
                     HabitScreen(
-                        habitAnalyzeViewModel = composeViewModel(habitId),
-                        habitViewModel = composeViewModel(habitId),
-                        habitEventsViewModel = composeViewModel(habitId),
-                        abstinenceTimeFormatter = get(),
-                        dateTimeFormatter = get(),
+                        habitId = habitId,
                         openHabitEventCreation = {
                             navController.navigate("habitEventCreation?habitId=$habitId")
                         },
@@ -149,7 +145,6 @@ class MainActivity : ComposeActivity() {
                         openHabitEditing = {
                             navController.navigate("habitEditing?habitId=$habitId")
                         },
-                        habitIconResources = get(),
                         showALlEvents = {
                             navController.navigate("habitEvents?habitId=$habitId")
                         }
@@ -163,10 +158,7 @@ class MainActivity : ComposeActivity() {
                     val navController = LocalNavController.current
                     val habitId = it.arguments!!.getInt("habitId")
                     HabitEventsScreen(
-                        habitViewModel = composeViewModel(habitId),
-                        habitEventsViewModel = composeViewModel(habitId),
-                        dateTimeFormatter = get(),
-                        habitIconResources = get(),
+                        habitId = habitId,
                         openHabitEventEditing = { habitEventId ->
                             navController.navigate("habitEventEditing?habitEventId=$habitEventId")
                         }

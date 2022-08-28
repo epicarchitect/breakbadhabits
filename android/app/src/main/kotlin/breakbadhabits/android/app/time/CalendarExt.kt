@@ -1,6 +1,6 @@
 package breakbadhabits.android.app.time
 
-import java.util.Calendar
+import java.util.*
 
 fun Calendar.copy(setup: Calendar.() -> Unit = {}) = (clone() as Calendar).apply(setup)
 
