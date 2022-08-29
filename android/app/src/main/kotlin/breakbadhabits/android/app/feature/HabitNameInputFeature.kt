@@ -17,6 +17,7 @@ class HabitNameInputFeature(
     private val habitId: Int?
 ) {
     var initialInput: String? = null
+        private set
 
     private val mutableInput = MutableStateFlow(initialInput)
     val input = mutableInput.asStateFlow()

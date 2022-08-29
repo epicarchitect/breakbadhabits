@@ -76,9 +76,7 @@ class MainActivity : ComposeActivity() {
                     val navController = LocalNavController.current
                     val habitId = it.arguments!!.getInt("habitId")
                     HabitEventCreationScreen(
-                        habitViewModel = composeViewModel(habitId),
-                        habitEventCreationViewModel = composeViewModel(habitId),
-                        dateTimeFormatter = get(),
+                        habitId = habitId,
                         onFinished = {
                             navController.popBackStack()
                         }
@@ -92,9 +90,7 @@ class MainActivity : ComposeActivity() {
                     val navController = LocalNavController.current
                     val habitEventId = it.arguments!!.getInt("habitEventId")
                     HabitEventEditingScreen(
-                        habitEventEditingViewModel = composeViewModel(habitEventId),
-                        dateTimeFormatter = get(),
-                        alertDialogManager = get(),
+                        habitEventId = habitEventId,
                         onFinished = {
                             navController.popBackStack()
                         },

@@ -14,9 +14,6 @@ import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.AlertDialogManager
 import breakbadhabits.android.app.validator.HabitEventValidator
 import breakbadhabits.android.app.validator.HabitValidator
-import breakbadhabits.android.app.viewmodel.HabitEventCreationViewModel
-import breakbadhabits.android.app.viewmodel.HabitEventEditingViewModel
-import breakbadhabits.android.app.viewmodel.HabitViewModel
 import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigCreationViewModel
 import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigEditingViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -88,7 +85,4 @@ private fun Module.habits() {
     single { HabitsRepository(get(), get()) }
     factory { HabitValidator(get<HabitsRepository>()::habitNameExists, get<BreakBadHabitsAppConfig>().maxHabitNameLength) }
     factory { HabitEventValidator { System.currentTimeMillis() } }
-    factory { (habitId: Int) -> HabitViewModel(get(), habitId) }
-    factory { (habitId: Int) -> HabitEventCreationViewModel(get(), get(), habitId) }
-    factory { (habitEventId: Int) -> HabitEventEditingViewModel(get(), get(), habitEventId) }
 }

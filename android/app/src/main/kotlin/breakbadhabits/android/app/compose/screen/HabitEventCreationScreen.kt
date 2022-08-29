@@ -18,9 +18,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.createHabitEventCommentInputFeature
+import breakbadhabits.android.app.createHabitEventCreationFeature
+import breakbadhabits.android.app.createHabitEventTimeInputFeature
+import breakbadhabits.android.app.createHabitNameFeature
+import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
 import breakbadhabits.android.app.formatter.DateTimeFormatter
-import breakbadhabits.android.app.viewmodel.HabitEventCreationViewModel
-import breakbadhabits.android.app.viewmodel.HabitViewModel
+import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.ErrorText
 import breakbadhabits.android.compose.ui.InteractionType
@@ -31,31 +35,44 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
 
 @Composable
 fun HabitEventCreationScreen(
-    habitViewModel: HabitViewModel,
-    habitEventCreationViewModel: HabitEventCreationViewModel,
-    dateTimeFormatter: DateTimeFormatter,
+    habitId: Int,
     onFinished: () -> Unit
 ) {
-    val comment by habitEventCreationViewModel.commentStateFlow.collectAsState()
-    val creationAllowed by habitEventCreationViewModel.creationAllowedStateFlow.collectAsState()
-    val creationDeferred by habitEventCreationViewModel.creationStateFlow.collectAsState()
-    val time by habitEventCreationViewModel.timeStateFlow.collectAsState()
-    val timeValidation by habitEventCreationViewModel.timeValidationStateFlow.collectAsState()
-    val habitState by habitViewModel.habitFlow.collectAsState()
-    val dateSelectionState = rememberMaterialDialogState()
-    val timeSelectionState = rememberMaterialDialogState()
+    val dateTimeFormatter: DateTimeFormatter = get()
 
-    LaunchedEffect(creationDeferred) {
-        if (creationDeferred?.await() != null) {
-            onFinished()
+    val timeInputFeature = rememberEpicStoreEntry {
+        createHabitEventTimeInputFeature()
+    }
+    val commentInputFeature = rememberEpicStoreEntry {
+        createHabitEventCommentInputFeature()
+    }
+    val habitNameFeature = rememberEpicStoreEntry {
+        createHabitNameFeature(habitId)
+    }
+    val creationFeature = rememberEpicStoreEntry {
+        createHabitEventCreationFeature()
+    }
+
+    val habitName by habitNameFeature.state.collectAsState()
+    val time by timeInputFeature.input.collectAsState()
+    val timeValidation by timeInputFeature.validation.collectAsState()
+    val comment by commentInputFeature.input.collectAsState()
+
+    LaunchedEffect(true) {
+        if (time == null) {
+            timeInputFeature.changeInput(System.currentTimeMillis())
         }
     }
+
+    val dateSelectionState = rememberMaterialDialogState()
+    val timeSelectionState = rememberMaterialDialogState()
 
     MaterialDialog(
         dialogState = dateSelectionState,
@@ -65,7 +82,7 @@ fun HabitEventCreationScreen(
         }
     ) {
         val calendar = Calendar.getInstance().apply {
-            time.let(::setTimeInMillis)
+            time?.let(::setTimeInMillis)
         }
 
         datepicker(
@@ -76,9 +93,9 @@ fun HabitEventCreationScreen(
             ),
             title = stringResource(R.string.select_date)
         ) { date ->
-            habitEventCreationViewModel.updateTime(
+            timeInputFeature.changeInput(
                 Calendar.getInstance().apply {
-                    time.let(::setTimeInMillis)
+                    time?.let(::setTimeInMillis)
                     set(Calendar.YEAR, date.year)
                     set(Calendar.MONTH, date.monthValue - 1)
                     set(Calendar.DAY_OF_MONTH, date.dayOfMonth)
@@ -95,7 +112,7 @@ fun HabitEventCreationScreen(
         }
     ) {
         val calendar = Calendar.getInstance().apply {
-            time.let(::setTimeInMillis)
+            time?.let(::setTimeInMillis)
         }
 
         timepicker(
@@ -106,9 +123,9 @@ fun HabitEventCreationScreen(
             is24HourClock = DateFormat.is24HourFormat(LocalContext.current),
             title = stringResource(R.string.select_time)
         ) { localTime ->
-            habitEventCreationViewModel.updateTime(
+            timeInputFeature.changeInput(
                 Calendar.getInstance().apply {
-                    time.let(::setTimeInMillis)
+                    time?.let(::setTimeInMillis)
                     set(Calendar.HOUR_OF_DAY, localTime.hour)
                     set(Calendar.MINUTE, localTime.minute)
                 }.timeInMillis
@@ -128,13 +145,10 @@ fun HabitEventCreationScreen(
 
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
-            text = when (val state = habitState) {
-                is HabitViewModel.HabitState.Loaded -> stringResource(
-                    R.string.habitEventCreation_habitName,
-                    state.habit?.name ?: ""
-                )
-                is HabitViewModel.HabitState.Loading -> ""
-            }
+            text = stringResource(
+                R.string.habitEventCreation_habitName,
+                habitName ?: ""
+            )
         )
 
         Text(
@@ -143,14 +157,12 @@ fun HabitEventCreationScreen(
         )
 
         val calendar = Calendar.getInstance().apply {
-            time.let(::setTimeInMillis)
+            time?.let(::setTimeInMillis)
         }
 
         Button(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            onClick = {
-                dateSelectionState.show()
-            },
+            onClick = dateSelectionState::show,
             text = stringResource(
                 R.string.habitEventCreation_eventDate,
                 dateTimeFormatter.formatDate(calendar)
@@ -168,9 +180,9 @@ fun HabitEventCreationScreen(
             )
         )
 
-        (timeValidation as? HabitEventCreationViewModel.TimeValidationState.Executed)?.let {
+        (timeValidation as? HabitEventTimeInputFeature.ValidationState.Executed)?.let {
             when (it.result) {
-                is HabitEventCreationViewModel.TimeValidationResult.BiggestThenCurrentTime -> {
+                is HabitEventTimeInputFeature.ValidationResult.BiggestThenCurrentTime -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEventCreation_eventTimeValidation_biggestThenCurrentTime)
@@ -192,9 +204,7 @@ fun HabitEventCreationScreen(
                 .padding(start = 16.dp, top = 8.dp, end = 16.dp)
                 .fillMaxWidth(),
             value = comment ?: "",
-            onValueChange = {
-                habitEventCreationViewModel.updateComment(it)
-            },
+            onValueChange = commentInputFeature::changeInput,
             label = stringResource(R.string.habitEventCreation_comment)
         )
 
@@ -211,10 +221,17 @@ fun HabitEventCreationScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.End),
+            enabled = (timeValidation as? HabitEventTimeInputFeature.ValidationState.Executed)?.let {
+                it.result is HabitEventTimeInputFeature.ValidationResult.Valid
+            } == true,
             onClick = {
-                habitEventCreationViewModel.startCreation()
+                creationFeature.startCreation(
+                    habitId,
+                    time!!,
+                    comment
+                )
+                onFinished()
             },
-            enabled = creationAllowed,
             text = stringResource(R.string.habitEventCreation_finish),
             interactionType = InteractionType.MAIN
         )

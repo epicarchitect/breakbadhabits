@@ -1,16 +1,24 @@
 package breakbadhabits.android.app.feature
 
+import breakbadhabits.android.app.repository.HabitsRepository
 import breakbadhabits.android.app.validator.HabitEventValidator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
-class LastTimeInputFeature(
+class HabitEventTimeInputFeature(
     coroutineScope: CoroutineScope,
-    private val habitEventValidator: HabitEventValidator
+    private val habitsRepository: HabitsRepository,
+    private val habitEventValidator: HabitEventValidator,
+    habitEventId: Int?
 ) {
+
+    var initialInput: Long? = null
+        private set
 
     private val mutableInput = MutableStateFlow<Long?>(null)
     val input = mutableInput.asStateFlow()
@@ -19,6 +27,15 @@ class LastTimeInputFeature(
     val validation = mutableValidation.asStateFlow()
 
     init {
+        if (habitEventId != null) {
+            coroutineScope.launch {
+                habitsRepository.habitEventByIdFlow(habitEventId).first()?.time?.let {
+                    initialInput = it
+                    mutableInput.value = it
+                }
+            }
+        }
+
         mutableInput.onEach {
             when (it) {
                 null -> {
@@ -26,7 +43,7 @@ class LastTimeInputFeature(
                 }
                 else -> {
                     mutableValidation.value = ValidationState.Executing()
-                    mutableValidation.value = ValidationState.Executed(validateLastEventTime(it))
+                    mutableValidation.value = ValidationState.Executed(validate(it))
                 }
             }
         }.launchIn(coroutineScope)
@@ -36,7 +53,7 @@ class LastTimeInputFeature(
         mutableInput.value = value
     }
 
-    private fun validateLastEventTime(time: Long) = when {
+    private fun validate(time: Long) = when {
         !habitEventValidator.timeNotBiggestThenCurrentTime(time) -> {
             ValidationResult.BiggestThenCurrentTime(time)
         }

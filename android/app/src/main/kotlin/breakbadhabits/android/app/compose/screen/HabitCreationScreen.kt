@@ -25,10 +25,10 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.createHabitCreationFeature
 import breakbadhabits.android.app.createHabitIconSelectionFeature
 import breakbadhabits.android.app.createHabitNameInputFeature
-import breakbadhabits.android.app.createLastTimeInputFeature
+import breakbadhabits.android.app.createHabitEventTimeInputFeature
 import breakbadhabits.android.app.feature.HabitCreationFeature
 import breakbadhabits.android.app.feature.HabitNameInputFeature
-import breakbadhabits.android.app.feature.LastTimeInputFeature
+import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.get
@@ -55,7 +55,7 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
     val dateTimeFormatter: DateTimeFormatter = get()
     val habitIconResources: HabitIconResources = get()
     val habitNameInputFeature = rememberEpicStoreEntry { createHabitNameInputFeature() }
-    val lastEventTimeInputFeature = rememberEpicStoreEntry { createLastTimeInputFeature() }
+    val lastEventTimeInputFeature = rememberEpicStoreEntry { createHabitEventTimeInputFeature() }
     val habitIconSelectionFeature = rememberEpicStoreEntry { createHabitIconSelectionFeature() }
     val habitCreationFeature = rememberEpicStoreEntry { createHabitCreationFeature() }
 
@@ -69,10 +69,10 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
         (habitNameValidation as? HabitNameInputFeature.ValidationState.Executed)?.result
 
     val lastEventTimeValidationResult =
-        (lastHabitEventTimeValidation as? LastTimeInputFeature.ValidationState.Executed)?.result
+        (lastHabitEventTimeValidation as? HabitEventTimeInputFeature.ValidationState.Executed)?.result
 
     val creationAllowed = habitNameValidationResult is HabitNameInputFeature.ValidationResult.Valid
-            && lastEventTimeValidationResult is LastTimeInputFeature.ValidationResult.Valid
+            && lastEventTimeValidationResult is HabitEventTimeInputFeature.ValidationResult.Valid
 
     val habitCreation by habitCreationFeature.state.collectAsState()
 
@@ -255,9 +255,9 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
             )
         }
 
-        (lastHabitEventTimeValidation as? LastTimeInputFeature.ValidationState.Executed)?.let {
+        (lastHabitEventTimeValidation as? HabitEventTimeInputFeature.ValidationState.Executed)?.let {
             when (it.result) {
-                is LastTimeInputFeature.ValidationResult.BiggestThenCurrentTime -> {
+                is HabitEventTimeInputFeature.ValidationResult.BiggestThenCurrentTime -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitCreation_lastEventTimeValidation_biggestThenCurrentTime),

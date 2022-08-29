@@ -45,10 +45,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":epic-store-navigation-compose"))
     implementation(project(":android:compose:ui"))
     implementation(project(":android:compose:activity"))
     implementation(project(":coroutines"))
+
+    implementation("com.github.epicarchitect.epic-store:google-navigation-compose:1.0.4")
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.work:work-runtime-ktx:2.7.1")

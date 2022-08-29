@@ -9,7 +9,11 @@ import breakbadhabits.android.app.feature.HabitAverageAbstinenceTimeFeature
 import breakbadhabits.android.app.feature.HabitCreationFeature
 import breakbadhabits.android.app.feature.HabitDeletionFeature
 import breakbadhabits.android.app.feature.HabitEventCommentFeature
+import breakbadhabits.android.app.feature.HabitEventCommentInputFeature
 import breakbadhabits.android.app.feature.HabitEventCountFeature
+import breakbadhabits.android.app.feature.HabitEventCreationFeature
+import breakbadhabits.android.app.feature.HabitEventDeletionFeature
+import breakbadhabits.android.app.feature.HabitEventHabitIdFeature
 import breakbadhabits.android.app.feature.HabitEventIdsFeature
 import breakbadhabits.android.app.feature.HabitEventTimeFeature
 import breakbadhabits.android.app.feature.HabitEventTimesFeature
@@ -26,16 +30,14 @@ import breakbadhabits.android.app.feature.HabitsAppWidgetConfigIdsFeature
 import breakbadhabits.android.app.feature.HabitsAppWidgetHabitIdsFeature
 import breakbadhabits.android.app.feature.HabitsAppWidgetIdFeature
 import breakbadhabits.android.app.feature.HabitsAppWidgetTitleFeature
-import breakbadhabits.android.app.feature.LastTimeInputFeature
+import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
+import breakbadhabits.android.app.feature.HabitEventUpdatingFeature
 import breakbadhabits.android.app.feature.PreviousMonthHabitEventCountFeature
 import breakbadhabits.android.app.utils.get
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 
-/**
- * HABITS
- */
 fun createHabitIdsFeature() = HabitIdsFeature(
     coroutineScope = CoroutineScope(Dispatchers.Default),
     habitsRepository = get()
@@ -66,9 +68,28 @@ fun createHabitNameInputFeature(habitId: Int? = null) = HabitNameInputFeature(
     habitId = habitId
 )
 
-fun createLastTimeInputFeature() = LastTimeInputFeature(
+fun createHabitEventTimeInputFeature(habitEventId: Int? = null) = HabitEventTimeInputFeature(
     coroutineScope = CoroutineScope(Dispatchers.Default),
-    habitEventValidator = get()
+    habitsRepository = get(),
+    habitEventValidator = get(),
+    habitEventId = habitEventId
+)
+
+fun createHabitEventCommentInputFeature(habitEventId: Int? = null) = HabitEventCommentInputFeature(
+    coroutineScope = CoroutineScope(Dispatchers.Default),
+    habitsRepository = get(),
+    habitEventId = habitEventId
+)
+
+fun createHabitEventHabitIdFeature(habitEventId: Int) = HabitEventHabitIdFeature(
+    coroutineScope = CoroutineScope(Dispatchers.Default),
+    habitsRepository = get(),
+    habitEventId = habitEventId
+)
+
+fun createHabitEventUpdatingFeature() = HabitEventUpdatingFeature(
+    coroutineScope = CoroutineScope(Dispatchers.Default),
+    habitsRepository = get()
 )
 
 fun createHabitIconSelectionFeature(habitId: Int? = null) = HabitIconSelectionFeature(
@@ -138,6 +159,16 @@ fun createHabitEventCountFeature(habitId: Int) = HabitEventCountFeature(
     habitId = habitId
 )
 
+fun createHabitEventCreationFeature() = HabitEventCreationFeature(
+    coroutineScope = CoroutineScope(Dispatchers.Default),
+    habitsRepository = get()
+)
+
+fun createHabitEventDeletionFeature() = HabitEventDeletionFeature(
+    coroutineScope = CoroutineScope(Dispatchers.Default),
+    habitsRepository = get()
+)
+
 fun createCurrentMonthHabitEventTimesFeature(habitId: Int) = CurrentMonthHabitEventTimesFeature(
     coroutineScope = CoroutineScope(Dispatchers.Default),
     habitEventTimesFeature = createHabitEventTimesFeature(habitId)
@@ -191,6 +222,7 @@ fun createHabitsAppWidgetHabitIdsFeature(configId: Int) = HabitsAppWidgetHabitId
     appWidgetsRepository = get(),
     configId = configId
 )
+
 
 fun createHabitsAppWidgetIdFeature(configId: Int) = HabitsAppWidgetIdFeature(
     coroutineScope = CoroutineScope(Dispatchers.Default),
