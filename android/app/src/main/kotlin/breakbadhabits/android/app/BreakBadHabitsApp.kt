@@ -14,8 +14,6 @@ import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.AlertDialogManager
 import breakbadhabits.android.app.validator.HabitEventValidator
 import breakbadhabits.android.app.validator.HabitValidator
-import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigCreationViewModel
-import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigEditingViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -26,7 +24,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
-import org.koin.core.module.Module
 import org.koin.dsl.module
 
 class BreakBadHabitsApp : Application() {
@@ -42,9 +39,32 @@ class BreakBadHabitsApp : Application() {
             androidContext(this@BreakBadHabitsApp)
             modules(
                 module {
-                    app()
-                    habits()
-                    appWidgets()
+                    single { AbstinenceTimeFormatter(androidApplication()) }
+                    single { DateTimeFormatter(androidApplication()) }
+                    single { AlertDialogManager() }
+                    single {
+                        BreakBadHabitsAppConfig(
+                            maxHabitNameLength = 30
+                        )
+                    }
+                    single {
+                        Room.databaseBuilder(
+                            androidApplication(),
+                            MainDatabase::class.java,
+                            "main.db"
+                        ).build()
+                    }
+                    single { IdGenerator(androidApplication()) }
+                    single { AppWidgetsRepository(get(), get()) }
+                    single { HabitIconResources(androidApplication()) }
+                    single { HabitsRepository(get(), get()) }
+                    factory {
+                        HabitValidator(
+                            get<HabitsRepository>()::habitNameExists,
+                            get<BreakBadHabitsAppConfig>().maxHabitNameLength
+                        )
+                    }
+                    factory { HabitEventValidator { System.currentTimeMillis() } }
                 }
             )
         }
@@ -57,32 +77,4 @@ class BreakBadHabitsApp : Application() {
             HabitsAppWidgetProvider.sendUpdateIntent(this@BreakBadHabitsApp)
         }.launchIn(coroutineScope)
     }
-}
-
-private fun Module.app() {
-    single { AbstinenceTimeFormatter(androidApplication()) }
-    single { DateTimeFormatter(androidApplication()) }
-    single { AlertDialogManager() }
-    single {
-        BreakBadHabitsAppConfig(
-            maxHabitNameLength = 30
-        )
-    }
-    single {
-        Room.databaseBuilder(androidApplication(), MainDatabase::class.java, "main.db").build()
-    }
-    single { IdGenerator(androidApplication()) }
-}
-
-private fun Module.appWidgets() {
-    single { AppWidgetsRepository(get(), get()) }
-    factory { (appWidgetId: Int) -> HabitsAppWidgetConfigCreationViewModel(get(), get(), appWidgetId) }
-    factory { (configId: Int) -> HabitsAppWidgetConfigEditingViewModel(get(), get(), configId) }
-}
-
-private fun Module.habits() {
-    single { HabitIconResources(androidApplication()) }
-    single { HabitsRepository(get(), get()) }
-    factory { HabitValidator(get<HabitsRepository>()::habitNameExists, get<BreakBadHabitsAppConfig>().maxHabitNameLength) }
-    factory { HabitEventValidator { System.currentTimeMillis() } }
 }

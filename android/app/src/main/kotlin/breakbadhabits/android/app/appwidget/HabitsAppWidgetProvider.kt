@@ -28,7 +28,12 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         }
     }
 
-    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle) {
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle
+    ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
         sendUpdateIntent(context)
     }
@@ -43,7 +48,8 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         manager: AppWidgetManager,
         appWidgetId: Int
     ) = runBlocking {
-        val isDarkModeEnabled = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        val isDarkModeEnabled =
+            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
         val config = appWidgetsRepository.habitsAppWidgetConfigByAppWidgetId(appWidgetId) ?: let {
             manager.updateAppWidget(
@@ -72,7 +78,10 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         ).apply {
             setTextViewText(R.id.title_textView, config.title)
             setViewVisibility(R.id.divider, if (config.title.isEmpty()) View.GONE else View.VISIBLE)
-            setViewVisibility(R.id.title_textView, if (config.title.isEmpty()) View.GONE else View.VISIBLE)
+            setViewVisibility(
+                R.id.title_textView,
+                if (config.title.isEmpty()) View.GONE else View.VISIBLE
+            )
             setRemoteAdapter(
                 R.id.habits_listView,
                 Intent(context, HabitsAppWidgetRemoteViewsService::class.java).apply {

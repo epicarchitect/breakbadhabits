@@ -13,6 +13,9 @@ class HabitsAppWidgetRemoteViewsService : RemoteViewsService() {
         habitsRepository = get(),
         appWidgetsRepository = get(),
         AbstinenceTimeFormatter(applicationContext),
-        intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+        intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        )
     )
 }

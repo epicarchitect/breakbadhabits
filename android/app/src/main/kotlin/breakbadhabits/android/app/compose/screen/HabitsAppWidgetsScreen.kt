@@ -69,7 +69,7 @@ fun HabitsAppWidgetsScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    epicStoreItems(configIds) {configid ->
+                    epicStoreItems(configIds) { configid ->
                         WidgetConfigItem(
                             configId = configid,
                             onClick = {
@@ -125,13 +125,14 @@ fun WidgetConfigItem(
                     end = 16.dp
                 ),
                 text = buildString {
-                    habitIds?.forEachIndexed { index, habitId ->
+                    val list = habitIds?.toList() ?: emptyList()
+                    list.forEachIndexed { index, habitId ->
                         val habitNameFeature = rememberEpicStoreEntry {
                             createHabitNameFeature(habitId)
                         }
                         val habitName by habitNameFeature.state.collectAsState()
                         append(habitName)
-                        if (index != habitIds?.lastIndex) {
+                        if (index != list.lastIndex) {
                             appendLine()
                         }
                     }

@@ -29,7 +29,7 @@ class HabitsAppWidgetRemoteViewsFactory(
             return@runBlocking
         }
 
-        items = habitsRepository.habitListByIds(config.habitIds).map {
+        items = habitsRepository.habitListByIds(config.habitIds.toList()).map {
             Item(
                 it.id,
                 it.name,

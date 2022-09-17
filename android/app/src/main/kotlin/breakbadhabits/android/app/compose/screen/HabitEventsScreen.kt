@@ -122,7 +122,12 @@ fun HabitEventsScreen(
                     }
             ) {
                 Column(
-                    modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 4.dp),
+                    modifier = Modifier.padding(
+                        start = 14.dp,
+                        end = 14.dp,
+                        top = 4.dp,
+                        bottom = 4.dp
+                    ),
                 ) {
                     Text(
                         modifier = Modifier.padding(2.dp),

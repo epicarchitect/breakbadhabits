@@ -16,8 +16,6 @@ import breakbadhabits.android.app.compose.screen.HabitScreen
 import breakbadhabits.android.app.compose.screen.HabitsAppWidgetConfigEditingScreen
 import breakbadhabits.android.app.compose.screen.HabitsAppWidgetsScreen
 import breakbadhabits.android.app.compose.screen.HabitsScreen
-import breakbadhabits.android.app.utils.composeViewModel
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.activity.ComposeActivity
 import epicarchitect.epicstore.compose.RootEpicStore
 import epicarchitect.epicstore.navigation.compose.EpicHavHost
@@ -105,13 +103,9 @@ class MainActivity : ComposeActivity() {
                     arguments = listOf(navArgument("configId") { type = NavType.IntType })
                 ) {
                     val navController = LocalNavController.current
-                    val configId = it.arguments!!.getInt("configId")
                     HabitsAppWidgetConfigEditingScreen(
-                        habitsAppWidgetConfigEditingViewModel = composeViewModel(configId),
-                        alertDialogManager = get(),
-                        onFinished = {
-                            navController.popBackStack()
-                        }
+                        configId = it.arguments!!.getInt("configId"),
+                        onFinished = navController::popBackStack
                     )
                 }
 

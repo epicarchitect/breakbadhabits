@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="breakbadhabits.android.app.activity.HabitsAppWidgetConfigCreationActivity"
     android:initialLayout="@layout/habits_app_widget_dark"
     android:minWidth="40dp"
     android:minHeight="40dp"
+    android:previewImage="@mipmap/ic_launcher"
     android:resizeMode="vertical|horizontal"
-    android:updatePeriodMillis="1800000"
-    android:previewImage="@mipmap/ic_launcher"/>
+    android:updatePeriodMillis="1800000" />

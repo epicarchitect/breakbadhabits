@@ -4,5 +4,5 @@ data class HabitsAppWidgetConfig(
     val id: Int,
     val title: String,
     val appWidgetId: Int,
-    val habitIds: List<Int>
+    val habitIds: Set<Int>
 )

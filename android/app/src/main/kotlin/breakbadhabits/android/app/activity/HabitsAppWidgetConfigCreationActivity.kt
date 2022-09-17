@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.compose.screen.HabitsAppWidgetConfigCreationScreen
-import breakbadhabits.android.app.utils.composeViewModel
 import breakbadhabits.android.compose.activity.ComposeActivity
+import epicarchitect.epicstore.compose.RootEpicStore
 
 
 class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
@@ -16,13 +16,21 @@ class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
 
     @Composable
     override fun Content() {
-        val appWidgetId = remember { intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID) }
-        HabitsAppWidgetConfigCreationScreen(
-            habitsAppWidgetConfigCreationViewModel = composeViewModel(appWidgetId),
-            onFinished = {
-                setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId))
-                finish()
+        RootEpicStore {
+            val appWidgetId = remember {
+                intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
             }
-        )
+
+            HabitsAppWidgetConfigCreationScreen(
+                appWidgetId = appWidgetId,
+                onFinished = {
+                    setResult(
+                        RESULT_OK,
+                        Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                    )
+                    finish()
+                }
+            )
+        }
     }
 }

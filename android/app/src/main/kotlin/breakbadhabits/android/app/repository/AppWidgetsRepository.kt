@@ -18,7 +18,7 @@ class AppWidgetsRepository(
     suspend fun createHabitsAppWidgetConfig(
         title: String,
         appWidgetId: Int,
-        habitIds: List<Int>
+        habitIds: Set<Int>
     ) {
         habitsAppWidgetConfigDao.insertEntity(
             HabitsAppWidgetConfig(
@@ -33,7 +33,7 @@ class AppWidgetsRepository(
     suspend fun updateHabitsAppWidget(
         id: Int,
         title: String,
-        habitIds: List<Int>
+        habitIds: Set<Int>
     ) = habitsAppWidgetConfigDao.updateEntity(
         id,
         title,

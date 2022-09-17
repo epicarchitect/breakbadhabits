@@ -16,7 +16,9 @@ import breakbadhabits.android.app.feature.HabitEventDeletionFeature
 import breakbadhabits.android.app.feature.HabitEventHabitIdFeature
 import breakbadhabits.android.app.feature.HabitEventIdsFeature
 import breakbadhabits.android.app.feature.HabitEventTimeFeature
+import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
 import breakbadhabits.android.app.feature.HabitEventTimesFeature
+import breakbadhabits.android.app.feature.HabitEventUpdatingFeature
 import breakbadhabits.android.app.feature.HabitIconIdFeature
 import breakbadhabits.android.app.feature.HabitIconSelectionFeature
 import breakbadhabits.android.app.feature.HabitIdsFeature
@@ -27,11 +29,14 @@ import breakbadhabits.android.app.feature.HabitNameInputFeature
 import breakbadhabits.android.app.feature.HabitTimeSinceFirstEventFeature
 import breakbadhabits.android.app.feature.HabitUpdatingFeature
 import breakbadhabits.android.app.feature.HabitsAppWidgetConfigIdsFeature
+import breakbadhabits.android.app.feature.HabitsAppWidgetCreationFeature
+import breakbadhabits.android.app.feature.HabitsAppWidgetDeletionFeature
 import breakbadhabits.android.app.feature.HabitsAppWidgetHabitIdsFeature
+import breakbadhabits.android.app.feature.HabitsAppWidgetHabitIdsSelectionFeature
 import breakbadhabits.android.app.feature.HabitsAppWidgetIdFeature
 import breakbadhabits.android.app.feature.HabitsAppWidgetTitleFeature
-import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
-import breakbadhabits.android.app.feature.HabitEventUpdatingFeature
+import breakbadhabits.android.app.feature.HabitsAppWidgetTitleInputFeature
+import breakbadhabits.android.app.feature.HabitsAppWidgetUpdatingFeature
 import breakbadhabits.android.app.feature.PreviousMonthHabitEventCountFeature
 import breakbadhabits.android.app.utils.get
 import kotlinx.coroutines.CoroutineScope
@@ -204,8 +209,6 @@ fun createHabitEventTimesFeature(habitId: Int) = HabitEventTimesFeature(
     habitId = habitId
 )
 
-
-
 fun createHabitsAppWidgetConfigIdsFeature() = HabitsAppWidgetConfigIdsFeature(
     coroutineScope = CoroutineScope(Dispatchers.Default),
     appWidgetsRepository = get()
@@ -223,6 +226,35 @@ fun createHabitsAppWidgetHabitIdsFeature(configId: Int) = HabitsAppWidgetHabitId
     configId = configId
 )
 
+fun createHabitsAppWidgetHabitIdsSelectionFeature(configId: Int? = null) =
+    HabitsAppWidgetHabitIdsSelectionFeature(
+        coroutineScope = CoroutineScope(Dispatchers.Default),
+        habitsRepository = get(),
+        appWidgetsRepository = get(),
+        configId = configId
+    )
+
+fun createHabitsAppWidgetTitleInputFeature(configId: Int? = null) =
+    HabitsAppWidgetTitleInputFeature(
+        coroutineScope = CoroutineScope(Dispatchers.Default),
+        appWidgetsRepository = get(),
+        configId = configId
+    )
+
+fun createHabitsAppWidgetCreationFeature() = HabitsAppWidgetCreationFeature(
+    coroutineScope = CoroutineScope(Dispatchers.Default),
+    appWidgetsRepository = get()
+)
+
+fun createHabitsAppWidgetUpdatingFeature() = HabitsAppWidgetUpdatingFeature(
+    coroutineScope = CoroutineScope(Dispatchers.Default),
+    appWidgetsRepository = get()
+)
+
+fun createHabitsAppWidgetDeletionFeature() = HabitsAppWidgetDeletionFeature(
+    coroutineScope = CoroutineScope(Dispatchers.Default),
+    appWidgetsRepository = get()
+)
 
 fun createHabitsAppWidgetIdFeature(configId: Int) = HabitsAppWidgetIdFeature(
     coroutineScope = CoroutineScope(Dispatchers.Default),

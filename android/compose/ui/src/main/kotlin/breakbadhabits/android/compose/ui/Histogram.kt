@@ -90,7 +90,8 @@ fun Histogram(
                 }
 
                 val maxY = values.max()
-                val minBarOffsetY = size.height - (size.height - valueTextPaddingPx * 2 - valueTextSizePx - barPaddingPx)
+                val minBarOffsetY =
+                    size.height - (size.height - valueTextPaddingPx * 2 - valueTextSizePx - barPaddingPx)
                 val maxBarOffsetY = size.height - size.height * 0.02f
 
                 values.forEachIndexed { index, barValue ->

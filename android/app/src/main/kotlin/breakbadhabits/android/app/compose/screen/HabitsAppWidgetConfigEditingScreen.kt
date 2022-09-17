@@ -1,5 +1,6 @@
 package breakbadhabits.android.app.compose.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,11 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,8 +26,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.createHabitNameFeature
+import breakbadhabits.android.app.createHabitsAppWidgetDeletionFeature
+import breakbadhabits.android.app.createHabitsAppWidgetHabitIdsSelectionFeature
+import breakbadhabits.android.app.createHabitsAppWidgetTitleInputFeature
+import breakbadhabits.android.app.createHabitsAppWidgetUpdatingFeature
 import breakbadhabits.android.app.utils.AlertDialogManager
-import breakbadhabits.android.app.viewmodel.HabitsAppWidgetConfigEditingViewModel
+import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Checkbox
@@ -34,25 +40,35 @@ import breakbadhabits.android.compose.ui.InteractionType
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.TextField
 import breakbadhabits.android.compose.ui.Title
+import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 
 @Composable
 fun HabitsAppWidgetConfigEditingScreen(
-    habitsAppWidgetConfigEditingViewModel: HabitsAppWidgetConfigEditingViewModel,
-    alertDialogManager: AlertDialogManager,
+    configId: Int,
     onFinished: () -> Unit
 ) {
-    val habits by habitsAppWidgetConfigEditingViewModel.habitsFlow().collectAsState()
-    val savingAllowed by habitsAppWidgetConfigEditingViewModel.savingAllowedStateFlow().collectAsState()
-    val title by habitsAppWidgetConfigEditingViewModel.titleStateFlow().collectAsState()
-    val saving by habitsAppWidgetConfigEditingViewModel.savingStateFlow().collectAsState()
+    val alertDialogManager: AlertDialogManager = get()
+    val updatingFeature = rememberEpicStoreEntry {
+        createHabitsAppWidgetUpdatingFeature()
+    }
+    val deletionFeature = rememberEpicStoreEntry {
+        createHabitsAppWidgetDeletionFeature()
+    }
+    val habitSelectionFeature = rememberEpicStoreEntry {
+        createHabitsAppWidgetHabitIdsSelectionFeature(configId)
+    }
+    val titleFeature = rememberEpicStoreEntry {
+        createHabitsAppWidgetTitleInputFeature(configId)
+    }
+    val habitSelection by habitSelectionFeature.selection.collectAsState()
+    val title by titleFeature.input.collectAsState()
+
+    val savingAllowed = habitSelection.containsValue(true)
+            && (habitSelectionFeature.initialValue.sorted() != habitSelection.filterValues { it }.keys.sorted()
+            || titleFeature.initialInput != title)
+
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
-
-    if (saving is HabitsAppWidgetConfigEditingViewModel.SavingState.Executed) {
-        LaunchedEffect(true) {
-            onFinished()
-        }
-    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -72,7 +88,7 @@ fun HabitsAppWidgetConfigEditingScreen(
                 modifier = Modifier
                     .padding(start = 16.dp, top = 8.dp, end = 16.dp)
                     .fillMaxWidth(),
-                value = title,
+                value = title ?: "",
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
@@ -80,9 +96,7 @@ fun HabitsAppWidgetConfigEditingScreen(
                         focusManager.clearFocus()
                     }
                 ),
-                onValueChange = {
-                    habitsAppWidgetConfigEditingViewModel.updateTitle(it)
-                },
+                onValueChange = titleFeature::changeInput,
                 label = stringResource(R.string.habitsAppWidgetConfigEditing_name)
             )
 
@@ -100,35 +114,14 @@ fun HabitsAppWidgetConfigEditingScreen(
                 ),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(habits) { item ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    habitsAppWidgetConfigEditingViewModel.setCheckedHabit(item.id, !item.isChecked)
-                                },
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Checkbox(
-                                    checked = item.isChecked,
-                                    onCheckedChange = {
-                                        habitsAppWidgetConfigEditingViewModel.setCheckedHabit(item.id, !item.isChecked)
-                                    }
-                                )
-
-                                Text(
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    text = item.name
-                                )
-                            }
+                items(habitSelection.keys.toList()) { itemId ->
+                    HabitItem(
+                        habitId = itemId,
+                        checked = habitSelection[itemId]!!,
+                        onCheckedChange = {
+                            habitSelectionFeature.setChecked(itemId, it)
                         }
-                    }
+                    )
                 }
 
                 item {
@@ -148,7 +141,7 @@ fun HabitsAppWidgetConfigEditingScreen(
                                     positiveButtonTitle = context.getString(R.string.yes),
                                     negativeButtonTitle = context.getString(R.string.cancel),
                                     onPositive = {
-                                        habitsAppWidgetConfigEditingViewModel.deleteWidget()
+                                        deletionFeature.startDeletion(configId)
                                         onFinished()
                                     },
                                 )
@@ -166,11 +159,51 @@ fun HabitsAppWidgetConfigEditingScreen(
                 .padding(16.dp)
                 .align(Alignment.BottomEnd),
             onClick = {
-                habitsAppWidgetConfigEditingViewModel.save()
+                updatingFeature.startUpdating(
+                    configId,
+                    title,
+                    habitSelection.filterValues { it }.keys
+                )
+                onFinished()
             },
             enabled = savingAllowed,
             text = stringResource(R.string.habitsAppWidgetConfigEditing_finish),
             interactionType = InteractionType.MAIN
         )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LazyItemScope.HabitItem(
+    habitId: Int,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    val habitNameFeature = rememberEpicStoreEntry { createHabitNameFeature(habitId) }
+    val habitName by habitNameFeature.state.collectAsState()
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateItemPlacement()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onCheckedChange(!checked) },
+        ) {
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(checked, onCheckedChange)
+
+                Text(
+                    modifier = Modifier.padding(start = 4.dp),
+                    text = habitName ?: ""
+                )
+            }
+        }
     }
 }

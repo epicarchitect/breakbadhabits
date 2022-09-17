@@ -41,19 +41,25 @@ class HabitsRepository(
         comment
     )
 
-    suspend fun deleteHabitEventsByHabitId(habitId: Int) = habitEventDao.deleteEntitiesByHabitId(habitId)
+    suspend fun deleteHabitEventsByHabitId(habitId: Int) =
+        habitEventDao.deleteEntitiesByHabitId(habitId)
 
-    suspend fun deleteHabitEventById(habitEventId: Int) = habitEventDao.deleteEntityById(habitEventId)
+    suspend fun deleteHabitEventById(habitEventId: Int) =
+        habitEventDao.deleteEntityById(habitEventId)
 
-    fun habitEventByIdFlow(habitEventId: Int) = habitEventDao.entityByIdFlow(habitEventId).map { it?.toHabitEvent() }
+    fun habitEventByIdFlow(habitEventId: Int) =
+        habitEventDao.entityByIdFlow(habitEventId).map { it?.toHabitEvent() }
 
-    fun habitEventListByHabitIdFlow(habitId: Int) = habitEventDao.entityListByHabitIdFlow(habitId).mapItems { it.toHabitEvent() }
+    fun habitEventListByHabitIdFlow(habitId: Int) =
+        habitEventDao.entityListByHabitIdFlow(habitId).mapItems { it.toHabitEvent() }
 
-    fun lastByTimeHabitEventByHabitIdFlow(habitId: Int) = habitEventDao.lastByTimeEntityByHabitIdFlow(habitId).map { it?.toHabitEvent() }
+    fun lastByTimeHabitEventByHabitIdFlow(habitId: Int) =
+        habitEventDao.lastByTimeEntityByHabitIdFlow(habitId).map { it?.toHabitEvent() }
 
     fun habitEventListFlow() = habitEventDao.entityListFlow().mapItems { it.toHabitEvent() }
 
-    suspend fun lastByTimeHabitEventByHabitId(habitId: Int) = habitEventDao.lastByTimeEntityByHabitId(habitId)?.toHabitEvent()
+    suspend fun lastByTimeHabitEventByHabitId(habitId: Int) =
+        habitEventDao.lastByTimeEntityByHabitId(habitId)?.toHabitEvent()
 
     suspend fun createHabit(
         habitName: String,

@@ -23,12 +23,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.createHabitCreationFeature
+import breakbadhabits.android.app.createHabitEventTimeInputFeature
 import breakbadhabits.android.app.createHabitIconSelectionFeature
 import breakbadhabits.android.app.createHabitNameInputFeature
-import breakbadhabits.android.app.createHabitEventTimeInputFeature
 import breakbadhabits.android.app.feature.HabitCreationFeature
-import breakbadhabits.android.app.feature.HabitNameInputFeature
 import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
+import breakbadhabits.android.app.feature.HabitNameInputFeature
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.get
