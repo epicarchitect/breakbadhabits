@@ -90,9 +90,7 @@ fun AppSettingsScreen(
                 end = 8.dp,
                 bottom = 16.dp
             ),
-            onClick = {
-                openWidgetSettings()
-            },
+            onClick = openWidgetSettings,
             text = stringResource(R.string.appSettings_widgets_button)
         )
     }

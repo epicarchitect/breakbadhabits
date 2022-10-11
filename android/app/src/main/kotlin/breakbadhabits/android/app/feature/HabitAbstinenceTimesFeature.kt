@@ -17,11 +17,12 @@ class HabitAbstinenceTimesFeature(
         habitsRepository.habitEventListByHabitIdFlow(habitId),
         TikTik.everySecond()
     ) { events, currentTime ->
-        List(events.size) { i ->
-            if (i != events.indices.last) {
-                events[i + 1].time - events[i].time
+        val sortedEvents = events.sortedBy { it.time }
+        List(sortedEvents.size) { i ->
+            if (i == sortedEvents.indices.last) {
+                currentTime - sortedEvents[i].time
             } else {
-                currentTime - events[i].time
+                sortedEvents[i + 1].time - sortedEvents[i].time
             }
         }
     }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), emptyList())

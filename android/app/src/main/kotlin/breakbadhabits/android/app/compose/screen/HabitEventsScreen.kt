@@ -1,5 +1,6 @@
 package breakbadhabits.android.app.compose.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,6 +40,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.*
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HabitEventsScreen(
     habitId: Int,
@@ -65,11 +68,13 @@ fun HabitEventsScreen(
 
     val calendarState = rememberEventsCalendarState()
 
-    eventIdsFeature.setTimeFilter {
-        Instant.ofEpochMilli(it)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate()
-            .monthValue == calendarState.value.monthValue
+    LaunchedEffect(calendarState.value) {
+        eventIdsFeature.setTimeFilter {
+            Instant.ofEpochMilli(it)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .monthValue == calendarState.value.monthValue
+        }
     }
 
     LazyColumn(
@@ -105,10 +110,10 @@ fun HabitEventsScreen(
         }
 
         epicStoreItems(eventIds) { eventId ->
-            val timeFeature = rememberEpicStoreEntry {
+            val timeFeature = rememberEpicStoreEntry("HabitEventTimeFeature:$eventId") {
                 createHabitEventTimeFeature(eventId)
             }
-            val commentFeature = rememberEpicStoreEntry {
+            val commentFeature = rememberEpicStoreEntry("HabitEventCommentFeature:$eventId") {
                 createHabitEventCommentFeature(eventId)
             }
             val time by timeFeature.state.collectAsState()
@@ -116,6 +121,7 @@ fun HabitEventsScreen(
 
             Box(
                 modifier = Modifier
+                    .animateItemPlacement()
                     .fillMaxWidth()
                     .clickable {
                         openHabitEventEditing(eventId)

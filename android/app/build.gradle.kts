@@ -49,16 +49,16 @@ dependencies {
     implementation(project(":android:compose:activity"))
     implementation(project(":coroutines"))
 
-    implementation("com.github.epicarchitect.epic-store:google-navigation-compose:1.0.4")
+    implementation("io.github.epicarchitect:epicstore-google-navigation-compose:1.0.6")
 
-    implementation("androidx.core:core-ktx:1.8.0")
+    implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
     implementation("androidx.room:room-runtime:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")
     kapt("androidx.room:room-compiler:2.4.3")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
 
     implementation("io.insert-koin:koin-core:3.2.0")
     implementation("io.insert-koin:koin-android:3.2.0")
