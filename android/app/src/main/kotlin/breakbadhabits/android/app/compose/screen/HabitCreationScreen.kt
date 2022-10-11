@@ -22,16 +22,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitCreationFeature
-import breakbadhabits.android.app.createHabitEventTimeInputFeature
-import breakbadhabits.android.app.createHabitIconSelectionFeature
-import breakbadhabits.android.app.createHabitNameInputFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.app.feature.HabitCreationFeature
 import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
 import breakbadhabits.android.app.feature.HabitNameInputFeature
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.ErrorText
 import breakbadhabits.android.compose.ui.IconData
@@ -47,17 +43,25 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.*
+import java.util.Calendar
 
 
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {
-    val dateTimeFormatter: DateTimeFormatter = get()
-    val habitIconResources: HabitIconResources = get()
-    val habitNameInputFeature = rememberEpicStoreEntry { createHabitNameInputFeature() }
-    val lastEventTimeInputFeature = rememberEpicStoreEntry { createHabitEventTimeInputFeature() }
-    val habitIconSelectionFeature = rememberEpicStoreEntry { createHabitIconSelectionFeature() }
-    val habitCreationFeature = rememberEpicStoreEntry { createHabitCreationFeature() }
+    val dateTimeFormatter: DateTimeFormatter = appDependencies.dateTimeFormatter
+    val habitIconResources: HabitIconResources = appDependencies.habitIconResources
+    val habitNameInputFeature = rememberEpicStoreEntry {
+        appDependencies.createHabitNameInputFeature()
+    }
+    val lastEventTimeInputFeature = rememberEpicStoreEntry {
+        appDependencies.createHabitEventTimeInputFeature()
+    }
+    val habitIconSelectionFeature = rememberEpicStoreEntry {
+        appDependencies.createHabitIconSelectionFeature()
+    }
+    val habitCreationFeature = rememberEpicStoreEntry {
+        appDependencies.createHabitCreationFeature()
+    }
 
     val habitName by habitNameInputFeature.input.collectAsState()
     val habitNameValidation by habitNameInputFeature.validation.collectAsState()

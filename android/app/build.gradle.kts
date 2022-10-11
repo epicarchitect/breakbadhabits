@@ -60,9 +60,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
 
-    implementation("io.insert-koin:koin-core:3.2.0")
-    implementation("io.insert-koin:koin-android:3.2.0")
-
     implementation("io.github.vanpra.compose-material-dialogs:core:0.8.1-rc")
     implementation("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
 }

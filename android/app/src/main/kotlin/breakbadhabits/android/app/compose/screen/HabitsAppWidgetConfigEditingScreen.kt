@@ -26,13 +26,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitNameFeature
-import breakbadhabits.android.app.createHabitsAppWidgetDeletionFeature
-import breakbadhabits.android.app.createHabitsAppWidgetHabitIdsSelectionFeature
-import breakbadhabits.android.app.createHabitsAppWidgetTitleInputFeature
-import breakbadhabits.android.app.createHabitsAppWidgetUpdatingFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.app.utils.AlertDialogManager
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Checkbox
@@ -47,18 +42,18 @@ fun HabitsAppWidgetConfigEditingScreen(
     configId: Int,
     onFinished: () -> Unit
 ) {
-    val alertDialogManager: AlertDialogManager = get()
+    val alertDialogManager: AlertDialogManager = appDependencies.alertDialogManager
     val updatingFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetUpdatingFeature()
+        appDependencies.createHabitsAppWidgetUpdatingFeature()
     }
     val deletionFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetDeletionFeature()
+        appDependencies.createHabitsAppWidgetDeletionFeature()
     }
     val habitSelectionFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetHabitIdsSelectionFeature(configId)
+        appDependencies.createHabitsAppWidgetHabitIdsSelectionFeature(configId)
     }
     val titleFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetTitleInputFeature(configId)
+        appDependencies.createHabitsAppWidgetTitleInputFeature(configId)
     }
     val habitSelection by habitSelectionFeature.selection.collectAsState()
     val title by titleFeature.input.collectAsState()
@@ -180,7 +175,9 @@ private fun LazyItemScope.HabitItem(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val habitNameFeature = rememberEpicStoreEntry { createHabitNameFeature(habitId) }
+    val habitNameFeature = rememberEpicStoreEntry {
+        appDependencies.createHabitNameFeature(habitId)
+    }
     val habitName by habitNameFeature.state.collectAsState()
 
     Card(

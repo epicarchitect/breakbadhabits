@@ -20,26 +20,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createCurrentMonthHabitEventCountFeature
-import breakbadhabits.android.app.createCurrentMonthHabitEventIdsFeature
-import breakbadhabits.android.app.createCurrentMonthHabitEventTimesFeature
-import breakbadhabits.android.app.createHabitAbstinenceTimeFeature
-import breakbadhabits.android.app.createHabitAbstinenceTimesFeature
-import breakbadhabits.android.app.createHabitAverageAbstinenceTimeFeature
-import breakbadhabits.android.app.createHabitEventCommentFeature
-import breakbadhabits.android.app.createHabitEventCountFeature
-import breakbadhabits.android.app.createHabitEventIdsFeature
-import breakbadhabits.android.app.createHabitEventTimeFeature
-import breakbadhabits.android.app.createHabitIconIdFeature
-import breakbadhabits.android.app.createHabitMaxAbstinenceTimeFeature
-import breakbadhabits.android.app.createHabitMinAbstinenceTimeFeature
-import breakbadhabits.android.app.createHabitNameFeature
-import breakbadhabits.android.app.createHabitTimeSinceFirstEventFeature
-import breakbadhabits.android.app.createPreviousMonthHabitEventCountFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.EventsCalendar
@@ -54,7 +38,8 @@ import breakbadhabits.android.compose.ui.Title
 import breakbadhabits.android.compose.ui.rememberEventsCalendarState
 import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import java.time.format.TextStyle
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun HabitScreen(
@@ -64,30 +49,30 @@ fun HabitScreen(
     openHabitEditing: () -> Unit,
     showALlEvents: () -> Unit
 ) {
-    val dateTimeFormatter: DateTimeFormatter = get()
-    val habitIconResources: HabitIconResources = get()
-    val abstinenceTimeFormatter: AbstinenceTimeFormatter = get()
+    val dateTimeFormatter: DateTimeFormatter = appDependencies.dateTimeFormatter
+    val habitIconResources: HabitIconResources = appDependencies.habitIconResources
+    val abstinenceTimeFormatter: AbstinenceTimeFormatter = appDependencies.abstinenceTimeFormatter
 
     val habitNameFeature = rememberEpicStoreEntry {
-        createHabitNameFeature(habitId)
+        appDependencies.createHabitNameFeature(habitId)
     }
     val habitIconIdFeature = rememberEpicStoreEntry {
-        createHabitIconIdFeature(habitId)
+        appDependencies.createHabitIconIdFeature(habitId)
     }
     val habitAbstinenceTimeFeature = rememberEpicStoreEntry {
-        createHabitAbstinenceTimeFeature(habitId)
+        appDependencies.createHabitAbstinenceTimeFeature(habitId)
     }
     val currentMonthEventTimesFeature = rememberEpicStoreEntry {
-        createCurrentMonthHabitEventTimesFeature(habitId)
+        appDependencies.createCurrentMonthHabitEventTimesFeature(habitId)
     }
     val currentMonthEventIdsFeature = rememberEpicStoreEntry {
-        createCurrentMonthHabitEventIdsFeature(habitId)
+        appDependencies.createCurrentMonthHabitEventIdsFeature(habitId)
     }
     val eventIdsFeature = rememberEpicStoreEntry {
-        createHabitEventIdsFeature(habitId)
+        appDependencies.createHabitEventIdsFeature(habitId)
     }
     val abstinenceTimesFeature = rememberEpicStoreEntry {
-        createHabitAbstinenceTimesFeature(habitId)
+        appDependencies.createHabitAbstinenceTimesFeature(habitId)
     }
 
     val habitName by habitNameFeature.state.collectAsState()
@@ -193,10 +178,10 @@ fun HabitScreen(
                                 ),
                             ) {
                                 val timeFeature = rememberEpicStoreEntry {
-                                    createHabitEventTimeFeature(eventId)
+                                    appDependencies.createHabitEventTimeFeature(eventId)
                                 }
                                 val commentFeature = rememberEpicStoreEntry {
-                                    createHabitEventCommentFeature(eventId)
+                                    appDependencies.createHabitEventCommentFeature(eventId)
                                 }
 
                                 val time by timeFeature.state.collectAsState()
@@ -286,25 +271,25 @@ fun HabitScreen(
                     )
 
                     val averageAbstinenceTimeFeature = rememberEpicStoreEntry {
-                        createHabitAverageAbstinenceTimeFeature(habitId)
+                        appDependencies.createHabitAverageAbstinenceTimeFeature(habitId)
                     }
                     val maxAbstinenceTimeFeature = rememberEpicStoreEntry {
-                        createHabitMaxAbstinenceTimeFeature(habitId)
+                        appDependencies.createHabitMaxAbstinenceTimeFeature(habitId)
                     }
                     val minAbstinenceTimeFeature = rememberEpicStoreEntry {
-                        createHabitMinAbstinenceTimeFeature(habitId)
+                        appDependencies.createHabitMinAbstinenceTimeFeature(habitId)
                     }
                     val timeSinceFirstEventFeature = rememberEpicStoreEntry {
-                        createHabitTimeSinceFirstEventFeature(habitId)
+                        appDependencies.createHabitTimeSinceFirstEventFeature(habitId)
                     }
                     val currentMonthEventCountFeature = rememberEpicStoreEntry {
-                        createCurrentMonthHabitEventCountFeature(habitId)
+                        appDependencies.createCurrentMonthHabitEventCountFeature(habitId)
                     }
                     val previousMonthEventCountFeature = rememberEpicStoreEntry {
-                        createPreviousMonthHabitEventCountFeature(habitId)
+                        appDependencies.createPreviousMonthHabitEventCountFeature(habitId)
                     }
                     val totalEventCountFeature = rememberEpicStoreEntry {
-                        createHabitEventCountFeature(habitId)
+                        appDependencies.createHabitEventCountFeature(habitId)
                     }
                     val averageAbstinenceTime by averageAbstinenceTimeFeature.state.collectAsState()
                     val maxAbstinenceTime by maxAbstinenceTimeFeature.state.collectAsState()

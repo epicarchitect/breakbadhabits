@@ -23,13 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitAbstinenceTimeFeature
-import breakbadhabits.android.app.createHabitIconIdFeature
-import breakbadhabits.android.app.createHabitIdsFeature
-import breakbadhabits.android.app.createHabitNameFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.app.formatter.AbstinenceTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Icon
@@ -48,7 +44,9 @@ fun HabitsScreen(
     openHabitCreation: () -> Unit,
     openSettings: () -> Unit
 ) {
-    val habitIdsFeature = rememberEpicStoreEntry { createHabitIdsFeature() }
+    val habitIdsFeature = rememberEpicStoreEntry {
+        appDependencies.createHabitIdsFeature()
+    }
     val habitIds by habitIdsFeature.state.collectAsState()
 
     Box(
@@ -129,16 +127,16 @@ private fun LazyItemScope.HabitItem(
     onItemClick: () -> Unit,
     onResetClick: () -> Unit
 ) {
-    val habitIconResources: HabitIconResources = get()
-    val abstinenceTimeFormatter: AbstinenceTimeFormatter = get()
+    val habitIconResources: HabitIconResources = appDependencies.habitIconResources
+    val abstinenceTimeFormatter: AbstinenceTimeFormatter = appDependencies.abstinenceTimeFormatter
     val habitNameFeature = rememberEpicStoreEntry {
-        createHabitNameFeature(habitId)
+        appDependencies.createHabitNameFeature(habitId)
     }
     val habitIconIdFeature = rememberEpicStoreEntry {
-        createHabitIconIdFeature(habitId)
+        appDependencies.createHabitIconIdFeature(habitId)
     }
     val habitAbstinenceTimeFeature = rememberEpicStoreEntry {
-        createHabitAbstinenceTimeFeature(habitId)
+        appDependencies.createHabitAbstinenceTimeFeature(habitId)
     }
 
     val habitName by habitNameFeature.state.collectAsState()

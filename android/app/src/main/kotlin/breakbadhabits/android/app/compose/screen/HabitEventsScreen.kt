@@ -20,15 +20,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitEventCommentFeature
-import breakbadhabits.android.app.createHabitEventIdsFeature
-import breakbadhabits.android.app.createHabitEventTimeFeature
-import breakbadhabits.android.app.createHabitEventTimesFeature
-import breakbadhabits.android.app.createHabitIconIdFeature
-import breakbadhabits.android.app.createHabitNameFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.EventsCalendar
 import breakbadhabits.android.compose.ui.Icon
 import breakbadhabits.android.compose.ui.Text
@@ -38,7 +32,7 @@ import epicarchitect.epicstore.compose.epicStoreItems
 import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import java.time.Instant
 import java.time.ZoneId
-import java.util.*
+import java.util.Calendar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -46,20 +40,20 @@ fun HabitEventsScreen(
     habitId: Int,
     openHabitEventEditing: (habitEventId: Int) -> Unit,
 ) {
-    val dateTimeFormatter: DateTimeFormatter = get()
-    val habitIconResources: HabitIconResources = get()
+    val dateTimeFormatter: DateTimeFormatter = appDependencies.dateTimeFormatter
+    val habitIconResources: HabitIconResources =appDependencies.habitIconResources
 
     val habitNameFeature = rememberEpicStoreEntry {
-        createHabitNameFeature(habitId)
+        appDependencies.createHabitNameFeature(habitId)
     }
     val habitIconIdFeature = rememberEpicStoreEntry {
-        createHabitIconIdFeature(habitId)
+        appDependencies.createHabitIconIdFeature(habitId)
     }
     val eventIdsFeature = rememberEpicStoreEntry {
-        createHabitEventIdsFeature(habitId)
+        appDependencies.createHabitEventIdsFeature(habitId)
     }
     val eventTimesFeature = rememberEpicStoreEntry {
-        createHabitEventTimesFeature(habitId)
+        appDependencies.createHabitEventTimesFeature(habitId)
     }
     val habitName by habitNameFeature.state.collectAsState()
     val habitIconId by habitIconIdFeature.state.collectAsState()
@@ -111,10 +105,10 @@ fun HabitEventsScreen(
 
         epicStoreItems(eventIds) { eventId ->
             val timeFeature = rememberEpicStoreEntry("HabitEventTimeFeature:$eventId") {
-                createHabitEventTimeFeature(eventId)
+                appDependencies.createHabitEventTimeFeature(eventId)
             }
             val commentFeature = rememberEpicStoreEntry("HabitEventCommentFeature:$eventId") {
-                createHabitEventCommentFeature(eventId)
+                appDependencies.createHabitEventCommentFeature(eventId)
             }
             val time by timeFeature.state.collectAsState()
             val comment by commentFeature.state.collectAsState()

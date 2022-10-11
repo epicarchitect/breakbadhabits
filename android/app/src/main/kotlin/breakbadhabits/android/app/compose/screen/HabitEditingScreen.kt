@@ -21,16 +21,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitDeletionFeature
-import breakbadhabits.android.app.createHabitIconSelectionFeature
-import breakbadhabits.android.app.createHabitNameInputFeature
-import breakbadhabits.android.app.createHabitUpdatingFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.app.feature.HabitDeletionFeature
 import breakbadhabits.android.app.feature.HabitNameInputFeature
 import breakbadhabits.android.app.feature.HabitUpdatingFeature
 import breakbadhabits.android.app.resources.HabitIconResources
 import breakbadhabits.android.app.utils.AlertDialogManager
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.ErrorText
 import breakbadhabits.android.compose.ui.IconData
@@ -47,19 +43,19 @@ fun HabitEditingScreen(
     onFinished: () -> Unit,
     onHabitDeleted: () -> Unit
 ) {
-    val habitIconResources: HabitIconResources = get()
-    val alertDialogManager: AlertDialogManager = get()
+    val habitIconResources: HabitIconResources = appDependencies.habitIconResources
+    val alertDialogManager: AlertDialogManager = appDependencies.alertDialogManager
     val habitDeletionFeature = rememberEpicStoreEntry {
-        createHabitDeletionFeature(habitId)
+        appDependencies.createHabitDeletionFeature(habitId)
     }
     val habitNameInputFeature = rememberEpicStoreEntry {
-        createHabitNameInputFeature(habitId)
+        appDependencies.createHabitNameInputFeature(habitId)
     }
     val habitUpdatingFeature = rememberEpicStoreEntry {
-        createHabitUpdatingFeature(habitId)
+        appDependencies.createHabitUpdatingFeature(habitId)
     }
     val habitIconSelectionFeature = rememberEpicStoreEntry {
-        createHabitIconSelectionFeature(habitId)
+        appDependencies.createHabitIconSelectionFeature(habitId)
     }
 
     val habitName by habitNameInputFeature.input.collectAsState()

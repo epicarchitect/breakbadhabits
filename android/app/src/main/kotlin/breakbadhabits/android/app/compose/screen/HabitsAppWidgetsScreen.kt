@@ -18,10 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitNameFeature
-import breakbadhabits.android.app.createHabitsAppWidgetConfigIdsFeature
-import breakbadhabits.android.app.createHabitsAppWidgetHabitIdsFeature
-import breakbadhabits.android.app.createHabitsAppWidgetTitleFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Text
 import breakbadhabits.android.compose.ui.Title
@@ -33,7 +30,7 @@ fun HabitsAppWidgetsScreen(
     openHabitAppWidgetConfigEditing: (configId: Int) -> Unit
 ) {
     val habitsAppWidgetConfigIdsFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetConfigIdsFeature()
+        appDependencies.createHabitsAppWidgetConfigIdsFeature()
     }
 
     val configIds by habitsAppWidgetConfigIdsFeature.state.collectAsState()
@@ -89,11 +86,11 @@ fun WidgetConfigItem(
     onClick: () -> Unit
 ) {
     val habitsAppWidgetTitleFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetTitleFeature(configId)
+        appDependencies.createHabitsAppWidgetTitleFeature(configId)
     }
 
     val habitsAppWidgetHabitIdsFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetHabitIdsFeature(configId)
+        appDependencies.createHabitsAppWidgetHabitIdsFeature(configId)
     }
 
     val title by habitsAppWidgetTitleFeature.state.collectAsState()
@@ -128,7 +125,7 @@ fun WidgetConfigItem(
                     val list = habitIds?.toList() ?: emptyList()
                     list.forEachIndexed { index, habitId ->
                         val habitNameFeature = rememberEpicStoreEntry {
-                            createHabitNameFeature(habitId)
+                            appDependencies.createHabitNameFeature(habitId)
                         }
                         val habitName by habitNameFeature.state.collectAsState()
                         append(habitName)

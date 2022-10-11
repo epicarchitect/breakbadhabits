@@ -18,16 +18,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitEventCommentInputFeature
-import breakbadhabits.android.app.createHabitEventDeletionFeature
-import breakbadhabits.android.app.createHabitEventHabitIdFeature
-import breakbadhabits.android.app.createHabitEventTimeInputFeature
-import breakbadhabits.android.app.createHabitEventUpdatingFeature
-import breakbadhabits.android.app.createHabitNameFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
 import breakbadhabits.android.app.formatter.DateTimeFormatter
 import breakbadhabits.android.app.utils.AlertDialogManager
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.ErrorText
 import breakbadhabits.android.compose.ui.InteractionType
@@ -43,7 +37,7 @@ import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import epicarchitect.epicstore.getOrSet
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.*
+import java.util.Calendar
 
 @Composable
 fun HabitEventEditingScreen(
@@ -51,23 +45,23 @@ fun HabitEventEditingScreen(
     onFinished: () -> Unit,
     onHabitEventDeleted: () -> Unit
 ) {
-    val dateTimeFormatter: DateTimeFormatter = get()
-    val alertDialogManager: AlertDialogManager = get()
+    val dateTimeFormatter: DateTimeFormatter = appDependencies.dateTimeFormatter
+    val alertDialogManager: AlertDialogManager = appDependencies.alertDialogManager
 
     val timeInputFeature = rememberEpicStoreEntry {
-        createHabitEventTimeInputFeature(habitEventId)
+        appDependencies.createHabitEventTimeInputFeature(habitEventId)
     }
     val commentFeature = rememberEpicStoreEntry {
-        createHabitEventCommentInputFeature(habitEventId)
+        appDependencies.createHabitEventCommentInputFeature(habitEventId)
     }
     val habitIdFeature = rememberEpicStoreEntry {
-        createHabitEventHabitIdFeature(habitEventId)
+        appDependencies.createHabitEventHabitIdFeature(habitEventId)
     }
     val deletionFeature = rememberEpicStoreEntry {
-        createHabitEventDeletionFeature()
+        appDependencies.createHabitEventDeletionFeature()
     }
     val updatingFeature = rememberEpicStoreEntry {
-        createHabitEventUpdatingFeature()
+        appDependencies.createHabitEventUpdatingFeature()
     }
 
     val comment by commentFeature.input.collectAsState()
@@ -81,7 +75,7 @@ fun HabitEventEditingScreen(
     val habitNameFeature = remember(habitId) {
         habitId?.let {
             epicStore.getOrSet("habitNameFeature:$habitId") {
-                createHabitNameFeature(it)
+                appDependencies.createHabitNameFeature(it)
             }
         }
     }

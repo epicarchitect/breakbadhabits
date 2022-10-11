@@ -18,13 +18,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitEventCommentInputFeature
-import breakbadhabits.android.app.createHabitEventCreationFeature
-import breakbadhabits.android.app.createHabitEventTimeInputFeature
-import breakbadhabits.android.app.createHabitNameFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.app.feature.HabitEventTimeInputFeature
 import breakbadhabits.android.app.formatter.DateTimeFormatter
-import breakbadhabits.android.app.utils.get
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.ErrorText
 import breakbadhabits.android.compose.ui.InteractionType
@@ -38,26 +34,26 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.*
+import java.util.Calendar
 
 @Composable
 fun HabitEventCreationScreen(
     habitId: Int,
     onFinished: () -> Unit
 ) {
-    val dateTimeFormatter: DateTimeFormatter = get()
+    val dateTimeFormatter: DateTimeFormatter = appDependencies.dateTimeFormatter
 
     val timeInputFeature = rememberEpicStoreEntry {
-        createHabitEventTimeInputFeature()
+        appDependencies.createHabitEventTimeInputFeature()
     }
     val commentInputFeature = rememberEpicStoreEntry {
-        createHabitEventCommentInputFeature()
+        appDependencies.createHabitEventCommentInputFeature()
     }
     val habitNameFeature = rememberEpicStoreEntry {
-        createHabitNameFeature(habitId)
+        appDependencies.createHabitNameFeature(habitId)
     }
     val creationFeature = rememberEpicStoreEntry {
-        createHabitEventCreationFeature()
+        appDependencies.createHabitEventCreationFeature()
     }
 
     val habitName by habitNameFeature.state.collectAsState()

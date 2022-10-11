@@ -24,10 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.createHabitNameFeature
-import breakbadhabits.android.app.createHabitsAppWidgetCreationFeature
-import breakbadhabits.android.app.createHabitsAppWidgetHabitIdsSelectionFeature
-import breakbadhabits.android.app.createHabitsAppWidgetTitleInputFeature
+import breakbadhabits.android.app.appDependencies
 import breakbadhabits.android.compose.ui.Button
 import breakbadhabits.android.compose.ui.Card
 import breakbadhabits.android.compose.ui.Checkbox
@@ -44,13 +41,13 @@ fun HabitsAppWidgetConfigCreationScreen(
     onFinished: () -> Unit
 ) {
     val creationFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetCreationFeature()
+        appDependencies.createHabitsAppWidgetCreationFeature()
     }
     val titleInputFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetTitleInputFeature()
+        appDependencies.createHabitsAppWidgetTitleInputFeature()
     }
     val habitSelectionFeature = rememberEpicStoreEntry {
-        createHabitsAppWidgetHabitIdsSelectionFeature()
+        appDependencies.createHabitsAppWidgetHabitIdsSelectionFeature()
     }
 
     val habitSelection by habitSelectionFeature.selection.collectAsState()
@@ -141,7 +138,9 @@ private fun LazyItemScope.HabitItem(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val habitNameFeature = rememberEpicStoreEntry { createHabitNameFeature(habitId) }
+    val habitNameFeature = rememberEpicStoreEntry {
+        appDependencies.createHabitNameFeature(habitId)
+    }
     val habitName by habitNameFeature.state.collectAsState()
 
     Card(
