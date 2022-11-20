@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitsAppWidgets_empty">Виджеты отсутствуют. Вы можете добавить их на главный экран вашего телефона.</string>
+    <string name="habitsAppWidgets_deleteConfirmation">Вы уверены что хотите удалить этот виджет? Вам придется удалить виджет с главного экрана вручную.</string>
+</resources>

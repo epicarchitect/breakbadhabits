@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Activity" parent="Base.Activity">
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="colorPrimary">@color/red</item>
+        <item name="colorAccent">@color/red</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
+    </style>
+</resources>

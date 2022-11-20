@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitsAppWidgets_empty">There are no widgets. You can add them to your phone\'s home screen.</string>
+    <string name="habitsAppWidgets_deleteConfirmation">Are you sure you want to delete this widget? You will have to manually remove the widget from the home screen.</string>
+</resources>

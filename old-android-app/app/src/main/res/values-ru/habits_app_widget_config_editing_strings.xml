@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitsAppWidgetConfigEditing_title">Редактирование виджета</string>
+    <string name="habitsAppWidgetConfigEditing_name_description">Введите название виджета.</string>
+    <string name="habitsAppWidgetConfigEditing_name">Название виджета</string>
+    <string name="habitsAppWidgetConfigEditing_habitsDescription">Выберите привычки для виджета.</string>
+    <string name="habitsAppWidgetConfigEditing_finish">Сохранить изменения</string>
+    <string name="habitsAppWidgetConfigEditing_deletion_description">Вы можете удалить этот виджет.</string>
+    <string name="habitsAppWidgetConfigEditing_deletion_button">Удалить этот виджет</string>
+</resources>

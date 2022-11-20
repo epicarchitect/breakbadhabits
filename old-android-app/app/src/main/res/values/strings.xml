@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Break Bad Habits</string>
+    <string name="app_updated">App update downloaded</string>
+    <string name="app_install_update">Install</string>
+    <string name="s">s</string>
+    <string name="m">m</string>
+    <string name="h">h</string>
+    <string name="d">d</string>
+    <string name="done">Done</string>
+    <string name="habits_app_widget_name">Habits widget</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="yes">Yes</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="select_date">Select a date</string>
+    <string name="select_time">Pick a time</string>
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+</resources>

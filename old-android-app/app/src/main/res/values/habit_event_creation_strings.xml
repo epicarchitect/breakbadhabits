@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habitEventCreation_title">New event</string>
+    <string name="habitEventCreation_habitName">Habit: %s</string>
+    <string name="habitEventCreation_event_description">Select the date and time when the event occurred.</string>
+    <string name="habitEventCreation_comment_description">You can write a comment, but you don\'t have to.</string>
+    <string name="habitEventCreation_comment">Comment</string>
+    <string name="habitEventCreation_finish_description">You can always change or delete this event.</string>
+    <string name="habitEventCreation_finish">Save event</string>
+    <string name="habitEventCreation_eventTimeValidation_biggestThenCurrentTime">The date and time of the event cannot be greater than the current time.</string>
+    <string name="habitEventCreation_selectEventTime">Select date and time</string>
+    <string name="habitEventCreation_eventDate">Event date: %s</string>
+    <string name="habitEventCreation_eventTime">Event time: %s</string>
+</resources>

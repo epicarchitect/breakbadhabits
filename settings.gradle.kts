@@ -1,8 +1,13 @@
 rootProject.name = "Break Bad Habits"
 
 include(
-    ":coroutines",
-    ":android:compose:ui",
-    ":android:compose:activity",
-    ":android:app"
+    ":app-dependencies",
+    ":app-dependencies-main",
+    ":extensions:coroutines",
+    ":extensions:datetime",
+    ":entities",
+    ":features:habits",
+    ":android-app",
+    ":app-ui",
+    ":ui-kit",
 )

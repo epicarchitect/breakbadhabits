@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="habit_abstinenceTime_title">Время воздержания</string>
+    <string name="habit_resetTime">Добавить событие</string>
+    <string name="habit_events">События</string>
+    <string name="habit_analyze">Анализ</string>
+    <string name="habit_noEvents">События отсутствуют</string>
+    <string name="habit_deleteConfirmation">Вы уверены, что хотите удалить эту привычку?</string>
+    <string name="habit_showAllEvents">Показать все события</string>
+</resources>

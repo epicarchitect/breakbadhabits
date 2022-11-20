@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/widget_background_dark"
+    android:orientation="vertical"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:theme="@style/Theme.AppCompat"
+    tools:layout_gravity="center"
+    tools:layout_height="110dp"
+    tools:layout_width="110dp">
+
+    <TextView
+        android:id="@+id/title_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textStyle="bold"
+        tools:text="Title" />
+
+    <FrameLayout
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:alpha="0.5"
+        android:background="?attr/colorControlNormal" />
+
+    <ListView
+        android:id="@+id/habits_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"
+        tools:listitem="@layout/habits_app_widget_item" />
+</LinearLayout>

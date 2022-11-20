@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appSettings_themeSelection_description">Выберите тему оформления приложения.</string>
+    <string name="appSettings_themeSelection_systemTheme">Как в системе</string>
+    <string name="appSettings_themeSelection_darkTheme">Темная тема</string>
+    <string name="appSettings_themeSelection_lightTheme">Светлая тема</string>
+    <string name="appSettings_widgets_description">Настройте свои виджеты.</string>
+    <string name="appSettings_widgets_button">Настройки виджетов</string>
+</resources>
