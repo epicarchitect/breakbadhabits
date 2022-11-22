@@ -10,4 +10,8 @@ include(
     ":android-app",
     ":app-ui",
     ":ui-kit",
+
+    ":epic-store:core",
+    ":epic-store:compose",
+    ":epic-store:google-navigation-compose",
 )

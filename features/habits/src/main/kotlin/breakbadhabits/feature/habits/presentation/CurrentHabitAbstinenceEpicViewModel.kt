@@ -5,20 +5,17 @@ import breakbadhabits.entity.HabitAbstinence
 import breakbadhabits.extension.datetime.LocalDateTimeInterval
 import breakbadhabits.feature.habits.model.HabitTracksRepository
 import breakbadhabits.feature.habits.model.TimeProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-class CurrentHabitAbstinenceViewModel internal constructor(
-    private val coroutineScope: CoroutineScope,
+class CurrentHabitAbstinenceEpicViewModel internal constructor(
     habitTracksRepository: HabitTracksRepository,
     timeProvider: TimeProvider,
     private val habitId: Habit.Id
-) {
+) : EpicViewModel<CurrentHabitAbstinenceEpicViewModel.State>() {
 
-    val state = combine(
+    override val state = combine(
         habitTracksRepository.habitTrackFlowByHabitIdAndLastByTime(habitId),
         timeProvider.currentTimeFlow()
     ) { lastTrack, currentDateTime ->
@@ -36,11 +33,6 @@ class CurrentHabitAbstinenceViewModel internal constructor(
             )
         )
     }.stateIn(coroutineScope, SharingStarted.Eagerly, State.Loading())
-
-
-    fun dispose() {
-        coroutineScope.cancel()
-    }
 
     sealed class State {
         class Loading : State()

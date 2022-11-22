@@ -5,7 +5,7 @@ import breakbadhabits.entity.HabitTrack
 import breakbadhabits.feature.habits.model.HabitTracksRepository
 import breakbadhabits.feature.habits.model.HabitsRepository
 import breakbadhabits.feature.habits.model.TimeProvider
-import breakbadhabits.feature.habits.presentation.CurrentHabitAbstinenceViewModel
+import breakbadhabits.feature.habits.presentation.CurrentHabitAbstinenceEpicViewModel
 import breakbadhabits.feature.habits.presentation.HabitCreationViewModel
 import breakbadhabits.feature.habits.presentation.HabitDeletionViewModel
 import breakbadhabits.feature.habits.presentation.HabitIdsViewModel
@@ -54,8 +54,7 @@ class HabitsFeatureFactory(
         id
     )
 
-    fun createHabitCurrentAbstinenceViewModel(id: Habit.Id) = CurrentHabitAbstinenceViewModel(
-        createFeatureCoroutineScope(),
+    fun createHabitCurrentAbstinenceViewModel(id: Habit.Id) = CurrentHabitAbstinenceEpicViewModel(
         habitTracksRepository,
         timeProvider,
         id

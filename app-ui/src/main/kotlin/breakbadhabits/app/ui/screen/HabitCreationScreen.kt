@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import breakbadhabits.app.ui.LocalAppDependencies
-import breakbadhabits.app.ui.LocalHabitIcons
+import breakbadhabits.app.ui.LocalHabitIconResources
 import breakbadhabits.app.ui.R
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
@@ -81,7 +81,7 @@ private fun InputScreen(
     val intervalStartSelectionState = rememberMaterialDialogState()
     val intervalEndSelectionState = rememberMaterialDialogState()
     val focusManager = LocalFocusManager.current
-    val habitIconResources = LocalHabitIcons.current
+    val habitIconResources = LocalHabitIconResources.current
 
     MaterialDialog(
         dialogState = intervalStartSelectionState,

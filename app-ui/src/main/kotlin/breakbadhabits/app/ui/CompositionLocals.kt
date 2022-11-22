@@ -8,6 +8,10 @@ val LocalAppDependencies = compositionLocalOf<AppDependencies> {
     error("LocalAppDependencies not provided")
 }
 
-val LocalHabitIcons = compositionLocalOf<HabitIconResources> {
-    error("LocalHabitIcons not provided")
+val LocalHabitIconResources = compositionLocalOf<HabitIconResources> {
+    error("LocalHabitIconResources not provided")
+}
+
+val LocalHabitAbstinenceFormatter = compositionLocalOf<HabitAbstinenceFormatter> {
+    error("LocalHabitAbstinenceFormatter not provided")
 }

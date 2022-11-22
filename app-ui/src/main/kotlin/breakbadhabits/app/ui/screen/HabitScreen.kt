@@ -17,10 +17,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.app.ui.LocalAppDependencies
-import breakbadhabits.app.ui.LocalHabitIcons
+import breakbadhabits.app.ui.LocalHabitIconResources
 import breakbadhabits.app.ui.R
 import breakbadhabits.entity.Habit
-import breakbadhabits.feature.habits.presentation.CurrentHabitAbstinenceViewModel
+import breakbadhabits.feature.habits.presentation.CurrentHabitAbstinenceEpicViewModel
 import breakbadhabits.feature.habits.presentation.HabitViewModel
 import breakbadhabits.ui.kit.Button
 import breakbadhabits.ui.kit.Icon
@@ -57,7 +57,7 @@ private fun LoadedScreen(
     habitId: Habit.Id,
     state: HabitViewModel.State.Loaded
 ) {
-    val habitIconResources = LocalHabitIcons.current
+    val habitIconResources = LocalHabitIconResources.current
     val appDependencies = LocalAppDependencies.current
     val habitAbstinenceViewModel = rememberEpicStoreEntry {
         appDependencies.habitsFeatureFactory.createHabitCurrentAbstinenceViewModel(habitId)
@@ -91,9 +91,9 @@ private fun LoadedScreen(
 
                 Text(
                     text = when (val state = abstinenceState) {
-                        is CurrentHabitAbstinenceViewModel.State.Loaded -> state.abstinence.interval.toString()
-                        is CurrentHabitAbstinenceViewModel.State.Loading -> "loading..."
-                        is CurrentHabitAbstinenceViewModel.State.NotExist -> stringResource(R.string.habit_noEvents)
+                        is CurrentHabitAbstinenceEpicViewModel.State.Loaded -> state.abstinence.interval.toString()
+                        is CurrentHabitAbstinenceEpicViewModel.State.Loading -> "loading..."
+                        is CurrentHabitAbstinenceEpicViewModel.State.NotExist -> stringResource(R.string.habit_noEvents)
                     }
                 )
 
