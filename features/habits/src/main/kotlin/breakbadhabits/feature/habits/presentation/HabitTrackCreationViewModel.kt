@@ -6,7 +6,6 @@ import breakbadhabits.feature.habits.model.HabitTracksRepository
 import breakbadhabits.feature.habits.validator.HabitTrackIntervalValidator
 import kolmachikhin.alexander.validation.Correct
 import kolmachikhin.alexander.validation.Validated
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -15,11 +14,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HabitTrackCreationViewModel internal constructor(
-    private val coroutineScope: CoroutineScope,
     private val habitTracksRepository: HabitTracksRepository,
     private val habitTrackIntervalValidator: HabitTrackIntervalValidator,
     private val habitId: Habit.Id
-) {
+) : EpicViewModel() {
 
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
     private val intervalState = MutableStateFlow<HabitTrack.Interval?>(null)

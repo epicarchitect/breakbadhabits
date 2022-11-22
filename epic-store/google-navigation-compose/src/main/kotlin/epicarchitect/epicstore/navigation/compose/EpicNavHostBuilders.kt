@@ -38,8 +38,7 @@ fun NavGraphBuilder.epicStoreComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
-    doBeforeClear: ((key: Any?, value: Any?) -> Unit)? = null,
-    doAfterClear: (() -> Unit)? = null,
+    onEntryCleared: ((key: Any?, value: Any?) -> Unit)? = null,
     content: @Composable (NavBackStackEntry) -> Unit
 ) {
     composable(
@@ -54,8 +53,7 @@ fun NavGraphBuilder.epicStoreComposable(
                     it.destination.route == route
                 } == null
             },
-            doBeforeClear = doBeforeClear,
-            doAfterClear = doAfterClear,
+            onEntryCleared = onEntryCleared,
             content = {
                 content(it)
             }

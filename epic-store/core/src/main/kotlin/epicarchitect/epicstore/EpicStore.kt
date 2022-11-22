@@ -4,8 +4,8 @@ class EpicStore {
 
     private val map = mutableMapOf<Any?, Any?>()
     var isClearNeeded: () -> Boolean = { false }
-    var doBeforeClear: ((key: Any?, value: Any?) -> Unit)? = null
-    var doAfterClear: (() -> Unit)? = null
+    var onEntryCleared: ((key: Any?, value: Any?) -> Unit)? = null
+    val onEntryClearedMap = mutableMapOf<Any?, ((Any?) -> Unit)?>()
 
     fun clearIfNeeded() {
         map.values.forEach {
@@ -16,12 +16,16 @@ class EpicStore {
 
         if (isClearNeeded()) {
             map.forEach {
-                doBeforeClear?.invoke(it.key, it.value)
-
+                onEntryCleared?.invoke(it.key, it.value)
+                onEntryClearedMap[it.key]?.invoke(it.value)
             }
             map.clear()
-            doAfterClear?.invoke()
+            onEntryClearedMap.clear()
         }
+    }
+
+    fun setOnEntryCleared(key: Any?, onCleared: ((Any?) -> Unit)?) {
+        onEntryClearedMap[key] = onCleared
     }
 
     operator fun get(key: Any?) = map[key]
@@ -34,3 +38,11 @@ inline fun <reified T> EpicStore.getOrSet(
 ) = (get(key) ?: provide().also {
     set(key, it)
 }) as T
+
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T> EpicStore.setOnEntryCleared(
+    key: Any?,
+    noinline onCleared: ((T) -> Unit)?
+) {
+    setOnEntryCleared(key, onCleared as ((Any?) -> Unit)?)
+}

@@ -23,11 +23,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.app.ui.LocalAppDependencies
+import breakbadhabits.app.ui.LocalHabitAbstinenceFormatter
 import breakbadhabits.app.ui.LocalHabitIconResources
 import breakbadhabits.app.ui.R
-import breakbadhabits.app.ui.commonDoBeforeClear
+import breakbadhabits.app.ui.rememberEpicViewModel
 import breakbadhabits.entity.Habit
-import breakbadhabits.feature.habits.presentation.CurrentHabitAbstinenceEpicViewModel
+import breakbadhabits.feature.habits.presentation.CurrentHabitAbstinenceViewModel
 import breakbadhabits.feature.habits.presentation.HabitIdsViewModel
 import breakbadhabits.feature.habits.presentation.HabitViewModel
 import breakbadhabits.ui.kit.Button
@@ -49,7 +50,7 @@ fun HabitsScreen(
     openSettings: () -> Unit
 ) {
     val appDependencies = LocalAppDependencies.current
-    val habitIdsFeature = rememberEpicStoreEntry {
+    val habitIdsFeature = rememberEpicViewModel {
         appDependencies.habitsFeatureFactory.createHabitIdsViewModel()
     }
     val habitIds by habitIdsFeature.state.collectAsState()
@@ -100,8 +101,7 @@ fun HabitsScreen(
                 ) {
                     epicStoreItems(
                         items = ids.habitIds,
-                        key = { it.value },
-                        doBeforeClear = commonDoBeforeClear
+                        key = { it.value }
                     ) { habitId ->
                         HabitItem(
                             habitId = habitId,
@@ -139,8 +139,8 @@ private fun LazyItemScope.HabitItem(
 ) {
     val appDependencies = LocalAppDependencies.current
     val habitIconResources = LocalHabitIconResources.current
-//    val abstinenceTimeFormatter: AbstinenceTimeFormatter = appDependencies.abstinenceTimeFormatter
-    val habitViewModel = rememberEpicStoreEntry {
+    val abstinenceFormatter = LocalHabitAbstinenceFormatter.current
+    val habitViewModel = rememberEpicViewModel {
         appDependencies.habitsFeatureFactory.createHabitViewModel(habitId)
     }
     val habitAbstinenceViewModel = rememberEpicStoreEntry {
@@ -189,9 +189,9 @@ private fun LazyItemScope.HabitItem(
                             Text(
                                 modifier = Modifier.padding(start = 12.dp),
                                 text = when (val state = abstinenceState) {
-                                    is CurrentHabitAbstinenceEpicViewModel.State.Loaded -> state.abstinence.interval.toString()
-                                    is CurrentHabitAbstinenceEpicViewModel.State.Loading -> "loading..."
-                                    is CurrentHabitAbstinenceEpicViewModel.State.NotExist -> stringResource(
+                                    is CurrentHabitAbstinenceViewModel.State.Loaded -> state.abstinence.interval.toString()
+                                    is CurrentHabitAbstinenceViewModel.State.Loading -> "loading..."
+                                    is CurrentHabitAbstinenceViewModel.State.NotExist -> stringResource(
                                         R.string.habit_noEvents
                                     )
                                 }

@@ -2,17 +2,15 @@ package breakbadhabits.feature.habits.presentation
 
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.feature.habits.model.HabitTracksRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class HabitTrackDeletionViewModel internal constructor(
-    private val coroutineScope: CoroutineScope,
     private val habitTracksRepository: HabitTracksRepository,
     private val id: HabitTrack.Id
-) {
+) : EpicViewModel() {
+
     private val mutableState = MutableStateFlow<State>(State.Ready())
     val state = mutableState.asStateFlow()
 
@@ -24,10 +22,6 @@ class HabitTrackDeletionViewModel internal constructor(
             habitTracksRepository.deleteHabitTrackById(id)
             mutableState.value = State.HabitTrackDeleted()
         }
-    }
-
-    fun dispose() {
-        coroutineScope.cancel()
     }
 
     sealed class State {

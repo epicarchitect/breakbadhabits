@@ -5,7 +5,7 @@ import breakbadhabits.entity.HabitTrack
 import breakbadhabits.feature.habits.model.HabitTracksRepository
 import breakbadhabits.feature.habits.model.HabitsRepository
 import breakbadhabits.feature.habits.model.TimeProvider
-import breakbadhabits.feature.habits.presentation.CurrentHabitAbstinenceEpicViewModel
+import breakbadhabits.feature.habits.presentation.CurrentHabitAbstinenceViewModel
 import breakbadhabits.feature.habits.presentation.HabitCreationViewModel
 import breakbadhabits.feature.habits.presentation.HabitDeletionViewModel
 import breakbadhabits.feature.habits.presentation.HabitIdsViewModel
@@ -22,12 +22,10 @@ class HabitsFeatureFactory(
     private val habitsRepository: HabitsRepository,
     private val habitTracksRepository: HabitTracksRepository,
     private val timeProvider: TimeProvider,
-    private val maxHabitNameLength: Int,
-    private val createFeatureCoroutineScope: () -> CoroutineScope
+    private val maxHabitNameLength: Int
 ) {
 
     fun createHabitCreationViewModel() = HabitCreationViewModel(
-        createFeatureCoroutineScope(),
         habitsRepository,
         habitTracksRepository,
         HabitNewNameValidator(maxHabitNameLength, habitsRepository),
@@ -35,52 +33,45 @@ class HabitsFeatureFactory(
     )
 
     fun createHabitDeletionViewModel(id: Habit.Id) = HabitDeletionViewModel(
-        createFeatureCoroutineScope(),
         habitsRepository,
         habitTracksRepository,
         id
     )
 
     fun createHabitUpdatingViewModel(id: Habit.Id) = HabitUpdatingViewModel(
-        createFeatureCoroutineScope(),
         habitsRepository,
         HabitNewNameValidator(maxHabitNameLength, habitsRepository),
         id
     )
 
     fun createHabitViewModel(id: Habit.Id) = HabitViewModel(
-        createFeatureCoroutineScope(),
         habitsRepository,
         id
     )
 
-    fun createHabitCurrentAbstinenceViewModel(id: Habit.Id) = CurrentHabitAbstinenceEpicViewModel(
+    fun createHabitCurrentAbstinenceViewModel(id: Habit.Id) = CurrentHabitAbstinenceViewModel(
         habitTracksRepository,
         timeProvider,
         id
     )
 
     fun createHabitIdsViewModel() = HabitIdsViewModel(
-        createFeatureCoroutineScope(),
         habitsRepository,
     )
 
     fun createHabitTrackCreationViewModel(habitId: Habit.Id) = HabitTrackCreationViewModel(
-        createFeatureCoroutineScope(),
         habitTracksRepository,
         HabitTrackIntervalValidator(timeProvider),
         habitId
     )
 
     fun createHabitTrackUpdatingViewModel(id: HabitTrack.Id) = HabitTrackUpdatingViewModel(
-        createFeatureCoroutineScope(),
         habitTracksRepository,
         HabitTrackIntervalValidator(timeProvider),
         id
     )
 
     fun createHabitTrackViewModel(id: HabitTrack.Id) = HabitTrackViewModel(
-        createFeatureCoroutineScope(),
         habitTracksRepository,
         id
     )

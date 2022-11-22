@@ -2,14 +2,10 @@ package breakbadhabits.feature.habits.presentation
 
 
 import breakbadhabits.entity.Habit
-import breakbadhabits.feature.habits.model.HabitTracksRepository
 import breakbadhabits.feature.habits.model.HabitsRepository
 import breakbadhabits.feature.habits.validator.HabitNewNameValidator
-import breakbadhabits.feature.habits.validator.HabitTrackIntervalValidator
 import kolmachikhin.alexander.validation.Correct
 import kolmachikhin.alexander.validation.Validated
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -19,11 +15,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HabitUpdatingViewModel internal constructor(
-    private val coroutineScope: CoroutineScope,
     private val habitsRepository: HabitsRepository,
     private val habitNewNameValidator: HabitNewNameValidator,
     private val id: Habit.Id
-) {
+) : EpicViewModel() {
 
     private val initialHabitLoadState = MutableStateFlow<InitialHabitLoadState?>(null)
     private val updatingState = MutableStateFlow<UpdatingState>(UpdatingState.NotExecuted())
@@ -107,10 +102,6 @@ class HabitUpdatingViewModel internal constructor(
     fun updateIconResource(iconId: Habit.IconResource) {
         require(state.value is State.Input)
         iconResourceState.value = iconId
-    }
-
-    fun dispose() {
-        coroutineScope.cancel()
     }
 
     private fun loadInitialHabit() {

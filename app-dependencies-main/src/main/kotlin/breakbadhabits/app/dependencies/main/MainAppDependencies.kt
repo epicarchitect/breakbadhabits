@@ -48,8 +48,7 @@ class MainAppDependencies(private val application: Application) : AppDependencie
             habitsRepository = habitsRepository,
             habitTracksRepository = habitTracksRepository,
             timeProvider = timeProvider,
-            maxHabitNameLength = 30,
-            createFeatureCoroutineScope = { CoroutineScope(Dispatchers.Default) }
+            maxHabitNameLength = 30
         )
     }
 }

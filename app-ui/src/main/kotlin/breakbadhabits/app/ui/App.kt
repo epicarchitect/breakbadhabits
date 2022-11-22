@@ -18,13 +18,6 @@ import epicarchitect.epicstore.navigation.compose.EpicHavHost
 import epicarchitect.epicstore.navigation.compose.LocalNavController
 import epicarchitect.epicstore.navigation.compose.epicStoreComposable
 
-// TODO must be deleted
-val commonDoBeforeClear = { _: Any?, value: Any? ->
-    if (value is EpicViewModel<*>) {
-        value.close()
-    }
-}
-
 @Composable
 fun App() {
     CompositionLocalProvider(
@@ -35,10 +28,7 @@ fun App() {
             EpicHavHost(
                 startDestination = "habits"
             ) {
-                epicStoreComposable(
-                    route = "appSettings",
-                    doBeforeClear = commonDoBeforeClear
-                ) {
+                epicStoreComposable(route = "appSettings") {
                     val navController = LocalNavController.current
                     AppSettingsScreen(
                         openWidgetSettings = {
@@ -47,10 +37,7 @@ fun App() {
                     )
                 }
 
-                epicStoreComposable(
-                    route = "habitCreation",
-                    doBeforeClear = commonDoBeforeClear
-                ) {
+                epicStoreComposable(route = "habitCreation") {
                     val navController = LocalNavController.current
                     HabitCreationScreen(
                         onFinished = {
@@ -61,8 +48,7 @@ fun App() {
 
                 epicStoreComposable(
                     route = "habitEditing?habitId={habitId}",
-                    arguments = listOf(navArgument("habitId") { type = NavType.IntType }),
-                    doBeforeClear = commonDoBeforeClear
+                    arguments = listOf(navArgument("habitId") { type = NavType.IntType })
                 ) {
 //                    val navController = LocalNavController.current
 //                    val habitId = it.arguments!!.getInt("habitId")
@@ -79,8 +65,7 @@ fun App() {
 
                 epicStoreComposable(
                     route = "habitEventCreation?habitId={habitId}",
-                    arguments = listOf(navArgument("habitId") { type = NavType.IntType }),
-                    doBeforeClear = commonDoBeforeClear
+                    arguments = listOf(navArgument("habitId") { type = NavType.IntType })
                 ) {
 //                    val navController = LocalNavController.current
 //                    val habitId = it.arguments!!.getInt("habitId")
@@ -94,8 +79,7 @@ fun App() {
 
                 epicStoreComposable(
                     route = "habitEventEditing?habitEventId={habitEventId}",
-                    arguments = listOf(navArgument("habitEventId") { type = NavType.IntType }),
-                    doBeforeClear = commonDoBeforeClear
+                    arguments = listOf(navArgument("habitEventId") { type = NavType.IntType })
                 ) {
 //                    val navController = LocalNavController.current
 //                    val habitEventId = it.arguments!!.getInt("habitEventId")
@@ -112,8 +96,7 @@ fun App() {
 
                 epicStoreComposable(
                     route = "habitsAppWidgetConfigEditing?configId={configId}",
-                    arguments = listOf(navArgument("configId") { type = NavType.IntType }),
-                    doBeforeClear = commonDoBeforeClear
+                    arguments = listOf(navArgument("configId") { type = NavType.IntType })
                 ) {
 //                    val navController = LocalNavController.current
 //                    HabitsAppWidgetConfigEditingScreen(
@@ -122,10 +105,7 @@ fun App() {
 //                    )
                 }
 
-                epicStoreComposable(
-                    route = "habitsAppWidgets",
-                    doBeforeClear = commonDoBeforeClear
-                ) {
+                epicStoreComposable(route = "habitsAppWidgets") {
 //                    val navController = LocalNavController.current
 //                    HabitsAppWidgetsScreen(
 //                        openHabitAppWidgetConfigEditing = { configId ->
@@ -136,8 +116,7 @@ fun App() {
 
                 epicStoreComposable(
                     route = "habit?habitId={habitId}",
-                    arguments = listOf(navArgument("habitId") { type = NavType.IntType }),
-                    doBeforeClear = commonDoBeforeClear
+                    arguments = listOf(navArgument("habitId") { type = NavType.IntType })
                 ) {
                     val navController = LocalNavController.current
                     val habitId = it.arguments!!.getInt("habitId")
@@ -160,8 +139,7 @@ fun App() {
 
                 epicStoreComposable(
                     route = "habitEvents?habitId={habitId}",
-                    arguments = listOf(navArgument("habitId") { type = NavType.IntType }),
-                    doBeforeClear = commonDoBeforeClear
+                    arguments = listOf(navArgument("habitId") { type = NavType.IntType })
                 ) {
 //                    val navController = LocalNavController.current
 //                    val habitId = it.arguments!!.getInt("habitId")
@@ -173,10 +151,7 @@ fun App() {
 //                    )
                 }
 
-                epicStoreComposable(
-                    route = "habits",
-                    doBeforeClear = commonDoBeforeClear
-                ) {
+                epicStoreComposable(route = "habits") {
                     val navController = LocalNavController.current
                     HabitsScreen(
                         openHabit = { habitId ->

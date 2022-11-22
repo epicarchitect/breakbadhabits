@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-class CurrentHabitAbstinenceEpicViewModel internal constructor(
+class CurrentHabitAbstinenceViewModel internal constructor(
     habitTracksRepository: HabitTracksRepository,
     timeProvider: TimeProvider,
     private val habitId: Habit.Id
-) : EpicViewModel<CurrentHabitAbstinenceEpicViewModel.State>() {
+) : EpicViewModel() {
 
-    override val state = combine(
+    val state = combine(
         habitTracksRepository.habitTrackFlowByHabitIdAndLastByTime(habitId),
         timeProvider.currentTimeFlow()
     ) { lastTrack, currentDateTime ->

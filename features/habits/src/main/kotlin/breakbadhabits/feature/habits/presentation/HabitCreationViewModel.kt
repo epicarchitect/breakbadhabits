@@ -9,8 +9,6 @@ import breakbadhabits.feature.habits.validator.HabitNewNameValidator
 import breakbadhabits.feature.habits.validator.HabitTrackIntervalValidator
 import kolmachikhin.alexander.validation.Correct
 import kolmachikhin.alexander.validation.Validated
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -18,12 +16,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HabitCreationViewModel internal constructor(
-    private val coroutineScope: CoroutineScope,
     private val habitsRepository: HabitsRepository,
     private val habitTracksRepository: HabitTracksRepository,
     private val habitNewNameValidator: HabitNewNameValidator,
     private val habitTrackIntervalValidator: HabitTrackIntervalValidator
-) {
+) : EpicViewModel() {
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
     private val nameState = MutableStateFlow<Habit.Name?>(null)
     private val iconResourceState = MutableStateFlow<Habit.IconResource?>(null)
@@ -127,10 +124,6 @@ class HabitCreationViewModel internal constructor(
     fun updateFirstTrackInterval(interval: HabitTrack.Interval) {
         require(state.value is State.Input)
         firstTrackIntervalState.value = interval
-    }
-
-    fun dispose() {
-        coroutineScope.cancel()
     }
 
     sealed class State {

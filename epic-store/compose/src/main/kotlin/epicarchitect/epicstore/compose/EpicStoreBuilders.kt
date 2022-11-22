@@ -8,7 +8,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import epicarchitect.epicstore.EpicStore
 import epicarchitect.epicstore.getOrSet
-import java.util.*
+import epicarchitect.epicstore.setOnEntryCleared
+import java.util.UUID
 
 @Composable
 fun RootEpicStore(content: @Composable () -> Unit) {
@@ -22,8 +23,7 @@ fun RootEpicStore(content: @Composable () -> Unit) {
 fun EpicStore(
     key: Any = rememberSaveable(init = UUID::randomUUID),
     clearWhen: () -> Boolean = { false },
-    doBeforeClear: ((key: Any?, value: Any?) -> Unit)? = null,
-    doAfterClear: (() -> Unit)? = null,
+    onEntryCleared: ((key: Any?, value: Any?) -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     val epicStore = LocalEpicStore.current
@@ -34,8 +34,7 @@ fun EpicStore(
     CompositionLocalProvider(
         LocalEpicStore provides rememberEpicStoreEntry(key, entry = ::EpicStore).apply {
             this.isClearNeeded = clearWhen
-            this.doBeforeClear = doBeforeClear
-            this.doAfterClear = doAfterClear
+            this.onEntryCleared = onEntryCleared
         },
         content = content
     )
@@ -44,10 +43,12 @@ fun EpicStore(
 @Composable
 inline fun <reified T> rememberEpicStoreEntry(
     key: Any = rememberSaveable(init = UUID::randomUUID),
-    noinline doBeforeClear: ((T) -> Unit)? = null,
-    noinline doAfterClear: (() -> Unit)? = null,
+    noinline onCleared: ((T) -> Unit)? = null,
     noinline entry: @DisallowComposableCalls () -> T,
 ): T {
     val epicStore = LocalEpicStore.current
-    return remember(key) { epicStore.getOrSet(key, entry) }
+    epicStore.setOnEntryCleared(key, onCleared)
+    return remember(key) {
+        epicStore.getOrSet(key, entry)
+    }
 }
