@@ -11,6 +11,6 @@ data class HabitTrack(
 ) {
     data class Id(val value: Int)
     data class Interval(val value: LocalDateTimeInterval)
-    data class DailyCount(val value: Int)
+    data class DailyCount(val value: Double)
     data class Comment(val value: String)
 }

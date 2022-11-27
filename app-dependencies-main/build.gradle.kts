@@ -1,10 +1,6 @@
 plugins {
-    id("breakbadhabits.android.library")
+    id("convention.android.library")
     id("kotlin-kapt")
-}
-
-android {
-    namespace = "breakbadhabits.app.dependencies.main"
 }
 
 dependencies {

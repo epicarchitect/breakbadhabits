@@ -1,4 +1,4 @@
-rootProject.name = "Break Bad Habits"
+rootProject.name = "breakbadhabits"
 
 include(
     ":app-dependencies",
@@ -6,7 +6,23 @@ include(
     ":extensions:coroutines",
     ":extensions:datetime",
     ":entities",
-    ":features:habits",
+
+    ":logic:core",
+    ":logic:habit-creator",
+    ":logic:habit-ids-provider",
+    ":logic:habit-icons-provider",
+    ":logic:current-habit-abstinence-provider",
+
+    ":logic:habit-new-name-validator",
+    ":logic:habit-track-interval-validator",
+
+//    ":features:habits",
+    ":presentation:core",
+    ":presentation:habit-creation",
+    ":presentation:current-habit-abstinence",
+    ":presentation:habit-abstinence-formatter",
+    ":presentation:habit-track-interval-formatter",
+
     ":android-app",
     ":app-ui",
     ":ui-kit",

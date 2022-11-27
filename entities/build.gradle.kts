@@ -1,9 +1,5 @@
 plugins {
-    id("breakbadhabits.android.library")
-}
-
-android {
-    namespace = "breakbadhabits.entity"
+    id("convention.android.library")
 }
 
 dependencies {

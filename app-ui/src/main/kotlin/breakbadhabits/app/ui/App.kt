@@ -11,8 +11,7 @@ import breakbadhabits.app.ui.screen.HabitCreationScreen
 import breakbadhabits.app.ui.screen.HabitScreen
 import breakbadhabits.app.ui.screen.HabitsScreen
 import breakbadhabits.entity.Habit
-import breakbadhabits.feature.habits.presentation.EpicViewModel
-import breakbadhabits.ui.kit.activity.LocalComposeActivity
+import breakbadhabits.ui.kit.Text
 import epicarchitect.epicstore.compose.RootEpicStore
 import epicarchitect.epicstore.navigation.compose.EpicHavHost
 import epicarchitect.epicstore.navigation.compose.LocalNavController

@@ -1,9 +1,5 @@
 plugins {
-    id("breakbadhabits.android.library")
-}
-
-android {
-    namespace = "breakbadhabits.extension.coroutines"
+    id("convention.android.library")
 }
 
 dependencies {

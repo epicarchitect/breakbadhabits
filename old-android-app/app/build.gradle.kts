@@ -1,6 +1,6 @@
 plugins {
-    id("breakbadhabits.android.application")
-    id("breakbadhabits.android.compose")
+    id("convention.android.application")
+    id("convention.android.compose")
     id("kotlin-kapt")
 }
 

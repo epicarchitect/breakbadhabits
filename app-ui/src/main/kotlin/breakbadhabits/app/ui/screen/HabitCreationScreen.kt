@@ -25,7 +25,7 @@ import breakbadhabits.app.ui.R
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.extension.datetime.LocalDateTimeInterval
-import breakbadhabits.feature.habits.presentation.HabitCreationViewModel
+import breakbadhabits.feature.habitCreation.HabitCreationViewModel
 import breakbadhabits.feature.habits.validator.HabitNewNameValidator
 import breakbadhabits.ui.kit.Button
 import breakbadhabits.ui.kit.Checkbox
@@ -41,11 +41,57 @@ import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import kolmachikhin.alexander.validation.Incorrect
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+
+interface HabitCreationViewModel {
+    val state: StateFlow<State>
+
+    fun changeName(name: String) {
+
+    }
+
+    sealed class State {
+        data class NameInputStep(
+            val name: String,
+            val validationError: String?,
+        ) : State()
+
+        data class IconSelectionStep(
+            val icons: List<Habit.IconResource>,
+            val selectedIcon: Habit.IconResource?
+        ) : State()
+
+        data class CountabilitySelectionStep(
+            val countability: HabitCountability?
+        ): State()
+
+        data class FirstTrackIntervalInputStep(
+            val firstTrackInterval: HabitTrack.Interval,
+            val formattedFirstTrackInterval: String?,
+            val validationError: String?,
+        ): State()
+
+        data class VerifyingInputs(
+            val name: String,
+            val icon: Habit.IconResource,
+            val countability: HabitCountability,
+            val formattedFirstTrackInterval: String
+        ) : State()
+
+        class Creating : State()
+        class Created : State()
+    }
+
+    sealed class HabitCountability {
+        class Countable(val averageDailyCount: Int) : HabitCountability()
+        class Uncountable : HabitCountability()
+    }
+}
 
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {

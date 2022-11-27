@@ -1,5 +1,5 @@
 plugins {
-    id("breakbadhabits.android.library")
+    id("convention.android.library")
 }
 
 android {

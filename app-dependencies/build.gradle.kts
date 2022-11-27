@@ -1,11 +1,7 @@
 plugins {
-    id("breakbadhabits.android.library")
-}
-
-android {
-    namespace = "breakbadhabits.app.dependencies"
+    id("convention.android.library")
 }
 
 dependencies {
-    api(project(":features:habits"))
+//    api(project(":features:habits"))
 }

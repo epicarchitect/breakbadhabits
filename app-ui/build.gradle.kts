@@ -1,10 +1,6 @@
 plugins {
-    id("breakbadhabits.android.library")
-    id("breakbadhabits.android.compose")
-}
-
-android {
-    namespace = "breakbadhabits.app.ui"
+    id("convention.android.library")
+    id("convention.android.compose")
 }
 
 dependencies {

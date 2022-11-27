@@ -3,7 +3,7 @@ package breakbadhabits.app.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.saveable.rememberSaveable
-import breakbadhabits.feature.habits.presentation.EpicViewModel
+import breakbadhabits.feature.EpicViewModel
 import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 import java.util.UUID
 
