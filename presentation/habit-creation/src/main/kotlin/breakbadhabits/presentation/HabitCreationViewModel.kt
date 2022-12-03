@@ -3,38 +3,41 @@ package breakbadhabits.presentation
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.extension.coroutines.flow.combine
+import breakbadhabits.logic.CorrectHabitNewNewName
+import breakbadhabits.logic.CorrectHabitTrackInterval
+import breakbadhabits.logic.HabitCountability
 import breakbadhabits.logic.HabitCreator
 import breakbadhabits.logic.HabitIconsProvider
 import breakbadhabits.logic.HabitNewNameValidator
 import breakbadhabits.logic.HabitTrackIntervalValidator
-import kolmachikhin.alexander.validation.Correct
-import kolmachikhin.alexander.validation.Incorrect
+import breakbadhabits.logic.ValidatedHabitNewName
+import breakbadhabits.logic.ValidatedHabitTrackInterval
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HabitCreationViewModel(
-    private val habitNewNameValidator: HabitNewNameValidator,
-    private val habitTrackIntervalValidator: HabitTrackIntervalValidator,
-    private val habitTrackIntervalFormatter: HabitTrackIntervalFormatter,
-    private val habitIconsProvider: HabitIconsProvider,
-    private val habitCreator: HabitCreator
+class HabitCreationViewModel internal constructor(
+    private val habitCreator: HabitCreator,
+    private val nameValidator: HabitNewNameValidator,
+    private val trackIntervalValidator: HabitTrackIntervalValidator,
+    habitIconsProvider: HabitIconsProvider
 ) : EpicViewModel() {
 
+    private val icons = habitIconsProvider.provide()
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
     private val nameState = MutableStateFlow<Habit.Name?>(null)
     private val validatedNameState = nameState.map {
-        it?.let { habitNewNameValidator.validate(it) }
+        it?.let { nameValidator.validate(it) }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
-    private val selectedIconState = MutableStateFlow<Habit.IconResource?>(null)
-    private val countabilityState = MutableStateFlow<HabitCreator.HabitCountability?>(null)
+    private val selectedIconState = MutableStateFlow(icons.first())
+    private val countabilityState = MutableStateFlow<HabitCountability?>(null)
     private val firstTrackIntervalState = MutableStateFlow<HabitTrack.Interval?>(null)
     private val validatedFirstTrackIntervalState = firstTrackIntervalState.map {
-        it?.let { habitTrackIntervalValidator.validate(it) }
+        it?.let { trackIntervalValidator.validate(it) }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+
 
     val state = combine(
         creationState,
@@ -43,45 +46,23 @@ class HabitCreationViewModel(
         selectedIconState,
         countabilityState,
         firstTrackIntervalState,
-        validatedFirstTrackIntervalState,
-        flowOf(habitIconsProvider.provide())
+        validatedFirstTrackIntervalState
     ) { creationState, name, validatedName, selectedIcon,
-        countability, firstTrackInterval, validatedFirstTrackInterval, icons ->
+        countability, firstTrackInterval, validatedFirstTrackInterval ->
         when (creationState) {
             is CreationState.NotExecuted -> State.Input(
-                name = name?.value ?: "",
-                nameValidationError = when (validatedName) {
-                    is Incorrect -> when (validatedName.reason) {
-                        is HabitNewNameValidator.IncorrectReason.AlreadyUsed -> "Already Used"
-                        is HabitNewNameValidator.IncorrectReason.Empty -> "Empty"
-                        is HabitNewNameValidator.IncorrectReason.TooLong -> "Too long"
-                    }
-
-                    else -> null
-                },
-                selectedIcon = selectedIcon ?: icons.first(),
+                name = name,
+                validatedName = validatedName,
+                selectedIcon = selectedIcon,
                 icons = icons,
-                habitCountability = when (countability) {
-                    is HabitCreator.HabitCountability.Countable -> {
-                        HabitCountability.Countable(countability.averageDailyCount.value.toString())
-                    }
-
-                    is HabitCreator.HabitCountability.Uncountable -> {
-                        HabitCountability.Uncountable()
-                    }
-
-                    null -> null
-                },
-                formattedFirstTrackInterval = firstTrackInterval?.let {
-                    habitTrackIntervalFormatter.format(it)
-                },
-                firstTrackIntervalValidationError = null,
+                habitCountability = countability,
+                firstTrackInterval = firstTrackInterval,
+                validatedFirstTrackInterval = validatedFirstTrackInterval,
                 creationAllowed = name != null
-                        && validatedName is Correct
-                        && selectedIcon != null
+                        && validatedName is CorrectHabitNewNewName
                         && countability != null
                         && firstTrackInterval != null
-                        && validatedFirstTrackInterval is Correct
+                        && validatedFirstTrackInterval is CorrectHabitTrackInterval
             )
 
             is CreationState.Executing -> State.Creating()
@@ -91,13 +72,13 @@ class HabitCreationViewModel(
         scope = coroutineScope,
         started = SharingStarted.Eagerly,
         initialValue = State.Input(
-            name = "",
-            nameValidationError = null,
+            name = null,
+            validatedName = null,
             icons = emptyList(),
-            selectedIcon = null,
+            selectedIcon = icons.first(),
             habitCountability = null,
-            formattedFirstTrackInterval = null,
-            firstTrackIntervalValidationError = null,
+            firstTrackInterval = null,
+            validatedFirstTrackInterval = null,
             creationAllowed = false
         )
     )
@@ -108,16 +89,15 @@ class HabitCreationViewModel(
         require(state.creationAllowed)
 
         val validatedName = validatedNameState.value
-        require(validatedName is Correct)
+        require(validatedName is CorrectHabitNewNewName)
 
         val selectedIcon = selectedIconState.value
-        requireNotNull(selectedIcon)
 
         val countability = countabilityState.value
         requireNotNull(countability)
 
         val validatedFirstTrackInterval = validatedFirstTrackIntervalState.value
-        require(validatedFirstTrackInterval is Correct)
+        require(validatedFirstTrackInterval is CorrectHabitTrackInterval)
 
         creationState.value = CreationState.Executing()
 
@@ -132,9 +112,9 @@ class HabitCreationViewModel(
         }
     }
 
-    fun updateName(name: String) {
+    fun updateName(name: Habit.Name) {
         require(state.value is State.Input)
-        nameState.value = Habit.Name(name)
+        nameState.value = name
     }
 
     fun updateIconResource(iconId: Habit.IconResource) {
@@ -144,7 +124,7 @@ class HabitCreationViewModel(
 
     fun updateCountably(countability: HabitCountability) {
         require(state.value is State.Input)
-        countabilityState.value = null // TODO
+        countabilityState.value = countability
     }
 
     fun updateFirstTrackInterval(interval: HabitTrack.Interval) {
@@ -154,23 +134,18 @@ class HabitCreationViewModel(
 
     sealed class State {
         data class Input(
-            val name: String,
-            val nameValidationError: String?,
+            val name: Habit.Name?,
+            val validatedName: ValidatedHabitNewName?,
             val icons: List<Habit.IconResource>,
             val selectedIcon: Habit.IconResource,
             val habitCountability: HabitCountability?,
-            val formattedFirstTrackInterval: FormattedHabitTrackInterval?,
-            val firstTrackIntervalValidationError: String?,
+            val firstTrackInterval: HabitTrack.Interval?,
+            val validatedFirstTrackInterval: ValidatedHabitTrackInterval?,
             val creationAllowed: Boolean
         ) : State()
 
         class Creating : State()
         class Created : State()
-    }
-
-    sealed class HabitCountability {
-        class Countable(val formattedDailyCount: String) : HabitCountability()
-        class Uncountable : HabitCountability()
     }
 
     private sealed class CreationState {

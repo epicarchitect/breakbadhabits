@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
-    api(project(":logic:core"))
+    api(project(":entities"))
+    api(project(":extensions:coroutines"))
 }

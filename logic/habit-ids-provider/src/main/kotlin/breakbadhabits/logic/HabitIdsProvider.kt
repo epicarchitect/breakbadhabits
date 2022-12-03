@@ -1,9 +1,9 @@
 package breakbadhabits.logic
 
-import breakbadhabits.logic.dependecy.repository.HabitsRepository
+class HabitIdsProvider internal constructor(
+    private val delegate: HabitIdsProviderModule.Delegate
+) {
 
-class HabitIdsProvider(private val habitsRepository: HabitsRepository) {
-
-    fun provideFlow() = habitsRepository.habitIdsFlow()
+    fun provideFlow() = delegate.habitIdsFlow()
 
 }

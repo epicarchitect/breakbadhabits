@@ -1,30 +1,26 @@
 rootProject.name = "breakbadhabits"
 
 include(
-    ":app-dependencies",
-    ":app-dependencies-main",
+//    ":app-dependencies",
+//    ":app-dependencies-main",
     ":extensions:coroutines",
     ":extensions:datetime",
     ":entities",
 
-    ":logic:core",
     ":logic:habit-creator",
     ":logic:habit-ids-provider",
+    ":logic:habit-provider",
     ":logic:habit-icons-provider",
     ":logic:current-habit-abstinence-provider",
 
-    ":logic:habit-new-name-validator",
-    ":logic:habit-track-interval-validator",
-
-//    ":features:habits",
     ":presentation:core",
     ":presentation:habit-creation",
     ":presentation:current-habit-abstinence",
-    ":presentation:habit-abstinence-formatter",
-    ":presentation:habit-track-interval-formatter",
+    ":presentation:habit-ids",
+    ":presentation:habit",
 
     ":android-app",
-    ":app-ui",
+//    ":app-ui",
     ":ui-kit",
 
     ":epic-store:core",

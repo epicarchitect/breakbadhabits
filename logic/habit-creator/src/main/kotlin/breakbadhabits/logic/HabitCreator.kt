@@ -2,22 +2,18 @@ package breakbadhabits.logic
 
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
-import breakbadhabits.logic.dependecy.repository.HabitTracksRepository
-import breakbadhabits.logic.dependecy.repository.HabitsRepository
-import kolmachikhin.alexander.validation.Correct
 
-class HabitCreator(
-    private val habitsRepository: HabitsRepository,
-    private val habitTracksRepository: HabitTracksRepository
+class HabitCreator internal constructor(
+    private val delegate: HabitCreatorModule.Delegate
 ) {
 
     suspend fun createHabit(
-        name: Correct<Habit.Name>,
+        name: CorrectHabitNewNewName,
         iconResource: Habit.IconResource,
         countability: HabitCountability,
-        firstTrackInterval: Correct<HabitTrack.Interval>
+        firstTrackInterval: CorrectHabitTrackInterval
     ) {
-        val newHabit = habitsRepository.insertHabit(
+        val newHabit = delegate.insertHabit(
             name = name.data,
             iconResource = iconResource,
             countability = Habit.Countability(
@@ -25,7 +21,7 @@ class HabitCreator(
             )
         )
 
-        habitTracksRepository.insertHabitTrack(
+        delegate.insertHabitTrack(
             habitId = newHabit.id,
             interval = firstTrackInterval.data,
             dailyCount = when (countability) {
@@ -39,10 +35,5 @@ class HabitCreator(
             },
             comment = null
         )
-    }
-
-    sealed class HabitCountability {
-        class Countable(val averageDailyCount: HabitTrack.DailyCount) : HabitCountability()
-        class Uncountable : HabitCountability()
     }
 }

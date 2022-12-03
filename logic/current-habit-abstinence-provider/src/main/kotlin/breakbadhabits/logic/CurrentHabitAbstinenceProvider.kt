@@ -3,17 +3,15 @@ package breakbadhabits.logic
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitAbstinence
 import breakbadhabits.extension.datetime.LocalDateTimeInterval
-import breakbadhabits.logic.dependecy.repository.HabitTracksRepository
-import breakbadhabits.logic.dependecy.time.TimeProvider
 import kotlinx.coroutines.flow.combine
 
-class CurrentHabitAbstinenceProvider(
-    private val habitTracksRepository: HabitTracksRepository,
-    private val timeProvider: TimeProvider
+class CurrentHabitAbstinenceProvider internal constructor(
+    private val delegate: CurrentHabitAbstinenceProviderModule.Delegate
 ) {
+
     fun provideFlow(habitId: Habit.Id) = combine(
-        habitTracksRepository.habitTrackFlowByHabitIdAndLastByTime(habitId),
-        timeProvider.currentTimeFlow()
+        delegate.habitTrackFlowByHabitIdAndLastByTime(habitId),
+        delegate.currentTimeFlow()
     ) { lastTrack, currentDateTime ->
         lastTrack ?: return@combine null
 

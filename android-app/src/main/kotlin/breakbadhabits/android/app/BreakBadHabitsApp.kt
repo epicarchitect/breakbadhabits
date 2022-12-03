@@ -1,12 +1,12 @@
 package breakbadhabits.android.app
 
 import android.app.Application
-import breakbadhabits.app.dependencies.main.MainAppDependencies
+import breakbadhabits.android.app.di.presentation.PresentationModule
 
 class BreakBadHabitsApp : Application() {
 
-    val dependencies by lazy {
-        MainAppDependencies(this)
+    val presentationModule by lazy {
+        PresentationModule(this)
     }
 
     override fun onCreate() {

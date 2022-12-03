@@ -1,9 +1,9 @@
 package breakbadhabits.logic
 
-import breakbadhabits.logic.dependecy.repository.HabitIconsRepository
+class HabitIconsProvider internal constructor(
+    private val delegate: HabitIconsProviderModule.Delegate
+) {
 
-class HabitIconsProvider(private val habitIconsRepository: HabitIconsRepository) {
-
-    fun provide() = habitIconsRepository.getHabitIcons()
+    fun provide() = delegate.getHabitIcons()
 
 }

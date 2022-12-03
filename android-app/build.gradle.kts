@@ -43,6 +43,14 @@ android {
 }
 
 dependencies {
-    implementation(project(":app-ui"))
-    implementation(project(":app-dependencies-main"))
+    implementation(project(":ui-kit"))
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.room:room-runtime:2.4.3")
+    implementation("androidx.room:room-ktx:2.4.3")
+    kapt("androidx.room:room-compiler:2.4.3")
+
+    implementation(project(":presentation:current-habit-abstinence"))
+    implementation(project(":presentation:habit-creation"))
+    implementation(project(":presentation:habit-ids"))
+    implementation(project(":presentation:habit"))
 }
