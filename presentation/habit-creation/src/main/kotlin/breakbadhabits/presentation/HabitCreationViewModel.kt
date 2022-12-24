@@ -14,6 +14,7 @@ import breakbadhabits.logic.ValidatedHabitNewName
 import breakbadhabits.logic.ValidatedHabitTrackInterval
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -28,15 +29,16 @@ class HabitCreationViewModel internal constructor(
     private val icons = habitIconsProvider.provide()
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
     private val nameState = MutableStateFlow<Habit.Name?>(null)
-    private val validatedNameState = nameState.map {
+    private val validatedNameState: StateFlow<ValidatedHabitNewName?> = nameState.map {
         it?.let { nameValidator.validate(it) }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
     private val selectedIconState = MutableStateFlow(icons.first())
     private val countabilityState = MutableStateFlow<HabitCountability?>(null)
     private val firstTrackIntervalState = MutableStateFlow<HabitTrack.Interval?>(null)
-    private val validatedFirstTrackIntervalState = firstTrackIntervalState.map {
-        it?.let { trackIntervalValidator.validate(it) }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    private val validatedFirstTrackIntervalState: StateFlow<ValidatedHabitTrackInterval?> =
+        firstTrackIntervalState.map {
+            it?.let { trackIntervalValidator.validate(it) }
+        }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
 
     val state = combine(

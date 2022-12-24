@@ -1,5 +1,7 @@
 package breakbadhabits.android.app.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,6 +37,8 @@ import breakbadhabits.ui.kit.ErrorText
 import breakbadhabits.ui.kit.IconData
 import breakbadhabits.ui.kit.IconsSelection
 import breakbadhabits.ui.kit.InteractionType
+import breakbadhabits.ui.kit.IntervalSelectionCalendar
+import breakbadhabits.ui.kit.ProgressIndicator
 import breakbadhabits.ui.kit.Text
 import breakbadhabits.ui.kit.TextField
 import breakbadhabits.ui.kit.Title
@@ -45,6 +49,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import java.time.YearMonth
 
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {
@@ -55,20 +60,30 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
     val state = habitCreationViewModel.state.collectAsState()
     val viewModelState = state.value
 
-
-    if (viewModelState is HabitCreationViewModel.State.Created) {
-        LaunchedEffect(true) {
+    LaunchedEffect(viewModelState) {
+        if (viewModelState is HabitCreationViewModel.State.Created) {
             onFinished()
         }
     }
 
     when (viewModelState) {
-        is HabitCreationViewModel.State.Created -> Text("Created")
-        is HabitCreationViewModel.State.Creating -> Text("Creating")
         is HabitCreationViewModel.State.Input -> InputScreen(
             habitCreationViewModel,
             viewModelState
         )
+
+        is HabitCreationViewModel.State.Creating -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                ProgressIndicator()
+            }
+        }
+
+        is HabitCreationViewModel.State.Created -> {
+            // nothing
+        }
     }
 }
 
@@ -187,6 +202,10 @@ private fun InputScreen(
             text = stringResource(R.string.habitCreation_habitName_description)
         )
 
+        IntervalSelectionCalendar(
+            yearMonth = YearMonth.now()
+        )
+
         TextField(
             modifier = Modifier
                 .padding(start = 16.dp, top = 8.dp, end = 16.dp)
@@ -207,27 +226,56 @@ private fun InputScreen(
         )
 
         val validatedName = state.validatedName
-        if (validatedName is IncorrectHabitNewName) {
-            ErrorText(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
-                text = when (val reason = validatedName.reason) {
-                    is IncorrectHabitNewName.Reason.Empty -> {
-                        stringResource(R.string.habitCreation_habitNameValidation_empty)
-                    }
+        AnimatedVisibility(
+            visible = validatedName is IncorrectHabitNewName
+        ) {
+            if (validatedName is IncorrectHabitNewName) {
+                ErrorText(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+                    text = when (val reason = validatedName.reason) {
+                        is IncorrectHabitNewName.Reason.Empty -> {
+                            stringResource(R.string.habitCreation_habitNameValidation_empty)
+                        }
 
-                    is IncorrectHabitNewName.Reason.TooLong -> {
-                        stringResource(
-                            R.string.habitCreation_habitNameValidation_tooLong,
-                            reason.maxLength
-                        )
-                    }
+                        is IncorrectHabitNewName.Reason.TooLong -> {
+                            stringResource(
+                                R.string.habitCreation_habitNameValidation_tooLong,
+                                reason.maxLength
+                            )
+                        }
 
-                    is IncorrectHabitNewName.Reason.AlreadyUsed -> {
-                        stringResource(R.string.habitCreation_habitNameValidation_used)
+                        is IncorrectHabitNewName.Reason.AlreadyUsed -> {
+                            stringResource(R.string.habitCreation_habitNameValidation_used)
+                        }
                     }
-                }
-            )
+                )
+            }
         }
+
+        Text(
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+            text = stringResource(R.string.habitCreation_habitIcon_description)
+        )
+
+        IconsSelection(
+            modifier = Modifier
+                .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+                .fillMaxWidth(),
+            icons = state.icons.map {
+                IconData(
+                    it.iconId, habitIconResources[it.iconId]
+                )
+            },
+            selectedIcon = habitIconResources.icons.first {
+                it.iconId == state.selectedIcon.iconId
+            }.let {
+                IconData(it.iconId, it.resourceId)
+            },
+            onSelect = {
+                viewModel.updateIconResource(Habit.IconResource(it.id))
+            }
+        )
+
         Row {
             Checkbox(
                 checked = state.habitCountability is HabitCountability.Countable,
@@ -250,30 +298,6 @@ private fun InputScreen(
                 text = "Habit is countable?"
             )
         }
-
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitCreation_habitIcon_description)
-        )
-
-        IconsSelection(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                .fillMaxWidth(),
-            icons = habitIconResources.icons.map {
-                IconData(
-                    it.iconId, it.resourceId
-                )
-            },
-            selectedIcon = habitIconResources.icons.first {
-                it.iconId == state.selectedIcon.iconId
-            }.let {
-                IconData(it.iconId, it.resourceId)
-            },
-            onSelect = {
-                viewModel.updateIconResource(Habit.IconResource(it.id))
-            }
-        )
 
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),

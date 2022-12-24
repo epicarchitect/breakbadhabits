@@ -11,13 +11,10 @@ import java.util.UUID
 @Composable
 inline fun <reified T : EpicViewModel> rememberEpicViewModel(
     key: Any = rememberSaveable(init = UUID::randomUUID),
-    noinline onCleared: ((T) -> Unit)? = null,
+    noinline onCleared: ((T) -> Unit)? = { it.clear() },
     noinline entry: @DisallowComposableCalls () -> T,
 ) = rememberEpicStoreEntry(
     key = key,
-    onCleared = {
-        it.clear()
-        onCleared?.invoke(it)
-    },
+    onCleared = onCleared,
     entry = entry
 )

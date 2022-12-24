@@ -8,6 +8,7 @@ include(
     ":entities",
 
     ":logic:habit-creator",
+    ":logic:habit-deleter",
     ":logic:habit-ids-provider",
     ":logic:habit-provider",
     ":logic:habit-icons-provider",
@@ -15,6 +16,7 @@ include(
 
     ":presentation:core",
     ":presentation:habit-creation",
+    ":presentation:habit-deletion",
     ":presentation:current-habit-abstinence",
     ":presentation:habit-ids",
     ":presentation:habit",

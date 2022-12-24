@@ -51,6 +51,7 @@ dependencies {
 
     implementation(project(":presentation:current-habit-abstinence"))
     implementation(project(":presentation:habit-creation"))
+    implementation(project(":presentation:habit-deletion"))
     implementation(project(":presentation:habit-ids"))
     implementation(project(":presentation:habit"))
 }

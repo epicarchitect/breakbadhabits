@@ -1,6 +1,6 @@
 package breakbadhabits.android.app.di.logic
 
-import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import breakbadhabits.android.app.database.MainDatabase
 import breakbadhabits.android.app.repository.HabitIconRepository
@@ -10,19 +10,20 @@ import breakbadhabits.android.app.repository.IdGenerator
 import breakbadhabits.android.app.utils.TimeProvider
 import breakbadhabits.logic.CurrentHabitAbstinenceProviderModule
 import breakbadhabits.logic.HabitCreatorModule
+import breakbadhabits.logic.HabitDeleterModule
 import breakbadhabits.logic.HabitIconsProviderModule
 import breakbadhabits.logic.HabitIdsProviderModule
 import breakbadhabits.logic.HabitProviderModule
 
-class LogicModule(private val application: Application) {
+class LogicModule(private val context: Context) {
 
     private val idGenerator by lazy {
-        IdGenerator(application)
+        IdGenerator(context)
     }
 
     private val database by lazy {
         Room.databaseBuilder(
-            application,
+            context,
             MainDatabase::class.java,
             "database-v4"
         ).build()
@@ -89,6 +90,15 @@ class LogicModule(private val application: Application) {
         HabitProviderModule(
             HabitProviderModuleDelegate(
                 habitsRepository
+            )
+        )
+    }
+
+    val habitDeleterModule by lazy {
+        HabitDeleterModule(
+            HabitDeleterModuleDelegate(
+                habitsRepository,
+                habitTracksRepository
             )
         )
     }

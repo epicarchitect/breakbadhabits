@@ -47,6 +47,7 @@ fun EventsCalendar(
     val staticCalendarState = rememberCalendarState(calendarState.value)
     calendarState.value = staticCalendarState.monthState.currentMonth
 
+
     StaticCalendar(
         modifier = modifier,
         calendarState = staticCalendarState,

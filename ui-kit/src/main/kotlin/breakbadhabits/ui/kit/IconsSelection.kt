@@ -30,9 +30,7 @@ fun IconsSelection(
 ) {
     val countRows = ceil((icons.size / countInRow.toFloat())).toInt()
 
-    Column(
-        modifier = modifier,
-    ) {
+    Column(modifier = modifier) {
         repeat(countRows) { rowIndex ->
             Row(
                 modifier = Modifier.fillMaxWidth(),

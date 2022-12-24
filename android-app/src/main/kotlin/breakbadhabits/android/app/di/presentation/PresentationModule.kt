@@ -1,17 +1,13 @@
 package breakbadhabits.android.app.di.presentation
 
-import android.app.Application
 import breakbadhabits.android.app.di.logic.LogicModule
 import breakbadhabits.presentation.CurrentHabitAbstinenceModule
 import breakbadhabits.presentation.HabitCreationModule
+import breakbadhabits.presentation.HabitDeletionModule
 import breakbadhabits.presentation.HabitIdsModule
 import breakbadhabits.presentation.HabitModule
 
-class PresentationModule(private val application: Application) {
-    private val logicModule by lazy {
-        LogicModule(application)
-    }
-
+class PresentationModule(private val logicModule: LogicModule) {
     val currentHabitAbstinenceModule by lazy {
         CurrentHabitAbstinenceModule(logicModule.currentHabitAbstinenceProviderModule)
     }
@@ -29,5 +25,9 @@ class PresentationModule(private val application: Application) {
 
     val habitIdsModule by lazy {
         HabitIdsModule(logicModule.habitIdsProviderModule)
+    }
+
+    val habitDeletionModule by lazy {
+        HabitDeletionModule(logicModule.habitDeleterModule)
     }
 }

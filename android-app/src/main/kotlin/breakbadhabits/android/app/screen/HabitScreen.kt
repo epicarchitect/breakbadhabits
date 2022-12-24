@@ -1,7 +1,9 @@
 package breakbadhabits.android.app.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,20 +18,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import breakbadhabits.android.app.LocalHabitIconResources
 import breakbadhabits.android.app.LocalPresentationModule
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.rememberEpicViewModel
 import breakbadhabits.entity.Habit
 import breakbadhabits.presentation.CurrentHabitAbstinenceViewModel
+import breakbadhabits.presentation.HabitDeletionViewModel
 import breakbadhabits.presentation.HabitViewModel
 import breakbadhabits.ui.kit.Button
+import breakbadhabits.ui.kit.Card
 import breakbadhabits.ui.kit.Icon
 import breakbadhabits.ui.kit.IconButton
 import breakbadhabits.ui.kit.InteractionType
 import breakbadhabits.ui.kit.Text
 import breakbadhabits.ui.kit.Title
-import epicarchitect.epicstore.compose.rememberEpicStoreEntry
 
 @Composable
 fun HabitScreen(
@@ -60,10 +64,44 @@ private fun LoadedScreen(
 ) {
     val habitIconResources = LocalHabitIconResources.current
     val appDependencies = LocalPresentationModule.current
-    val habitAbstinenceViewModel = rememberEpicStoreEntry {
+    val habitAbstinenceViewModel = rememberEpicViewModel {
         appDependencies.currentHabitAbstinenceModule.createCurrentHabitAbstinenceViewModel(habitId)
     }
     val abstinenceState by habitAbstinenceViewModel.state.collectAsState()
+
+    val habitDeletionViewModel = rememberEpicViewModel {
+        appDependencies.habitDeletionModule.createHabitIdsViewModel(habitId)
+    }
+    val habitDeletionState by habitDeletionViewModel.state.collectAsState()
+
+    if (habitDeletionState is HabitDeletionViewModel.State.Confirming) {
+        Dialog(onDismissRequest = habitDeletionViewModel::cancelConfirming) {
+            Card {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(stringResource(R.string.habit_deleteConfirmation))
+
+                    Row(
+                        modifier = Modifier.align(Alignment.End),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Button(
+                            text = stringResource(R.string.cancel),
+                            onClick = habitDeletionViewModel::cancelConfirming,
+                            elevation = 0.dp
+                        )
+                        Button(
+                            text = stringResource(R.string.yes),
+                            onClick = habitDeletionViewModel::confirm,
+                            elevation = 0.dp
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -105,6 +143,13 @@ private fun LoadedScreen(
                     },
                     text = stringResource(R.string.habit_resetTime),
                     interactionType = InteractionType.MAIN
+                )
+
+                Button(
+                    modifier = Modifier.padding(top = 8.dp),
+                    onClick = habitDeletionViewModel::startDeletion,
+                    text = "Delete",
+                    interactionType = InteractionType.DANGEROUS
                 )
             }
 

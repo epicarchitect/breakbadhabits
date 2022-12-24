@@ -5,7 +5,7 @@ import breakbadhabits.logic.CurrentHabitAbstinenceProviderModule
 
 class CurrentHabitAbstinenceModule(
     private val providerModule: CurrentHabitAbstinenceProviderModule
-) : EpicViewModel() {
+) {
 
     fun createCurrentHabitAbstinenceViewModel(
         habitId: Habit.Id
