@@ -51,6 +51,7 @@ private fun IntervalSelectionCalendarContent(state: State) {
             }
         }
 
+
         state.days.chunked(7).forEach {
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
                 it.forEach {
