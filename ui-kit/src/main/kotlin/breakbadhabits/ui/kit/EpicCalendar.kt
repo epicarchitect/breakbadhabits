@@ -1,5 +1,8 @@
 package breakbadhabits.ui.kit
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,11 +10,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -163,13 +168,22 @@ fun EpicCalendar(
                 }
             }
         }
+
+        AnimatedVisibility(
+            modifier = Modifier.matchParentSize(),
+            visible = cellWidth == Dp.Unspecified,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Surface {}
+        }
     }
 }
 
 @Composable
 fun rememberEpicCalendarState(
     yearMonth: YearMonth,
-    intervals: List<EpicCalendarState.Interval>
+    intervals: List<EpicCalendarState.Interval> = emptyList()
 ) = remember(yearMonth, intervals) {
     calculateState(yearMonth, intervals)
 }
@@ -194,7 +208,7 @@ data class EpicCalendarState(
     )
 }
 
-private fun calculateState(
+fun calculateState(
     yearMonth: YearMonth,
     intervals: List<EpicCalendarState.Interval>
 ): EpicCalendarState {
@@ -279,4 +293,30 @@ private fun calculateWeekDays(firstDayOfWeek: DayOfWeek) = DayOfWeek.values().le
     it.takeLast(n) + it.dropLast(n)
 }.map {
     EpicCalendarState.WeekDay(it.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
+}
+
+
+@Composable
+fun EpicCalendarPreview() {
+    EpicCalendar(
+        modifier = Modifier.fillMaxWidth(),
+        state = rememberEpicCalendarState(
+            yearMonth = YearMonth.now(),
+            intervals = listOf(
+                EpicCalendarState.Interval(
+                    startDate = LocalDate.now(),
+                    endDate = LocalDate.now(),
+                    color = Color.Red.copy(alpha = 0.5f)
+                ),
+                EpicCalendarState.Interval(
+                    startDate = LocalDate.now().plusDays(10),
+                    endDate = LocalDate.now().plusDays(19),
+                    color = Color.Green.copy(alpha = 0.5f)
+                )
+            )
+        ),
+        horizontalInnerPadding = 16.dp,
+        onDayClick = {
+        }
+    )
 }
