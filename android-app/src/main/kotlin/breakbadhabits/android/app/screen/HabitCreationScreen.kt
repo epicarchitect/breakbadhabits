@@ -34,12 +34,12 @@ import breakbadhabits.logic.IncorrectHabitNewName
 import breakbadhabits.presentation.HabitCreationViewModel
 import breakbadhabits.ui.kit.Button
 import breakbadhabits.ui.kit.Checkbox
+import breakbadhabits.ui.kit.EpicCalendar
+import breakbadhabits.ui.kit.EpicCalendarState
 import breakbadhabits.ui.kit.ErrorText
 import breakbadhabits.ui.kit.IconData
 import breakbadhabits.ui.kit.IconsSelection
 import breakbadhabits.ui.kit.InteractionType
-import breakbadhabits.ui.kit.EpicCalendar
-import breakbadhabits.ui.kit.EpicCalendarInterval
 import breakbadhabits.ui.kit.ProgressIndicator
 import breakbadhabits.ui.kit.Text
 import breakbadhabits.ui.kit.TextField
@@ -208,25 +208,24 @@ private fun InputScreen(
 
         EpicCalendar(
             modifier = Modifier.fillMaxWidth(),
-            state = rememberEpicCalendarState(yearMonth = YearMonth.now()),
-            intervals = listOf(
-                EpicCalendarInterval(
-                    startDate = LocalDate.now().minusDays(1),
-                    endDate = LocalDate.now().plusDays(5),
-                    color = Color.Red.copy(
-                        alpha = 0.5f
-                    )
-                ),
-                EpicCalendarInterval(
-                    startDate = LocalDate.now().plusDays(10),
-                    endDate = LocalDate.now().plusDays(19),
-                    color = Color.Green.copy(
-                        alpha = 0.5f
+            state = rememberEpicCalendarState(
+                yearMonth = YearMonth.now(),
+                intervals = listOf(
+                    EpicCalendarState.Interval(
+                        startDate = LocalDate.now().minusDays(4),
+                        endDate = LocalDate.now().plusDays(5),
+                        color = Color.Red.copy(alpha = 0.5f)
+                    ),
+                    EpicCalendarState.Interval(
+                        startDate = LocalDate.now().plusDays(10),
+                        endDate = LocalDate.now().plusDays(19),
+                        color = Color.Green.copy(alpha = 0.5f)
                     )
                 )
             ),
             horizontalInnerPadding = 16.dp,
-            dayDefaultColor = Color.Black
+            onDayClick = {
+            }
         )
 
         TextField(

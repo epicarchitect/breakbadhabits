@@ -1,6 +1,7 @@
 package breakbadhabits.ui.kit
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
@@ -36,17 +39,16 @@ import java.util.Locale
 fun EpicCalendar(
     modifier: Modifier = Modifier,
     state: EpicCalendarState,
-    intervals: List<EpicCalendarInterval>,
-    horizontalInnerPadding: Dp,
-    dayDefaultColor: Color
+    onDayClick: ((EpicCalendarState.Day) -> Unit)? = null,
+    horizontalInnerPadding: Dp = 0.dp,
 ) {
     var cellWidth by remember { mutableStateOf(Dp.Unspecified) }
     val cellHeight = remember { 44.dp }
     val density = LocalDensity.current
 
     Box(modifier.onSizeChanged {
-        val innerPaddingOfCell = horizontalInnerPadding.value * density.density / 7 * 2
-        cellWidth = Dp(((it.width / 7f) - innerPaddingOfCell) / density.density)
+        val cellSpacersWidth = horizontalInnerPadding.value * density.density / 7 * 2
+        cellWidth = Dp(((it.width / 7f) - cellSpacersWidth) / density.density)
     }) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -79,33 +81,26 @@ fun EpicCalendar(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     it.forEachIndexed { index, day ->
-                        val interval = intervals.find { day.date in it.startDate..it.endDate }
+                        val interval = state.intervals.find { day.date in it.startDate..it.endDate }
                         val isDayAtStartOfInterval = interval?.startDate?.let { it == day.date }
                         val isDayAtEndOfInterval = interval?.endDate?.let { it == day.date }
 
                         if (index == 0) {
-                            if (isDayAtStartOfInterval == true) {
-                                Spacer(
-                                    modifier = Modifier
-                                        .width(horizontalInnerPadding)
-                                        .height(cellHeight)
-                                        .background(dayDefaultColor)
-                                )
-                            } else {
-                                Spacer(
-                                    modifier = Modifier
-                                        .width(horizontalInnerPadding)
-                                        .height(cellHeight)
-                                        .background(interval?.color ?: dayDefaultColor)
-                                )
-                            }
+                            Spacer(
+                                modifier = Modifier
+                                    .width(horizontalInnerPadding)
+                                    .height(cellHeight)
+                                    .background(
+                                        if (isDayAtStartOfInterval == true || interval == null) Color.Transparent
+                                        else interval.color
+                                    )
+                            )
                         }
 
                         Box(
                             modifier = Modifier
                                 .width(cellWidth)
                                 .height(cellHeight)
-                                .alpha(if (day.inCurrentMonth) 1.0f else 0.5f)
                                 .clip(
                                     when {
                                         isDayAtStartOfInterval != null && isDayAtStartOfInterval && isDayAtEndOfInterval != null && isDayAtEndOfInterval -> {
@@ -136,30 +131,33 @@ fun EpicCalendar(
                                         }
                                     }
                                 )
-                                .background(interval?.color ?: dayDefaultColor),
+                                .background(interval?.color ?: Color.Transparent),
                         ) {
                             Text(
-                                modifier = Modifier.align(Alignment.Center),
-                                text = day.date.dayOfMonth.toString()
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .height(cellHeight)
+                                    .width(cellWidth)
+                                    .clip(RoundedCornerShape(100.dp))
+                                    .alpha(if (day.inCurrentMonth) 1.0f else 0.5f)
+                                    .clickable(enabled = onDayClick != null) {
+                                        onDayClick?.invoke(day)
+                                    },
+                                text = day.date.dayOfMonth.toString(),
+                                textAlign = TextAlign.Center,
                             )
                         }
 
                         if (index == 6) {
-                            if (isDayAtEndOfInterval == true) {
-                                Spacer(
-                                    modifier = Modifier
-                                        .width(horizontalInnerPadding)
-                                        .height(cellHeight)
-                                        .background(dayDefaultColor)
-                                )
-                            } else {
-                                Spacer(
-                                    modifier = Modifier
-                                        .width(horizontalInnerPadding)
-                                        .height(cellHeight)
-                                        .background(interval?.color ?: dayDefaultColor)
-                                )
-                            }
+                            Spacer(
+                                modifier = Modifier
+                                    .width(horizontalInnerPadding)
+                                    .height(cellHeight)
+                                    .background(
+                                        if (isDayAtEndOfInterval == true || interval == null) Color.Transparent
+                                        else interval.color
+                                    )
+                            )
                         }
                     }
                 }
@@ -170,27 +168,35 @@ fun EpicCalendar(
 
 @Composable
 fun rememberEpicCalendarState(
-    yearMonth: YearMonth
-) = remember(yearMonth) {
-    calculateState(yearMonth)
+    yearMonth: YearMonth,
+    intervals: List<EpicCalendarState.Interval>
+) = remember(yearMonth, intervals) {
+    calculateState(yearMonth, intervals)
 }
 
 data class EpicCalendarState(
     val weekDays: List<WeekDay>,
-    val days: List<Day>
+    val days: List<Day>,
+    val intervals: List<Interval>
 ) {
-    data class Day(val date: LocalDate, val inCurrentMonth: Boolean)
+    data class Day(
+        val date: LocalDate,
+        val inCurrentMonth: Boolean,
+        val appropriateInterval: Interval?
+    )
+
     data class WeekDay(val name: String)
+
+    data class Interval(
+        val startDate: LocalDate,
+        val endDate: LocalDate,
+        val color: Color
+    )
 }
 
-data class EpicCalendarInterval(
-    val startDate: LocalDate,
-    val endDate: LocalDate,
-    val color: Color
-)
-
 private fun calculateState(
-    yearMonth: YearMonth
+    yearMonth: YearMonth,
+    intervals: List<EpicCalendarState.Interval>
 ): EpicCalendarState {
     val previousYearMonth = yearMonth.minusMonths(1)
     val nextYearMonth = yearMonth.plusMonths(1)
@@ -225,37 +231,45 @@ private fun calculateState(
     val days = mutableListOf<EpicCalendarState.Day>()
 
     repeat(countLastDaysInPreviousMonth) {
+        val date = previousYearMonth.atDay(
+            previousYearMonth.lengthOfMonth() + it + 1 - countLastDaysInPreviousMonth
+        )
+
         days.add(
             EpicCalendarState.Day(
-                date = previousYearMonth.atDay(
-                    previousYearMonth.lengthOfMonth() + it + 1 - countLastDaysInPreviousMonth
-                ),
-                inCurrentMonth = false
+                date = date,
+                inCurrentMonth = false,
+                appropriateInterval = intervals.find { date in it.startDate..it.endDate }
             )
         )
     }
 
     repeat(countDaysInCurrentMonth) {
+        val date = yearMonth.atDay(it + 1)
         days.add(
             EpicCalendarState.Day(
-                date = yearMonth.atDay(it + 1),
-                inCurrentMonth = true
+                date = date,
+                inCurrentMonth = true,
+                appropriateInterval = intervals.find { date in it.startDate..it.endDate }
             )
         )
     }
 
     repeat(countFirstDaysInNextMonth) {
+        val date = nextYearMonth.atDay(it + 1)
         days.add(
             EpicCalendarState.Day(
-                date = nextYearMonth.atDay(it + 1),
-                inCurrentMonth = false
+                date = date,
+                inCurrentMonth = false,
+                appropriateInterval = intervals.find { date in it.startDate..it.endDate }
             )
         )
     }
 
     return EpicCalendarState(
         weekDays = weekDays,
-        days = days
+        days = days,
+        intervals = intervals
     )
 }
 
