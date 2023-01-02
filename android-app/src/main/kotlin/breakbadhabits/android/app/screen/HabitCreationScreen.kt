@@ -17,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -37,11 +38,13 @@ import breakbadhabits.ui.kit.ErrorText
 import breakbadhabits.ui.kit.IconData
 import breakbadhabits.ui.kit.IconsSelection
 import breakbadhabits.ui.kit.InteractionType
-import breakbadhabits.ui.kit.IntervalSelectionCalendar
+import breakbadhabits.ui.kit.EpicCalendar
+import breakbadhabits.ui.kit.EpicCalendarInterval
 import breakbadhabits.ui.kit.ProgressIndicator
 import breakbadhabits.ui.kit.Text
 import breakbadhabits.ui.kit.TextField
 import breakbadhabits.ui.kit.Title
+import breakbadhabits.ui.kit.rememberEpicCalendarState
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
@@ -49,6 +52,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
@@ -202,8 +206,27 @@ private fun InputScreen(
             text = stringResource(R.string.habitCreation_habitName_description)
         )
 
-        IntervalSelectionCalendar(
-            yearMonth = YearMonth.now()
+        EpicCalendar(
+            modifier = Modifier.fillMaxWidth(),
+            state = rememberEpicCalendarState(yearMonth = YearMonth.now()),
+            intervals = listOf(
+                EpicCalendarInterval(
+                    startDate = LocalDate.now().minusDays(1),
+                    endDate = LocalDate.now().plusDays(5),
+                    color = Color.Red.copy(
+                        alpha = 0.5f
+                    )
+                ),
+                EpicCalendarInterval(
+                    startDate = LocalDate.now().plusDays(10),
+                    endDate = LocalDate.now().plusDays(19),
+                    color = Color.Green.copy(
+                        alpha = 0.5f
+                    )
+                )
+            ),
+            horizontalInnerPadding = 16.dp,
+            dayDefaultColor = Color.Black
         )
 
         TextField(

@@ -14,6 +14,8 @@ import breakbadhabits.logic.HabitDeleterModule
 import breakbadhabits.logic.HabitIconsProviderModule
 import breakbadhabits.logic.HabitIdsProviderModule
 import breakbadhabits.logic.HabitProviderModule
+import breakbadhabits.logic.HabitTrackCreatorModule
+import breakbadhabits.logic.HabitTrackProviderModule
 
 class LogicModule(private val context: Context) {
 
@@ -98,6 +100,22 @@ class LogicModule(private val context: Context) {
         HabitDeleterModule(
             HabitDeleterModuleDelegate(
                 habitsRepository,
+                habitTracksRepository
+            )
+        )
+    }
+
+    val habitTrackCreatorModule by lazy {
+        HabitTrackCreatorModule(
+            HabitTrackCreatorModuleDelegate(
+                habitTracksRepository
+            )
+        )
+    }
+
+    val habitTrackProviderModule by lazy {
+        HabitTrackProviderModule(
+            HabitTrackProviderModuleDelegate(
                 habitTracksRepository
             )
         )

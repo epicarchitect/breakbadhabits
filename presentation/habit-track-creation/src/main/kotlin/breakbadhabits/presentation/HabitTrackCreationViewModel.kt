@@ -1,12 +1,8 @@
-package breakbadhabits.feature.habits.presentation
+package breakbadhabits.presentation
 
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
-import breakbadhabits.feature.EpicViewModel
-import breakbadhabits.feature.habits.model.HabitTracksRepository
-import breakbadhabits.feature.habits.validator.HabitTrackIntervalValidator
-import kolmachikhin.alexander.validation.Correct
-import kolmachikhin.alexander.validation.Validated
+import breakbadhabits.logic.HabitTrackCreator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -15,8 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HabitTrackCreationViewModel internal constructor(
-    private val habitTracksRepository: HabitTracksRepository,
-    private val habitTrackIntervalValidator: HabitTrackIntervalValidator,
+    private val habitTrackCreator: HabitTrackCreator,
     private val habitId: Habit.Id
 ) : EpicViewModel() {
 
@@ -28,19 +23,15 @@ class HabitTrackCreationViewModel internal constructor(
     val state = combine(
         creationState,
         intervalState,
-        intervalState.map { it?.let { habitTrackIntervalValidator.validate(it) } },
         dailyCountState,
         commentState
-    ) { creationState, interval, validatedInterval, dailyCount, comment ->
+    ) { creationState, interval, dailyCount, comment ->
         when (creationState) {
             is CreationState.NotExecuted -> State.Input(
                 interval,
-                validatedInterval,
                 dailyCount,
                 comment,
-                creationAllowed = interval != null
-                        && validatedInterval is Correct
-                        && dailyCount != null
+                creationAllowed = interval != null && dailyCount != null
             )
 
             is CreationState.Executing -> State.Creating()
@@ -51,7 +42,6 @@ class HabitTrackCreationViewModel internal constructor(
         SharingStarted.WhileSubscribed(),
         State.Input(
             interval = null,
-            validatedInterval = null,
             dailyCount = null,
             comment = null,
             creationAllowed = false
@@ -64,15 +54,14 @@ class HabitTrackCreationViewModel internal constructor(
         require(state is State.Input)
         require(state.creationAllowed)
         requireNotNull(state.interval)
-        require(state.validatedInterval is Correct)
         requireNotNull(state.dailyCount)
 
         creationState.value = CreationState.Executing()
 
         coroutineScope.launch {
-            habitTracksRepository.insertHabitTrack(
+            habitTrackCreator.createHabitTrack(
                 habitId,
-                state.validatedInterval,
+                state.interval,
                 state.dailyCount,
                 state.comment
             )
@@ -98,7 +87,6 @@ class HabitTrackCreationViewModel internal constructor(
     sealed class State {
         data class Input(
             val interval: HabitTrack.Interval?,
-            val validatedInterval: Validated<HabitTrack.Interval, HabitTrackIntervalValidator.IncorrectReason>?,
             val dailyCount: HabitTrack.DailyCount?,
             val comment: HabitTrack.Comment?,
             val creationAllowed: Boolean
@@ -113,4 +101,5 @@ class HabitTrackCreationViewModel internal constructor(
         class Executing : CreationState()
         class Executed : CreationState()
     }
+
 }

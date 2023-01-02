@@ -54,4 +54,6 @@ dependencies {
     implementation(project(":presentation:habit-deletion"))
     implementation(project(":presentation:habit-ids"))
     implementation(project(":presentation:habit"))
+    implementation(project(":presentation:habit-track"))
+    implementation(project(":presentation:habit-track-creation"))
 }
