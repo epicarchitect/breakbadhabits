@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -52,8 +50,9 @@ fun EpicCalendar(
     val density = LocalDensity.current
 
     Box(modifier.onSizeChanged {
-        val cellSpacersWidth = horizontalInnerPadding.value * density.density / 7 * 2
-        cellWidth = Dp(((it.width / 7f) - cellSpacersWidth) / density.density)
+        val cellSpacersWidth = horizontalInnerPadding.value * density.density / 7f * 2f
+        cellWidth =
+            Dp(((it.width / 7f) - cellSpacersWidth + 1f) / density.density) // +1f to fix right padding
     }) {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -86,7 +85,8 @@ fun EpicCalendar(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     it.forEachIndexed { index, day ->
-                        val interval = state.intervals.find { day.date in it.startDate..it.endDate }
+                        val interval =
+                            state.intervals.find { day.date in it.startDate..it.endDate }
                         val isDayAtStartOfInterval = interval?.startDate?.let { it == day.date }
                         val isDayAtEndOfInterval = interval?.endDate?.let { it == day.date }
 
@@ -293,30 +293,4 @@ private fun calculateWeekDays(firstDayOfWeek: DayOfWeek) = DayOfWeek.values().le
     it.takeLast(n) + it.dropLast(n)
 }.map {
     EpicCalendarState.WeekDay(it.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
-}
-
-
-@Composable
-fun EpicCalendarPreview() {
-    EpicCalendar(
-        modifier = Modifier.fillMaxWidth(),
-        state = rememberEpicCalendarState(
-            yearMonth = YearMonth.now(),
-            intervals = listOf(
-                EpicCalendarState.Interval(
-                    startDate = LocalDate.now(),
-                    endDate = LocalDate.now(),
-                    color = Color.Red.copy(alpha = 0.5f)
-                ),
-                EpicCalendarState.Interval(
-                    startDate = LocalDate.now().plusDays(10),
-                    endDate = LocalDate.now().plusDays(19),
-                    color = Color.Green.copy(alpha = 0.5f)
-                )
-            )
-        ),
-        horizontalInnerPadding = 16.dp,
-        onDayClick = {
-        }
-    )
 }

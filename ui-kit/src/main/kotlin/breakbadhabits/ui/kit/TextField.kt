@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.VisualTransformation
 import breakbadhabits.ui.kit.Text
 
 @Composable
@@ -15,9 +16,13 @@ fun TextField(
     label: String? = null,
     singleLine: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     isError: Boolean = false,
+    readOnly: Boolean = false,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -28,10 +33,14 @@ fun TextField(
                 Text(text = label)
             }
         },
+        visualTransformation = visualTransformation,
         singleLine = singleLine,
         maxLines = maxLines,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        isError = isError
+        isError = isError,
+        readOnly = readOnly,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon
     )
 }

@@ -33,7 +33,7 @@ fun Dialog(
         onDismissRequest = onDismiss
     ) {
         Box {
-            Surface {
+            Card {
                 content()
 
                 AnimatedVisibility(

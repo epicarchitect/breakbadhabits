@@ -1,9 +1,14 @@
 package breakbadhabits.ui.kit
 
+import android.widget.Space
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
@@ -19,7 +24,8 @@ fun Button(
     shape: Shape = MaterialTheme.shapes.small,
     enabled: Boolean = true,
     interactionType: InteractionType = InteractionType.REGULAR,
-    elevation: Dp = 3.dp
+    elevation: Dp = 3.dp,
+    icon: (@Composable () -> Unit)? = null
 ) {
     MaterialButton(
         onClick = onClick,
@@ -45,9 +51,18 @@ fun Button(
             )
         }
     ) {
-        Text(
-            text = text,
-            fontWeight = FontWeight.Medium,
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                icon()
+                Spacer(modifier = Modifier.padding(4.dp))
+            }
+
+            Text(
+                text = text,
+                fontWeight = FontWeight.Medium,
+            )
+        }
     }
 }

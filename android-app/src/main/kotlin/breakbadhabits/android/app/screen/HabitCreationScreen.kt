@@ -1,6 +1,7 @@
 package breakbadhabits.android.app.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.node.modifierElementOf
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -32,25 +33,25 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.rememberEpicViewModel
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
-import breakbadhabits.extension.datetime.LocalDateTimeInterval
+import breakbadhabits.extension.datetime.LocalDateInterval
+import breakbadhabits.extension.datetime.toLocalDateTimeInterval
 import breakbadhabits.logic.HabitCountability
 import breakbadhabits.logic.IncorrectHabitNewName
 import breakbadhabits.presentation.HabitCreationViewModel
 import breakbadhabits.ui.kit.Button
 import breakbadhabits.ui.kit.Checkbox
 import breakbadhabits.ui.kit.Dialog
-import breakbadhabits.ui.kit.EpicCalendarState
 import breakbadhabits.ui.kit.ErrorText
 import breakbadhabits.ui.kit.IconData
 import breakbadhabits.ui.kit.IconsSelection
 import breakbadhabits.ui.kit.InteractionType
+import breakbadhabits.ui.kit.IntervalSelectionEpicCalendar
 import breakbadhabits.ui.kit.ProgressIndicator
-import breakbadhabits.ui.kit.RadioButton
 import breakbadhabits.ui.kit.Text
 import breakbadhabits.ui.kit.TextField
 import breakbadhabits.ui.kit.Title
+import kotlinx.datetime.toKotlinLocalDate
 import java.time.LocalDate
-import java.time.YearMonth
 
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {
@@ -97,13 +98,12 @@ private fun InputScreen(
     val habitIconResources = LocalHabitIconResources.current
     var intervalSelectionShow by remember { mutableStateOf(false) }
 
-
     if (intervalSelectionShow) {
         IntervalSelectionDialog(
             onDone = {
                 intervalSelectionShow = false
                 viewModel.updateFirstTrackInterval(
-                    HabitTrack.Interval(it)
+                    HabitTrack.Interval(it.toLocalDateTimeInterval())
                 )
             },
             onCancel = {
@@ -225,13 +225,7 @@ private fun InputScreen(
             text = stringResource(R.string.habitCreation_lastEvent_description)
         )
 
-        Button(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            onClick = {
-                intervalSelectionShow = true
-            },
-            text = "select interval"
-        )
+        Button(onClick = { intervalSelectionShow = true }, text = "Select")
 
         Text(text = state.firstTrackInterval.toString())
 
@@ -259,120 +253,52 @@ private fun InputScreen(
 
 @Composable
 fun IntervalSelectionDialog(
-    onDone: (LocalDateTimeInterval) -> Unit,
+    onDone: (LocalDateInterval) -> Unit,
     onCancel: () -> Unit,
 ) {
     var startDate by remember { mutableStateOf<LocalDate?>(null) }
     var endDate by remember { mutableStateOf<LocalDate?>(null) }
-    var isStartDaySelection by remember { mutableStateOf(true) }
-    var isEndDaySelection by remember { mutableStateOf(true) }
-    var yearMonth by remember { mutableStateOf(YearMonth.now()) }
-    val color = Color.Red.copy(alpha = 0.5f)
-
-    fun calculateInterval(
-        startDate: LocalDate?,
-        endDate: LocalDate?
-    ): EpicCalendarState.Interval? {
-        if (isStartDaySelection) {
-            if (startDate == null) {
-                return null
-            }
-            return EpicCalendarState.Interval(
-                startDate = startDate,
-                endDate = startDate,
-                color = Color.Red
-            )
-        }
-
-        if (isEndDaySelection) {
-            if (endDate == null) {
-                return null
-            }
-            return EpicCalendarState.Interval(
-                startDate = endDate,
-                endDate = endDate,
-                color = Color.Red
-            )
-        }
-
-        return null
-    }
 
     Dialog(onDismiss = onCancel) {
-        Column {
-            Text("Укажите как давно у вас эта привычка:")
-            RadioButton(text = "Больше месяца", selected = true, onSelect = { /*TODO*/ })
-            RadioButton(text = "Больше полугода", selected = false, onSelect = { /*TODO*/ })
-            RadioButton(text = "Больше года", selected = false, onSelect = { /*TODO*/ })
-            RadioButton(text = "Больше 3 лет", selected = false, onSelect = { /*TODO*/ })
-            RadioButton(text = "Больше 5 лет", selected = false, onSelect = { /*TODO*/ })
-
-            Button(
-                onClick = {
-
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+        ) {
+            IntervalSelectionEpicCalendar(
+                modifier = Modifier.padding(vertical = 8.dp),
+                onSelected = { start, end ->
+                    startDate = start
+                    endDate = end
                 },
-                text = "Продолжить"
+                horizontalInnerPadding = 8.dp
             )
+            Row(
+                modifier = Modifier.align(Alignment.End).padding(12.dp)
+            ) {
+                Button(
+                    onClick = onCancel,
+                    text = "Cancel",
+                    elevation = 0.dp
+                )
+                Spacer(Modifier.padding(4.dp))
+                Button(
+                    onClick = {
+                        val start = startDate ?: return@Button
+                        val end = endDate ?: return@Button
+                        onDone(
+                            LocalDateInterval(
+                                start = start.toKotlinLocalDate(),
+                                end = end.toKotlinLocalDate(),
+                            )
+                        )
+                    },
+                    text = "Apply",
+                    enabled = startDate != null && endDate != null,
+                    interactionType = InteractionType.MAIN,
+                    elevation = 0.dp
+                )
+            }
         }
-//        Column(
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Button(
-//                    onClick = { yearMonth = yearMonth.minusMonths(1) },
-//                    text = "prev"
-//                )
-//                Text(yearMonth.toString())
-//                Button(
-//                    onClick = { yearMonth = yearMonth.plusMonths(1) },
-//                    text = "next"
-//                )
-//            }
-//            EpicCalendar(
-//                state = rememberEpicCalendarState(
-//                    yearMonth = yearMonth,
-//                    intervals = listOfNotNull(calculateInterval(startDate, endDate))
-//                ),
-//                onDayClick = {
-//                    if (isStartDaySelection) {
-//                        startDate = it.date
-//                    }
-//
-//                    if (isEndDaySelection) {
-//                        endDate = it.date
-//                    }
-//                }
-//            )
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Button(
-//                    onClick = onCancel,
-//                    text = "cancel"
-//                )
-//                Button(
-//                    onClick = {
-//                        if (isStartDaySelection) {
-//                            isStartDaySelection = false
-//                            isEndDaySelection = true
-//                        } else if (isEndDaySelection) {
-//                            val start = startDate ?: return@Button
-//                            val end = endDate ?: return@Button
-//                            onDone(
-//                                LocalDateTimeInterval(
-//                                    LocalDateTime.of(start, LocalTime.of(0, 0))
-//                                        .toKotlinLocalDateTime(),
-//                                    LocalDateTime.of(end, LocalTime.of(0, 0))
-//                                        .toKotlinLocalDateTime(),
-//                                )
-//                            )
-//                        }
-//                    },
-//                    text = if (isStartDaySelection) "select end date" else "done"
-//                )
-//            }
-//        }
     }
 }
