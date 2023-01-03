@@ -1,7 +1,6 @@
 package breakbadhabits.android.app.screen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,13 +18,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.node.modifierElementOf
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.LocalHabitIconResources
 import breakbadhabits.android.app.LocalPresentationModule
@@ -225,6 +228,17 @@ private fun InputScreen(
             text = stringResource(R.string.habitCreation_lastEvent_description)
         )
 
+        var dateYear by remember { mutableStateOf<Int?>(null) }
+        var dateMonth by remember { mutableStateOf<Int?>(null) }
+        var dateDay by remember { mutableStateOf<Int?>(null) }
+
+        DateTextField(
+            date = null,
+            onDateChanged = {
+
+            }
+        )
+
         Button(onClick = { intervalSelectionShow = true }, text = "Select")
 
         Text(text = state.firstTrackInterval.toString())
@@ -252,6 +266,71 @@ private fun InputScreen(
 }
 
 @Composable
+fun DateTextField(
+    date: LocalDate?,
+    onDateChanged: (LocalDate?) -> Unit,
+    separator: String = "/"
+) {
+    var text by rememberSaveable(date) {
+        mutableStateOf(
+            date?.let {
+                "${it.dayOfMonth}${it.monthValue}${it.year}"
+            } ?: ""
+        )
+    }
+    TextField(
+        value = text,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number
+        ),
+        onValueChange = {
+            if (it.length <= 8) {
+                text = it.filter { it in "0123456789" }
+            } else {
+                // show something
+            }
+
+            if (it.length == 8) {
+                onDateChanged(
+                    LocalDate.of(
+                        it.substring(0, 2).toInt(),
+                        it.substring(2, 4).toInt(),
+                        it.substring(4, 8).toInt()
+                    )
+                )
+            }
+        },
+        visualTransformation = {
+            TransformedText(
+                text = AnnotatedString(
+                    buildString {
+                        it.text.forEachIndexed { index, char ->
+                            append(char)
+                            if (index == 1 || index == 3) {
+                                append(separator)
+                            }
+                        }
+                    }
+                ),
+                offsetMapping = object : OffsetMapping {
+                    override fun originalToTransformed(offset: Int) = when {
+                        offset <= 1 -> offset
+                        offset <= 3 -> offset + 1
+                        else -> offset + 2
+                    }
+
+                    override fun transformedToOriginal(offset: Int) = when {
+                        offset <= 2 -> offset
+                        offset <= 5 -> offset - 1
+                        else -> offset - 2
+                    }
+                }
+            )
+        }
+    )
+}
+
+@Composable
 fun IntervalSelectionDialog(
     onDone: (LocalDateInterval) -> Unit,
     onCancel: () -> Unit,
@@ -274,7 +353,9 @@ fun IntervalSelectionDialog(
                 horizontalInnerPadding = 8.dp
             )
             Row(
-                modifier = Modifier.align(Alignment.End).padding(12.dp)
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(12.dp)
             ) {
                 Button(
                     onClick = onCancel,
@@ -293,7 +374,7 @@ fun IntervalSelectionDialog(
                             )
                         )
                     },
-                    text = "Apply",
+                    text = "Apply range",
                     enabled = startDate != null && endDate != null,
                     interactionType = InteractionType.MAIN,
                     elevation = 0.dp

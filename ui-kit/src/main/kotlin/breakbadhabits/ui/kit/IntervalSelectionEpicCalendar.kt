@@ -19,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
@@ -35,10 +37,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
@@ -53,6 +57,7 @@ fun IntervalSelectionEpicCalendar(
     horizontalInnerPadding: Dp = 0.dp,
 ) {
     val density = LocalDensity.current.density
+    var selectedTab by remember { mutableStateOf<Int>(0) }
     var startDate by remember { mutableStateOf<LocalDate?>(null) }
     var endDate by remember { mutableStateOf<LocalDate?>(null) }
     var yearMonth by remember { mutableStateOf(YearMonth.now()) }
@@ -239,20 +244,14 @@ fun IntervalSelectionEpicCalendar(
                 intervals = listOfNotNull(calculateInterval(startDate, endDate))
             ),
             onDayClick = {
-                val start = startDate
-                val end = endDate
+                when (selectedTab) {
+                    0 -> {
+                        startDate = it.date
+                    }
 
-                if (start != null && it.date < start && end == null) {
-                    startDate = it.date
-                } else if (start != null && end != null) {
-                    startDate = it.date
-                    endDate = null
-                } else if (start == null) {
-                    startDate = it.date
-                } else if (start == it.date) {
-                    startDate = null
-                } else {
-                    endDate = it.date
+                    1 -> {
+                        endDate = it.date
+                    }
                 }
 
                 onSelected(startDate, endDate)
@@ -260,12 +259,52 @@ fun IntervalSelectionEpicCalendar(
             horizontalInnerPadding = horizontalInnerPadding
         )
 
-        Column(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)
-        ) {
+        TabRow(selectedTabIndex = selectedTab) {
             val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-            Text("Start date: ${startDate?.format(formatter) ?: "not selected"}")
-            Text("End date: ${endDate?.format(formatter) ?: "not selected"}")
+            Tab(
+                selected = selectedTab == 0,
+                onClick = {
+                    selectedTab = 0
+                }
+            ) {
+                Column(
+                    modifier = Modifier.padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Начало",
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = startDate?.format(formatter) ?: "не выбрано",
+                        fontWeight = FontWeight.Light,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+            Tab(
+                selected = selectedTab == 1,
+                onClick = {
+                    selectedTab = 1
+                }
+            ) {
+                Column(
+                    modifier = Modifier.padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Конец",
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = endDate?.format(formatter) ?: "не выбрано",
+                        fontWeight = FontWeight.Light,
+                        fontSize = 12.sp
+                    )
+                }
+            }
         }
     }
 }

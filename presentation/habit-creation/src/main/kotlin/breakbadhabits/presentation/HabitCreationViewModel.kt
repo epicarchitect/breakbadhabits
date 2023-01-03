@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class HabitCreationViewModel internal constructor(
     private val habitCreator: HabitCreator,
@@ -103,6 +104,9 @@ class HabitCreationViewModel internal constructor(
 
         creationState.value = CreationState.Executing()
 
+        runBlocking {
+
+        }
         coroutineScope.launch {
             habitCreator.createHabit(
                 validatedName,
