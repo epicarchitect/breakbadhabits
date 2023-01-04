@@ -278,7 +278,7 @@ fun IntervalSelectionEpicCalendar(
                     selectedTabIndex = selectedTab,
                     backgroundColor = Color.Transparent
                 ) {
-                    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+                    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
                     Tab(
                         selected = selectedTab == 0,
                         onClick = {
