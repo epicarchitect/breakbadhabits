@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package breakbadhabits.ui.kit
 
 import androidx.compose.animation.AnimatedVisibility
@@ -7,21 +5,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
@@ -29,7 +23,6 @@ import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,15 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import breakbadhabits.extension.datetime.LocalDateInterval
-import kotlinx.datetime.toKotlinLocalDate
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
@@ -57,17 +48,28 @@ import java.util.Locale
 
 @Composable
 fun IntervalSelectionEpicCalendar(
-    modifier: Modifier = Modifier,
-    onSelected: (LocalDateInterval) -> Unit,
+    onSelected: (ClosedRange<LocalDate>) -> Unit,
     onCancel: () -> Unit,
     intervalsInnerPadding: Dp = 0.dp,
+    maxYearMonth: YearMonth,
+    minYearMonth: YearMonth
 ) {
-    val density = LocalDensity.current.density
-    var selectedTab by remember { mutableStateOf<Int>(0) }
+
+    val monthTitles = remember {
+        Month.values().map {
+            it.getDisplayName(
+                TextStyle.FULL_STANDALONE,
+                Locale.getDefault()
+            ).replaceFirstChar(Char::uppercase)
+        }
+    }
+    var selectedTab by remember { mutableStateOf(0) }
     var startDate by remember { mutableStateOf<LocalDate?>(null) }
     var endDate by remember { mutableStateOf<LocalDate?>(null) }
-    var yearMonth by remember { mutableStateOf(YearMonth.now()) }
+    var yearMonth by remember { mutableStateOf(maxYearMonth) }
+    var showYearMonthSelection by remember { mutableStateOf(false) }
 
+    @Composable
     fun calculateInterval(
         startDate: LocalDate?,
         endDate: LocalDate?
@@ -77,7 +79,8 @@ fun IntervalSelectionEpicCalendar(
                 return EpicCalendarState.Interval(
                     startDate = endDate,
                     endDate = endDate,
-                    color = Color.Red.copy(alpha = 0.5f)
+                    backgroundColor = MaterialTheme.colors.primary,
+                    contentColor = MaterialTheme.colors.onPrimary
                 )
             }
 
@@ -87,19 +90,19 @@ fun IntervalSelectionEpicCalendar(
             return EpicCalendarState.Interval(
                 startDate = startDate,
                 endDate = endDate,
-                color = Color.Red.copy(alpha = 0.5f)
+                backgroundColor = MaterialTheme.colors.primary,
+                contentColor = MaterialTheme.colors.onPrimary
             )
         }
         return EpicCalendarState.Interval(
             startDate = startDate,
             endDate = startDate,
-            color = Color.Red.copy(alpha = 0.5f)
+            backgroundColor = MaterialTheme.colors.primary,
+            contentColor = MaterialTheme.colors.onPrimary
         )
     }
 
-    Column(modifier) {
-        var showYearMonthSelection by remember { mutableStateOf(false) }
-
+    Column(modifier = Modifier.padding(top = 8.dp)) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,10 +130,7 @@ fun IntervalSelectionEpicCalendar(
                                 .padding(horizontal = 4.dp)
                                 .clip(RoundedCornerShape(100.dp))
                                 .clickable { showYearMonthSelection = !showYearMonthSelection },
-                            text = Month.of(yearMonth.monthValue).getDisplayName(
-                                TextStyle.FULL_STANDALONE,
-                                Locale.getDefault()
-                            ).replaceFirstChar { it.uppercase() } + " " + yearMonth.year,
+                            text = monthTitles[yearMonth.monthValue - 1] + " " + yearMonth.year,
                             textAlign = TextAlign.Center
                         )
                         IconButton(
@@ -150,7 +150,6 @@ fun IntervalSelectionEpicCalendar(
                             yearMonthSelectionBoxSize = it
                         }
                     ) {
-
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -165,85 +164,90 @@ fun IntervalSelectionEpicCalendar(
                             )
                         }
 
-                        val monthsRowState = rememberLazyListState()
-                        val yearsRowState = rememberLazyListState()
-
-                        LaunchedEffect(yearMonth.monthValue) {
-                            monthsRowState.animateScrollToItem(
-                                yearMonth.monthValue - 1,
-                                scrollOffset = (-yearMonthSelectionBoxSize.width / 2f + (100f + 34f) / 2 * density).toInt()
-                            )
-                        }
-                        LaunchedEffect(yearMonth.year) {
-                            yearsRowState.animateScrollToItem(
-                                (2023 - 1949) - (yearMonth.year - 1949),
-                                scrollOffset = (-yearMonthSelectionBoxSize.width / 2f + (80f + 34f) / 2 * density).toInt()
-                            )
-                        }
-
-                        LazyRow(
-                            state = monthsRowState,
+                        ScrollableTabRow(
+                            selectedTabIndex = yearMonth.monthValue - 1,
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp)
+                            backgroundColor = Color.Transparent,
+                            indicator = {},
+                            divider = {},
+                            edgePadding = 12.dp
                         ) {
-                            items(12) {
-                                Chip(
-                                    modifier = Modifier.width(100.dp),
-                                    onClick = {
-                                        yearMonth = yearMonth.withMonth(it + 1)
+                            repeat(monthTitles.size) {
+                                val monthTitle = monthTitles[it]
+                                val isSelected = yearMonth.monthValue == it + 1
+                                Card(
+                                    modifier = Modifier.padding(4.dp),
+                                    backgroundColor = if (isSelected) {
+                                        MaterialTheme.colors.primary
+                                    } else {
+                                        MaterialTheme.colors.onBackground.copy(alpha = 0.1f)
                                     },
-                                    colors = ChipDefaults.chipColors(
-                                        backgroundColor = if (yearMonth.monthValue == it + 1) {
-                                            Color.Red.copy(alpha = 0.5f)
-                                        } else {
-                                            Color.LightGray.copy(alpha = 0.5f)
-                                        },
-                                    ),
+                                    elevation = 0.dp
                                 ) {
                                     Box(
-                                        modifier = Modifier.fillMaxWidth(),
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clickable {
+                                                yearMonth = yearMonth.withMonth(it + 1)
+                                            },
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            Month.of(it + 1).getDisplayName(
-                                                TextStyle.FULL_STANDALONE,
-                                                Locale.getDefault()
-                                            ).replaceFirstChar { it.uppercase() }
+                                            modifier = Modifier.padding(
+                                                vertical = 8.dp,
+                                                horizontal = 20.dp
+                                            ),
+                                            text = monthTitle,
+                                            textAlign = TextAlign.Center,
+                                            overflow = TextOverflow.Ellipsis,
+                                            fontSize = 14.sp
                                         )
                                     }
                                 }
                             }
                         }
-                        LazyRow(
-                            state = yearsRowState,
+                        ScrollableTabRow(
+                            selectedTabIndex = maxYearMonth.year - yearMonth.year,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(horizontal = 16.dp)
+                            backgroundColor = Color.Transparent,
+                            indicator = {},
+                            divider = {},
+                            edgePadding = 12.dp
                         ) {
-                            val now = YearMonth.now()
-                            items(now.year - 1949) {
-                                val year = now.year - it
-                                Chip(
-                                    modifier = Modifier.width(80.dp),
-                                    onClick = {
-                                        yearMonth = yearMonth.withYear(year)
+                            repeat(maxYearMonth.year - minYearMonth.year) {
+                                val year = maxYearMonth.year - it
+                                val yearTitle = year.toString()
+                                val isSelected = yearMonth.year == year
+
+                                Card(
+                                    modifier = Modifier.padding(4.dp),
+                                    backgroundColor = if (isSelected) {
+                                        MaterialTheme.colors.primary
+                                    } else {
+                                        MaterialTheme.colors.onBackground.copy(alpha = 0.1f)
                                     },
-                                    colors = ChipDefaults.chipColors(
-                                        backgroundColor = if (yearMonth.year == year) {
-                                            Color.Red.copy(alpha = 0.5f)
-                                        } else {
-                                            Color.LightGray.copy(alpha = 0.5f)
-                                        },
-                                    )
+                                    elevation = 0.dp,
                                 ) {
                                     Box(
-                                        modifier = Modifier.fillMaxWidth(),
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clickable {
+                                                yearMonth = yearMonth.withYear(year)
+                                            },
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(year.toString())
+                                        Text(
+                                            modifier = Modifier.padding(
+                                                vertical = 8.dp,
+                                                horizontal = 20.dp
+                                            ),
+                                            text = yearTitle,
+                                            textAlign = TextAlign.Center,
+                                            overflow = TextOverflow.Ellipsis,
+                                            fontSize = 14.sp
+                                        )
                                     }
                                 }
                             }
@@ -258,6 +262,7 @@ fun IntervalSelectionEpicCalendar(
                 intervals = listOfNotNull(calculateInterval(startDate, endDate))
             ),
             onDayClick = {
+                showYearMonthSelection = false
                 if (selectedTab == 0) {
                     startDate = it.date
                 } else if (selectedTab == 1) {
@@ -266,100 +271,110 @@ fun IntervalSelectionEpicCalendar(
             },
             horizontalInnerPadding = intervalsInnerPadding
         )
-
-        TabRow(
-            modifier = Modifier.padding(top = 8.dp),
-            selectedTabIndex = selectedTab,
-            backgroundColor = Color.Transparent
-        ) {
-            val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-            Tab(
-                selected = selectedTab == 0,
-                onClick = {
-                    selectedTab = 0
-                }
-            ) {
-                Column(
-                    modifier = Modifier.padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+        AnimatedVisibility(visible = !showYearMonthSelection) {
+            Column {
+                TabRow(
+                    modifier = Modifier.padding(top = 8.dp),
+                    selectedTabIndex = selectedTab,
+                    backgroundColor = Color.Transparent
                 ) {
-                    Text(
-                        text = "Начало",
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = startDate?.format(formatter) ?: "не выбрано",
-                        fontWeight = FontWeight.Light,
-                        fontSize = 12.sp
-                    )
-                }
-            }
-            Tab(
-                selected = selectedTab == 1,
-                onClick = {
-                    selectedTab = 1
-                }
-            ) {
-                Column(
-                    modifier = Modifier.padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Конец",
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = endDate?.format(formatter) ?: "не выбрано",
-                        fontWeight = FontWeight.Light,
-                        fontSize = 12.sp
-                    )
-                }
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(top = 12.dp, end = 16.dp, bottom = 8.dp)
-        ) {
-            Button(
-                onClick = onCancel,
-                text = "Cancel",
-                elevation = 0.dp
-            )
-            Spacer(Modifier.padding(4.dp))
-            Button(
-                onClick = {
-                    if (selectedTab == 0 && endDate == null) {
-                        selectedTab = 1
-                    } else if (selectedTab == 1 && startDate == null) {
-                        selectedTab = 0
-                    } else {
-                        val start = startDate ?: return@Button
-                        val end = endDate ?: return@Button
-                        onSelected(
-                            LocalDateInterval(
-                                start = start.toKotlinLocalDate(),
-                                end = end.toKotlinLocalDate(),
+                    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+                    Tab(
+                        selected = selectedTab == 0,
+                        onClick = {
+                            selectedTab = 0
+                            if (startDate != null) {
+                                yearMonth = yearMonth
+                                    .withMonth(startDate!!.monthValue)
+                                    .withYear(startDate!!.year)
+                            }
+                        }
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Начало",
+                                fontWeight = FontWeight.Bold
                             )
-                        )
+
+                            Text(
+                                text = startDate?.format(formatter) ?: "не выбрано",
+                                fontWeight = FontWeight.Light,
+                                fontSize = 12.sp
+                            )
+                        }
                     }
-                },
-                text = if (selectedTab == 0 && endDate == null || selectedTab == 1 && startDate == null) "Next" else "Apply",
-                enabled = selectedTab == 0 && startDate != null || selectedTab == 1 && endDate != null,
-                interactionType = InteractionType.MAIN,
-                elevation = 0.dp
-            )
+                    Tab(
+                        selected = selectedTab == 1,
+                        onClick = {
+                            selectedTab = 1
+                            if (endDate != null) {
+                                yearMonth = yearMonth
+                                    .withMonth(endDate!!.monthValue)
+                                    .withYear(endDate!!.year)
+                            }
+                        }
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Конец",
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Text(
+                                text = endDate?.format(formatter) ?: "не выбрано",
+                                fontWeight = FontWeight.Light,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(top = 12.dp, end = 16.dp, bottom = 8.dp)
+                ) {
+                    Button(
+                        onClick = onCancel,
+                        text = "Cancel",
+                        elevation = 0.dp
+                    )
+                    Spacer(Modifier.padding(4.dp))
+                    Button(
+                        onClick = {
+                            if (selectedTab == 0 && endDate == null) {
+                                selectedTab = 1
+                            } else if (selectedTab == 1 && startDate == null) {
+                                selectedTab = 0
+                            } else {
+                                val start = startDate ?: return@Button
+                                val end = endDate ?: return@Button
+                                onSelected(start..end)
+                            }
+                        },
+                        text = if (selectedTab == 0 && endDate == null || selectedTab == 1 && startDate == null) "Next" else "Apply",
+                        enabled = selectedTab == 0 && startDate != null || selectedTab == 1 && endDate != null,
+                        interactionType = InteractionType.MAIN,
+                        elevation = 0.dp
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
 fun IntervalSelectionEpicCalendarDialog(
-    onSelected: (LocalDateInterval) -> Unit,
+    onSelected: (ClosedRange<LocalDate>) -> Unit,
     onCancel: () -> Unit,
+    maxYearMonth: YearMonth,
+    minYearMonth: YearMonth
 ) {
     Dialog(onDismiss = onCancel) {
         Column(
@@ -368,10 +383,11 @@ fun IntervalSelectionEpicCalendarDialog(
                 .verticalScroll(rememberScrollState())
         ) {
             IntervalSelectionEpicCalendar(
-                modifier = Modifier.padding(vertical = 8.dp),
                 onSelected = onSelected,
                 intervalsInnerPadding = 8.dp,
-                onCancel = onCancel
+                onCancel = onCancel,
+                maxYearMonth = maxYearMonth,
+                minYearMonth = minYearMonth
             )
         }
     }

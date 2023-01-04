@@ -11,13 +11,13 @@ class HabitTrackCreatorModuleDelegate(
 
     override suspend fun insertHabitTrack(
         habitId: Habit.Id,
-        interval: HabitTrack.Interval,
+        range: HabitTrack.Range,
         dailyCount: HabitTrack.DailyCount,
         comment: HabitTrack.Comment?
     ) {
         habitTracksRepository.insertHabitTrack(
             habitId,
-            interval,
+            range,
             dailyCount,
             comment
         )

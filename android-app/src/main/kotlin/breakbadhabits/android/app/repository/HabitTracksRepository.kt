@@ -4,7 +4,6 @@ import breakbadhabits.android.app.database.HabitTracksDao
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.extension.coroutines.flow.mapItems
-import breakbadhabits.extension.datetime.LocalDateTimeInterval
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -17,7 +16,7 @@ class HabitTracksRepository(
 ) {
     suspend fun insertHabitTrack(
         habitId: Habit.Id,
-        interval: HabitTrack.Interval,
+        range: HabitTrack.Range,
         dailyCount: HabitTrack.DailyCount,
         comment: HabitTrack.Comment?
     ) = withContext(Dispatchers.IO) {
@@ -25,7 +24,7 @@ class HabitTracksRepository(
             HabitTrack(
                 HabitTrack.Id(idGenerator.nextId()),
                 habitId,
-                interval,
+                range,
                 dailyCount,
                 comment
             ).toDatabaseHabitTrack()
@@ -34,14 +33,14 @@ class HabitTracksRepository(
 
     suspend fun updateHabitTrack(
         id: HabitTrack.Id,
-        interval: HabitTrack.Interval,
+        range: HabitTrack.Range,
         dailyCount: HabitTrack.DailyCount,
         comment: HabitTrack.Comment?
     ) = withContext(Dispatchers.IO) {
         habitTracksDao.update(
             id = id.value,
-            startDay = interval.value.start.toString(),
-            endDay = interval.value.start.toString(),
+            startDay = range.value.start.toString(),
+            endDay = range.value.start.toString(),
             dailyCount = dailyCount.value,
             comment = comment?.value
         )
@@ -77,8 +76,8 @@ class HabitTracksRepository(
     private fun HabitTrack.toDatabaseHabitTrack() = DatabaseHabitTrack(
         id = id.value,
         habitId = habitId.value,
-        startDay = interval.value.start.toString(),
-        endDay = interval.value.end.toString(),
+        startDay = range.value.start.toString(),
+        endDay = range.value.endInclusive.toString(),
         dailyCount = dailyCount.value,
         comment = comment?.value
     )
@@ -86,12 +85,7 @@ class HabitTracksRepository(
     private fun DatabaseHabitTrack.toHabitTrack() = HabitTrack(
         id = HabitTrack.Id(id),
         habitId = Habit.Id(habitId),
-        interval = HabitTrack.Interval(
-            LocalDateTimeInterval(
-                start = startDay.toLocalDateTime(),
-                end = endDay.toLocalDateTime()
-            )
-        ),
+        range = HabitTrack.Range(startDay.toLocalDateTime()..endDay.toLocalDateTime()),
         dailyCount = HabitTrack.DailyCount(dailyCount),
         comment = comment?.let { HabitTrack.Comment(it) }
     )

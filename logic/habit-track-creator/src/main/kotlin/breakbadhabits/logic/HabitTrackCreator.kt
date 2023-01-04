@@ -9,13 +9,13 @@ class HabitTrackCreator internal constructor(
 
     suspend fun createHabitTrack(
         habitId: Habit.Id,
-        interval: HabitTrack.Interval,
+        range: HabitTrack.Range,
         dailyCount: HabitTrack.DailyCount,
         comment: HabitTrack.Comment?,
     ) {
         delegate.insertHabitTrack(
             habitId,
-            interval,
+            range,
             dailyCount,
             comment
         )

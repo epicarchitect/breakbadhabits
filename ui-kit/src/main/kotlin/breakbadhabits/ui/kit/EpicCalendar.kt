@@ -97,7 +97,7 @@ fun EpicCalendar(
                                     .height(cellHeight)
                                     .background(
                                         if (isDayAtStartOfInterval == true || interval == null) Color.Transparent
-                                        else interval.color
+                                        else interval.backgroundColor
                                     )
                             )
                         }
@@ -136,7 +136,7 @@ fun EpicCalendar(
                                         }
                                     }
                                 )
-                                .background(interval?.color ?: Color.Transparent),
+                                .background(interval?.backgroundColor ?: Color.Transparent),
                         ) {
                             Text(
                                 modifier = Modifier
@@ -150,6 +150,7 @@ fun EpicCalendar(
                                     },
                                 text = day.date.dayOfMonth.toString(),
                                 textAlign = TextAlign.Center,
+                                color = interval?.contentColor ?: Color.Unspecified
                             )
                         }
 
@@ -160,7 +161,7 @@ fun EpicCalendar(
                                     .height(cellHeight)
                                     .background(
                                         if (isDayAtEndOfInterval == true || interval == null) Color.Transparent
-                                        else interval.color
+                                        else interval.backgroundColor
                                     )
                             )
                         }
@@ -204,7 +205,8 @@ data class EpicCalendarState(
     data class Interval(
         val startDate: LocalDate,
         val endDate: LocalDate,
-        val color: Color
+        val backgroundColor: Color,
+        val contentColor: Color,
     )
 }
 

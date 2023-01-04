@@ -23,7 +23,7 @@ class HabitCreator internal constructor(
 
         delegate.insertHabitTrack(
             habitId = newHabit.id,
-            interval = firstTrackInterval.data,
+            range = firstTrackInterval.data,
             dailyCount = when (countability) {
                 is HabitCountability.Countable -> {
                     countability.averageDailyCount

@@ -36,26 +36,25 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.rememberEpicViewModel
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
-import breakbadhabits.extension.datetime.LocalDateInterval
-import breakbadhabits.extension.datetime.toLocalDateTimeInterval
 import breakbadhabits.logic.HabitCountability
 import breakbadhabits.logic.IncorrectHabitNewName
 import breakbadhabits.presentation.HabitCreationViewModel
 import breakbadhabits.ui.kit.Button
 import breakbadhabits.ui.kit.Checkbox
-import breakbadhabits.ui.kit.Dialog
 import breakbadhabits.ui.kit.ErrorText
 import breakbadhabits.ui.kit.IconData
 import breakbadhabits.ui.kit.IconsSelection
 import breakbadhabits.ui.kit.InteractionType
-import breakbadhabits.ui.kit.IntervalSelectionEpicCalendar
 import breakbadhabits.ui.kit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.ui.kit.ProgressIndicator
 import breakbadhabits.ui.kit.Text
 import breakbadhabits.ui.kit.TextField
 import breakbadhabits.ui.kit.Title
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.toKotlinLocalDate
 import java.time.LocalDate
+import java.time.YearMonth
 
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {
@@ -106,13 +105,15 @@ private fun InputScreen(
         IntervalSelectionEpicCalendarDialog(
             onSelected = {
                 intervalSelectionShow = false
-                viewModel.updateFirstTrackInterval(
-                    HabitTrack.Interval(it.toLocalDateTimeInterval())
-                )
+                val start = LocalDateTime(it.start.toKotlinLocalDate(), LocalTime(0, 0))
+                val end = LocalDateTime(it.endInclusive.toKotlinLocalDate(), LocalTime(0, 0))
+                viewModel.updateFirstTrackInterval(HabitTrack.Range(start..end))
             },
             onCancel = {
                 intervalSelectionShow = false
-            }
+            },
+            maxYearMonth = YearMonth.now(),
+            minYearMonth = YearMonth.now().minusYears(10),
         )
     }
 
@@ -242,7 +243,7 @@ private fun InputScreen(
 
         Button(onClick = { intervalSelectionShow = true }, text = "Select")
 
-        Text(text = state.firstTrackInterval.toString())
+        Text(text = state.firstTrackRange.toString())
 
 
         Spacer(modifier = Modifier.weight(1.0f))

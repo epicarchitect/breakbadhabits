@@ -20,10 +20,10 @@ class HabitCreatorModuleDelegate(
 
     override suspend fun insertHabitTrack(
         habitId: Habit.Id,
-        interval: HabitTrack.Interval,
+        range: HabitTrack.Range,
         dailyCount: HabitTrack.DailyCount,
         comment: HabitTrack.Comment?
-    ) = habitTracksRepository.insertHabitTrack(habitId, interval, dailyCount, comment)
+    ) = habitTracksRepository.insertHabitTrack(habitId, range, dailyCount, comment)
 
     override suspend fun habitNameExists(name: Habit.Name) = habitsRepository.habitNameExists(name)
 

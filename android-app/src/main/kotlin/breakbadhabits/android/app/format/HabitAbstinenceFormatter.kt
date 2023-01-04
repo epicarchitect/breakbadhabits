@@ -12,9 +12,9 @@ class HabitAbstinenceFormatter(private val context: Context) {
         abstinence: HabitAbstinence,
         maxValueCount: Int = 4
     ) = buildString {
-        val timeInMillis = abstinence.interval.value.let {
+        val timeInMillis = abstinence.range.value.let {
             val timeZone = TimeZone.currentSystemDefault()
-            val end = it.end.toInstant(timeZone).toEpochMilliseconds()
+            val end = it.endInclusive.toInstant(timeZone).toEpochMilliseconds()
             val start = it.start.toInstant(timeZone).toEpochMilliseconds()
             end - start
         }

@@ -2,7 +2,6 @@ package breakbadhabits.ui.kit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
@@ -15,9 +14,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import breakbadhabits.ui.kit.Icon
 import androidx.compose.material.Text as MaterialText
 
 @Composable
@@ -31,7 +30,8 @@ fun Text(
     iconModifier: Modifier = Modifier.padding(end = 8.dp),
     imageVector: ImageVector? = null,
     textAlign: TextAlign? = null,
-    iconTint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    iconTint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
+    overflow: TextOverflow = TextOverflow.Clip
 ) {
     Row(
         modifier = modifier,
@@ -52,7 +52,8 @@ fun Text(
             color = color,
             fontWeight = fontWeight,
             fontSize = fontSize,
-            textAlign = textAlign
+            textAlign = textAlign,
+            overflow = overflow
         )
     }
 }

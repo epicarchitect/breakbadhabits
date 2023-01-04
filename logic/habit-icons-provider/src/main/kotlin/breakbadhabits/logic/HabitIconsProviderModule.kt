@@ -2,9 +2,7 @@ package breakbadhabits.logic
 
 import breakbadhabits.entity.Habit
 
-class HabitIconsProviderModule(
-    private val delegate: Delegate
-) {
+class HabitIconsProviderModule(private val delegate: Delegate) {
 
     fun createHabitIconsProvider() = HabitIconsProvider(delegate)
 

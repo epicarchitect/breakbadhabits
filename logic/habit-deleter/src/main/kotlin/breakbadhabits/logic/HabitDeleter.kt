@@ -10,5 +10,4 @@ class HabitDeleter internal constructor(
         delegate.deleteHabitById(id)
         delegate.deleteHabitTracksByHabitId(id)
     }
-
 }

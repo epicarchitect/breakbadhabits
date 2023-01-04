@@ -1,10 +1,10 @@
 package breakbadhabits.entity
 
-import breakbadhabits.extension.datetime.LocalDateTimeInterval
+import kotlinx.datetime.LocalDateTime
 
 data class HabitAbstinence(
     val habitId: Habit.Id,
-    val interval: Interval
+    val range: Range
 ) {
-    data class Interval(val value: LocalDateTimeInterval)
+    data class Range(val value: ClosedRange<LocalDateTime>)
 }

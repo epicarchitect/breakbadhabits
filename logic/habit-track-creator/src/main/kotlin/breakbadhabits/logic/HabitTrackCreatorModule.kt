@@ -10,7 +10,7 @@ class HabitTrackCreatorModule(private val delegate: Delegate) {
     interface Delegate {
         suspend fun insertHabitTrack(
             habitId: Habit.Id,
-            interval: HabitTrack.Interval,
+            range: HabitTrack.Range,
             dailyCount: HabitTrack.DailyCount,
             comment: HabitTrack.Comment?,
         )

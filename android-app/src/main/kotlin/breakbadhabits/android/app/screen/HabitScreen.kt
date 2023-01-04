@@ -130,7 +130,7 @@ private fun LoadedScreen(
 
                 Text(
                     text = when (val state = abstinenceState) {
-                        is CurrentHabitAbstinenceViewModel.State.Loaded -> state.abstinence.interval.toString()
+                        is CurrentHabitAbstinenceViewModel.State.Loaded -> state.abstinence.range.toString()
                         is CurrentHabitAbstinenceViewModel.State.Loading -> "loading..."
                         is CurrentHabitAbstinenceViewModel.State.NotExist -> stringResource(R.string.habit_noEvents)
                     }

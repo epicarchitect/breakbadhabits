@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    api(project(":extensions:datetime"))
+    api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 }

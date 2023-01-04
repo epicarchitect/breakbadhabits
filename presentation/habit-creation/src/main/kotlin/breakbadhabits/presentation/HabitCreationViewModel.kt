@@ -35,9 +35,9 @@ class HabitCreationViewModel internal constructor(
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
     private val selectedIconState = MutableStateFlow(icons.first())
     private val countabilityState = MutableStateFlow<HabitCountability?>(null)
-    private val firstTrackIntervalState = MutableStateFlow<HabitTrack.Interval?>(null)
+    private val firstTrackRangeState = MutableStateFlow<HabitTrack.Range?>(null)
     private val validatedFirstTrackIntervalState: StateFlow<ValidatedHabitTrackInterval?> =
-        firstTrackIntervalState.map {
+        firstTrackRangeState.map {
             it?.let { trackIntervalValidator.validate(it) }
         }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
@@ -48,7 +48,7 @@ class HabitCreationViewModel internal constructor(
         validatedNameState,
         selectedIconState,
         countabilityState,
-        firstTrackIntervalState,
+        firstTrackRangeState,
         validatedFirstTrackIntervalState
     ) { creationState, name, validatedName, selectedIcon,
         countability, firstTrackInterval, validatedFirstTrackInterval ->
@@ -59,7 +59,7 @@ class HabitCreationViewModel internal constructor(
                 selectedIcon = selectedIcon,
                 icons = icons,
                 habitCountability = countability,
-                firstTrackInterval = firstTrackInterval,
+                firstTrackRange = firstTrackInterval,
                 validatedFirstTrackInterval = validatedFirstTrackInterval,
                 creationAllowed = name != null
                         && validatedName is CorrectHabitNewNewName
@@ -80,7 +80,7 @@ class HabitCreationViewModel internal constructor(
             icons = emptyList(),
             selectedIcon = icons.first(),
             habitCountability = null,
-            firstTrackInterval = null,
+            firstTrackRange = null,
             validatedFirstTrackInterval = null,
             creationAllowed = false
         )
@@ -133,9 +133,9 @@ class HabitCreationViewModel internal constructor(
         countabilityState.value = countability
     }
 
-    fun updateFirstTrackInterval(interval: HabitTrack.Interval) {
+    fun updateFirstTrackInterval(range: HabitTrack.Range) {
         require(state.value is State.Input)
-        firstTrackIntervalState.value = interval
+        firstTrackRangeState.value = range
     }
 
     sealed class State {
@@ -145,7 +145,7 @@ class HabitCreationViewModel internal constructor(
             val icons: List<Habit.IconResource>,
             val selectedIcon: Habit.IconResource,
             val habitCountability: HabitCountability?,
-            val firstTrackInterval: HabitTrack.Interval?,
+            val firstTrackRange: HabitTrack.Range?,
             val validatedFirstTrackInterval: ValidatedHabitTrackInterval?,
             val creationAllowed: Boolean
         ) : State()

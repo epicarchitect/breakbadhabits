@@ -11,7 +11,7 @@ data class LocalDateInterval(
     val end: LocalDate
 )
 
-fun LocalDateInterval.toLocalDateTimeInterval() = LocalDateTimeInterval(
+fun LocalDateInterval.toLocalDateTimeInterval() = LocalDateTimeRange(
     start = LocalDateTime.of(start.toJavaLocalDate(), LocalTime.MIN).toKotlinLocalDateTime(),
     end = LocalDateTime.of(end.toJavaLocalDate(), LocalTime.MIN).toKotlinLocalDateTime()
 )

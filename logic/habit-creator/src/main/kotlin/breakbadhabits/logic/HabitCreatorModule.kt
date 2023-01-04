@@ -21,7 +21,7 @@ class HabitCreatorModule(private val delegate: Delegate) {
 
         suspend fun insertHabitTrack(
             habitId: Habit.Id,
-            interval: HabitTrack.Interval,
+            range: HabitTrack.Range,
             dailyCount: HabitTrack.DailyCount,
             comment: HabitTrack.Comment?
         )

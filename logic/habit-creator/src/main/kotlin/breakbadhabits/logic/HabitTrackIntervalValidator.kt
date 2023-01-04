@@ -6,26 +6,26 @@ class HabitTrackIntervalValidator internal constructor(
     private val delegate: HabitCreatorModule.Delegate
 ) {
 
-    fun validate(data: HabitTrack.Interval) = data.incorrectReason()?.let {
+    fun validate(data: HabitTrack.Range) = data.incorrectReason()?.let {
         IncorrectHabitTrackInterval(data, it)
     } ?: CorrectHabitTrackInterval(data)
 
-    private fun HabitTrack.Interval.incorrectReason() = when {
-        delegate.getCurrentTime() < value.end -> IncorrectHabitTrackInterval.Reason.BiggestThenCurrentTime()
+    private fun HabitTrack.Range.incorrectReason() = when {
+        delegate.getCurrentTime() < value.endInclusive -> IncorrectHabitTrackInterval.Reason.BiggestThenCurrentTime()
         else -> null
     }
 }
 
 sealed class ValidatedHabitTrackInterval {
-    abstract val data: HabitTrack.Interval
+    abstract val data: HabitTrack.Range
 }
 
 data class CorrectHabitTrackInterval internal constructor(
-    override val data: HabitTrack.Interval
+    override val data: HabitTrack.Range
 ) : ValidatedHabitTrackInterval()
 
 data class IncorrectHabitTrackInterval internal constructor(
-    override val data: HabitTrack.Interval,
+    override val data: HabitTrack.Range,
     val reason: Reason
 ) : ValidatedHabitTrackInterval() {
     sealed class Reason {

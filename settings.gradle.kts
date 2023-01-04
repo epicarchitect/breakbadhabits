@@ -1,10 +1,8 @@
 rootProject.name = "breakbadhabits"
 
 include(
-//    ":app-dependencies",
-//    ":app-dependencies-main",
     ":extensions:coroutines",
-    ":extensions:datetime",
+
     ":entities",
 
     ":logic:habit-creator",
@@ -26,7 +24,6 @@ include(
     ":presentation:habit-track",
 
     ":android-app",
-//    ":app-ui",
     ":ui-kit",
 
     ":epic-store:core",

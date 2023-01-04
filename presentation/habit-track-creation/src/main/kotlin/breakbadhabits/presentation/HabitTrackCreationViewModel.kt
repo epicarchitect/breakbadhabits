@@ -6,7 +6,6 @@ import breakbadhabits.logic.HabitTrackCreator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -16,13 +15,13 @@ class HabitTrackCreationViewModel internal constructor(
 ) : EpicViewModel() {
 
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
-    private val intervalState = MutableStateFlow<HabitTrack.Interval?>(null)
+    private val rangeState = MutableStateFlow<HabitTrack.Range?>(null)
     private val dailyCountState = MutableStateFlow<HabitTrack.DailyCount?>(null)
     private val commentState = MutableStateFlow<HabitTrack.Comment?>(null)
 
     val state = combine(
         creationState,
-        intervalState,
+        rangeState,
         dailyCountState,
         commentState
     ) { creationState, interval, dailyCount, comment ->
@@ -41,7 +40,7 @@ class HabitTrackCreationViewModel internal constructor(
         coroutineScope,
         SharingStarted.WhileSubscribed(),
         State.Input(
-            interval = null,
+            range = null,
             dailyCount = null,
             comment = null,
             creationAllowed = false
@@ -53,7 +52,7 @@ class HabitTrackCreationViewModel internal constructor(
 
         require(state is State.Input)
         require(state.creationAllowed)
-        requireNotNull(state.interval)
+        requireNotNull(state.range)
         requireNotNull(state.dailyCount)
 
         creationState.value = CreationState.Executing()
@@ -61,7 +60,7 @@ class HabitTrackCreationViewModel internal constructor(
         coroutineScope.launch {
             habitTrackCreator.createHabitTrack(
                 habitId,
-                state.interval,
+                state.range,
                 state.dailyCount,
                 state.comment
             )
@@ -69,9 +68,9 @@ class HabitTrackCreationViewModel internal constructor(
         }
     }
 
-    fun updateInterval(interval: HabitTrack.Interval) {
+    fun updateInterval(range: HabitTrack.Range) {
         require(state.value is State.Input)
-        intervalState.value = interval
+        rangeState.value = range
     }
 
     fun updateDailyCount(dailyCount: HabitTrack.DailyCount) {
@@ -86,7 +85,7 @@ class HabitTrackCreationViewModel internal constructor(
 
     sealed class State {
         data class Input(
-            val interval: HabitTrack.Interval?,
+            val range: HabitTrack.Range?,
             val dailyCount: HabitTrack.DailyCount?,
             val comment: HabitTrack.Comment?,
             val creationAllowed: Boolean

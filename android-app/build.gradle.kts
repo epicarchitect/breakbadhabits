@@ -5,6 +5,12 @@ plugins {
 }
 
 android {
+    bundle {
+        storeArchive {
+            enable = true
+        }
+    }
+
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         versionCode = 70

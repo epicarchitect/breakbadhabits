@@ -1,16 +1,16 @@
 package breakbadhabits.entity
 
-import breakbadhabits.extension.datetime.LocalDateTimeInterval
+import kotlinx.datetime.LocalDateTime
 
 data class HabitTrack(
     val id: Id,
     val habitId: Habit.Id,
-    val interval: Interval,
+    val range: Range,
     val dailyCount: DailyCount,
     val comment: Comment?
 ) {
     data class Id(val value: Int)
-    data class Interval(val value: LocalDateTimeInterval)
+    data class Range(val value: ClosedRange<LocalDateTime>)
     data class DailyCount(val value: Double)
     data class Comment(val value: String)
 }
