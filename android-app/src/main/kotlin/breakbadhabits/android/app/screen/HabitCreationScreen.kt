@@ -49,6 +49,7 @@ import breakbadhabits.ui.kit.IconData
 import breakbadhabits.ui.kit.IconsSelection
 import breakbadhabits.ui.kit.InteractionType
 import breakbadhabits.ui.kit.IntervalSelectionEpicCalendar
+import breakbadhabits.ui.kit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.ui.kit.ProgressIndicator
 import breakbadhabits.ui.kit.Text
 import breakbadhabits.ui.kit.TextField
@@ -102,8 +103,8 @@ private fun InputScreen(
     var intervalSelectionShow by remember { mutableStateOf(false) }
 
     if (intervalSelectionShow) {
-        IntervalSelectionDialog(
-            onDone = {
+        IntervalSelectionEpicCalendarDialog(
+            onSelected = {
                 intervalSelectionShow = false
                 viewModel.updateFirstTrackInterval(
                     HabitTrack.Interval(it.toLocalDateTimeInterval())
@@ -328,58 +329,4 @@ fun DateTextField(
             )
         }
     )
-}
-
-@Composable
-fun IntervalSelectionDialog(
-    onDone: (LocalDateInterval) -> Unit,
-    onCancel: () -> Unit,
-) {
-    var startDate by remember { mutableStateOf<LocalDate?>(null) }
-    var endDate by remember { mutableStateOf<LocalDate?>(null) }
-
-    Dialog(onDismiss = onCancel) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-        ) {
-            IntervalSelectionEpicCalendar(
-                modifier = Modifier.padding(vertical = 8.dp),
-                onSelected = { start, end ->
-                    startDate = start
-                    endDate = end
-                },
-                horizontalInnerPadding = 8.dp
-            )
-            Row(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(12.dp)
-            ) {
-                Button(
-                    onClick = onCancel,
-                    text = "Cancel",
-                    elevation = 0.dp
-                )
-                Spacer(Modifier.padding(4.dp))
-                Button(
-                    onClick = {
-                        val start = startDate ?: return@Button
-                        val end = endDate ?: return@Button
-                        onDone(
-                            LocalDateInterval(
-                                start = start.toKotlinLocalDate(),
-                                end = end.toKotlinLocalDate(),
-                            )
-                        )
-                    },
-                    text = "Apply range",
-                    enabled = startDate != null && endDate != null,
-                    interactionType = InteractionType.MAIN,
-                    elevation = 0.dp
-                )
-            }
-        }
-    }
 }

@@ -9,13 +9,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
@@ -43,6 +46,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import breakbadhabits.extension.datetime.LocalDateInterval
+import kotlinx.datetime.toKotlinLocalDate
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
@@ -53,8 +58,9 @@ import java.util.Locale
 @Composable
 fun IntervalSelectionEpicCalendar(
     modifier: Modifier = Modifier,
-    onSelected: (LocalDate?, LocalDate?) -> Unit,
-    horizontalInnerPadding: Dp = 0.dp,
+    onSelected: (LocalDateInterval) -> Unit,
+    onCancel: () -> Unit,
+    intervalsInnerPadding: Dp = 0.dp,
 ) {
     val density = LocalDensity.current.density
     var selectedTab by remember { mutableStateOf<Int>(0) }
@@ -67,6 +73,14 @@ fun IntervalSelectionEpicCalendar(
         endDate: LocalDate?
     ): EpicCalendarState.Interval? {
         if (startDate == null) {
+            if (endDate != null) {
+                return EpicCalendarState.Interval(
+                    startDate = endDate,
+                    endDate = endDate,
+                    color = Color.Red.copy(alpha = 0.5f)
+                )
+            }
+
             return null
         }
         if (endDate != null) {
@@ -89,7 +103,7 @@ fun IntervalSelectionEpicCalendar(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = horizontalInnerPadding),
+                .padding(horizontal = intervalsInnerPadding),
         ) {
             Column {
                 AnimatedVisibility(visible = !showYearMonthSelection) {
@@ -244,22 +258,20 @@ fun IntervalSelectionEpicCalendar(
                 intervals = listOfNotNull(calculateInterval(startDate, endDate))
             ),
             onDayClick = {
-                when (selectedTab) {
-                    0 -> {
-                        startDate = it.date
-                    }
-
-                    1 -> {
-                        endDate = it.date
-                    }
+                if (selectedTab == 0) {
+                    startDate = it.date
+                } else if (selectedTab == 1) {
+                    endDate = it.date
                 }
-
-                onSelected(startDate, endDate)
             },
-            horizontalInnerPadding = horizontalInnerPadding
+            horizontalInnerPadding = intervalsInnerPadding
         )
 
-        TabRow(selectedTabIndex = selectedTab) {
+        TabRow(
+            modifier = Modifier.padding(top = 8.dp),
+            selectedTabIndex = selectedTab,
+            backgroundColor = Color.Transparent
+        ) {
             val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
             Tab(
                 selected = selectedTab == 0,
@@ -305,6 +317,62 @@ fun IntervalSelectionEpicCalendar(
                     )
                 }
             }
+        }
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(top = 12.dp, end = 16.dp, bottom = 8.dp)
+        ) {
+            Button(
+                onClick = onCancel,
+                text = "Cancel",
+                elevation = 0.dp
+            )
+            Spacer(Modifier.padding(4.dp))
+            Button(
+                onClick = {
+                    if (selectedTab == 0 && endDate == null) {
+                        selectedTab = 1
+                    } else if (selectedTab == 1 && startDate == null) {
+                        selectedTab = 0
+                    } else {
+                        val start = startDate ?: return@Button
+                        val end = endDate ?: return@Button
+                        onSelected(
+                            LocalDateInterval(
+                                start = start.toKotlinLocalDate(),
+                                end = end.toKotlinLocalDate(),
+                            )
+                        )
+                    }
+                },
+                text = if (selectedTab == 0 && endDate == null || selectedTab == 1 && startDate == null) "Next" else "Apply",
+                enabled = selectedTab == 0 && startDate != null || selectedTab == 1 && endDate != null,
+                interactionType = InteractionType.MAIN,
+                elevation = 0.dp
+            )
+        }
+    }
+}
+
+@Composable
+fun IntervalSelectionEpicCalendarDialog(
+    onSelected: (LocalDateInterval) -> Unit,
+    onCancel: () -> Unit,
+) {
+    Dialog(onDismiss = onCancel) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+        ) {
+            IntervalSelectionEpicCalendar(
+                modifier = Modifier.padding(vertical = 8.dp),
+                onSelected = onSelected,
+                intervalsInnerPadding = 8.dp,
+                onCancel = onCancel
+            )
         }
     }
 }
