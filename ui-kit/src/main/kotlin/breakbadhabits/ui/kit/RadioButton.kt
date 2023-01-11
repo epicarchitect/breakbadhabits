@@ -2,14 +2,14 @@ package breakbadhabits.ui.kit
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.material.RadioButton as MaterialRadioButton
+import androidx.compose.material3.RadioButton as MaterialRadioButton
 
 @Composable
 fun RadioButton(
@@ -18,7 +18,7 @@ fun RadioButton(
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle.Default.copy(
-        color = MaterialTheme.colors.onBackground
+        color = MaterialTheme.colorScheme.onBackground
     )
 ) {
     Row(
@@ -27,7 +27,7 @@ fun RadioButton(
     ) {
         MaterialRadioButton(
             selected = selected,
-            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary),
+            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary),
             onClick = {
                 onSelect()
             }

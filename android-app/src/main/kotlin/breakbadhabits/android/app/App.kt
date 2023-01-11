@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import breakbadhabits.android.app.format.HabitAbstinenceFormatter
+import breakbadhabits.android.app.format.HabitTrackRangeFormatter
 import breakbadhabits.android.app.screen.AppSettingsScreen
 import breakbadhabits.android.app.screen.HabitCreationScreen
 import breakbadhabits.android.app.screen.HabitScreen
@@ -19,10 +20,10 @@ import epicarchitect.epicstore.navigation.compose.epicStoreComposable
 
 @Composable
 fun App() {
-    val presentation = LocalPresentationModule.current
     CompositionLocalProvider(
         LocalHabitIconResources provides HabitIconResources(LocalContext.current),
         LocalHabitAbstinenceFormatter provides HabitAbstinenceFormatter(LocalContext.current),
+        LocalHabitTrackRangeFormatter provides HabitTrackRangeFormatter()
     ) {
         RootEpicStore {
             EpicHavHost(

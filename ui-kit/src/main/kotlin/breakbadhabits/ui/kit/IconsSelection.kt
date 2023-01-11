@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,9 +55,9 @@ fun IconsSelection(
                                     modifier = Modifier.fillMaxSize(),
                                     painter = painterResource(icon.resourceId),
                                     tint = if (selectedIcon.id == icon.id) {
-                                        MaterialTheme.colors.primary
+                                        MaterialTheme.colorScheme.primary
                                     } else {
-                                        MaterialTheme.colors.onSurface
+                                        MaterialTheme.colorScheme.onSurface
                                     }
                                 )
                             }

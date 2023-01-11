@@ -2,7 +2,7 @@ package breakbadhabits.ui.kit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.material.IconButton as MaterialIconButton
+import androidx.compose.material3.IconButton as MaterialIconButton
 
 @Composable
 fun IconButton(

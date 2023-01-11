@@ -1,19 +1,18 @@
 package breakbadhabits.ui.kit
 
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.Icon as MaterialIcon
+import androidx.compose.material3.Icon as MaterialIcon
 
 @Composable
 fun Icon(
     imageVector: ImageVector,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    tint: Color = LocalContentColor.current
 ) {
     MaterialIcon(
         modifier = modifier,
@@ -27,7 +26,7 @@ fun Icon(
 fun Icon(
     painter: Painter,
     modifier: Modifier = Modifier,
-    tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    tint: Color = LocalContentColor.current
 ) {
     MaterialIcon(
         modifier = modifier,

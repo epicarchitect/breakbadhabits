@@ -18,19 +18,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.LocalHabitIconResources
+import breakbadhabits.android.app.LocalHabitTrackRangeFormatter
 import breakbadhabits.android.app.LocalPresentationModule
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.rememberEpicViewModel
@@ -52,9 +48,10 @@ import breakbadhabits.ui.kit.TextField
 import breakbadhabits.ui.kit.Title
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toKotlinLocalDate
-import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {
@@ -99,6 +96,7 @@ private fun InputScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val habitIconResources = LocalHabitIconResources.current
+    val habitTrackRangeFormatter = LocalHabitTrackRangeFormatter.current
     var intervalSelectionShow by remember { mutableStateOf(false) }
 
     if (intervalSelectionShow) {
@@ -227,24 +225,20 @@ private fun InputScreen(
 
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.habitCreation_lastEvent_description)
+            text = "Укажите первое и последнее событие привычки:"
         )
 
-        var dateYear by remember { mutableStateOf<Int?>(null) }
-        var dateMonth by remember { mutableStateOf<Int?>(null) }
-        var dateDay by remember { mutableStateOf<Int?>(null) }
+        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
-        DateTextField(
-            date = null,
-            onDateChanged = {
-
-            }
+        Button(
+            modifier = Modifier.padding(16.dp),
+            onClick = { intervalSelectionShow = true },
+            text = state.firstTrackRange?.let {
+                val start = formatter.format(it.value.start.date.toJavaLocalDate())
+                val end = formatter.format(it.value.endInclusive.date.toJavaLocalDate())
+                "Первое событие: $start, последнее событие: $end"
+            } ?: "Указать первое и последнне событие"
         )
-
-        Button(onClick = { intervalSelectionShow = true }, text = "Select")
-
-        Text(text = state.firstTrackRange.toString())
-
 
         Spacer(modifier = Modifier.weight(1.0f))
 
@@ -265,69 +259,4 @@ private fun InputScreen(
             interactionType = InteractionType.MAIN
         )
     }
-}
-
-@Composable
-fun DateTextField(
-    date: LocalDate?,
-    onDateChanged: (LocalDate?) -> Unit,
-    separator: String = "/"
-) {
-    var text by rememberSaveable(date) {
-        mutableStateOf(
-            date?.let {
-                "${it.dayOfMonth}${it.monthValue}${it.year}"
-            } ?: ""
-        )
-    }
-    TextField(
-        value = text,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
-        ),
-        onValueChange = {
-            if (it.length <= 8) {
-                text = it.filter { it in "0123456789" }
-            } else {
-                // show something
-            }
-
-            if (it.length == 8) {
-                onDateChanged(
-                    LocalDate.of(
-                        it.substring(0, 2).toInt(),
-                        it.substring(2, 4).toInt(),
-                        it.substring(4, 8).toInt()
-                    )
-                )
-            }
-        },
-        visualTransformation = {
-            TransformedText(
-                text = AnnotatedString(
-                    buildString {
-                        it.text.forEachIndexed { index, char ->
-                            append(char)
-                            if (index == 1 || index == 3) {
-                                append(separator)
-                            }
-                        }
-                    }
-                ),
-                offsetMapping = object : OffsetMapping {
-                    override fun originalToTransformed(offset: Int) = when {
-                        offset <= 1 -> offset
-                        offset <= 3 -> offset + 1
-                        else -> offset + 2
-                    }
-
-                    override fun transformedToOriginal(offset: Int) = when {
-                        offset <= 2 -> offset
-                        offset <= 5 -> offset - 1
-                        else -> offset - 2
-                    }
-                }
-            )
-        }
-    )
 }

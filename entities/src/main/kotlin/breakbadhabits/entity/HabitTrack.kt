@@ -9,8 +9,12 @@ data class HabitTrack(
     val dailyCount: DailyCount,
     val comment: Comment?
 ) {
-    data class Id(val value: Int)
-    data class Range(val value: ClosedRange<LocalDateTime>)
-    data class DailyCount(val value: Double)
-    data class Comment(val value: String)
+    @JvmInline
+    value class Id(val value: Int)
+    @JvmInline
+    value class Range(val value: ClosedRange<LocalDateTime>)
+    @JvmInline
+    value class DailyCount(val value: Double)
+    @JvmInline
+    value class Comment(val value: String)
 }

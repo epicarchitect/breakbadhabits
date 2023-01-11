@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
@@ -79,8 +81,8 @@ fun IntervalSelectionEpicCalendar(
                 return EpicCalendarState.Interval(
                     startDate = endDate,
                     endDate = endDate,
-                    backgroundColor = MaterialTheme.colors.primary,
-                    contentColor = MaterialTheme.colors.onPrimary
+                    backgroundColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
@@ -90,15 +92,15 @@ fun IntervalSelectionEpicCalendar(
             return EpicCalendarState.Interval(
                 startDate = startDate,
                 endDate = endDate,
-                backgroundColor = MaterialTheme.colors.primary,
-                contentColor = MaterialTheme.colors.onPrimary
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         }
         return EpicCalendarState.Interval(
             startDate = startDate,
             endDate = startDate,
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.onPrimary
+            backgroundColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         )
     }
 
@@ -167,7 +169,7 @@ fun IntervalSelectionEpicCalendar(
                         ScrollableTabRow(
                             selectedTabIndex = yearMonth.monthValue - 1,
                             modifier = Modifier.fillMaxWidth(),
-                            backgroundColor = Color.Transparent,
+                            containerColor = Color.Transparent,
                             indicator = {},
                             divider = {},
                             edgePadding = 12.dp
@@ -178,9 +180,9 @@ fun IntervalSelectionEpicCalendar(
                                 Card(
                                     modifier = Modifier.padding(4.dp),
                                     backgroundColor = if (isSelected) {
-                                        MaterialTheme.colors.primary
+                                        MaterialTheme.colorScheme.primary
                                     } else {
-                                        MaterialTheme.colors.onBackground.copy(alpha = 0.1f)
+                                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
                                     },
                                     elevation = 0.dp
                                 ) {
@@ -211,7 +213,7 @@ fun IntervalSelectionEpicCalendar(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 8.dp),
-                            backgroundColor = Color.Transparent,
+                            containerColor = Color.Transparent,
                             indicator = {},
                             divider = {},
                             edgePadding = 12.dp
@@ -224,9 +226,9 @@ fun IntervalSelectionEpicCalendar(
                                 Card(
                                     modifier = Modifier.padding(4.dp),
                                     backgroundColor = if (isSelected) {
-                                        MaterialTheme.colors.primary
+                                        MaterialTheme.colorScheme.primary
                                     } else {
-                                        MaterialTheme.colors.onBackground.copy(alpha = 0.1f)
+                                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
                                     },
                                     elevation = 0.dp,
                                 ) {
@@ -271,12 +273,13 @@ fun IntervalSelectionEpicCalendar(
             },
             horizontalInnerPadding = intervalsInnerPadding
         )
+
         AnimatedVisibility(visible = !showYearMonthSelection) {
             Column {
                 TabRow(
                     modifier = Modifier.padding(top = 8.dp),
                     selectedTabIndex = selectedTab,
-                    backgroundColor = Color.Transparent
+                    containerColor = Color.Transparent
                 ) {
                     val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
                     Tab(

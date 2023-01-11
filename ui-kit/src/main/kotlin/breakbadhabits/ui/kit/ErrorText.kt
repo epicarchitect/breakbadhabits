@@ -1,6 +1,6 @@
 package breakbadhabits.ui.kit
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
@@ -13,9 +13,9 @@ fun ErrorText(
 ) {
     Text(
         modifier = modifier,
-        color = MaterialTheme.colors.error,
+        color = MaterialTheme.colorScheme.error,
         text = text,
         imageVector = Icons.Default.Error,
-        iconTint = MaterialTheme.colors.error
+        iconTint = MaterialTheme.colorScheme.error
     )
 }

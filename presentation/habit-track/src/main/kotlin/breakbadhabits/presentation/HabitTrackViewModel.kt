@@ -12,6 +12,7 @@ class HabitTrackViewModel internal constructor(
 ) : EpicViewModel() {
 
     val state = habitTrackProvider.provideFlow(habitTrackId).map {
+        listOf(3).asSequence()
         if (it == null) State.NotExist()
         else State.Loaded(it)
     }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), State.Loading())

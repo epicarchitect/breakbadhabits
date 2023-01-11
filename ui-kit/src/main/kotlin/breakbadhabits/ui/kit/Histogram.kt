@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,11 +36,11 @@ fun Histogram(
     barPadding: Dp = 12.dp,
     startPadding: Dp = 12.dp,
     endPadding: Dp = 12.dp,
-    barColor: Color = MaterialTheme.colors.onSurface,
+    barColor: Color = MaterialTheme.colorScheme.onSurface,
     maxVisibleBarCount: Int = 5,
     valueTextSize: TextUnit = 10.sp,
     valueTextPadding: Dp = 8.dp,
-    valueTextColor: Color = MaterialTheme.colors.onSurface
+    valueTextColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     var boxSize by remember { mutableStateOf(IntSize.Zero) }
     val barPaddingPx = with(LocalDensity.current) { barPadding.toPx() }

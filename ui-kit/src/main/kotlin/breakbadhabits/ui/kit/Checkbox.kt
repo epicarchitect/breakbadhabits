@@ -2,7 +2,7 @@ package breakbadhabits.ui.kit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.material.Checkbox as MaterialCheckbox
+import androidx.compose.material3.Checkbox as MaterialCheckbox
 
 @Composable
 fun Checkbox(

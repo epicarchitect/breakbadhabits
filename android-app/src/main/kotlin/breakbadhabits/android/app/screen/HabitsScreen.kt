@@ -201,7 +201,7 @@ private fun LazyItemScope.HabitItem(
                 .fillMaxWidth()
                 .animateItemPlacement()
         ) {
-            Box(modifier = Modifier.clickable(onClick = onClick)) {
+            Box(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
                 Column(
                     modifier = Modifier.padding(
                         start = 16.dp,
