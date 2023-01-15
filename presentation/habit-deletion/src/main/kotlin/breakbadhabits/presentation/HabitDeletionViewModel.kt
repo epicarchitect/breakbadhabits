@@ -1,15 +1,17 @@
 package breakbadhabits.presentation
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import breakbadhabits.entity.Habit
 import breakbadhabits.logic.HabitDeleter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HabitDeletionViewModel internal constructor(
+class HabitDeletionViewModel(
     private val habitDeleter: HabitDeleter,
     private val habitId: Habit.Id
-) : EpicViewModel() {
+) : ViewModel() {
 
     private val mutableState = MutableStateFlow<State>(State.NotStarted())
     val state = mutableState.asStateFlow()
@@ -20,7 +22,7 @@ class HabitDeletionViewModel internal constructor(
 
     fun confirm() {
         mutableState.value = State.Executing()
-        coroutineScope.launch {
+        viewModelScope.launch {
             habitDeleter.deleteById(habitId)
             mutableState.value = State.Executed()
         }

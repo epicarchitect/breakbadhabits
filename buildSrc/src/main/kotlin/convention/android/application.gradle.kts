@@ -5,3 +5,11 @@ plugins {
     id("convention.android.base")
     id("kotlin-android")
 }
+
+android {
+    bundle {
+        storeArchive {
+            enable = true
+        }
+    }
+}

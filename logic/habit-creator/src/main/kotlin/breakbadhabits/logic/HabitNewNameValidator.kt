@@ -1,24 +1,26 @@
 package breakbadhabits.logic
 
+import breakbadhabits.database.AppDatabase
 import breakbadhabits.entity.Habit
 
-class HabitNewNameValidator internal constructor(
-    private val delegate: HabitCreatorModule.Delegate
+class HabitNewNameValidator(
+    private val appDatabase: AppDatabase,
+    private val maxNameLength: Int
 ) {
 
     suspend fun validate(data: Habit.Name) = data.incorrectReason()?.let {
         IncorrectHabitNewName(data, it)
     } ?: CorrectHabitNewNewName(data)
 
-    private suspend fun Habit.Name.incorrectReason(): IncorrectHabitNewName.Reason? {
-        val maxLength = delegate.getMaxHabitNameLength()
-        return when {
-            value.isEmpty() -> IncorrectHabitNewName.Reason.Empty()
-            value.length > maxLength -> IncorrectHabitNewName.Reason.TooLong(maxLength)
-            delegate.habitNameExists(this) -> IncorrectHabitNewName.Reason.AlreadyUsed()
-            else -> null
-        }
+    private suspend fun Habit.Name.incorrectReason() = when {
+        value.isEmpty() -> IncorrectHabitNewName.Reason.Empty()
+        value.length > maxNameLength -> IncorrectHabitNewName.Reason.TooLong(maxNameLength)
+        value.isAlreadyUsed() -> IncorrectHabitNewName.Reason.AlreadyUsed()
+        else -> null
     }
+
+    private fun String.isAlreadyUsed() =
+        appDatabase.habitQueries.countWithName(this).executeAsOne() > 0
 }
 
 sealed class ValidatedHabitNewName {

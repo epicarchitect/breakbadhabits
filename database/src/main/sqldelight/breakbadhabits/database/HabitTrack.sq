@@ -1,0 +1,31 @@
+CREATE TABLE IF NOT EXISTS HabitTrack (
+  id         INTEGER NOT NULL PRIMARY KEY,
+  habitId    INTEGER NOT NULL,
+  rangeStart INTEGER NOT NULL,
+  rangeEnd   INTEGER NOT NULL,
+  dailyCount REAL    NOT NULL,
+  comment    TEXT -- nullable
+);
+
+insert:
+INSERT INTO HabitTrack(id, habitId, rangeStart, rangeEnd, dailyCount, comment)
+VALUES (?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE HabitTrack SET rangeStart = ?, rangeEnd = ?, dailyCount = ?, comment = ?
+WHERE id = ?;
+
+deleteById:
+DELETE FROM HabitTrack WHERE id = ?;
+
+deleteByHabitId:
+DELETE FROM HabitTrack WHERE habitId = ?;
+
+selectById:
+SELECT * FROM HabitTrack WHERE id = ?;
+
+selectByHabitId:
+SELECT * FROM HabitTrack WHERE habitId = ?;
+
+selectByHabitIdAndLastByTime:
+SELECT * FROM HabitTrack WHERE habitId = ? AND rangeEnd = (SELECT max(rangeEnd) FROM HabitTrack);

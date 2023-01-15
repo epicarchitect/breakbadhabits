@@ -1,30 +1,11 @@
 package breakbadhabits.android.app.screen
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.android.app.LocalPresentationModule
-import breakbadhabits.android.app.R
-import breakbadhabits.android.app.rememberEpicViewModel
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.presentation.HabitTrackCreationViewModel
-import breakbadhabits.presentation.HabitViewModel
-import breakbadhabits.ui.kit.Button
-import breakbadhabits.ui.kit.Text
-import breakbadhabits.ui.kit.TextField
-import breakbadhabits.ui.kit.Title
 
 @Composable
 fun HabitTrackCreationScreen(
@@ -32,48 +13,37 @@ fun HabitTrackCreationScreen(
     onFinished: () -> Unit
 ) {
     val presentationModule = LocalPresentationModule.current
-    val habitTrackCreationViewModel = rememberEpicViewModel {
-        presentationModule.habitTrackCreationModule.createHabitTrackCreationViewModel(habitId)
+    val habitTrackCreationViewModel = viewModel {
+        presentationModule.createHabitTrackCreationViewModel(habitId)
     }
 
-    val habitViewModel = rememberEpicViewModel {
-        presentationModule.habitModule.createHabitViewModel(habitId)
-    }
+//    val habitViewModel = rememberEpicViewModel {
+//        presentationModule.habitModule.createHabitViewModel(habitId)
+//    }
 
-    val habitTrackCreationViewModelState by habitTrackCreationViewModel.state.collectAsState()
-    val habitViewModelState by habitViewModel.state.collectAsState()
-
-    when (val habitState = habitViewModelState) {
-        is HabitViewModel.State.Loaded -> {
-            when (val habitTrackCreationState = habitTrackCreationViewModelState) {
-                is HabitTrackCreationViewModel.State.Input -> {
-                    InputScreen(
-                        habitState = habitState,
-                        trackCreationState = habitTrackCreationState,
-                        onCommentChanged = habitTrackCreationViewModel::updateComment,
-
-                    )
-                }
-
-                is HabitTrackCreationViewModel.State.Created -> {
-                    Text("created")
-                }
-
-                is HabitTrackCreationViewModel.State.Creating -> {
-                    Text("creating")
-                }
-            }
-        }
-
-        else -> {
-            Text("loading")
-        }
-    }
+//    val habitTrackCreationViewModelState by habitTrackCreationViewModel.state.collectAsState()
+//    val habitViewModelState by habitViewModel.state.collectAsState()
+//    when (val habitTrackCreationState = habitTrackCreationViewModelState) {
+//        is HabitTrackCreationViewModel.State.Input -> {
+//            InputScreen(
+//                trackCreationState = habitTrackCreationState,
+//                onCommentChanged = habitTrackCreationViewModel::updateComment,
+//
+//                )
+//        }
+//
+//        is HabitTrackCreationViewModel.State.Created -> {
+//            Text("created")
+//        }
+//
+//        is HabitTrackCreationViewModel.State.Creating -> {
+//            Text("creating")
+//        }
+//    }
 }
 
 @Composable
 private fun InputScreen(
-    habitState: HabitViewModel.State.Loaded,
     trackCreationState: HabitTrackCreationViewModel.State.Input,
     onCommentChanged: (HabitTrack.Comment) -> Unit,
 ) {

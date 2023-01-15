@@ -1,4 +1,4 @@
-package breakbadhabits.app.ui.resources
+package breakbadhabits.android.app.resources
 
 import android.content.Context
 import breakbadhabits.android.app.R
@@ -7,7 +7,7 @@ class HabitIconResources(private val context: Context) {
 
     val icons: List<Icon> = ArrayList<Icon>().apply {
         repeat(28) {
-            add(Icon(it, resolveResource(it)))
+            add(Icon(it.toLong(), resolveResource(it)))
         }
     }
 
@@ -23,7 +23,7 @@ class HabitIconResources(private val context: Context) {
         R.drawable.ic_error
     }
 
-    operator fun get(iconId: Int) = icons.find { it.iconId == iconId }!!.resourceId
+    operator fun get(iconId: Long) = icons.find { it.iconId == iconId }!!.resourceId
 
-    data class Icon(val iconId: Int, val resourceId: Int)
+    data class Icon(val iconId: Long, val resourceId: Int)
 }

@@ -1,21 +1,22 @@
 package breakbadhabits.presentation
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.logic.HabitTrackProvider
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class HabitTrackViewModel internal constructor(
+class HabitTrackViewModel(
     habitTrackProvider: HabitTrackProvider,
     habitTrackId: HabitTrack.Id
-) : EpicViewModel() {
+) : ViewModel() {
 
     val state = habitTrackProvider.provideFlow(habitTrackId).map {
-        listOf(3).asSequence()
         if (it == null) State.NotExist()
         else State.Loaded(it)
-    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), State.Loading())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), State.Loading())
 
     sealed class State {
         class Loading : State()

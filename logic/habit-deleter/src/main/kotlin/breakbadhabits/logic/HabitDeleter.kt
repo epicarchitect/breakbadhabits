@@ -1,13 +1,13 @@
 package breakbadhabits.logic
 
+import breakbadhabits.database.AppDatabase
 import breakbadhabits.entity.Habit
 
-class HabitDeleter internal constructor(
-    private val delegate: HabitDeleterModule.Delegate
-) {
-
+class HabitDeleter(private val appDatabase: AppDatabase) {
     suspend fun deleteById(id: Habit.Id) {
-        delegate.deleteHabitById(id)
-        delegate.deleteHabitTracksByHabitId(id)
+        appDatabase.transaction {
+            appDatabase.habitQueries.deleteById(id.value)
+            appDatabase.habitTrackQueries.deleteByHabitId(id.value)
+        }
     }
 }

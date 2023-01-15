@@ -1,10 +1,10 @@
 package breakbadhabits.android.app
 
 import androidx.compose.runtime.compositionLocalOf
-import breakbadhabits.android.app.di.presentation.PresentationModule
+import breakbadhabits.android.app.di.PresentationModule
 import breakbadhabits.android.app.format.HabitAbstinenceFormatter
 import breakbadhabits.android.app.format.HabitTrackRangeFormatter
-import breakbadhabits.app.ui.resources.HabitIconResources
+import breakbadhabits.android.app.resources.HabitIconResources
 
 val LocalPresentationModule = compositionLocalOf<PresentationModule> {
     error("LocalPresentationModule not provided")

@@ -1,9 +1,10 @@
 package breakbadhabits.logic
 
 import breakbadhabits.entity.HabitTrack
+import kotlinx.datetime.LocalDateTime
 
-class HabitTrackIntervalValidator internal constructor(
-    private val delegate: HabitCreatorModule.Delegate
+class HabitTrackIntervalValidator(
+    private val getCurrentTime: () -> LocalDateTime
 ) {
 
     fun validate(data: HabitTrack.Range) = data.incorrectReason()?.let {
@@ -11,7 +12,7 @@ class HabitTrackIntervalValidator internal constructor(
     } ?: CorrectHabitTrackInterval(data)
 
     private fun HabitTrack.Range.incorrectReason() = when {
-        delegate.getCurrentTime() < value.endInclusive -> IncorrectHabitTrackInterval.Reason.BiggestThenCurrentTime()
+        getCurrentTime() < value.endInclusive -> IncorrectHabitTrackInterval.Reason.BiggestThenCurrentTime()
         else -> null
     }
 }

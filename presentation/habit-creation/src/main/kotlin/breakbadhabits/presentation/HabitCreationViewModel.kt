@@ -1,5 +1,7 @@
 package breakbadhabits.presentation
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.extension.coroutines.flow.combine
@@ -14,33 +16,29 @@ import breakbadhabits.logic.ValidatedHabitNewName
 import breakbadhabits.logic.ValidatedHabitTrackInterval
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-class HabitCreationViewModel internal constructor(
+class HabitCreationViewModel(
     private val habitCreator: HabitCreator,
     private val nameValidator: HabitNewNameValidator,
     private val trackIntervalValidator: HabitTrackIntervalValidator,
     habitIconsProvider: HabitIconsProvider
-) : EpicViewModel() {
+) : ViewModel() {
 
     private val icons = habitIconsProvider.provide()
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
     private val nameState = MutableStateFlow<Habit.Name?>(null)
-    private val validatedNameState: StateFlow<ValidatedHabitNewName?> = nameState.map {
+    private val validatedNameState = nameState.map {
         it?.let { nameValidator.validate(it) }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
     private val selectedIconState = MutableStateFlow(icons.first())
     private val countabilityState = MutableStateFlow<HabitCountability?>(null)
     private val firstTrackRangeState = MutableStateFlow<HabitTrack.Range?>(null)
-    private val validatedFirstTrackIntervalState: StateFlow<ValidatedHabitTrackInterval?> =
-        firstTrackRangeState.map {
-            it?.let { trackIntervalValidator.validate(it) }
-        }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
-
+    private val validatedFirstTrackIntervalState = firstTrackRangeState.map {
+        it?.let { trackIntervalValidator.validate(it) }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val state = combine(
         creationState,
@@ -72,7 +70,7 @@ class HabitCreationViewModel internal constructor(
             is CreationState.Executed -> State.Created()
         }
     }.stateIn(
-        scope = coroutineScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = State.Input(
             name = null,
@@ -104,10 +102,7 @@ class HabitCreationViewModel internal constructor(
 
         creationState.value = CreationState.Executing()
 
-        runBlocking {
-
-        }
-        coroutineScope.launch {
+        viewModelScope.launch {
             habitCreator.createHabit(
                 validatedName,
                 selectedIcon,

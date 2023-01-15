@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,15 +33,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.android.app.LocalHabitAbstinenceFormatter
 import breakbadhabits.android.app.LocalHabitIconResources
 import breakbadhabits.android.app.LocalPresentationModule
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.rememberEpicViewModel
 import breakbadhabits.entity.Habit
-import breakbadhabits.presentation.CurrentHabitAbstinenceViewModel
-import breakbadhabits.presentation.HabitIdsViewModel
-import breakbadhabits.presentation.HabitViewModel
+import breakbadhabits.presentation.HabitsDashboardViewModel
 import breakbadhabits.ui.kit.Button
 import breakbadhabits.ui.kit.Card
 import breakbadhabits.ui.kit.Icon
@@ -49,7 +48,6 @@ import breakbadhabits.ui.kit.InteractionType
 import breakbadhabits.ui.kit.ProgressIndicator
 import breakbadhabits.ui.kit.Text
 import breakbadhabits.ui.kit.Title
-import epicarchitect.epicstore.compose.epicStoreItems
 
 @Composable
 fun HabitsScreen(
@@ -58,16 +56,16 @@ fun HabitsScreen(
     openHabitCreation: () -> Unit,
     openSettings: () -> Unit
 ) {
-    val appDependencies = LocalPresentationModule.current
-    val habitIdsFeature = rememberEpicViewModel {
-        appDependencies.habitIdsModule.createHabitIdsViewModel()
+    val presentationModule = LocalPresentationModule.current
+    val habitIdsFeature = viewModel {
+        presentationModule.createHabitsDashboardViewModel()
     }
-    val habitIdsState by habitIdsFeature.state.collectAsState()
+    val dashboardState by habitIdsFeature.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
-            targetState = habitIdsState,
+            targetState = dashboardState,
             transitionSpec = { fadeIn() with fadeOut() }
         ) { state ->
             Column(modifier = Modifier.fillMaxSize()) {
@@ -90,7 +88,7 @@ fun HabitsScreen(
                 }
 
                 when (state) {
-                    is HabitIdsViewModel.State.Loading -> {
+                    is HabitsDashboardViewModel.State.Loading -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
@@ -99,11 +97,11 @@ fun HabitsScreen(
                         }
                     }
 
-                    is HabitIdsViewModel.State.NotExist -> {
+                    is HabitsDashboardViewModel.State.NotExist -> {
                         NotExistsHabits()
                     }
 
-                    is HabitIdsViewModel.State.Loaded -> {
+                    is HabitsDashboardViewModel.State.Loaded -> {
                         LoadedHabits(
                             state = state,
                             onResetClick = openHabitEventCreation,
@@ -118,7 +116,7 @@ fun HabitsScreen(
             modifier = Modifier
                 .padding(24.dp)
                 .align(Alignment.BottomCenter),
-            visible = habitIdsState !is HabitIdsViewModel.State.Loading,
+            visible = dashboardState !is HabitsDashboardViewModel.State.Loading,
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut()
         ) {
@@ -133,7 +131,7 @@ fun HabitsScreen(
 
 @Composable
 private fun LoadedHabits(
-    state: HabitIdsViewModel.State.Loaded,
+    state: HabitsDashboardViewModel.State.Loaded,
     onResetClick: (Habit.Id) -> Unit,
     onItemClick: (Habit.Id) -> Unit
 ) {
@@ -146,14 +144,14 @@ private fun LoadedHabits(
         ),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        epicStoreItems(
-            items = state.habitIds,
-            key = { it.value }
-        ) { habitId ->
+        items(
+            items = state.items,
+            key = { it.habit.id.value }
+        ) { item ->
             HabitItem(
-                habitId = habitId,
-                onClick = { onItemClick(habitId) },
-                onResetClick = { onResetClick(habitId) }
+                item = item,
+                onClick = { onItemClick(item.habit.id) },
+                onResetClick = { onResetClick(item.habit.id) }
             )
         }
     }
@@ -178,82 +176,66 @@ private fun NotExistsHabits() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LazyItemScope.HabitItem(
-    habitId: Habit.Id,
+    item: HabitsDashboardViewModel.HabitItem,
     onClick: () -> Unit,
     onResetClick: () -> Unit
 ) {
-    val appDependencies = LocalPresentationModule.current
     val habitIconResources = LocalHabitIconResources.current
     val abstinenceFormatter = LocalHabitAbstinenceFormatter.current
-    val habitViewModel = rememberEpicViewModel {
-        appDependencies.habitModule.createHabitViewModel(habitId)
-    }
-    val habitAbstinenceViewModel = rememberEpicViewModel {
-        appDependencies.currentHabitAbstinenceModule.createCurrentHabitAbstinenceViewModel(habitId)
-    }
-    val habitState by habitViewModel.state.collectAsState()
-    val abstinenceState by habitAbstinenceViewModel.state.collectAsState()
 
-    (habitState as? HabitViewModel.State.Loaded)?.let {
-        val habit = it.habit
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .animateItemPlacement()
-        ) {
-            Box(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
-                Column(
-                    modifier = Modifier.padding(
-                        start = 16.dp,
-                        top = 16.dp,
-                        bottom = 16.dp,
-                        end = 50.dp
-                    )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(habitIconResources[habit.iconResource.iconId]),
-                        )
-                        Title(
-                            modifier = Modifier.padding(start = 12.dp),
-                            text = habit.name.value
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.padding(top = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_time)
-                        )
-                        Text(
-                            modifier = Modifier.padding(start = 12.dp),
-                            text = when (val state = abstinenceState) {
-                                is CurrentHabitAbstinenceViewModel.State.Loading -> ""
-                                is CurrentHabitAbstinenceViewModel.State.Loaded -> {
-                                    abstinenceFormatter.format(state.abstinence)
-                                }
-
-                                is CurrentHabitAbstinenceViewModel.State.NotExist -> {
-                                    stringResource(R.string.habit_noEvents)
-                                }
-                            }
-                        )
-                    }
-                }
-
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(4.dp),
-                    onClick = onResetClick
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateItemPlacement()
+    ) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)) {
+            Column(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    top = 16.dp,
+                    bottom = 16.dp,
+                    end = 50.dp
+                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_reset)
+                        painter = painterResource(habitIconResources[item.habit.iconResource.iconId]),
+                    )
+                    Title(
+                        modifier = Modifier.padding(start = 12.dp),
+                        text = item.habit.name.value
                     )
                 }
+                Row(
+                    modifier = Modifier.padding(top = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_time)
+                    )
+                    val abstinence by item.abstinence.collectAsState(null)
+                    Text(
+                        modifier = Modifier.padding(start = 12.dp),
+                        text = abstinence?.let {
+                            abstinenceFormatter.format(it)
+                        } ?: "nothing"
+                    )
+                }
+            }
+
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(4.dp),
+                onClick = onResetClick
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_reset)
+                )
             }
         }
     }

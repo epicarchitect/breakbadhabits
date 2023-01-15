@@ -5,11 +5,7 @@ plugins {
 }
 
 android {
-    bundle {
-        storeArchive {
-            enable = true
-        }
-    }
+    namespace = "breakbadhabits.android.app"
 
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
@@ -50,16 +46,11 @@ android {
 
 dependencies {
     implementation(project(":ui-kit"))
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.room:room-runtime:2.4.3")
-    implementation("androidx.room:room-ktx:2.4.3")
-    kapt("androidx.room:room-compiler:2.4.3")
-
-    implementation(project(":presentation:current-habit-abstinence"))
+    implementation(project(":database"))
     implementation(project(":presentation:habit-creation"))
     implementation(project(":presentation:habit-deletion"))
-    implementation(project(":presentation:habit-ids"))
-    implementation(project(":presentation:habit"))
+    implementation(project(":presentation:habits-dashboard"))
+    implementation(project(":presentation:habit-details"))
     implementation(project(":presentation:habit-track"))
     implementation(project(":presentation:habit-track-creation"))
 }

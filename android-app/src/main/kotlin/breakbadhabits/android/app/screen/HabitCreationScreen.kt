@@ -25,11 +25,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.android.app.LocalHabitIconResources
 import breakbadhabits.android.app.LocalHabitTrackRangeFormatter
 import breakbadhabits.android.app.LocalPresentationModule
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.rememberEpicViewModel
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.logic.HabitCountability
@@ -55,9 +55,9 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {
-    val appDependencies = LocalPresentationModule.current
-    val habitCreationViewModel = rememberEpicViewModel {
-        appDependencies.habitCreationModule.createHabitCreationViewModel()
+    val presentationModule = LocalPresentationModule.current
+    val habitCreationViewModel = viewModel {
+        presentationModule.createHabitCreationViewModel()
     }
     val state = habitCreationViewModel.state.collectAsState()
     val viewModelState = state.value
@@ -96,7 +96,6 @@ private fun InputScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val habitIconResources = LocalHabitIconResources.current
-    val habitTrackRangeFormatter = LocalHabitTrackRangeFormatter.current
     var intervalSelectionShow by remember { mutableStateOf(false) }
 
     if (intervalSelectionShow) {
@@ -187,7 +186,8 @@ private fun InputScreen(
                 .fillMaxWidth(),
             icons = state.icons.map {
                 IconData(
-                    it.iconId, habitIconResources[it.iconId]
+                    it.iconId,
+                    habitIconResources[it.iconId]
                 )
             },
             selectedIcon = habitIconResources.icons.first {

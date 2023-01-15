@@ -1,10 +1,14 @@
 package breakbadhabits.logic
 
+import breakbadhabits.database.AppDatabase
+import breakbadhabits.database.IdGenerator
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
+import breakbadhabits.extension.datetime.toMillis
 
-class HabitTrackCreator internal constructor(
-    private val delegate: HabitTrackCreatorModule.Delegate
+class HabitTrackCreator(
+    private val appDatabase: AppDatabase,
+    private val idGenerator: IdGenerator
 ) {
 
     suspend fun createHabitTrack(
@@ -13,11 +17,13 @@ class HabitTrackCreator internal constructor(
         dailyCount: HabitTrack.DailyCount,
         comment: HabitTrack.Comment?,
     ) {
-        delegate.insertHabitTrack(
-            habitId,
-            range,
-            dailyCount,
-            comment
+        appDatabase.habitTrackQueries.insert(
+            id = idGenerator.nextId(),
+            habitId = habitId.value,
+            rangeStart = range.value.start.toMillis(),
+            rangeEnd = range.value.endInclusive.toMillis(),
+            dailyCount = dailyCount.value,
+            comment = comment?.value
         )
     }
 }

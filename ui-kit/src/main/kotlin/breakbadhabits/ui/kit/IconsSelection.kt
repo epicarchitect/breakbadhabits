@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import kotlin.math.ceil
 
 data class IconData(
-    val id: Int,
+    val id: Long,
     val resourceId: Int
 )
 

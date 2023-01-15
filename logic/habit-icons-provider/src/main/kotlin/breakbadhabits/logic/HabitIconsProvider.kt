@@ -1,9 +1,13 @@
 package breakbadhabits.logic
 
-class HabitIconsProvider internal constructor(
-    private val delegate: HabitIconsProviderModule.Delegate
-) {
+import breakbadhabits.entity.Habit
 
-    fun provide() = delegate.getHabitIcons()
+class HabitIconsProvider {
+
+    private val icons = List(28) {
+        Habit.IconResource(it.toLong())
+    }
+
+    fun provide() = icons
 
 }

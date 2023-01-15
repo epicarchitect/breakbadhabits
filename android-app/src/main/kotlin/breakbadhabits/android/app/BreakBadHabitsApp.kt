@@ -1,14 +1,8 @@
 package breakbadhabits.android.app
 
 import android.app.Application
-import breakbadhabits.android.app.di.logic.LogicModule
-import breakbadhabits.android.app.di.presentation.PresentationModule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
+import breakbadhabits.android.app.di.LogicModule
+import breakbadhabits.android.app.di.PresentationModule
 
 class BreakBadHabitsApp : Application() {
 
@@ -21,9 +15,6 @@ class BreakBadHabitsApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        CoroutineScope(Dispatchers.IO).launch {
-
-        }
     }
 
     companion object {

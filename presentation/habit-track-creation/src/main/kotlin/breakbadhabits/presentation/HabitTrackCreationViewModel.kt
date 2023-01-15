@@ -1,5 +1,7 @@
 package breakbadhabits.presentation
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.logic.HabitTrackCreator
@@ -9,10 +11,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HabitTrackCreationViewModel internal constructor(
+class HabitTrackCreationViewModel(
     private val habitTrackCreator: HabitTrackCreator,
     private val habitId: Habit.Id
-) : EpicViewModel() {
+) : ViewModel() {
 
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
     private val rangeState = MutableStateFlow<HabitTrack.Range?>(null)
@@ -37,7 +39,7 @@ class HabitTrackCreationViewModel internal constructor(
             is CreationState.Executed -> State.Created()
         }
     }.stateIn(
-        coroutineScope,
+        viewModelScope,
         SharingStarted.WhileSubscribed(),
         State.Input(
             range = null,
@@ -57,7 +59,7 @@ class HabitTrackCreationViewModel internal constructor(
 
         creationState.value = CreationState.Executing()
 
-        coroutineScope.launch {
+        viewModelScope.launch {
             habitTrackCreator.createHabitTrack(
                 habitId,
                 state.range,
