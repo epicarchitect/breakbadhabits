@@ -1,8 +1,8 @@
 package breakbadhabits.android.app
 
 import android.app.Application
-import breakbadhabits.android.app.di.LogicModule
-import breakbadhabits.android.app.di.PresentationModule
+import breakbadhabits.app.dependecies.LogicModule
+import breakbadhabits.app.dependecies.PresentationModule
 
 class BreakBadHabitsApp : Application() {
 

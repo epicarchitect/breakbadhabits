@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="habitEvents_newEvent">Новое событие</string>
-    <string name="habitEvents_empty">В этом месяце события отсутствуют.</string>
-    <string name="habitEvents_noComment">Комментарий отсутствует.</string>
-    <string name="habitEvents_deleteConfirmation">Вы уверены, что хотите удалить это событие?</string>
-</resources>

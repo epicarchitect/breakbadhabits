@@ -1,4 +1,4 @@
-package breakbadhabits.android.app.di
+package breakbadhabits.app.dependecies
 
 import android.content.Context
 import breakbadhabits.database.AppDatabaseFactory
@@ -17,7 +17,10 @@ import breakbadhabits.logic.TimeProvider
 class LogicModule(private val context: Context) {
 
     private val appDatabase by lazy {
-        AppDatabaseFactory().create(context)
+        AppDatabaseFactory.create(
+            context,
+            name = "breakbadhabits-v4.db"
+        )
     }
 
     private val idGenerator by lazy {

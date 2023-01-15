@@ -1,7 +1,7 @@
 package breakbadhabits.android.app
 
 import androidx.compose.runtime.compositionLocalOf
-import breakbadhabits.android.app.di.PresentationModule
+import breakbadhabits.app.dependecies.PresentationModule
 import breakbadhabits.android.app.format.HabitAbstinenceFormatter
 import breakbadhabits.android.app.format.HabitTrackRangeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources

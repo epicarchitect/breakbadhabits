@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="habitsAppWidgetConfigCreation_title">Настройка виджета</string>
-    <string name="habitsAppWidgetConfigCreation_name_description">Введите название виджета.</string>
-    <string name="habitsAppWidgetConfigCreation_name">Название виджета</string>
-    <string name="habitsAppWidgetConfigCreation_habits_description">Выберите привычки для виджета.</string>
-    <string name="habitsAppWidgetConfigCreation_finish">Готово</string>
-</resources>

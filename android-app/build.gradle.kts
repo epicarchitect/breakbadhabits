@@ -46,11 +46,5 @@ android {
 
 dependencies {
     implementation(project(":ui-kit"))
-    implementation(project(":database"))
-    implementation(project(":presentation:habit-creation"))
-    implementation(project(":presentation:habit-deletion"))
-    implementation(project(":presentation:habits-dashboard"))
-    implementation(project(":presentation:habit-details"))
-    implementation(project(":presentation:habit-track"))
-    implementation(project(":presentation:habit-track-creation"))
+    implementation(project(":app-dependencies"))
 }

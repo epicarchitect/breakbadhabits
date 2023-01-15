@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="habits_empty">You have no bad habits!.. Or not?</string>
-    <string name="habits_newHabit">Create new habit</string>
-    <string name="habits_noEvents">No events</string>
-</resources>

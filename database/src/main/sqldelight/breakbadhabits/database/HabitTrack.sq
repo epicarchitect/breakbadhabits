@@ -27,5 +27,5 @@ SELECT * FROM HabitTrack WHERE id = ?;
 selectByHabitId:
 SELECT * FROM HabitTrack WHERE habitId = ?;
 
-selectByHabitIdAndLastByTime:
-SELECT * FROM HabitTrack WHERE habitId = ? AND rangeEnd = (SELECT max(rangeEnd) FROM HabitTrack);
+selectMaxRangeEndByHabitId:
+SELECT max(rangeEnd) FROM HabitTrack WHERE habitId = ?;

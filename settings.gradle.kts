@@ -1,11 +1,11 @@
 rootProject.name = "breakbadhabits"
 
 include(
-    ":extensions:coroutines",
-    ":extensions:datetime",
-
-    ":entities",
+    ":android-app",
+    ":ui-kit",
+    ":app-dependencies",
     ":database",
+    ":entities",
 
     ":logic:habit-creator",
     ":logic:habit-deleter",
@@ -23,6 +23,6 @@ include(
     ":presentation:habit-details",
     ":presentation:habit-track",
 
-    ":ui-kit",
-    ":android-app",
+    ":extensions:coroutines",
+    ":extensions:datetime",
 )

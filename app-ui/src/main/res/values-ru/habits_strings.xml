@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="habits_empty">У вас нет плохих привычек!.. Или есть?</string>
-    <string name="habits_newHabit">Создать новую привычку</string>
-    <string name="habits_noEvents">События отсутствуют</string>
-</resources>

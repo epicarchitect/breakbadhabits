@@ -14,10 +14,10 @@ class HabitAbstinenceProvider(
 ) {
     fun provideCurrentHabitAbstinenceFlow(habitId: Habit.Id) = combine(
         appDatabase.habitTrackQueries
-            .selectByHabitIdAndLastByTime(habitId.value)
+            .selectMaxRangeEndByHabitId(habitId.value)
             .asFlow()
             .map {
-                it.executeAsOneOrNull()?.rangeEnd?.millisToLocalDateTime()
+                it.executeAsOneOrNull()?.max?.millisToLocalDateTime()
             },
         timeProvider.currentTimeFlow()
     ) { lastRangeEnd, currentTime ->

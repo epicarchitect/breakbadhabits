@@ -1,5 +1,6 @@
-package breakbadhabits.android.app.di
+package breakbadhabits.app.dependecies
 
+import breakbadhabits.app.dependecies.LogicModule
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.presentation.HabitCreationViewModel

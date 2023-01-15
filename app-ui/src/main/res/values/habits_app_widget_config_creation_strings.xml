@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="habitsAppWidgetConfigCreation_title">Widget customization</string>
-    <string name="habitsAppWidgetConfigCreation_name_description">Enter a name for the widget.</string>
-    <string name="habitsAppWidgetConfigCreation_name">Widget name</string>
-    <string name="habitsAppWidgetConfigCreation_habits_description">Choose habits for the widget.</string>
-    <string name="habitsAppWidgetConfigCreation_finish">Done</string>
-</resources>

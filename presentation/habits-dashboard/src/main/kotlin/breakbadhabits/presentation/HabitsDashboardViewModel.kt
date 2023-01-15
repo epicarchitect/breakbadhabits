@@ -17,20 +17,6 @@ class HabitsDashboardViewModel(
     abstinenceProvider: HabitAbstinenceProvider
 ) : ViewModel() {
 
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    val state = habitProvider.provideHabitsFlow().flatMapLatest { habits ->
-//        if (habits.isEmpty()) flowOf(State.NotExist())
-//        else combine(
-//            habits.map { habit ->
-//                abstinenceProvider.provideCurrentHabitAbstinenceFlow(habit.id).map { abstinence ->
-//                    HabitItem(habit, abstinence)
-//                }
-//            }
-//        ) {
-//            State.Loaded(it.toList())
-//        }
-//    }.stateIn(viewModelScope, SharingStarted.Eagerly, State.Loading())
-
     val state = habitProvider.provideHabitsFlow().map { habits ->
         if (habits.isEmpty()) State.NotExist()
         else State.Loaded(
