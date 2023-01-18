@@ -1,6 +1,5 @@
 package breakbadhabits.app.dependecies
 
-import breakbadhabits.app.dependecies.LogicModule
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.presentation.HabitCreationViewModel
@@ -13,7 +12,9 @@ import breakbadhabits.presentation.HabitsDashboardViewModel
 class PresentationModule(private val logicModule: LogicModule) {
     fun createHabitsDashboardViewModel() = HabitsDashboardViewModel(
         logicModule.habitProvider,
-        logicModule.habitAbstinenceProvider
+        logicModule.habitTrackProvider,
+        logicModule.dateTimeProvider,
+        logicModule.dateTimeRangeFormatter
     )
 
     fun createHabitCreationViewModel() = HabitCreationViewModel(

@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HabitCreationViewModel(
     private val habitCreator: HabitCreator,
@@ -89,6 +90,7 @@ class HabitCreationViewModel(
         require(state is State.Input)
         require(state.creationAllowed)
 
+
         val validatedName = validatedNameState.value
         require(validatedName is CorrectHabitNewNewName)
 
@@ -149,7 +151,7 @@ class HabitCreationViewModel(
         class Created : State()
     }
 
-    private sealed class CreationState {
+    sealed class CreationState {
         class NotExecuted : CreationState()
         class Executing : CreationState()
         class Executed : CreationState()

@@ -1,10 +1,8 @@
 package breakbadhabits.android.app
 
 import androidx.compose.runtime.compositionLocalOf
-import breakbadhabits.app.dependecies.PresentationModule
-import breakbadhabits.android.app.format.HabitAbstinenceFormatter
-import breakbadhabits.android.app.format.HabitTrackRangeFormatter
 import breakbadhabits.android.app.resources.HabitIconResources
+import breakbadhabits.app.dependecies.PresentationModule
 
 val LocalPresentationModule = compositionLocalOf<PresentationModule> {
     error("LocalPresentationModule not provided")
@@ -12,12 +10,4 @@ val LocalPresentationModule = compositionLocalOf<PresentationModule> {
 
 val LocalHabitIconResources = compositionLocalOf<HabitIconResources> {
     error("LocalHabitIconResources not provided")
-}
-
-val LocalHabitAbstinenceFormatter = compositionLocalOf<HabitAbstinenceFormatter> {
-    error("LocalHabitAbstinenceFormatter not provided")
-}
-
-val LocalHabitTrackRangeFormatter = compositionLocalOf<HabitTrackRangeFormatter> {
-    error("LocalHabitTrackRangeFormatter not provided")
 }

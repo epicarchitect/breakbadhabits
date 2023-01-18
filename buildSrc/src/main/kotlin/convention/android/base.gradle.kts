@@ -3,11 +3,11 @@ package convention.android
 import com.android.build.gradle.BaseExtension
 
 configure<BaseExtension> {
-    compileSdkVersion(33)
+    compileSdkVersion(Constants.Versions.MaxSdk)
 
     defaultConfig {
-        minSdk = 26
-        targetSdk = 33
+        minSdk = Constants.Versions.MinSdk
+        targetSdk = Constants.Versions.MaxSdk
     }
 
     compileOptions {

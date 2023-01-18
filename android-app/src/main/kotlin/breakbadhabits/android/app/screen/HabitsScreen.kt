@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import breakbadhabits.android.app.LocalHabitAbstinenceFormatter
 import breakbadhabits.android.app.LocalHabitIconResources
 import breakbadhabits.android.app.LocalPresentationModule
 import breakbadhabits.android.app.R
@@ -57,10 +56,10 @@ fun HabitsScreen(
     openSettings: () -> Unit
 ) {
     val presentationModule = LocalPresentationModule.current
-    val habitIdsFeature = viewModel {
+    val dashboardViewModel = viewModel {
         presentationModule.createHabitsDashboardViewModel()
     }
-    val dashboardState by habitIdsFeature.state.collectAsState()
+    val dashboardState by dashboardViewModel.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         AnimatedContent(
@@ -181,16 +180,17 @@ private fun LazyItemScope.HabitItem(
     onResetClick: () -> Unit
 ) {
     val habitIconResources = LocalHabitIconResources.current
-    val abstinenceFormatter = LocalHabitAbstinenceFormatter.current
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .animateItemPlacement()
     ) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+        ) {
             Column(
                 modifier = Modifier.padding(
                     start = 16.dp,
@@ -217,12 +217,11 @@ private fun LazyItemScope.HabitItem(
                     Icon(
                         painter = painterResource(R.drawable.ic_time)
                     )
-                    val abstinence by item.abstinence.collectAsState(null)
+
+                    val abstinence by item.abstinenceTimeFlow().collectAsState(null)
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
-                        text = abstinence?.let {
-                            abstinenceFormatter.format(it)
-                        } ?: "nothing"
+                        text = abstinence ?: "nothing"
                     )
                 }
             }

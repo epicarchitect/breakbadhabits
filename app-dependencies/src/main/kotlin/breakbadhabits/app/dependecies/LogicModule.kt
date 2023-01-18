@@ -3,7 +3,8 @@ package breakbadhabits.app.dependecies
 import android.content.Context
 import breakbadhabits.database.AppDatabaseFactory
 import breakbadhabits.database.IdGenerator
-import breakbadhabits.logic.HabitAbstinenceProvider
+import breakbadhabits.logic.DateTimeProvider
+import breakbadhabits.logic.DateTimeRangeFormatter
 import breakbadhabits.logic.HabitCreator
 import breakbadhabits.logic.HabitDeleter
 import breakbadhabits.logic.HabitIconsProvider
@@ -12,7 +13,6 @@ import breakbadhabits.logic.HabitProvider
 import breakbadhabits.logic.HabitTrackCreator
 import breakbadhabits.logic.HabitTrackIntervalValidator
 import breakbadhabits.logic.HabitTrackProvider
-import breakbadhabits.logic.TimeProvider
 
 class LogicModule(private val context: Context) {
 
@@ -27,12 +27,17 @@ class LogicModule(private val context: Context) {
         IdGenerator(context)
     }
 
-    val timeProvider by lazy {
-        TimeProvider(updatePeriodMillis = 1000L)
+    val dateTimeProvider by lazy {
+        DateTimeProvider(updatePeriodMillis = 1000L)
     }
 
-    val habitAbstinenceProvider by lazy {
-        HabitAbstinenceProvider(appDatabase, timeProvider)
+    val dateTimeRangeFormatter by lazy {
+        DateTimeRangeFormatter(
+            secondText = context.getString(R.string.s),
+            minuteText = context.getString(R.string.m),
+            hourText = context.getString(R.string.h),
+            dayText = context.getString(R.string.d),
+        )
     }
 
     val habitCreator by lazy {
@@ -44,7 +49,7 @@ class LogicModule(private val context: Context) {
     }
 
     val habitTrackIntervalValidator by lazy {
-        HabitTrackIntervalValidator(getCurrentTime = timeProvider::getCurrentTime)
+        HabitTrackIntervalValidator(getCurrentTime = dateTimeProvider::getCurrentTime)
     }
 
     val habitDeleter by lazy {

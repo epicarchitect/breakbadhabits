@@ -13,7 +13,7 @@ class HabitTrackViewModel(
     habitTrackId: HabitTrack.Id
 ) : ViewModel() {
 
-    val state = habitTrackProvider.provideFlow(habitTrackId).map {
+    val state = habitTrackProvider.provideHabitTrackFlow(habitTrackId).map {
         if (it == null) State.NotExist()
         else State.Loaded(it)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), State.Loading())

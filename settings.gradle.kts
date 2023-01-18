@@ -13,8 +13,8 @@ include(
     ":logic:habit-provider",
     ":logic:habit-track-provider",
     ":logic:habit-icons-provider",
-    ":logic:habit-abstinence-provider",
-    ":logic:time-provider",
+    ":logic:datetime-range-formatter",
+    ":logic:datetime-provider",
 
     ":presentation:habit-creation",
     ":presentation:habit-deletion",

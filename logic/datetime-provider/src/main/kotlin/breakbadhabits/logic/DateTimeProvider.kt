@@ -12,7 +12,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class TimeProvider(updatePeriodMillis: Long) {
+class DateTimeProvider(updatePeriodMillis: Long) {
     private val currentTime = MutableStateFlow(getCurrentTime())
 
     init {

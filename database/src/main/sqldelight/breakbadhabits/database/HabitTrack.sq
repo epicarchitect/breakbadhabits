@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS HabitTrack (
 );
 
 insert:
-INSERT INTO HabitTrack(id, habitId, rangeStart, rangeEnd, dailyCount, comment)
+INSERT INTO HabitTrack
 VALUES (?, ?, ?, ?, ?, ?);
 
 update:
@@ -27,5 +27,5 @@ SELECT * FROM HabitTrack WHERE id = ?;
 selectByHabitId:
 SELECT * FROM HabitTrack WHERE habitId = ?;
 
-selectMaxRangeEndByHabitId:
-SELECT max(rangeEnd) FROM HabitTrack WHERE habitId = ?;
+selectByHabitIdAndMaxRangeEnd:
+SELECT * FROM HabitTrack WHERE rangeEnd = (SELECT max(rangeEnd) FROM HabitTrack WHERE habitId = ?);

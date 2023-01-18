@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS Habit (
 );
 
 insert:
-INSERT INTO Habit(id, name, iconId, isCountable)
+INSERT INTO Habit
 VALUES (?, ?, ?, ?);
 
 deleteById:
