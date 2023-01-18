@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS HabitTrack (
   rangeStart INTEGER NOT NULL,
   rangeEnd   INTEGER NOT NULL,
   dailyCount REAL    NOT NULL,
-  comment    TEXT -- nullable
+  comment    TEXT
 );
 
 insert:
