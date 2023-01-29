@@ -1,4 +1,8 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "breakbadhabits"
+
+includeBuild("build-logic")
 
 include(
     ":app:android",
