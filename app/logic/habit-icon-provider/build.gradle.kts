@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    api(project(":app:entities"))
+    api(projects.app.entities)
 }

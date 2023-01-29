@@ -7,9 +7,9 @@ android {
 }
 
 dependencies {
-    api(project(":framework:viewmodel"))
-    api(project(":app:logic:habit-provider"))
-    api(project(":app:logic:habit-track-provider"))
-    api(project(":app:logic:datetime-formatter"))
-    api(project(":app:logic:datetime-provider"))
+    api(projects.framework.viewmodel)
+    api(projects.app.logic.habitProvider)
+    api(projects.app.logic.habitTrackProvider)
+    api(projects.app.logic.datetimeFormatter)
+    api(projects.app.logic.datetimeProvider)
 }

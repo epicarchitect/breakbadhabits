@@ -7,11 +7,11 @@ android {
 }
 
 dependencies {
-    api(project(":app:presentation:habit-creation"))
-    api(project(":app:presentation:habit-deletion"))
-    api(project(":app:presentation:dashboard"))
-    api(project(":app:presentation:habit-details"))
-    api(project(":app:presentation:habit-track-details"))
-    api(project(":app:presentation:habit-track-creation"))
-    implementation(project(":app:database"))
+    api(projects.app.presentation.dashboard)
+    api(projects.app.presentation.habitCreation)
+    api(projects.app.presentation.habitDeletion)
+    api(projects.app.presentation.habitDetails)
+    api(projects.app.presentation.habitTrackDetails)
+    api(projects.app.presentation.habitTrackCreation)
+    implementation(projects.app.database)
 }

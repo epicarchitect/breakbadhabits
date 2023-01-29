@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    api(project(":framework:viewmodel"))
-    api(project(":app:logic:habit-creator"))
-    api(project(":app:logic:habit-icon-provider"))
+    api(projects.framework.viewmodel)
+    api(projects.app.logic.habitCreator)
+    api(projects.app.logic.habitIconProvider)
 }

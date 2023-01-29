@@ -45,6 +45,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":framework:uikit"))
-    implementation(project(":app:di"))
+    implementation(projects.framework.uikit)
+    implementation(projects.app.di)
 }

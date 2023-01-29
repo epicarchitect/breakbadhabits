@@ -7,6 +7,6 @@ android {
 }
 
 dependencies {
-    api(project(":framework:viewmodel"))
-    api(project(":app:logic:habit-provider"))
+    api(projects.framework.viewmodel)
+    api(projects.app.logic.habitProvider)
 }
