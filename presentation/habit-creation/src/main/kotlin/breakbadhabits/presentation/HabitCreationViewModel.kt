@@ -1,10 +1,10 @@
 package breakbadhabits.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.extension.coroutines.flow.combine
+import breakbadhabits.extension.viewmodel.ViewModel
 import breakbadhabits.logic.CorrectHabitNewNewName
 import breakbadhabits.logic.CorrectHabitTrackInterval
 import breakbadhabits.logic.HabitCountability
@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HabitCreationViewModel(
     private val habitCreator: HabitCreator,

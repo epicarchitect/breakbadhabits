@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":database"))
-    api(project(":entities"))
     api(project(":extensions:coroutines"))
+    api(project(":entities"))
+    implementation(project(":database"))
 }

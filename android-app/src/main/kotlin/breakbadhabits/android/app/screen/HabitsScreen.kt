@@ -218,7 +218,7 @@ private fun LazyItemScope.HabitItem(
                         painter = painterResource(R.drawable.ic_time)
                     )
 
-                    val abstinence by item.abstinenceTimeFlow().collectAsState(null)
+                    val abstinence by item.abstinenceTime.collectAsState()
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
                         text = abstinence ?: "nothing"

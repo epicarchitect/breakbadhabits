@@ -28,4 +28,4 @@ selectByHabitId:
 SELECT * FROM HabitTrack WHERE habitId = ?;
 
 selectByHabitIdAndMaxRangeEnd:
-SELECT * FROM HabitTrack WHERE rangeEnd = (SELECT max(rangeEnd) FROM HabitTrack WHERE habitId = ?);
+SELECT * FROM HabitTrack WHERE habitId = :habitId AND rangeEnd = (SELECT max(rangeEnd) FROM HabitTrack WHERE habitId = :habitId);

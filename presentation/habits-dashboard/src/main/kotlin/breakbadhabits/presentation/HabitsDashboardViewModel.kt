@@ -1,22 +1,24 @@
 package breakbadhabits.presentation
 
-import androidx.lifecycle.ViewModel
+import breakbadhabits.extension.viewmodel.ViewModel
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.entity.Habit
 import breakbadhabits.entity.HabitTrack
+import breakbadhabits.extension.coroutines.flow.mapItems
+import breakbadhabits.logic.DateTimeProvider
 import breakbadhabits.logic.DateTimeRangeFormatter
 import breakbadhabits.logic.HabitProvider
 import breakbadhabits.logic.HabitTrackProvider
-import breakbadhabits.logic.DateTimeProvider
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlin.coroutines.coroutineContext
 
 class HabitsDashboardViewModel(
     private val habitProvider: HabitProvider,
@@ -28,23 +30,23 @@ class HabitsDashboardViewModel(
     val state = habitItemsFlow().map { habits ->
         if (habits.isEmpty()) State.NotExist()
         else State.Loaded(habits)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, State.Loading())
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = State.Loading()
+    )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun habitItemsFlow() = habitProvider.provideHabitsFlow().flatMapLatest { habits ->
-        if (habits.isEmpty()) flowOf(emptyList())
-        else combine(
-            habits.map { habit ->
-                habitTrackProvider.provideLastHabitTrackFlowByHabitId(habit.id)
-            }
-        ) { tracks ->
-            habits.mapIndexed { index, habit ->
-                HabitItem(
-                    habit,
-                    tracks[index]
+    private fun habitItemsFlow() = habitProvider.provideHabitsFlow().mapItems { habit ->
+        HabitItem(
+            habit,
+            habitTrackProvider.provideByHabitIdAndMaxRangeEnd(habit.id)
+                .asAbstinenceTimeFlow()
+                .stateIn(
+                    scope = CoroutineScope(coroutineContext),
+                    started = SharingStarted.WhileSubscribed(),
+                    initialValue = null
                 )
-            }
-        }
+        )
     }
 
     sealed class State {
@@ -53,16 +55,18 @@ class HabitsDashboardViewModel(
         class Loaded(val items: List<HabitItem>) : State()
     }
 
-    inner class HabitItem(
+    data class HabitItem(
         val habit: Habit,
-        private val lastTrack: HabitTrack?
-    ) {
-        fun abstinenceTimeFlow() = dateTimeProvider.currentTimeFlow().map { currentTime ->
-            lastTrack?.let { track ->
-                dateTimeRangeFormatter.formatDistance(
-                    range = track.range.value.endInclusive..currentTime
-                )
-            }
+        val abstinenceTime: StateFlow<String?>
+    )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun Flow<HabitTrack?>.asAbstinenceTimeFlow() = flatMapLatest { lastTrack ->
+        lastTrack ?: return@flatMapLatest flowOf(null)
+        dateTimeProvider.currentTimeFlow().map { currentTime ->
+            dateTimeRangeFormatter.formatDistance(
+                range = lastTrack.range.value.endInclusive..currentTime
+            )
         }
     }
 }

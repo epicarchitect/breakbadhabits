@@ -25,4 +25,5 @@ include(
 
     ":extensions:coroutines",
     ":extensions:datetime",
+    ":extensions:viewmodel",
 )

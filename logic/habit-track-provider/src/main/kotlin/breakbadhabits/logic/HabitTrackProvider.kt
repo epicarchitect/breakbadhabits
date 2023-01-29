@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.map
 
 class HabitTrackProvider(private val appDatabase: AppDatabase) {
 
-    fun provideHabitTrackFlow(id: HabitTrack.Id) = appDatabase.habitTrackQueries
+    fun provideById(id: HabitTrack.Id) = appDatabase.habitTrackQueries
         .selectById(id.value)
         .asFlow()
         .map {
             it.executeAsOneOrNull()?.toEntity()
         }
 
-    fun provideLastHabitTrackFlowByHabitId(id: Habit.Id) = appDatabase.habitTrackQueries
+    fun provideByHabitIdAndMaxRangeEnd(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitIdAndMaxRangeEnd(id.value)
         .asFlow()
         .map {

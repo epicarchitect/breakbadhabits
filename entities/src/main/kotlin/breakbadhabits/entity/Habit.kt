@@ -6,15 +6,11 @@ data class Habit(
     val iconResource: IconResource,
     val countability: Countability
 ) {
-    @JvmInline
-    value class Id(val value: Long)
+    data class Id(val value: Long)
 
-    @JvmInline
-    value class Name(val value: String)
+    data class Name(val value: String)
 
-    @JvmInline
-    value class IconResource(val iconId: Long)
+    data class IconResource(val iconId: Long)
 
-    @JvmInline
-    value class Countability(val isCountable: Boolean)
+    data class Countability(val isCountable: Boolean)
 }

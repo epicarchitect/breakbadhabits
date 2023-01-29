@@ -1,6 +1,6 @@
 package breakbadhabits.presentation
 
-import androidx.lifecycle.ViewModel
+import breakbadhabits.extension.viewmodel.ViewModel
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.entity.HabitTrack
 import breakbadhabits.logic.HabitTrackProvider
@@ -13,7 +13,7 @@ class HabitTrackViewModel(
     habitTrackId: HabitTrack.Id
 ) : ViewModel() {
 
-    val state = habitTrackProvider.provideHabitTrackFlow(habitTrackId).map {
+    val state = habitTrackProvider.provideById(habitTrackId).map {
         if (it == null) State.NotExist()
         else State.Loaded(it)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), State.Loading())

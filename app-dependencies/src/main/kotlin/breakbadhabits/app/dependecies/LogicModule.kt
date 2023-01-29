@@ -28,7 +28,7 @@ class LogicModule(private val context: Context) {
     }
 
     val dateTimeProvider by lazy {
-        DateTimeProvider(updatePeriodMillis = 1000L)
+        DateTimeProvider(updatePeriodMillis = 5000L)
     }
 
     val dateTimeRangeFormatter by lazy {

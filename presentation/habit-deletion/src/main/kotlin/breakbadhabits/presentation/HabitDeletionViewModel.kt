@@ -1,6 +1,6 @@
 package breakbadhabits.presentation
 
-import androidx.lifecycle.ViewModel
+import breakbadhabits.extension.viewmodel.ViewModel
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.entity.Habit
 import breakbadhabits.logic.HabitDeleter
