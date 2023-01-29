@@ -1,17 +1,24 @@
 package convention.android
 
 import com.android.build.gradle.BaseExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 configure<BaseExtension> {
-    compileSdkVersion(Constants.Versions.MaxSdk)
+    compileSdkVersion(Versions.MAX_ANDROID_SDK)
 
     defaultConfig {
-        minSdk = Constants.Versions.MinSdk
-        targetSdk = Constants.Versions.MaxSdk
+        minSdk = Versions.MIN_ANDROID_SDK
+        targetSdk = Versions.MAX_ANDROID_SDK
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.toVersion(Versions.JVM_TARGET)
+        targetCompatibility = JavaVersion.toVersion(Versions.JVM_TARGET)
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = Versions.JVM_TARGET
     }
 }

@@ -5,5 +5,5 @@ import com.android.build.gradle.BaseExtension
 @Suppress("UnstableApiUsage")
 configure<BaseExtension> {
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = Constants.Versions.ComposeCompiler
+    composeOptions.kotlinCompilerExtensionVersion = Versions.COMPOSE_COMPILER
 }
