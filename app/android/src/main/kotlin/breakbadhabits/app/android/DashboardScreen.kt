@@ -2,14 +2,12 @@
 
 package breakbadhabits.app.android
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.with
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -58,53 +56,48 @@ fun DashboardScreen(
         presentationModule.createDashboardViewModel()
     }
     val dashboardState by dashboardViewModel.state.collectAsState()
+    val state = dashboardState
 
     Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedContent(
-            modifier = Modifier.fillMaxSize(),
-            targetState = dashboardState,
-            transitionSpec = { fadeIn() with fadeOut() }
-        ) { state ->
-            Column(modifier = Modifier.fillMaxSize()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Title(
-                        text = stringResource(R.string.app_name)
-                    )
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Title(
+                    text = stringResource(R.string.app_name)
+                )
 
-                    IconButton(
-                        onClick = openSettings
+                IconButton(
+                    onClick = openSettings
+                ) {
+                    Icon(painterResource(R.drawable.ic_settings))
+                }
+            }
+
+            when (state) {
+                is DashboardViewModel.State.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(painterResource(R.drawable.ic_settings))
+                        ProgressIndicator()
                     }
                 }
 
-                when (state) {
-                    is DashboardViewModel.State.Loading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            ProgressIndicator()
-                        }
-                    }
+                is DashboardViewModel.State.NotExist -> {
+                    NotExistsHabits()
+                }
 
-                    is DashboardViewModel.State.NotExist -> {
-                        NotExistsHabits()
-                    }
-
-                    is DashboardViewModel.State.Loaded -> {
-                        LoadedHabits(
-                            state = state,
-                            onResetClick = openHabitEventCreation,
-                            onItemClick = openHabit
-                        )
-                    }
+                is DashboardViewModel.State.Loaded -> {
+                    LoadedHabits(
+                        state = state,
+                        onResetClick = openHabitEventCreation,
+                        onItemClick = openHabit
+                    )
                 }
             }
         }
@@ -216,10 +209,9 @@ private fun LazyItemScope.HabitItem(
                         painter = painterResource(R.drawable.ic_time)
                     )
 
-                    val abstinence by item.abstinenceTime.collectAsState()
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
-                        text = abstinence ?: "nothing"
+                        text = item.abstinenceTime ?: stringResource(R.string.habits_noEvents)
                     )
                 }
             }
