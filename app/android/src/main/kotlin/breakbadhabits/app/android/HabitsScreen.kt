@@ -45,6 +45,7 @@ import breakbadhabits.framework.uikit.ProgressIndicator
 import breakbadhabits.framework.uikit.Text
 import breakbadhabits.framework.uikit.Title
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HabitsScreen(
     openHabit: (Habit.Id) -> Unit,
@@ -71,7 +72,6 @@ fun HabitsScreen(
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
                 ) {
                     Title(
-                        modifier = Modifier.align(Alignment.Center),
                         text = stringResource(R.string.app_name)
                     )
 

@@ -1,6 +1,7 @@
 package breakbadhabits.app.android
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
@@ -84,6 +86,8 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
         }
     }
 }
+
+val counttabilyRegex = "[0-9]{0,9}$".toRegex()
 
 @Composable
 private fun InputScreen(
@@ -196,17 +200,28 @@ private fun InputScreen(
             }
         )
 
-        Row {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    val checked = state.habitCountability is HabitCountability.Countable
+                    viewModel.updateCountably(
+                        if (!checked) {
+                            HabitCountability.Countable(HabitTrack.DailyCount(0.0))
+                        } else {
+                            HabitCountability.Uncountable()
+                        }
+                    )
+                }
+                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Checkbox(
                 checked = state.habitCountability is HabitCountability.Countable,
                 onCheckedChange = {
                     viewModel.updateCountably(
                         if (it) {
-                            HabitCountability.Countable(
-                                HabitTrack.DailyCount(
-                                    199.0 // TODO
-                                )
-                            )
+                            HabitCountability.Countable(HabitTrack.DailyCount(0.0))
                         } else {
                             HabitCountability.Uncountable()
                         }
@@ -214,8 +229,43 @@ private fun InputScreen(
                 }
             )
             Text(
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 text = "Habit is countable?"
+            )
+        }
+
+        if (state.habitCountability is HabitCountability.Countable) {
+            val value = (state.habitCountability as HabitCountability.Countable)
+                .averageDailyCount.value.toInt()
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                value = if (value == 0) "" else value.toString(),
+                label = "Число событий привычки в день",
+                onValueChange = {
+                    try {
+                        viewModel.updateCountably(
+                            HabitCountability.Countable(
+                                HabitTrack.DailyCount(
+                                    it.toDouble()
+                                )
+                            )
+                        )
+                    } catch (e: Exception) {
+                        viewModel.updateCountably(
+                            HabitCountability.Countable(
+                                HabitTrack.DailyCount(
+                                    0.0
+                                )
+                            )
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                regex = counttabilyRegex
             )
         }
 

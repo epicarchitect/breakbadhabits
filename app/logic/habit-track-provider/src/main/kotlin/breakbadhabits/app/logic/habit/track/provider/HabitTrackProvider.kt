@@ -5,7 +5,9 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.framework.datetime.millisToLocalDateTime
 import com.squareup.sqldelight.runtime.coroutines.asFlow
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class HabitTrackProvider(private val appDatabase: AppDatabase) {
 

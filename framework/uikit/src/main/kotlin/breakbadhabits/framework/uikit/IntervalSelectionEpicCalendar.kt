@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -184,25 +186,20 @@ fun IntervalSelectionEpicCalendar(
                                     },
                                     elevation = 0.dp
                                 ) {
-                                    Box(
+                                    Text(
                                         modifier = Modifier
-                                            .fillMaxSize()
+                                            .defaultMinSize(minWidth = 90.dp)
                                             .clickable {
                                                 yearMonth = yearMonth.withMonth(it + 1)
-                                            },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.padding(
+                                            }.padding(
                                                 vertical = 8.dp,
                                                 horizontal = 20.dp
                                             ),
-                                            text = monthTitle,
-                                            textAlign = TextAlign.Center,
-                                            overflow = TextOverflow.Ellipsis,
-                                            fontSize = 14.sp
-                                        )
-                                    }
+                                        text = monthTitle,
+                                        textAlign = TextAlign.Center,
+                                        overflow = TextOverflow.Ellipsis,
+                                        fontSize = 14.sp
+                                    )
                                 }
                             }
                         }
@@ -230,25 +227,21 @@ fun IntervalSelectionEpicCalendar(
                                     },
                                     elevation = 0.dp,
                                 ) {
-                                    Box(
+                                    Text(
                                         modifier = Modifier
-                                            .fillMaxSize()
+                                            .defaultMinSize(minWidth = 90.dp)
                                             .clickable {
                                                 yearMonth = yearMonth.withYear(year)
-                                            },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.padding(
+                                            }
+                                            .padding(
                                                 vertical = 8.dp,
                                                 horizontal = 20.dp
                                             ),
-                                            text = yearTitle,
-                                            textAlign = TextAlign.Center,
-                                            overflow = TextOverflow.Ellipsis,
-                                            fontSize = 14.sp
-                                        )
-                                    }
+                                        text = yearTitle,
+                                        textAlign = TextAlign.Center,
+                                        overflow = TextOverflow.Ellipsis,
+                                        fontSize = 14.sp
+                                    )
                                 }
                             }
                         }
