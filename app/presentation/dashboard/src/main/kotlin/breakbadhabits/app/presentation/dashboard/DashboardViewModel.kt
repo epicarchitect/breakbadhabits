@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlin.coroutines.coroutineContext
 
-class HabitsDashboardViewModel(
+class DashboardViewModel(
     private val habitProvider: HabitProvider,
     private val habitTrackProvider: HabitTrackProvider,
     private val dateTimeProvider: DateTimeProvider,

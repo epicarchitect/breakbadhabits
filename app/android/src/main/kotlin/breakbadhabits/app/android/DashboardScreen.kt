@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.presentation.dashboard.HabitsDashboardViewModel
+import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.framework.uikit.Button
 import breakbadhabits.framework.uikit.Card
 import breakbadhabits.framework.uikit.Icon
@@ -47,7 +47,7 @@ import breakbadhabits.framework.uikit.Title
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun HabitsScreen(
+fun DashboardScreen(
     openHabit: (Habit.Id) -> Unit,
     openHabitEventCreation: (Habit.Id) -> Unit,
     openHabitCreation: () -> Unit,
@@ -55,7 +55,7 @@ fun HabitsScreen(
 ) {
     val presentationModule = LocalPresentationModule.current
     val dashboardViewModel = viewModel {
-        presentationModule.createHabitsDashboardViewModel()
+        presentationModule.createDashboardViewModel()
     }
     val dashboardState by dashboardViewModel.state.collectAsState()
 
@@ -66,17 +66,18 @@ fun HabitsScreen(
             transitionSpec = { fadeIn() with fadeOut() }
         ) { state ->
             Column(modifier = Modifier.fillMaxSize()) {
-                Box(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Title(
                         text = stringResource(R.string.app_name)
                     )
 
                     IconButton(
-                        modifier = Modifier.align(Alignment.CenterEnd),
                         onClick = openSettings
                     ) {
                         Icon(painterResource(R.drawable.ic_settings))
@@ -84,7 +85,7 @@ fun HabitsScreen(
                 }
 
                 when (state) {
-                    is HabitsDashboardViewModel.State.Loading -> {
+                    is DashboardViewModel.State.Loading -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
@@ -93,11 +94,11 @@ fun HabitsScreen(
                         }
                     }
 
-                    is HabitsDashboardViewModel.State.NotExist -> {
+                    is DashboardViewModel.State.NotExist -> {
                         NotExistsHabits()
                     }
 
-                    is HabitsDashboardViewModel.State.Loaded -> {
+                    is DashboardViewModel.State.Loaded -> {
                         LoadedHabits(
                             state = state,
                             onResetClick = openHabitEventCreation,
@@ -112,7 +113,7 @@ fun HabitsScreen(
             modifier = Modifier
                 .padding(24.dp)
                 .align(Alignment.BottomCenter),
-            visible = dashboardState !is HabitsDashboardViewModel.State.Loading,
+            visible = dashboardState !is DashboardViewModel.State.Loading,
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut()
         ) {
@@ -127,7 +128,7 @@ fun HabitsScreen(
 
 @Composable
 private fun LoadedHabits(
-    state: HabitsDashboardViewModel.State.Loaded,
+    state: DashboardViewModel.State.Loaded,
     onResetClick: (Habit.Id) -> Unit,
     onItemClick: (Habit.Id) -> Unit
 ) {
@@ -172,7 +173,7 @@ private fun NotExistsHabits() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LazyItemScope.HabitItem(
-    item: HabitsDashboardViewModel.HabitItem,
+    item: DashboardViewModel.HabitItem,
     onClick: () -> Unit,
     onResetClick: () -> Unit
 ) {

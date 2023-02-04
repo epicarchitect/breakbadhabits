@@ -134,7 +134,7 @@ fun AppRootScreen() {
         }
 
         composable(route = "habits") {
-            HabitsScreen(
+            DashboardScreen(
                 openHabit = { habitId ->
                     navController.navigate("habit?habitId=${habitId.value}")
                 },

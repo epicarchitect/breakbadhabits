@@ -7,10 +7,10 @@ import breakbadhabits.app.presentation.habit.deletion.HabitDeletionViewModel
 import breakbadhabits.app.presentation.habit.details.HabitDetailsViewModel
 import breakbadhabits.presentation.HabitTrackCreationViewModel
 import breakbadhabits.app.presentation.habit.track.details.HabitTrackViewModel
-import breakbadhabits.app.presentation.dashboard.HabitsDashboardViewModel
+import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 
 class PresentationModule(private val logicModule: LogicModule) {
-    fun createHabitsDashboardViewModel() = HabitsDashboardViewModel(
+    fun createDashboardViewModel() = DashboardViewModel(
         logicModule.habitProvider,
         logicModule.habitTrackProvider,
         logicModule.dateTimeProvider,
