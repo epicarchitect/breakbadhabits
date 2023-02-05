@@ -55,8 +55,7 @@ fun DashboardScreen(
     val dashboardViewModel = viewModel {
         presentationModule.createDashboardViewModel()
     }
-    val dashboardState by dashboardViewModel.state.collectAsState()
-    val state = dashboardState
+    val dashboardItems by dashboardViewModel.items.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -78,8 +77,9 @@ fun DashboardScreen(
                 }
             }
 
-            when (state) {
-                is DashboardViewModel.State.Loading -> {
+
+            when (val state = dashboardItems) {
+                is DashboardViewModel.ItemsState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -88,13 +88,13 @@ fun DashboardScreen(
                     }
                 }
 
-                is DashboardViewModel.State.NotExist -> {
+                is DashboardViewModel.ItemsState.NotExist -> {
                     NotExistsHabits()
                 }
 
-                is DashboardViewModel.State.Loaded -> {
+                is DashboardViewModel.ItemsState.Loaded -> {
                     LoadedHabits(
-                        state = state,
+                        itemsState = state,
                         onResetClick = openHabitEventCreation,
                         onItemClick = openHabit
                     )
@@ -106,7 +106,7 @@ fun DashboardScreen(
             modifier = Modifier
                 .padding(24.dp)
                 .align(Alignment.BottomCenter),
-            visible = dashboardState !is DashboardViewModel.State.Loading,
+            visible = dashboardItems !is DashboardViewModel.ItemsState.Loading,
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut()
         ) {
@@ -121,7 +121,7 @@ fun DashboardScreen(
 
 @Composable
 private fun LoadedHabits(
-    state: DashboardViewModel.State.Loaded,
+    itemsState: DashboardViewModel.ItemsState.Loaded,
     onResetClick: (Habit.Id) -> Unit,
     onItemClick: (Habit.Id) -> Unit
 ) {
@@ -135,7 +135,7 @@ private fun LoadedHabits(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(
-            items = state.items,
+            items = itemsState.items,
             key = { it.habit.id.value }
         ) { item ->
             HabitItem(

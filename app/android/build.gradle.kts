@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
+
 plugins {
     id("convention.android.application")
     id("convention.android.compose")
@@ -7,6 +9,7 @@ plugins {
 android {
     namespace = "breakbadhabits.app.android"
 
+    archivesName.set("breakbadhabits")
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         versionCode = 70
