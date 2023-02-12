@@ -2,45 +2,57 @@ package breakbadhabits.app.di
 
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
+import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.app.presentation.habit.creation.HabitCreationViewModel
 import breakbadhabits.app.presentation.habit.deletion.HabitDeletionViewModel
 import breakbadhabits.app.presentation.habit.details.HabitDetailsViewModel
-import breakbadhabits.presentation.HabitTrackCreationViewModel
 import breakbadhabits.app.presentation.habit.track.details.HabitTrackViewModel
-import breakbadhabits.app.presentation.dashboard.DashboardViewModel
+import breakbadhabits.presentation.HabitTrackCreationViewModel
 
 class PresentationModule(private val logicModule: LogicModule) {
-    fun createDashboardViewModel() = DashboardViewModel(
-        logicModule.habitProvider,
-        logicModule.habitTrackProvider,
-        logicModule.dateTimeProvider,
-        logicModule.dateTimeFormatter
-    )
+    fun createDashboardViewModel() = with(logicModule) {
+        DashboardViewModel(
+            habitProvider,
+            habitTrackProvider,
+            dateTimeProvider,
+            dateTimeFormatter
+        )
+    }
 
-    fun createHabitCreationViewModel() = HabitCreationViewModel(
-        logicModule.habitCreator,
-        logicModule.habitNewNameValidator,
-        logicModule.habitTrackIntervalValidator,
-        logicModule.habitIconProvider
-    )
+    fun createHabitCreationViewModel() = with(logicModule) {
+        HabitCreationViewModel(
+            habitCreator,
+            habitNewNameValidator,
+            habitTrackIntervalValidator,
+            habitIconProvider
+        )
+    }
 
-    fun createHabitDeletionViewModel(habitId: Habit.Id) = HabitDeletionViewModel(
-        logicModule.habitDeleter,
-        habitId
-    )
+    fun createHabitDeletionViewModel(habitId: Habit.Id) = with(logicModule) {
+        HabitDeletionViewModel(
+            habitDeleter,
+            habitId
+        )
+    }
 
-    fun createHabitDetailsViewModel(habitId: Habit.Id) = HabitDetailsViewModel(
-        logicModule.habitProvider,
-        habitId
-    )
+    fun createHabitDetailsViewModel(habitId: Habit.Id) = with(logicModule) {
+        HabitDetailsViewModel(
+            habitProvider,
+            habitId
+        )
+    }
 
-    fun createHabitTrackViewModel(habitTrackId: HabitTrack.Id) = HabitTrackViewModel(
-        logicModule.habitTrackProvider,
-        habitTrackId
-    )
+    fun createHabitTrackViewModel(habitTrackId: HabitTrack.Id) = with(logicModule) {
+        HabitTrackViewModel(
+            habitTrackProvider,
+            habitTrackId
+        )
+    }
 
-    fun createHabitTrackCreationViewModel(habitId: Habit.Id) = HabitTrackCreationViewModel(
-        logicModule.habitTrackCreator,
-        habitId
-    )
+    fun createHabitTrackCreationViewModel(habitId: Habit.Id) = with(logicModule) {
+        HabitTrackCreationViewModel(
+            habitTrackCreator,
+            habitId
+        )
+    }
 }

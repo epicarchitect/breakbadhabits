@@ -15,7 +15,7 @@ class HabitCreator(
         name: CorrectHabitNewNewName,
         iconResource: Habit.IconResource,
         countability: HabitCountability,
-        firstTrackInterval: CorrectHabitTrackInterval
+        firstTrackInterval: CorrectHabitTrackRange
     ) = withContext(Dispatchers.IO) {
         appDatabase.transaction {
             val habitId = idGenerator.nextId()

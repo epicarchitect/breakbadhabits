@@ -42,7 +42,7 @@ fun HabitTrackCreationScreen(
 }
 
 @Composable
-private fun InputScreen(
+private fun Content(
     trackCreationState: HabitTrackCreationViewModel.State.Input,
     onCommentChanged: (HabitTrack.Comment) -> Unit,
 ) {

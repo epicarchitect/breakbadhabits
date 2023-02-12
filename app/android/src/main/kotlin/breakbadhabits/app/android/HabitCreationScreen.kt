@@ -2,7 +2,6 @@ package breakbadhabits.app.android
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +31,11 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habit.creator.HabitCountability
 import breakbadhabits.app.logic.habit.creator.IncorrectHabitNewName
-import breakbadhabits.app.presentation.habit.creation.HabitCreationViewModel
+import breakbadhabits.app.logic.habit.creator.ValidatedHabitNewName
+import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackInterval
+import breakbadhabits.app.presentation.habit.creation.RequestController
+import breakbadhabits.app.presentation.habit.creation.SingleSelectionController
+import breakbadhabits.app.presentation.habit.creation.ValidatedInputController
 import breakbadhabits.framework.uikit.Button
 import breakbadhabits.framework.uikit.Checkbox
 import breakbadhabits.framework.uikit.ErrorText
@@ -40,7 +43,6 @@ import breakbadhabits.framework.uikit.IconData
 import breakbadhabits.framework.uikit.IconsSelection
 import breakbadhabits.framework.uikit.InteractionType
 import breakbadhabits.framework.uikit.IntervalSelectionEpicCalendarDialog
-import breakbadhabits.framework.uikit.ProgressIndicator
 import breakbadhabits.framework.uikit.Text
 import breakbadhabits.framework.uikit.TextField
 import breakbadhabits.framework.uikit.Title
@@ -51,52 +53,50 @@ import kotlinx.datetime.toKotlinLocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
+private object Defaults {
+    val countabilityRegex = "[0-9]{0,9}$".toRegex()
+}
+
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {
     val presentationModule = LocalPresentationModule.current
-    val habitCreationViewModel = viewModel {
+    val viewModel = viewModel {
         presentationModule.createHabitCreationViewModel()
     }
-    val state = habitCreationViewModel.state.collectAsState()
-    val viewModelState = state.value
 
-    LaunchedEffect(viewModelState) {
-        if (viewModelState is HabitCreationViewModel.State.Created) {
+    val creationState by viewModel.creationController.state.collectAsState()
+
+    LaunchedEffect(creationState) {
+        if (creationState is RequestController.State.Executed) {
             onFinished()
         }
     }
 
-    when (viewModelState) {
-        is HabitCreationViewModel.State.Input -> InputScreen(
-            habitCreationViewModel,
-            viewModelState
-        )
-
-        is HabitCreationViewModel.State.Creating -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                ProgressIndicator()
-            }
-        }
-
-        is HabitCreationViewModel.State.Created -> {
-            // nothing
-        }
-    }
+    Content(
+        habitIconSelectionController = viewModel.habitIconSelectionController,
+        habitNameController = viewModel.habitNameController,
+        habitCountabilityController = viewModel.habitCountabilityController,
+        firstTrackRangeInputController = viewModel.firstTrackRangeInputController,
+        creationController = viewModel.creationController
+    )
 }
 
-val counttabilyRegex = "[0-9]{0,9}$".toRegex()
-
 @Composable
-private fun InputScreen(
-    viewModel: HabitCreationViewModel,
-    state: HabitCreationViewModel.State.Input
+private fun Content(
+    habitIconSelectionController: SingleSelectionController<Habit.IconResource>,
+    habitNameController: ValidatedInputController<Habit.Name, ValidatedHabitNewName>,
+    habitCountabilityController: ValidatedInputController<HabitCountability?, Unit>,
+    firstTrackRangeInputController: ValidatedInputController<HabitTrack.Range?, ValidatedHabitTrackInterval>,
+    creationController: RequestController
 ) {
     val focusManager = LocalFocusManager.current
     val habitIconResources = LocalHabitIconResources.current
     var intervalSelectionShow by remember { mutableStateOf(false) }
+
+    val habitIconSelectionState by habitIconSelectionController.state.collectAsState()
+    val habitNameState by habitNameController.state.collectAsState()
+    val habitCountabilityState by habitCountabilityController.state.collectAsState()
+    val firstTrackRangeState by firstTrackRangeInputController.state.collectAsState()
 
     if (intervalSelectionShow) {
         IntervalSelectionEpicCalendarDialog(
@@ -104,7 +104,7 @@ private fun InputScreen(
                 intervalSelectionShow = false
                 val start = LocalDateTime(it.start.toKotlinLocalDate(), LocalTime(0, 0))
                 val end = LocalDateTime(it.endInclusive.toKotlinLocalDate(), LocalTime(0, 0))
-                viewModel.updateFirstTrackInterval(HabitTrack.Range(start..end))
+                firstTrackRangeInputController.changeInput(HabitTrack.Range(start..end))
             },
             onCancel = {
                 intervalSelectionShow = false
@@ -133,7 +133,7 @@ private fun InputScreen(
             modifier = Modifier
                 .padding(start = 16.dp, top = 8.dp, end = 16.dp)
                 .fillMaxWidth(),
-            value = state.name?.value ?: "",
+            value = habitNameState.input.value,
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
@@ -142,13 +142,13 @@ private fun InputScreen(
                 }
             ),
             onValueChange = {
-                viewModel.updateName(Habit.Name(it))
+                habitNameController.changeInput(Habit.Name(it))
             },
             label = stringResource(R.string.habitCreation_habitName),
-            isError = state.validatedName is IncorrectHabitNewName
+            isError = habitNameState.validationResult is IncorrectHabitNewName
         )
 
-        val validatedName = state.validatedName
+        val validatedName = habitNameState.validationResult
         AnimatedVisibility(
             visible = validatedName is IncorrectHabitNewName
         ) {
@@ -184,19 +184,19 @@ private fun InputScreen(
             modifier = Modifier
                 .padding(start = 16.dp, top = 8.dp, end = 16.dp)
                 .fillMaxWidth(),
-            icons = state.icons.map {
+            icons = habitIconSelectionState.items.map {
                 IconData(
                     it.iconId,
                     habitIconResources[it.iconId]
                 )
             },
             selectedIcon = habitIconResources.icons.first {
-                it.iconId == state.selectedIcon.iconId
+                it.iconId == habitIconSelectionState.selectedItem.iconId
             }.let {
                 IconData(it.iconId, it.resourceId)
             },
             onSelect = {
-                viewModel.updateIconResource(Habit.IconResource(it.id))
+                habitIconSelectionController.select(Habit.IconResource(it.id))
             }
         )
 
@@ -204,8 +204,8 @@ private fun InputScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    val checked = state.habitCountability is HabitCountability.Countable
-                    viewModel.updateCountably(
+                    val checked = habitCountabilityState.input is HabitCountability.Countable
+                    habitCountabilityController.changeInput(
                         if (!checked) {
                             HabitCountability.Countable(HabitTrack.DailyCount(0.0))
                         } else {
@@ -217,9 +217,9 @@ private fun InputScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = state.habitCountability is HabitCountability.Countable,
+                checked = habitCountabilityState.input is HabitCountability.Countable,
                 onCheckedChange = {
-                    viewModel.updateCountably(
+                    habitCountabilityController.changeInput(
                         if (it) {
                             HabitCountability.Countable(HabitTrack.DailyCount(0.0))
                         } else {
@@ -234,8 +234,8 @@ private fun InputScreen(
             )
         }
 
-        if (state.habitCountability is HabitCountability.Countable) {
-            val value = (state.habitCountability as HabitCountability.Countable)
+        if (habitCountabilityState.input is HabitCountability.Countable) {
+            val value = (habitCountabilityState.input as HabitCountability.Countable)
                 .averageDailyCount.value.toInt()
             TextField(
                 modifier = Modifier
@@ -244,28 +244,28 @@ private fun InputScreen(
                 value = if (value == 0) "" else value.toString(),
                 label = "Число событий привычки в день",
                 onValueChange = {
-                    try {
-                        viewModel.updateCountably(
-                            HabitCountability.Countable(
-                                HabitTrack.DailyCount(
-                                    it.toDouble()
+                    habitCountabilityController.changeInput(
+                        try {
+                                HabitCountability.Countable(
+                                    HabitTrack.DailyCount(
+                                        it.toDouble()
+                                    )
                                 )
-                            )
-                        )
-                    } catch (e: Exception) {
-                        viewModel.updateCountably(
-                            HabitCountability.Countable(
-                                HabitTrack.DailyCount(
-                                    0.0
+
+                        } catch (e: Exception) {
+                                HabitCountability.Countable(
+                                    HabitTrack.DailyCount(
+                                        0.0
+                                    )
                                 )
-                            )
-                        )
-                    }
+
+                        }
+                    )
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-                regex = counttabilyRegex
+                regex = Defaults.countabilityRegex
             )
         }
 
@@ -279,7 +279,7 @@ private fun InputScreen(
         Button(
             modifier = Modifier.padding(16.dp),
             onClick = { intervalSelectionShow = true },
-            text = state.firstTrackRange?.let {
+            text = firstTrackRangeState.input?.let {
                 val start = formatter.format(it.value.start.date.toJavaLocalDate())
                 val end = formatter.format(it.value.endInclusive.date.toJavaLocalDate())
                 "Первое событие: $start, последнее событие: $end"
@@ -299,8 +299,8 @@ private fun InputScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.End),
-            onClick = viewModel::startCreation,
-            enabled = state.creationAllowed,
+            onClick = creationController::request,
+            enabled = true, // TODO resolve
             text = stringResource(R.string.habitCreation_finish),
             interactionType = InteractionType.MAIN
         )

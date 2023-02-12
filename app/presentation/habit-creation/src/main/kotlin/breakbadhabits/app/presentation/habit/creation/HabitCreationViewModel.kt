@@ -3,19 +3,20 @@ package breakbadhabits.app.presentation.habit.creation
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.framework.coroutines.flow.combine
-import breakbadhabits.framework.viewmodel.ViewModel
 import breakbadhabits.app.logic.habit.creator.CorrectHabitNewNewName
-import breakbadhabits.app.logic.habit.creator.CorrectHabitTrackInterval
+import breakbadhabits.app.logic.habit.creator.CorrectHabitTrackRange
 import breakbadhabits.app.logic.habit.creator.HabitCountability
 import breakbadhabits.app.logic.habit.creator.HabitCreator
-import breakbadhabits.app.logic.habit.icon.provider.HabitIconProvider
 import breakbadhabits.app.logic.habit.creator.HabitNewNameValidator
 import breakbadhabits.app.logic.habit.creator.HabitTrackIntervalValidator
-import breakbadhabits.app.logic.habit.creator.ValidatedHabitNewName
 import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackInterval
+import breakbadhabits.app.logic.habit.icon.provider.HabitIconProvider
+import breakbadhabits.framework.viewmodel.ViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -27,132 +28,134 @@ class HabitCreationViewModel(
     habitIconProvider: HabitIconProvider
 ) : ViewModel() {
 
-    private val icons = habitIconProvider.provide()
-    private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
-    private val nameState = MutableStateFlow<Habit.Name?>(null)
-    private val validatedNameState = nameState.map {
-        it?.let { nameValidator.validate(it) }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    private val selectedIconState = MutableStateFlow(icons.first())
-    private val countabilityState = MutableStateFlow<HabitCountability?>(null)
-    private val firstTrackRangeState = MutableStateFlow<HabitTrack.Range?>(null)
-    private val validatedFirstTrackIntervalState = firstTrackRangeState.map {
-        it?.let { trackIntervalValidator.validate(it) }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val state = combine(
-        creationState,
-        nameState,
-        validatedNameState,
-        selectedIconState,
-        countabilityState,
-        firstTrackRangeState,
-        validatedFirstTrackIntervalState
-    ) { creationState, name, validatedName, selectedIcon,
-        countability, firstTrackInterval, validatedFirstTrackInterval ->
-        when (creationState) {
-            is CreationState.NotExecuted -> State.Input(
-                name = name,
-                validatedName = validatedName,
-                selectedIcon = selectedIcon,
-                icons = icons,
-                habitCountability = countability,
-                firstTrackRange = firstTrackInterval,
-                validatedFirstTrackInterval = validatedFirstTrackInterval,
-                creationAllowed = name != null
-                        && validatedName is CorrectHabitNewNewName
-                        && countability != null
-                        && firstTrackInterval != null
-                        && validatedFirstTrackInterval is CorrectHabitTrackInterval
-            )
-
-            is CreationState.Executing -> State.Creating()
-            is CreationState.Executed -> State.Created()
-        }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = State.Input(
-            name = null,
-            validatedName = null,
-            icons = emptyList(),
-            selectedIcon = icons.first(),
-            habitCountability = null,
-            firstTrackRange = null,
-            validatedFirstTrackInterval = null,
-            creationAllowed = false
-        )
+    val habitIconSelectionController = SingleSelectionController(
+        coroutineScope = viewModelScope,
+        items = habitIconProvider.provide(),
+        default = List<Habit.IconResource>::first
     )
 
-    fun startCreation() {
-        val state = state.value
-        require(state is State.Input)
-        require(state.creationAllowed)
+    val habitNameController = ValidatedInputController(
+        initialInput = Habit.Name(""),
+        validate = nameValidator::validate,
+        coroutineScope = viewModelScope
+    )
 
+    val habitCountabilityController = ValidatedInputController<HabitCountability?, Unit>(
+        initialInput = null,
+        validate = {},
+        coroutineScope = viewModelScope
+    )
 
-        val validatedName = validatedNameState.value
-        require(validatedName is CorrectHabitNewNewName)
+    val firstTrackRangeInputController =
+        ValidatedInputController<HabitTrack.Range?, ValidatedHabitTrackInterval>(
+            initialInput = null,
+            validate = {
+                if (it == null) null
+                else trackIntervalValidator.validate(it)
+            },
+            coroutineScope = viewModelScope
+        )
 
-        val selectedIcon = selectedIconState.value
+    val creationController = RequestController(
+        request = {
+            val habitIcon = habitIconSelectionController.state.value.selectedItem
+            val validatedHabitName = habitNameController.state.value.validationResult
+            val validatedHabitCountability = habitCountabilityController.state.value.input
+            val validatedFirstTrackRange = firstTrackRangeInputController.state.value.validationResult
 
-        val countability = countabilityState.value
-        requireNotNull(countability)
+            require(validatedHabitName is CorrectHabitNewNewName)
+            require(validatedFirstTrackRange is CorrectHabitTrackRange)
+            requireNotNull(validatedHabitCountability)
 
-        val validatedFirstTrackInterval = validatedFirstTrackIntervalState.value
-        require(validatedFirstTrackInterval is CorrectHabitTrackInterval)
-
-        creationState.value = CreationState.Executing()
-
-        viewModelScope.launch {
             habitCreator.createHabit(
-                validatedName,
-                selectedIcon,
-                countability,
-                validatedFirstTrackInterval
+                validatedHabitName,
+                habitIcon,
+                validatedHabitCountability,
+                validatedFirstTrackRange
             )
-            creationState.value = CreationState.Executed()
+        },
+        coroutineScope = viewModelScope
+    )
+}
+
+class SingleSelectionController<T>(
+    coroutineScope: CoroutineScope,
+    items: List<T>,
+    default: (List<T>) -> T
+) {
+    private val selected = MutableStateFlow(default(items))
+
+    val state = selected.map {
+        State(items, it)
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = State(items, default(items))
+    )
+
+    fun select(item: T) {
+        selected.value = item
+    }
+
+    class State<T>(
+        val items: List<T>,
+        val selectedItem: T
+    )
+}
+
+class RequestController(
+    request: suspend () -> Unit,
+    private val coroutineScope: CoroutineScope
+) {
+    private val internalRequest = request
+
+    private val mutableState = MutableStateFlow<State>(State.NotExecuted())
+    val state = mutableState.asStateFlow()
+
+    fun request() {
+        coroutineScope.launch {
+            mutableState.value = State.Executing()
+            internalRequest()
+            mutableState.value = State.Executed()
         }
-    }
-
-    fun updateName(name: Habit.Name) {
-        require(state.value is State.Input)
-        nameState.value = name
-    }
-
-    fun updateIconResource(iconId: Habit.IconResource) {
-        require(state.value is State.Input)
-        selectedIconState.value = iconId
-    }
-
-    fun updateCountably(countability: HabitCountability) {
-        require(state.value is State.Input)
-        countabilityState.value = countability
-    }
-
-    fun updateFirstTrackInterval(range: HabitTrack.Range) {
-        require(state.value is State.Input)
-        firstTrackRangeState.value = range
     }
 
     sealed class State {
-        data class Input(
-            val name: Habit.Name?,
-            val validatedName: ValidatedHabitNewName?,
-            val icons: List<Habit.IconResource>,
-            val selectedIcon: Habit.IconResource,
-            val habitCountability: HabitCountability?,
-            val firstTrackRange: HabitTrack.Range?,
-            val validatedFirstTrackInterval: ValidatedHabitTrackInterval?,
-            val creationAllowed: Boolean
-        ) : State()
+        class NotExecuted : State()
+        class Executing : State()
+        class Executed : State()
+    }
+}
 
-        class Creating : State()
-        class Created : State()
+class ValidatedInputController<INPUT, VALIDATION_RESULT>(
+    coroutineScope: CoroutineScope,
+    initialInput: INPUT,
+    validate: suspend (INPUT) -> VALIDATION_RESULT?
+) {
+    private val inputState = MutableStateFlow(initialInput)
+    private val validationResultState = inputState.map(validate).stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = null
+    )
+
+    val state = combine(
+        inputState,
+        validationResultState
+    ) { input, result ->
+        State(input, result)
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = State(initialInput, null)
+    )
+
+    fun changeInput(value: INPUT) {
+        inputState.value = value
     }
 
-    sealed class CreationState {
-        class NotExecuted : CreationState()
-        class Executing : CreationState()
-        class Executed : CreationState()
-    }
+    class State<INPUT, VALIDATION_RESULT>(
+        val input: INPUT,
+        val validationResult: VALIDATION_RESULT
+    )
 }
