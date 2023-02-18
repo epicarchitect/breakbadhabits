@@ -8,10 +8,10 @@ android {
 
 dependencies {
     api(projects.app.presentation.dashboard)
-    api(projects.app.presentation.habitCreation)
-    api(projects.app.presentation.habitDeletion)
-    api(projects.app.presentation.habitDetails)
-    api(projects.app.presentation.habitTrackDetails)
-    api(projects.app.presentation.habitTrackCreation)
+    api(projects.app.presentation.habits.creation)
+    api(projects.app.presentation.habits.deletion)
+    api(projects.app.presentation.habits.details)
+    api(projects.app.presentation.habits.trackDetails)
+    api(projects.app.presentation.habits.trackCreation)
     implementation(projects.app.database)
 }

@@ -33,9 +33,9 @@ import breakbadhabits.app.logic.habit.creator.HabitCountability
 import breakbadhabits.app.logic.habit.creator.IncorrectHabitNewName
 import breakbadhabits.app.logic.habit.creator.ValidatedHabitNewName
 import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackInterval
-import breakbadhabits.app.presentation.habit.creation.RequestController
 import breakbadhabits.app.presentation.habit.creation.SingleSelectionController
 import breakbadhabits.app.presentation.habit.creation.ValidatedInputController
+import breakbadhabits.framework.controller.RequestController
 import breakbadhabits.framework.uikit.Button
 import breakbadhabits.framework.uikit.Checkbox
 import breakbadhabits.framework.uikit.ErrorText

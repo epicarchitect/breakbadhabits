@@ -8,8 +8,8 @@ android {
 
 dependencies {
     api(projects.framework.viewmodel)
-    api(projects.app.logic.habitProvider)
-    api(projects.app.logic.habitTrackProvider)
-    api(projects.app.logic.datetimeFormatter)
-    api(projects.app.logic.datetimeProvider)
+    api(projects.app.logic.habits.provider)
+    api(projects.app.logic.habits.trackProvider)
+    api(projects.app.logic.datetime.formatter)
+    api(projects.app.logic.datetime.provider)
 }
