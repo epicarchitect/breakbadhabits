@@ -33,9 +33,9 @@ import breakbadhabits.app.logic.habit.creator.HabitCountability
 import breakbadhabits.app.logic.habit.creator.IncorrectHabitNewName
 import breakbadhabits.app.logic.habit.creator.ValidatedHabitNewName
 import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackInterval
-import breakbadhabits.app.presentation.habit.creation.SingleSelectionController
-import breakbadhabits.app.presentation.habit.creation.ValidatedInputController
 import breakbadhabits.framework.controller.RequestController
+import breakbadhabits.framework.controller.SingleSelectionController
+import breakbadhabits.framework.controller.ValidatedInputController
 import breakbadhabits.framework.uikit.Button
 import breakbadhabits.framework.uikit.Checkbox
 import breakbadhabits.framework.uikit.ErrorText
@@ -246,18 +246,18 @@ private fun Content(
                 onValueChange = {
                     habitCountabilityController.changeInput(
                         try {
-                                HabitCountability.Countable(
-                                    HabitTrack.DailyCount(
-                                        it.toDouble()
-                                    )
+                            HabitCountability.Countable(
+                                HabitTrack.DailyCount(
+                                    it.toDouble()
                                 )
+                            )
 
                         } catch (e: Exception) {
-                                HabitCountability.Countable(
-                                    HabitTrack.DailyCount(
-                                        0.0
-                                    )
+                            HabitCountability.Countable(
+                                HabitTrack.DailyCount(
+                                    0.0
                                 )
+                            )
 
                         }
                     )

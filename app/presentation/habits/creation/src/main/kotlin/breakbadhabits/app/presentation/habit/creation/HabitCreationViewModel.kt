@@ -1,6 +1,6 @@
 package breakbadhabits.app.presentation.habit.creation
 
-import ValidatedInputController
+import breakbadhabits.framework.controller.ValidatedInputController
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
@@ -15,14 +15,6 @@ import breakbadhabits.app.logic.habit.icon.provider.HabitIconProvider
 import breakbadhabits.framework.controller.RequestController
 import breakbadhabits.framework.controller.SingleSelectionController
 import breakbadhabits.framework.viewmodel.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class HabitCreationViewModel(
     private val habitCreator: HabitCreator,

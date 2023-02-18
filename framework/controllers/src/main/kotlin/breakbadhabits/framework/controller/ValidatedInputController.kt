@@ -1,3 +1,5 @@
+package breakbadhabits.framework.controller
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
