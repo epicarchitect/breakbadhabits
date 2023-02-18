@@ -20,8 +20,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,7 +34,7 @@ import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habit.creator.HabitCountability
 import breakbadhabits.app.logic.habit.creator.IncorrectHabitNewName
 import breakbadhabits.app.logic.habit.creator.ValidatedHabitNewName
-import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackInterval
+import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackRange
 import breakbadhabits.framework.controller.RequestController
 import breakbadhabits.framework.controller.SingleSelectionController
 import breakbadhabits.framework.controller.ValidatedInputController
@@ -46,6 +48,8 @@ import breakbadhabits.framework.uikit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.framework.uikit.Text
 import breakbadhabits.framework.uikit.TextField
 import breakbadhabits.framework.uikit.Title
+import breakbadhabits.framework.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
+import breakbadhabits.framework.uikit.ext.onFocusLost
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.toJavaLocalDate
@@ -67,7 +71,7 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
     val creationState by viewModel.creationController.state.collectAsState()
 
     LaunchedEffect(creationState) {
-        if (creationState is RequestController.State.Executed) {
+        if (creationState.requestState is RequestController.RequestState.Executed) {
             onFinished()
         }
     }
@@ -81,15 +85,17 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Content(
     habitIconSelectionController: SingleSelectionController<Habit.IconResource>,
     habitNameController: ValidatedInputController<Habit.Name, ValidatedHabitNewName>,
     habitCountabilityController: ValidatedInputController<HabitCountability?, Unit>,
-    firstTrackRangeInputController: ValidatedInputController<HabitTrack.Range?, ValidatedHabitTrackInterval>,
+    firstTrackRangeInputController: ValidatedInputController<HabitTrack.Range?, ValidatedHabitTrackRange>,
     creationController: RequestController
 ) {
-    val focusManager = LocalFocusManager.current
+
+    val keyboardController = LocalSoftwareKeyboardController.current!!
     val habitIconResources = LocalHabitIconResources.current
     var intervalSelectionShow by remember { mutableStateOf(false) }
 
@@ -97,6 +103,9 @@ private fun Content(
     val habitNameState by habitNameController.state.collectAsState()
     val habitCountabilityState by habitCountabilityController.state.collectAsState()
     val firstTrackRangeState by firstTrackRangeInputController.state.collectAsState()
+    val creationState by creationController.state.collectAsState()
+
+    ClearFocusWhenKeyboardHiddenEffect()
 
     if (intervalSelectionShow) {
         IntervalSelectionEpicCalendarDialog(
@@ -132,13 +141,14 @@ private fun Content(
         TextField(
             modifier = Modifier
                 .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .onFocusLost(habitNameController::validate),
             value = habitNameState.input.value,
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    focusManager.clearFocus()
+                    keyboardController.hide()
                 }
             ),
             onValueChange = {
@@ -300,7 +310,7 @@ private fun Content(
                 .padding(16.dp)
                 .align(Alignment.End),
             onClick = creationController::request,
-            enabled = true, // TODO resolve
+            enabled = creationState.isRequestAllowed, // TODO resolve
             text = stringResource(R.string.habitCreation_finish),
             interactionType = InteractionType.MAIN
         )

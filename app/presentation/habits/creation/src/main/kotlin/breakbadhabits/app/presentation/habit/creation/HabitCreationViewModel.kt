@@ -1,6 +1,5 @@
 package breakbadhabits.app.presentation.habit.creation
 
-import breakbadhabits.framework.controller.ValidatedInputController
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
@@ -10,11 +9,13 @@ import breakbadhabits.app.logic.habit.creator.HabitCountability
 import breakbadhabits.app.logic.habit.creator.HabitCreator
 import breakbadhabits.app.logic.habit.creator.HabitNewNameValidator
 import breakbadhabits.app.logic.habit.creator.HabitTrackIntervalValidator
-import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackInterval
+import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackRange
 import breakbadhabits.app.logic.habit.icon.provider.HabitIconProvider
 import breakbadhabits.framework.controller.RequestController
 import breakbadhabits.framework.controller.SingleSelectionController
+import breakbadhabits.framework.controller.ValidatedInputController
 import breakbadhabits.framework.viewmodel.ViewModel
+import kotlinx.coroutines.flow.combine
 
 class HabitCreationViewModel(
     private val habitCreator: HabitCreator,
@@ -31,22 +32,23 @@ class HabitCreationViewModel(
 
     val habitNameController = ValidatedInputController(
         initialInput = Habit.Name(""),
-        validate = nameValidator::validate,
+        validation = nameValidator::validate,
         coroutineScope = viewModelScope
     )
 
     val habitCountabilityController = ValidatedInputController<HabitCountability?, Unit>(
         initialInput = null,
-        validate = {},
+        validation = {
+            // TODO add validation
+        },
         coroutineScope = viewModelScope
     )
 
     val firstTrackRangeInputController =
-        ValidatedInputController<HabitTrack.Range?, ValidatedHabitTrackInterval>(
+        ValidatedInputController<HabitTrack.Range?, ValidatedHabitTrackRange>(
             initialInput = null,
-            validate = {
-                if (it == null) null
-                else trackIntervalValidator.validate(it)
+            validation = {
+                it?.let(trackIntervalValidator::validate)
             },
             coroutineScope = viewModelScope
         )
@@ -54,20 +56,29 @@ class HabitCreationViewModel(
     val creationController = RequestController(
         request = {
             val habitIcon = habitIconSelectionController.state.value.selectedItem
-            val validatedHabitName = habitNameController.state.value.validationResult
-            val validatedHabitCountability = habitCountabilityController.state.value.input
-            val validatedFirstTrackRange = firstTrackRangeInputController.state.value.validationResult
+            val habitName = habitNameController.state.value.validationResult
+            val habitCountability = habitCountabilityController.state.value.input
+            val firstTrackRange = firstTrackRangeInputController.state.value.validationResult
 
-            require(validatedHabitName is CorrectHabitNewNewName)
-            require(validatedFirstTrackRange is CorrectHabitTrackRange)
-            requireNotNull(validatedHabitCountability)
+            require(habitName is CorrectHabitNewNewName)
+            require(firstTrackRange is CorrectHabitTrackRange)
+            requireNotNull(habitCountability)
 
             habitCreator.createHabit(
-                validatedHabitName,
+                habitName,
                 habitIcon,
-                validatedHabitCountability,
-                validatedFirstTrackRange
+                habitCountability,
+                firstTrackRange
             )
+        },
+        isAllowedFlow = combine(
+            habitNameController.state,
+            habitCountabilityController.state,
+            firstTrackRangeInputController.state,
+        ) { name, countability, firstTrackRange ->
+            name.validationResult is CorrectHabitNewNewName
+                    && firstTrackRange.validationResult is CorrectHabitTrackRange
+                    && countability.input != null
         },
         coroutineScope = viewModelScope
     )

@@ -8,27 +8,27 @@ class HabitTrackIntervalValidator(
 ) {
 
     fun validate(data: HabitTrack.Range) = data.incorrectReason()?.let {
-        IncorrectHabitTrackInterval(data, it)
+        IncorrectHabitTrackRange(data, it)
     } ?: CorrectHabitTrackRange(data)
 
     private fun HabitTrack.Range.incorrectReason() = when {
-        getCurrentTime() < value.endInclusive -> IncorrectHabitTrackInterval.Reason.BiggestThenCurrentTime()
+        getCurrentTime() < value.endInclusive -> IncorrectHabitTrackRange.Reason.BiggestThenCurrentTime()
         else -> null
     }
 }
 
-sealed class ValidatedHabitTrackInterval {
+sealed class ValidatedHabitTrackRange {
     abstract val data: HabitTrack.Range
 }
 
 data class CorrectHabitTrackRange internal constructor(
     override val data: HabitTrack.Range
-) : ValidatedHabitTrackInterval()
+) : ValidatedHabitTrackRange()
 
-data class IncorrectHabitTrackInterval internal constructor(
+data class IncorrectHabitTrackRange internal constructor(
     override val data: HabitTrack.Range,
     val reason: Reason
-) : ValidatedHabitTrackInterval() {
+) : ValidatedHabitTrackRange() {
     sealed class Reason {
         class BiggestThenCurrentTime : Reason()
     }

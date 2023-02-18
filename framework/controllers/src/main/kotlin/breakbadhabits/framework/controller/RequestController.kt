@@ -1,30 +1,56 @@
 package breakbadhabits.framework.controller
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class RequestController(
+    private val coroutineScope: CoroutineScope,
     request: suspend () -> Unit,
-    private val coroutineScope: CoroutineScope
+    isAllowedFlow: Flow<Boolean> = flowOf(true),
 ) {
     private val internalRequest = request
 
-    private val mutableState = MutableStateFlow<State>(State.NotExecuted())
-    val state = mutableState.asStateFlow()
+    private val requestState = MutableStateFlow<RequestState>(RequestState.NotExecuted())
+    val state = combine(
+        requestState,
+        isAllowedFlow
+    ) { requestState, isAllowed ->
+        State(
+            isRequestAllowed = isAllowed,
+            requestState = requestState
+        )
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = State(
+            isRequestAllowed = false,
+            requestState = RequestState.NotExecuted()
+        )
+    )
 
     fun request() {
+        require(state.value.isRequestAllowed)
         coroutineScope.launch {
-            mutableState.value = State.Executing()
+            requestState.value = RequestState.Executing()
             internalRequest()
-            mutableState.value = State.Executed()
+            requestState.value = RequestState.Executed()
         }
     }
 
-    sealed class State {
-        class NotExecuted : State()
-        class Executing : State()
-        class Executed : State()
+    class State(
+        val isRequestAllowed: Boolean,
+        val requestState: RequestState
+    )
+
+    sealed class RequestState {
+        class NotExecuted : RequestState()
+        class Executing : RequestState()
+        class Executed : RequestState()
     }
 }
