@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import breakbadhabits.framework.uikit.text.Text
 import androidx.compose.material3.Button as MaterialButton
 
 @Composable

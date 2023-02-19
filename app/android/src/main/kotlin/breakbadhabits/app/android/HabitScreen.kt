@@ -23,8 +23,8 @@ import breakbadhabits.framework.uikit.Button
 import breakbadhabits.framework.uikit.Icon
 import breakbadhabits.framework.uikit.IconButton
 import breakbadhabits.framework.uikit.InteractionType
-import breakbadhabits.framework.uikit.Text
-import breakbadhabits.framework.uikit.Title
+import breakbadhabits.framework.uikit.text.Text
+import breakbadhabits.framework.uikit.text.Title
 
 @Composable
 fun HabitScreen(

@@ -1,4 +1,4 @@
-package breakbadhabits.framework.uikit
+package breakbadhabits.framework.uikit.text
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

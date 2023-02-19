@@ -1,4 +1,4 @@
-package breakbadhabits.framework.uikit
+package breakbadhabits.framework.uikit.text
 
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,7 +15,7 @@ fun TextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     label: String? = null,
-    singleLine: Boolean = false,
+    multiline: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -28,7 +28,11 @@ fun TextField(
 ) {
     OutlinedTextField(
         modifier = modifier,
-        value = value,
+        value = when {
+            regex == null -> value
+            regex.matches(value) -> value
+            else -> ""
+        },
         onValueChange = if (regex == null) onValueChange
         else { text: String ->
             if (regex.matches(text)) {
@@ -41,7 +45,7 @@ fun TextField(
             }
         },
         visualTransformation = visualTransformation,
-        singleLine = singleLine,
+        singleLine = multiline.not(),
         maxLines = maxLines,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,

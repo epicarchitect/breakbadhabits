@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import breakbadhabits.framework.uikit.text.Text
 
 data class StatisticData(
     val name: String,

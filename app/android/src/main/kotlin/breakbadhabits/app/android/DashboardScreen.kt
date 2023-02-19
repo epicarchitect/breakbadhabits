@@ -40,8 +40,8 @@ import breakbadhabits.framework.uikit.Icon
 import breakbadhabits.framework.uikit.IconButton
 import breakbadhabits.framework.uikit.InteractionType
 import breakbadhabits.framework.uikit.ProgressIndicator
-import breakbadhabits.framework.uikit.Text
-import breakbadhabits.framework.uikit.Title
+import breakbadhabits.framework.uikit.text.Text
+import breakbadhabits.framework.uikit.text.Title
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
