@@ -1,4 +1,4 @@
-package breakbadhabits.framework.uikit
+package breakbadhabits.framework.uikit.button
 
 enum class InteractionType {
     REGULAR,

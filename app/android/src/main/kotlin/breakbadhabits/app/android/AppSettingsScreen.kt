@@ -11,8 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import breakbadhabits.framework.uikit.Button
-import breakbadhabits.framework.uikit.RadioButton
+import breakbadhabits.framework.uikit.button.Button
+import breakbadhabits.framework.uikit.button.RadioButton
 import breakbadhabits.framework.uikit.text.Text
 import breakbadhabits.framework.uikit.text.Title
 import breakbadhabits.framework.uikit.activity.DarkMode

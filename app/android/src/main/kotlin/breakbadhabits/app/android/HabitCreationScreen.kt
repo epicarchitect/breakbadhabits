@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -20,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -33,13 +35,15 @@ import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackRange
 import breakbadhabits.framework.controller.RequestController
 import breakbadhabits.framework.controller.SingleSelectionController
 import breakbadhabits.framework.controller.ValidatedInputController
-import breakbadhabits.framework.uikit.Button
 import breakbadhabits.framework.uikit.Checkbox
-import breakbadhabits.framework.uikit.IconData
-import breakbadhabits.framework.uikit.IconsSelection
-import breakbadhabits.framework.uikit.InteractionType
+import breakbadhabits.framework.uikit.Icon
 import breakbadhabits.framework.uikit.IntervalSelectionEpicCalendarDialog
+import breakbadhabits.framework.uikit.SingleSelectionGrid
+import breakbadhabits.framework.uikit.button.Button
+import breakbadhabits.framework.uikit.button.InteractionType
+import breakbadhabits.framework.uikit.button.RequestButton
 import breakbadhabits.framework.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
+import breakbadhabits.framework.uikit.regex.Regexps
 import breakbadhabits.framework.uikit.text.Text
 import breakbadhabits.framework.uikit.text.TextFieldAdapter
 import breakbadhabits.framework.uikit.text.Title
@@ -50,10 +54,6 @@ import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toKotlinLocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-
-private object Defaults {
-    val countabilityRegex = "^\$|^[1-9][0-9]{0,9}$".toRegex()
-}
 
 @Composable
 fun HabitCreationScreen(onFinished: () -> Unit) {
@@ -91,10 +91,8 @@ private fun Content(
     val habitIconResources = LocalHabitIconResources.current
     var intervalSelectionShow by remember { mutableStateOf(false) }
 
-    val habitIconSelectionState by habitIconSelectionController.state.collectAsState()
     val habitCountabilityState by habitCountabilityController.state.collectAsState()
     val firstTrackRangeState by firstTrackRangeInputController.state.collectAsState()
-    val creationState by creationController.state.collectAsState()
 
     val habitNameAdapter = remember {
         TextFieldAdapter<Habit.Name, ValidatedHabitNewName>(
@@ -194,23 +192,18 @@ private fun Content(
             text = stringResource(R.string.habitCreation_habitIcon_description)
         )
 
-        IconsSelection(
+        SingleSelectionGrid(
             modifier = Modifier
                 .padding(start = 16.dp, top = 8.dp, end = 16.dp)
                 .fillMaxWidth(),
-            icons = habitIconSelectionState.items.map {
-                IconData(
-                    it.iconId,
-                    habitIconResources[it.iconId]
+            controller = habitIconSelectionController,
+            ceil = {
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(24.dp),
+                    painter = painterResource(habitIconResources[it.iconId])
                 )
-            },
-            selectedIcon = habitIconResources.icons.first {
-                it.iconId == habitIconSelectionState.selectedItem.iconId
-            }.let {
-                IconData(it.iconId, it.resourceId)
-            },
-            onSelect = {
-                habitIconSelectionController.select(Habit.IconResource(it.id))
             }
         )
 
@@ -257,7 +250,7 @@ private fun Content(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number
                 ),
-                regex = Defaults.countabilityRegex
+                regex = Regexps.integersOrEmpty
             )
         }
 
@@ -287,12 +280,11 @@ private fun Content(
             text = stringResource(R.string.habitCreation_finish_description)
         )
 
-        Button(
+        RequestButton(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.End),
-            onClick = creationController::request,
-            enabled = creationState.isRequestAllowed, // TODO resolve
+            requestController = creationController,
             text = stringResource(R.string.habitCreation_finish),
             interactionType = InteractionType.MAIN
         )

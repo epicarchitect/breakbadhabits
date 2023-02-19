@@ -1,4 +1,4 @@
-package breakbadhabits.framework.uikit
+package breakbadhabits.framework.uikit.button
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import breakbadhabits.framework.uikit.button.InteractionType
 import breakbadhabits.framework.uikit.text.Text
 import androidx.compose.material3.Button as MaterialButton
 

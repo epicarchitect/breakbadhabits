@@ -1,4 +1,4 @@
-package breakbadhabits.framework.uikit
+package breakbadhabits.framework.uikit.button
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.ClickableText

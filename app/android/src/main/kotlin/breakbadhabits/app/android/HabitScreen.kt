@@ -19,10 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.habit.details.HabitDetailsViewModel
-import breakbadhabits.framework.uikit.Button
+import breakbadhabits.framework.uikit.button.Button
 import breakbadhabits.framework.uikit.Icon
 import breakbadhabits.framework.uikit.IconButton
-import breakbadhabits.framework.uikit.InteractionType
+import breakbadhabits.framework.uikit.button.InteractionType
 import breakbadhabits.framework.uikit.text.Text
 import breakbadhabits.framework.uikit.text.Title
 
