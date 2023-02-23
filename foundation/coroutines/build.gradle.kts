@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "breakbadhabits.framework.coroutines"
+    namespace = "breakbadhabits.foundation.coroutines"
 }
 
 dependencies {

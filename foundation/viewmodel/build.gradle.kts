@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "breakbadhabits.framework.viewmodel"
+    namespace = "breakbadhabits.foundation.viewmodel"
 }
 
 dependencies {

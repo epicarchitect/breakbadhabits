@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "breakbadhabits.framework.datetime"
+    namespace = "breakbadhabits.foundation.datetime"
 }
 
 dependencies {
