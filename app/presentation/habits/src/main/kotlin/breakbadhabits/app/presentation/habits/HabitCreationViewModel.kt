@@ -11,10 +11,10 @@ import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackIntervalValidator
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
 import breakbadhabits.app.logic.habits.provider.HabitIconProvider
-import breakbadhabits.framework.controller.RequestController
-import breakbadhabits.framework.controller.SingleSelectionController
-import breakbadhabits.framework.controller.ValidatedInputController
-import breakbadhabits.framework.viewmodel.ViewModel
+import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleSelectionController
+import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.combine
 
 class HabitCreationViewModel(

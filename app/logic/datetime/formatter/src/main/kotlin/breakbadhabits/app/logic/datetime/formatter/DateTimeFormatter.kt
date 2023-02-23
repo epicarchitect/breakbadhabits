@@ -1,6 +1,6 @@
 package breakbadhabits.app.logic.datetime.formatter
 
-import breakbadhabits.framework.datetime.toMillis
+import breakbadhabits.foundation.datetime.toMillis
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDate

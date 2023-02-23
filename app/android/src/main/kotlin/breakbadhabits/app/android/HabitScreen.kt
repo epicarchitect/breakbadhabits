@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
-import breakbadhabits.framework.uikit.button.Button
-import breakbadhabits.framework.uikit.Icon
-import breakbadhabits.framework.uikit.IconButton
-import breakbadhabits.framework.uikit.button.InteractionType
-import breakbadhabits.framework.uikit.text.Text
-import breakbadhabits.framework.uikit.text.Title
+import breakbadhabits.foundation.uikit.button.Button
+import breakbadhabits.foundation.uikit.Icon
+import breakbadhabits.foundation.uikit.IconButton
+import breakbadhabits.foundation.uikit.button.InteractionType
+import breakbadhabits.foundation.uikit.text.Text
+import breakbadhabits.foundation.uikit.text.Title
 
 @Composable
 fun HabitScreen(

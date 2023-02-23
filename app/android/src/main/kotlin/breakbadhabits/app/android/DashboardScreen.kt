@@ -34,14 +34,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
-import breakbadhabits.framework.uikit.button.Button
-import breakbadhabits.framework.uikit.Card
-import breakbadhabits.framework.uikit.Icon
-import breakbadhabits.framework.uikit.IconButton
-import breakbadhabits.framework.uikit.button.InteractionType
-import breakbadhabits.framework.uikit.ProgressIndicator
-import breakbadhabits.framework.uikit.text.Text
-import breakbadhabits.framework.uikit.text.Title
+import breakbadhabits.foundation.controller.DataFlowController
+import breakbadhabits.foundation.uikit.Card
+import breakbadhabits.foundation.uikit.DataFlowBox
+import breakbadhabits.foundation.uikit.Icon
+import breakbadhabits.foundation.uikit.IconButton
+import breakbadhabits.foundation.uikit.button.Button
+import breakbadhabits.foundation.uikit.button.InteractionType
+import breakbadhabits.foundation.uikit.text.Text
+import breakbadhabits.foundation.uikit.text.Title
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -55,7 +56,7 @@ fun DashboardScreen(
     val dashboardViewModel = viewModel {
         presentationModule.createDashboardViewModel()
     }
-    val dashboardItems by dashboardViewModel.items.collectAsState()
+    val itemsState by dashboardViewModel.habitItemsController.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -77,24 +78,12 @@ fun DashboardScreen(
                 }
             }
 
-
-            when (val state = dashboardItems) {
-                is DashboardViewModel.ItemsState.Loading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        ProgressIndicator()
-                    }
-                }
-
-                is DashboardViewModel.ItemsState.NotExist -> {
+            DataFlowBox(dashboardViewModel.habitItemsController) { items ->
+                if (items.isEmpty()) {
                     NotExistsHabits()
-                }
-
-                is DashboardViewModel.ItemsState.Loaded -> {
+                } else {
                     LoadedHabits(
-                        itemsState = state,
+                        items = items,
                         onResetClick = openHabitEventCreation,
                         onItemClick = openHabit
                     )
@@ -106,7 +95,7 @@ fun DashboardScreen(
             modifier = Modifier
                 .padding(24.dp)
                 .align(Alignment.BottomCenter),
-            visible = dashboardItems !is DashboardViewModel.ItemsState.Loading,
+            visible = itemsState !is DataFlowController.State.Loading,
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut()
         ) {
@@ -121,7 +110,7 @@ fun DashboardScreen(
 
 @Composable
 private fun LoadedHabits(
-    itemsState: DashboardViewModel.ItemsState.Loaded,
+    items: List<DashboardViewModel.HabitItem>,
     onResetClick: (Habit.Id) -> Unit,
     onItemClick: (Habit.Id) -> Unit
 ) {
@@ -135,7 +124,7 @@ private fun LoadedHabits(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(
-            items = itemsState.items,
+            items = items,
             key = { it.habit.id.value }
         ) { item ->
             HabitItem(

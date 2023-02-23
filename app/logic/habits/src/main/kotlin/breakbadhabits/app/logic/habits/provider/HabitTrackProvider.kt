@@ -3,7 +3,7 @@ package breakbadhabits.app.logic.habits.provider
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.framework.datetime.millisToLocalDateTime
+import breakbadhabits.foundation.datetime.millisToLocalDateTime
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map

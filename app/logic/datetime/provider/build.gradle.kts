@@ -7,6 +7,6 @@ android {
 }
 
 dependencies {
-    api(projects.framework.coroutines)
-    api(projects.framework.datetime)
+    api(projects.foundation.coroutines)
+    api(projects.foundation.datetime)
 }

@@ -5,7 +5,7 @@ import breakbadhabits.app.database.IdGenerator
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
-import breakbadhabits.framework.datetime.toMillis
+import breakbadhabits.foundation.datetime.toMillis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

@@ -4,7 +4,7 @@ import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.database.IdGenerator
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.framework.datetime.toMillis
+import breakbadhabits.foundation.datetime.toMillis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

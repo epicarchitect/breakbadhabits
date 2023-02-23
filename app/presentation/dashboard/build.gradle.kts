@@ -7,7 +7,8 @@ android {
 }
 
 dependencies {
-    api(projects.framework.viewmodel)
+    api(projects.foundation.controllers)
+    api(projects.foundation.viewmodel)
     api(projects.app.logic.habits)
     api(projects.app.logic.datetime.formatter)
     api(projects.app.logic.datetime.provider)

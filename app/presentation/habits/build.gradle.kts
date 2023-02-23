@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    api(projects.framework.controllers)
-    api(projects.framework.viewmodel)
+    api(projects.foundation.controllers)
+    api(projects.foundation.viewmodel)
     api(projects.app.logic.habits)
 }

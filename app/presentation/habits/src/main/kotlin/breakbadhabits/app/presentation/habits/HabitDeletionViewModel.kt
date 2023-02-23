@@ -1,6 +1,6 @@
 package breakbadhabits.app.presentation.habits
 
-import breakbadhabits.framework.viewmodel.ViewModel
+import breakbadhabits.foundation.viewmodel.ViewModel
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.deleter.HabitDeleter

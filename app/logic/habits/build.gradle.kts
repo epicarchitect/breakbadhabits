@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    api(projects.framework.coroutines)
+    api(projects.foundation.coroutines)
     api(projects.app.entities)
     implementation(projects.app.database)
 }

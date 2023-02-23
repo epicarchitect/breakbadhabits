@@ -3,7 +3,7 @@ package breakbadhabits.app.presentation.habits
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
-import breakbadhabits.framework.viewmodel.ViewModel
+import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn

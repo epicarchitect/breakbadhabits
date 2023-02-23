@@ -17,9 +17,9 @@ include(
     ":app:presentation:dashboard",
     ":app:presentation:habits",
 
-    ":framework:controllers",
-    ":framework:coroutines",
-    ":framework:datetime",
-    ":framework:uikit",
-    ":framework:viewmodel",
+    ":foundation:controllers",
+    ":foundation:coroutines",
+    ":foundation:datetime",
+    ":foundation:uikit",
+    ":foundation:viewmodel",
 )

@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    api(projects.framework.datetime)
+    api(projects.foundation.datetime)
 }

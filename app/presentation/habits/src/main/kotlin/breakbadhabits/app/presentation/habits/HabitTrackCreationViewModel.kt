@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
-import breakbadhabits.framework.viewmodel.ViewModel
+import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
