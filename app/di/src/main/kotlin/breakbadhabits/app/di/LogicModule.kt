@@ -3,16 +3,16 @@ package breakbadhabits.app.di
 import android.content.Context
 import breakbadhabits.app.database.AppDatabaseFactory
 import breakbadhabits.app.database.IdGenerator
-import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.datetime.formatter.DateTimeFormatter
-import breakbadhabits.app.logic.habit.creator.HabitCreator
-import breakbadhabits.app.logic.habit.deleter.HabitDeleter
-import breakbadhabits.app.logic.habit.icon.provider.HabitIconProvider
-import breakbadhabits.app.logic.habit.creator.HabitNewNameValidator
-import breakbadhabits.app.logic.habit.provider.HabitProvider
-import breakbadhabits.app.logic.habit.track.creator.HabitTrackCreator
-import breakbadhabits.app.logic.habit.creator.HabitTrackIntervalValidator
-import breakbadhabits.app.logic.habit.track.provider.HabitTrackProvider
+import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.app.logic.habits.creator.HabitCreator
+import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
+import breakbadhabits.app.logic.habits.deleter.HabitDeleter
+import breakbadhabits.app.logic.habits.provider.HabitIconProvider
+import breakbadhabits.app.logic.habits.provider.HabitProvider
+import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
+import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackIntervalValidator
 
 class LogicModule(private val context: Context) {
 

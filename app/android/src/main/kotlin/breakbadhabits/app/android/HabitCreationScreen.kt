@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.app.logic.habit.creator.HabitCountability
-import breakbadhabits.app.logic.habit.creator.IncorrectHabitNewName
-import breakbadhabits.app.logic.habit.creator.ValidatedHabitNewName
-import breakbadhabits.app.logic.habit.creator.ValidatedHabitTrackRange
+import breakbadhabits.app.logic.habits.creator.HabitCountability
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
 import breakbadhabits.framework.controller.RequestController
 import breakbadhabits.framework.controller.SingleSelectionController
 import breakbadhabits.framework.controller.ValidatedInputController
@@ -216,7 +216,7 @@ private fun Content(
                         if (!checked) {
                             HabitCountability.Countable(HabitTrack.DailyCount(0.0))
                         } else {
-                            HabitCountability.Uncountable()
+                            HabitCountability.Uncountable
                         }
                     )
                 }
@@ -230,7 +230,7 @@ private fun Content(
                         if (it) {
                             HabitCountability.Countable(HabitTrack.DailyCount(0.0))
                         } else {
-                            HabitCountability.Uncountable()
+                            HabitCountability.Uncountable
                         }
                     )
                 }

@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.presentation.habit.details.HabitDetailsViewModel
+import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
 import breakbadhabits.framework.uikit.button.Button
 import breakbadhabits.framework.uikit.Icon
 import breakbadhabits.framework.uikit.IconButton

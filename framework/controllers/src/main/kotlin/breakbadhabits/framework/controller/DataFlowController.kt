@@ -12,7 +12,7 @@ class DataFlowController<DATA>(
 ) {
     val state = flow.stateIn(
         scope = coroutineScope,
-        started = SharingStarted.WhileSubscribed(),
+        started = SharingStarted.Eagerly,
         initialValue = default()
     )
 }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.presentation.HabitTrackCreationViewModel
+import breakbadhabits.app.presentation.habits.HabitTrackCreationViewModel
 
 @Composable
 fun HabitTrackCreationScreen(

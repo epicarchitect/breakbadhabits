@@ -3,12 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "breakbadhabits.app.presentation.dashboard"
+    namespace = "breakbadhabits.app.presentation.habits"
 }
 
 dependencies {
+    api(projects.framework.controllers)
     api(projects.framework.viewmodel)
     api(projects.app.logic.habits)
-    api(projects.app.logic.datetime.formatter)
-    api(projects.app.logic.datetime.provider)
 }

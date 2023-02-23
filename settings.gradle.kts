@@ -10,21 +10,12 @@ include(
     ":app:database",
     ":app:entities",
 
-    ":app:logic:habits:creator",
-    ":app:logic:habits:deleter",
-    ":app:logic:habits:track-creator",
-    ":app:logic:habits:provider",
-    ":app:logic:habits:track-provider",
-    ":app:logic:habits:icon-provider",
+    ":app:logic:habits",
     ":app:logic:datetime:formatter",
     ":app:logic:datetime:provider",
 
     ":app:presentation:dashboard",
-    ":app:presentation:habits:creation",
-    ":app:presentation:habits:deletion",
-    ":app:presentation:habits:track-creation",
-    ":app:presentation:habits:details",
-    ":app:presentation:habits:track-details",
+    ":app:presentation:habits",
 
     ":framework:controllers",
     ":framework:coroutines",

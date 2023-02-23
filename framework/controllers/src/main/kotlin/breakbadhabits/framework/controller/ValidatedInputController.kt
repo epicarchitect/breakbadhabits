@@ -22,7 +22,7 @@ class ValidatedInputController<INPUT, VALIDATION_RESULT>(
         State(input, result)
     }.stateIn(
         scope = coroutineScope,
-        started = SharingStarted.WhileSubscribed(),
+        started = SharingStarted.Eagerly,
         initialValue = State(initialInput, null)
     )
 

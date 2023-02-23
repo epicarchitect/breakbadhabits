@@ -3,11 +3,11 @@ package breakbadhabits.app.di
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
-import breakbadhabits.app.presentation.habit.creation.HabitCreationViewModel
-import breakbadhabits.app.presentation.habit.deletion.HabitDeletionViewModel
-import breakbadhabits.app.presentation.habit.details.HabitDetailsViewModel
-import breakbadhabits.app.presentation.habit.track.details.HabitTrackViewModel
-import breakbadhabits.presentation.HabitTrackCreationViewModel
+import breakbadhabits.app.presentation.habits.HabitCreationViewModel
+import breakbadhabits.app.presentation.habits.HabitDeletionViewModel
+import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
+import breakbadhabits.app.presentation.habits.HabitTrackViewModel
+import breakbadhabits.app.presentation.habits.HabitTrackCreationViewModel
 
 class PresentationModule(private val logicModule: LogicModule) {
     fun createDashboardViewModel() = with(logicModule) {
