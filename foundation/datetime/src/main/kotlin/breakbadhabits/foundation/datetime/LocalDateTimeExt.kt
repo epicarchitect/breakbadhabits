@@ -13,3 +13,8 @@ fun LocalDateTime.toMillis(
 fun Long.millisToLocalDateTime(
     timeZone: TimeZone = TimeZone.currentSystemDefault()
 ) = Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
+
+fun millisDistanceBetween(
+    range: ClosedRange<LocalDateTime>,
+    timeZone: TimeZone = TimeZone.currentSystemDefault()
+) = range.endInclusive.toMillis(timeZone) - range.start.toMillis(timeZone)

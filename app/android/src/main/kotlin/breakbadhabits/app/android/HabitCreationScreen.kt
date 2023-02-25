@@ -94,59 +94,6 @@ private fun Content(
     val habitCountabilityState by habitCountabilityController.state.collectAsState()
     val firstTrackRangeState by firstTrackRangeInputController.state.collectAsState()
 
-    val habitNameAdapter = remember {
-        TextFieldAdapter<Habit.Name, ValidatedHabitNewName>(
-            decodeInput = Habit.Name::value,
-            encodeInput = Habit::Name,
-            extractErrorMessage = {
-                val incorrect = (it as? IncorrectHabitNewName) ?: return@TextFieldAdapter null
-                when (incorrect.reason) {
-                    is IncorrectHabitNewName.Reason.AlreadyUsed -> {
-                        context.getString(R.string.habitCreation_habitNameValidation_used)
-                    }
-                    is IncorrectHabitNewName.Reason.Empty -> {
-                        context.getString(R.string.habitCreation_habitNameValidation_empty)
-                    }
-                    is IncorrectHabitNewName.Reason.TooLong -> {
-                        context.getString(
-                            R.string.habitCreation_habitNameValidation_tooLong,
-                            (incorrect.reason as IncorrectHabitNewName.Reason.TooLong).maxLength
-                        )
-                    }
-                }
-            }
-        )
-    }
-
-    val habitCountabilityAdapter = remember {
-        TextFieldAdapter<HabitCountability?, Unit>(
-            decodeInput = {
-                when (it) {
-                    is HabitCountability.Countable -> {
-                        it.averageDailyCount.value.toInt().toString()
-                    }
-                    else -> ""
-                }
-            },
-            encodeInput = {
-                try {
-                    HabitCountability.Countable(
-                        HabitTrack.DailyCount(
-                            it.toDouble()
-                        )
-                    )
-                } catch (e: Exception) {
-                    HabitCountability.Countable(
-                        HabitTrack.DailyCount(
-                            0.0
-                        )
-                    )
-                }
-            },
-            extractErrorMessage = { null }
-        )
-    }
-
     ClearFocusWhenKeyboardHiddenEffect()
 
     if (intervalSelectionShow) {
@@ -183,7 +130,29 @@ private fun Content(
         ValidatedInputField(
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
             controller = habitNameController,
-            adapter = habitNameAdapter,
+            adapter = remember {
+                TextFieldAdapter(
+                    decodeInput = Habit.Name::value,
+                    encodeInput = Habit::Name,
+                    extractErrorMessage = {
+                        val incorrect = (it as? IncorrectHabitNewName) ?: return@TextFieldAdapter null
+                        when (incorrect.reason) {
+                            is IncorrectHabitNewName.Reason.AlreadyUsed -> {
+                                context.getString(R.string.habitCreation_habitNameValidation_used)
+                            }
+                            is IncorrectHabitNewName.Reason.Empty -> {
+                                context.getString(R.string.habitCreation_habitNameValidation_empty)
+                            }
+                            is IncorrectHabitNewName.Reason.TooLong -> {
+                                context.getString(
+                                    R.string.habitCreation_habitNameValidation_tooLong,
+                                    (incorrect.reason as IncorrectHabitNewName.Reason.TooLong).maxLength
+                                )
+                            }
+                        }
+                    }
+                )
+            },
             label = stringResource(R.string.habitCreation_habitName)
         )
 
@@ -245,7 +214,34 @@ private fun Content(
             ValidatedInputField(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 controller = habitCountabilityController,
-                adapter = habitCountabilityAdapter,
+                adapter = remember {
+                    TextFieldAdapter(
+                        decodeInput = {
+                            when (it) {
+                                is HabitCountability.Countable -> {
+                                    it.averageDailyCount.value.toInt().toString()
+                                }
+                                else -> ""
+                            }
+                        },
+                        encodeInput = {
+                            try {
+                                HabitCountability.Countable(
+                                    HabitTrack.DailyCount(
+                                        it.toDouble()
+                                    )
+                                )
+                            } catch (e: Exception) {
+                                HabitCountability.Countable(
+                                    HabitTrack.DailyCount(
+                                        0.0
+                                    )
+                                )
+                            }
+                        },
+                        extractErrorMessage = { null }
+                    )
+                },
                 label = "Число событий привычки в день",
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number

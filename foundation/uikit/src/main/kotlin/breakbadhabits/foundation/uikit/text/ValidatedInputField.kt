@@ -35,7 +35,6 @@ fun <INPUT, VALIDATION_RESULT> TextFieldAdapter(
     override fun encodeInput(input: String) = encodeInput(input)
 
     override fun extractErrorMessage(result: VALIDATION_RESULT?) = extractErrorMessage(result)
-
 }
 
 @OptIn(ExperimentalComposeUiApi::class)

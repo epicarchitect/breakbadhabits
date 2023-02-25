@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -18,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
+import breakbadhabits.foundation.uikit.DataFlowBox
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IconButton
@@ -39,19 +37,19 @@ fun HabitScreen(
         presentationModule.createHabitDetailsViewModel(habitId)
     }
 
-    val habitState by habitViewModel.state.collectAsState()
-
-    when (val state = habitState) {
-        is HabitDetailsViewModel.State.Loaded -> LoadedScreen(habitId, state)
-        is HabitDetailsViewModel.State.Loading -> Text("Loading")
-        is HabitDetailsViewModel.State.NotExist -> Text("Not exist")
+    DataFlowBox(habitViewModel.habitController) {
+        if (it == null) {
+            Text("Not exist")
+        } else {
+            LoadedScreen(habitId, it)
+        }
     }
 }
 
 @Composable
 private fun LoadedScreen(
     habitId: Habit.Id,
-    state: HabitDetailsViewModel.State.Loaded
+    habit: Habit
 ) {
     val habitIconResources = LocalHabitIconResources.current
     val appDependencies = LocalPresentationModule.current
@@ -111,12 +109,12 @@ private fun LoadedScreen(
             ) {
                 Icon(
                     modifier = Modifier.size(44.dp),
-                    painter = painterResource(habitIconResources[state.habit.iconResource.iconId])
+                    painter = painterResource(habitIconResources[habit.iconResource.iconId])
                 )
 
                 Title(
                     modifier = Modifier.padding(top = 8.dp),
-                    text = state.habit.name.value
+                    text = habit.name.value
                 )
 
 //                Text(
@@ -157,3 +155,98 @@ private fun LoadedScreen(
         }
     }
 }
+
+//fun main() {
+//    println("testCalculateByDays")
+//    println()
+//    testCalculateByDays()
+//    println("testCalculateByHours")
+//    println()
+//    testCalculateByHours()
+//}
+//
+//fun testCalculateByHours() {
+//    calculateByPerHour(
+//        rangeHourDistance = 30,
+//        eventsPerHour = 5
+//    )
+//    calculateByPerHour(
+//        rangeHourDistance = 3,
+//        eventsPerHour = 3
+//    )
+//    calculateByPerHour(
+//        rangeHourDistance = 1,
+//        eventsPerHour = 60
+//    )
+//}
+//
+//fun testCalculateByDays() {
+//    calculateByPerDays(
+//        rangeDayDistance = 30,
+//        eventsPerDay = 5
+//    )
+//    calculateByPerDays(
+//        rangeDayDistance = 333,
+//        eventsPerDay = 3
+//    )
+//    calculateByPerDays(
+//        rangeDayDistance = 1,
+//        eventsPerDay = 5
+//    )
+//}
+//
+//private fun calculateByPerHour(
+//    rangeHourDistance: Int,
+//    eventsPerHour: Int
+//) {
+//    rangeHourDistance.print("initial rangeHourDistance")
+//    eventsPerHour.print("initial eventsPerHour")
+//
+//    val minutesInHour = 60
+//    val rangeMinuteDistance = minutesInHour * rangeHourDistance
+//    val eventsPerMinute = eventsPerHour.toDouble() / rangeMinuteDistance
+//
+//    val backRangeDayDistance = rangeMinuteDistance / minutesInHour
+//    val backEventsPerDay = eventsPerMinute * rangeMinuteDistance
+//
+//    rangeMinuteDistance.print("converted rangeMinuteDistance")
+//    eventsPerMinute.print("converted eventsPerMinute")
+//
+//    backRangeDayDistance.print("back eangeMinuteDistance")
+//    backEventsPerDay.print("back eventsPerMinute")
+//
+//    println()
+//}
+//
+//private fun calculateByPerDays(
+//    rangeDayDistance: Int,
+//    eventsPerDay: Int
+//) {
+//    rangeDayDistance.print("initial rangeDayDistance")
+//    eventsPerDay.print("initial eventsPerDay")
+//
+//    val minutesInDay = 24 * 60
+//    val rangeMinuteDistance = minutesInDay * rangeDayDistance
+//    val eventsPerMinute = eventsPerDay.toDouble() / rangeMinuteDistance
+//
+//    val backRangeDayDistance = rangeMinuteDistance / minutesInDay
+//    val backEventsPerDay = eventsPerMinute * rangeMinuteDistance
+//
+//    rangeMinuteDistance.print("converted rangeMinuteDistance")
+//    eventsPerMinute.print("converted eventsPerMinute")
+//
+//    backRangeDayDistance.print("back eangeMinuteDistance")
+//    backEventsPerDay.print("back eventsPerMinute")
+//
+//    println()
+//}
+//
+//private fun Any.print(title: String) {
+//    val string = when (this) {
+//        is Double -> {
+//            String.format("%.12f", this)
+//        }
+//        else -> toString()
+//    }
+//    println("$title: $string")
+//}
