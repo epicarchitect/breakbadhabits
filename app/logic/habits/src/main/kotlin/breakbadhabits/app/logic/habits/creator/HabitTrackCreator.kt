@@ -16,7 +16,7 @@ class HabitTrackCreator(
     suspend fun createHabitTrack(
         habitId: Habit.Id,
         range: HabitTrack.Range,
-        dailyCount: HabitTrack.DailyCount,
+        value: HabitTrack.Value,
         comment: HabitTrack.Comment?,
     ) = withContext(Dispatchers.IO) {
         appDatabase.habitTrackQueries.insert(
@@ -24,7 +24,7 @@ class HabitTrackCreator(
             habitId = habitId.value,
             rangeStart = range.value.start.toMillis(),
             rangeEnd = range.value.endInclusive.toMillis(),
-            dailyCount = dailyCount.value,
+            minutelyValue = value.minutelyValue,
             comment = comment?.value
         )
     }

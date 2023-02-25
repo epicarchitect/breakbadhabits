@@ -5,9 +5,11 @@ import breakbadhabits.app.database.IdGenerator
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
+import breakbadhabits.foundation.datetime.millisDistanceBetween
 import breakbadhabits.foundation.datetime.toMillis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.LocalDateTime
 
 class HabitCreator(
     private val appDatabase: AppDatabase,
@@ -35,12 +37,23 @@ class HabitCreator(
                 habitId = habitId,
                 rangeStart = firstTrackInterval.data.value.start.toMillis(),
                 rangeEnd = firstTrackInterval.data.value.endInclusive.toMillis(),
-                dailyCount = when (countability) {
-                    is HabitCountability.Countable -> countability.averageDailyCount.value
+                minutelyValue = when (countability) {
+                    is HabitCountability.Countable -> dailyToMinutelyValue(
+                        firstTrackInterval.data.value,
+                        countability.averageDailyValue
+                    )
                     is HabitCountability.Uncountable -> 1.0
                 },
                 comment = null
             )
         }
+    }
+
+    private fun dailyToMinutelyValue(
+        range: ClosedRange<LocalDateTime>,
+        dailyValue: Double
+    ): Double {
+        val minuteRangeDistance = millisDistanceBetween(range) / 1000 / 60
+        return dailyValue / minuteRangeDistance
     }
 }

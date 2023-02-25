@@ -18,13 +18,13 @@ class HabitTrackCreationViewModel(
 
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
     private val rangeState = MutableStateFlow<HabitTrack.Range?>(null)
-    private val dailyCountState = MutableStateFlow<HabitTrack.DailyCount?>(null)
+    private val valueState = MutableStateFlow<HabitTrack.Value?>(null)
     private val commentState = MutableStateFlow<HabitTrack.Comment?>(null)
 
     val state = combine(
         creationState,
         rangeState,
-        dailyCountState,
+        valueState,
         commentState
     ) { creationState, interval, dailyCount, comment ->
         when (creationState) {
@@ -43,7 +43,7 @@ class HabitTrackCreationViewModel(
         SharingStarted.WhileSubscribed(),
         State.Input(
             range = null,
-            dailyCount = null,
+            value = null,
             comment = null,
             creationAllowed = false
         )
@@ -55,7 +55,7 @@ class HabitTrackCreationViewModel(
         require(state is State.Input)
         require(state.creationAllowed)
         requireNotNull(state.range)
-        requireNotNull(state.dailyCount)
+        requireNotNull(state.value)
 
         creationState.value = CreationState.Executing()
 
@@ -63,7 +63,7 @@ class HabitTrackCreationViewModel(
             habitTrackCreator.createHabitTrack(
                 habitId,
                 state.range,
-                state.dailyCount,
+                state.value,
                 state.comment
             )
             creationState.value = CreationState.Executed()
@@ -75,9 +75,9 @@ class HabitTrackCreationViewModel(
         rangeState.value = range
     }
 
-    fun updateDailyCount(dailyCount: HabitTrack.DailyCount) {
+    fun updateDailyCount(value: HabitTrack.Value) {
         require(state.value is State.Input)
-        dailyCountState.value = dailyCount
+        valueState.value = value
     }
 
     fun updateComment(comment: HabitTrack.Comment) {
@@ -88,7 +88,7 @@ class HabitTrackCreationViewModel(
     sealed class State {
         data class Input(
             val range: HabitTrack.Range?,
-            val dailyCount: HabitTrack.DailyCount?,
+            val value: HabitTrack.Value?,
             val comment: HabitTrack.Comment?,
             val creationAllowed: Boolean
         ) : State()

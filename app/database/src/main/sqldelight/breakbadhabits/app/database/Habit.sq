@@ -1,7 +1,9 @@
+import kotlin.Boolean;
+
 CREATE TABLE IF NOT EXISTS Habit (
-  id          INTEGER            NOT NULL PRIMARY KEY,
-  name        TEXT               NOT NULL,
-  iconId      INTEGER            NOT NULL,
+  id          INTEGER NOT NULL PRIMARY KEY,
+  name        TEXT    NOT NULL,
+  iconId      INTEGER NOT NULL,
   isCountable INTEGER AS Boolean NOT NULL
 );
 

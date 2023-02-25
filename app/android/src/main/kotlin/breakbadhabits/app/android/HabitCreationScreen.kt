@@ -183,7 +183,7 @@ private fun Content(
                     val checked = habitCountabilityState.input is HabitCountability.Countable
                     habitCountabilityController.changeInput(
                         if (!checked) {
-                            HabitCountability.Countable(HabitTrack.DailyCount(0.0))
+                            HabitCountability.Countable(0.0)
                         } else {
                             HabitCountability.Uncountable
                         }
@@ -197,7 +197,7 @@ private fun Content(
                 onCheckedChange = {
                     habitCountabilityController.changeInput(
                         if (it) {
-                            HabitCountability.Countable(HabitTrack.DailyCount(0.0))
+                            HabitCountability.Countable(0.0)
                         } else {
                             HabitCountability.Uncountable
                         }
@@ -219,24 +219,16 @@ private fun Content(
                         decodeInput = {
                             when (it) {
                                 is HabitCountability.Countable -> {
-                                    it.averageDailyCount.value.toInt().toString()
+                                    it.averageDailyValue.toInt().toString()
                                 }
                                 else -> ""
                             }
                         },
                         encodeInput = {
                             try {
-                                HabitCountability.Countable(
-                                    HabitTrack.DailyCount(
-                                        it.toDouble()
-                                    )
-                                )
+                                HabitCountability.Countable(it.toDouble())
                             } catch (e: Exception) {
-                                HabitCountability.Countable(
-                                    HabitTrack.DailyCount(
-                                        0.0
-                                    )
-                                )
+                                HabitCountability.Countable(0.0)
                             }
                         },
                         extractErrorMessage = { null }

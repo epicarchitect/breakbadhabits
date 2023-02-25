@@ -1,6 +1,6 @@
 plugins {
     id("convention.android.library")
-    id("com.squareup.sqldelight") version "1.5.4"
+    id("app.cash.sqldelight") version "2.0.0-alpha05"
 }
 
 android {
@@ -8,12 +8,15 @@ android {
 }
 
 dependencies {
-    api("com.squareup.sqldelight:coroutines-extensions:1.5.4")
-    api("com.squareup.sqldelight:android-driver:1.5.4")
+    api("app.cash.sqldelight:coroutines-extensions:2.0.0-alpha05")
+    api("app.cash.sqldelight:android-driver:2.0.0-alpha05")
+    api("app.cash.sqldelight:primitive-adapters:2.0.0-alpha05")
 }
 
 sqldelight {
-    database("AppDatabase") {
-        packageName = "breakbadhabits.app.database"
+    databases {
+        create("AppDatabase") {
+            packageName.set("breakbadhabits.app.database")
+        }
     }
 }

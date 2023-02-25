@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS HabitTrack (
-  id         INTEGER NOT NULL PRIMARY KEY,
-  habitId    INTEGER NOT NULL,
-  rangeStart INTEGER NOT NULL,
-  rangeEnd   INTEGER NOT NULL,
-  dailyCount REAL    NOT NULL,
-  comment    TEXT
+  id            INTEGER NOT NULL PRIMARY KEY,
+  habitId       INTEGER NOT NULL,
+  rangeStart    INTEGER NOT NULL,
+  rangeEnd      INTEGER NOT NULL,
+  minutelyValue REAL    NOT NULL,
+  comment       TEXT
 );
 
 insert:
@@ -12,7 +12,7 @@ INSERT INTO HabitTrack
 VALUES (?, ?, ?, ?, ?, ?);
 
 update:
-UPDATE HabitTrack SET rangeStart = ?, rangeEnd = ?, dailyCount = ?, comment = ?
+UPDATE HabitTrack SET rangeStart = ?, rangeEnd = ?, minutelyValue = ?, comment = ?
 WHERE id = ?;
 
 deleteById:

@@ -156,97 +156,111 @@ private fun LoadedScreen(
     }
 }
 
-//fun main() {
+fun main() {
 //    println("testCalculateByDays")
 //    println()
 //    testCalculateByDays()
 //    println("testCalculateByHours")
 //    println()
 //    testCalculateByHours()
-//}
-//
-//fun testCalculateByHours() {
-//    calculateByPerHour(
-//        rangeHourDistance = 30,
-//        eventsPerHour = 5
-//    )
-//    calculateByPerHour(
-//        rangeHourDistance = 3,
-//        eventsPerHour = 3
-//    )
-//    calculateByPerHour(
-//        rangeHourDistance = 1,
-//        eventsPerHour = 60
-//    )
-//}
-//
-//fun testCalculateByDays() {
-//    calculateByPerDays(
-//        rangeDayDistance = 30,
-//        eventsPerDay = 5
-//    )
-//    calculateByPerDays(
-//        rangeDayDistance = 333,
-//        eventsPerDay = 3
-//    )
-//    calculateByPerDays(
-//        rangeDayDistance = 1,
-//        eventsPerDay = 5
-//    )
-//}
-//
-//private fun calculateByPerHour(
-//    rangeHourDistance: Int,
-//    eventsPerHour: Int
-//) {
-//    rangeHourDistance.print("initial rangeHourDistance")
-//    eventsPerHour.print("initial eventsPerHour")
-//
-//    val minutesInHour = 60
-//    val rangeMinuteDistance = minutesInHour * rangeHourDistance
-//    val eventsPerMinute = eventsPerHour.toDouble() / rangeMinuteDistance
-//
-//    val backRangeDayDistance = rangeMinuteDistance / minutesInHour
-//    val backEventsPerDay = eventsPerMinute * rangeMinuteDistance
-//
-//    rangeMinuteDistance.print("converted rangeMinuteDistance")
-//    eventsPerMinute.print("converted eventsPerMinute")
-//
-//    backRangeDayDistance.print("back eangeMinuteDistance")
-//    backEventsPerDay.print("back eventsPerMinute")
-//
-//    println()
-//}
-//
-//private fun calculateByPerDays(
-//    rangeDayDistance: Int,
-//    eventsPerDay: Int
-//) {
-//    rangeDayDistance.print("initial rangeDayDistance")
-//    eventsPerDay.print("initial eventsPerDay")
-//
-//    val minutesInDay = 24 * 60
-//    val rangeMinuteDistance = minutesInDay * rangeDayDistance
-//    val eventsPerMinute = eventsPerDay.toDouble() / rangeMinuteDistance
-//
-//    val backRangeDayDistance = rangeMinuteDistance / minutesInDay
-//    val backEventsPerDay = eventsPerMinute * rangeMinuteDistance
-//
-//    rangeMinuteDistance.print("converted rangeMinuteDistance")
-//    eventsPerMinute.print("converted eventsPerMinute")
-//
-//    backRangeDayDistance.print("back eangeMinuteDistance")
-//    backEventsPerDay.print("back eventsPerMinute")
-//
-//    println()
-//}
-//
-//private fun Any.print(title: String) {
-//    val string = when (this) {
-//        is Double -> {
-//            String.format("%.12f", this)
-//        }
-//        else -> toString()
-//    }
-//    println("$title: $string")
-//}
+    calculateReal()
+}
+
+fun testCalculateByHours() {
+    calculateByPerHour(
+        rangeHourDistance = 30,
+        eventsPerHour = 5
+    )
+    calculateByPerHour(
+        rangeHourDistance = 3,
+        eventsPerHour = 3
+    )
+    calculateByPerHour(
+        rangeHourDistance = 1,
+        eventsPerHour = 60
+    )
+}
+
+fun testCalculateByDays() {
+    calculateByPerDays(
+        rangeDayDistance = 30,
+        eventsPerDay = 5
+    )
+    calculateByPerDays(
+        rangeDayDistance = 333,
+        eventsPerDay = 3
+    )
+    calculateByPerDays(
+        rangeDayDistance = 1,
+        eventsPerDay = 5
+    )
+}
+
+private fun calculateReal() {
+    val rangeStart = 1675011600000L
+    val rangeEnd = 1675184400000L
+    val rangeMillisDistance = rangeEnd - rangeStart
+    val rangeMinuteDistance = rangeMillisDistance / 1000 / 60
+    val eventsPerMinute = 0.034722222222222224
+
+    val backEventsPerDay = eventsPerMinute * rangeMinuteDistance
+    backEventsPerDay.print("back eventsPerMinute")
+
+    println()
+}
+
+private fun calculateByPerHour(
+    rangeHourDistance: Int,
+    eventsPerHour: Int
+) {
+    rangeHourDistance.print("initial rangeHourDistance")
+    eventsPerHour.print("initial eventsPerHour")
+
+    val minutesInHour = 60
+    val rangeMinuteDistance = minutesInHour * rangeHourDistance
+    val eventsPerMinute = eventsPerHour.toDouble() / rangeMinuteDistance
+
+    val backRangeDayDistance = rangeMinuteDistance / minutesInHour
+    val backEventsPerDay = eventsPerMinute * rangeMinuteDistance
+
+    rangeMinuteDistance.print("converted rangeMinuteDistance")
+    eventsPerMinute.print("converted eventsPerMinute")
+
+    backRangeDayDistance.print("back eangeMinuteDistance")
+    backEventsPerDay.print("back eventsPerMinute")
+
+    println()
+}
+
+private fun calculateByPerDays(
+    rangeDayDistance: Int,
+    eventsPerDay: Int
+) {
+    rangeDayDistance.print("initial rangeDayDistance")
+    eventsPerDay.print("initial eventsPerDay")
+
+    val minutesInDay = 24 * 60
+    val rangeMinuteDistance = minutesInDay * rangeDayDistance
+    val eventsPerMinute = eventsPerDay.toDouble() / rangeMinuteDistance
+
+    val backRangeDayDistance = rangeMinuteDistance / minutesInDay
+    val backEventsPerDay = eventsPerMinute * rangeMinuteDistance
+
+    rangeMinuteDistance.print("converted rangeMinuteDistance")
+    eventsPerMinute.print("converted eventsPerMinute")
+
+    backRangeDayDistance.print("back eangeMinuteDistance")
+    backEventsPerDay.print("back eventsPerMinute")
+
+    println()
+}
+
+private fun Any.print(title: String) {
+    val string = when (this) {
+        is Double -> {
+            String.format("%.12f", this)
+        }
+        else -> toString()
+    }
+    println("$title: $string")
+}

@@ -1,7 +1,7 @@
 package breakbadhabits.app.database
 
 import android.content.Context
-import com.squareup.sqldelight.android.AndroidSqliteDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 
 object AppDatabaseFactory {
     fun create(context: Context, name: String) = AppDatabase(

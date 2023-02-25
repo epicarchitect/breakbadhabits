@@ -1,10 +1,10 @@
 package breakbadhabits.app.logic.habits.provider
 
+import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.datetime.millisToLocalDateTime
-import com.squareup.sqldelight.runtime.coroutines.asFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -37,7 +37,7 @@ class HabitTrackProvider(private val appDatabase: AppDatabase) {
         HabitTrack.Id(id),
         Habit.Id(habitId),
         HabitTrack.Range(rangeStart.millisToLocalDateTime()..rangeEnd.millisToLocalDateTime()),
-        HabitTrack.DailyCount(dailyCount),
+        HabitTrack.Value(minutelyValue),
         comment?.let(HabitTrack::Comment)
     )
 }

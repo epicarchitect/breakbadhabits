@@ -1,8 +1,8 @@
 package breakbadhabits.app.logic.habits.provider
 
+import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
-import com.squareup.sqldelight.runtime.coroutines.asFlow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
