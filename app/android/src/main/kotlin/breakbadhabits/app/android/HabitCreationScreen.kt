@@ -1,8 +1,6 @@
 package breakbadhabits.app.android
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,14 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.app.logic.habits.creator.HabitCountability
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackValue
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackValue
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.uikit.Checkbox
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.SingleSelectionGrid
@@ -73,7 +71,7 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
     Content(
         habitIconSelectionController = viewModel.habitIconSelectionController,
         habitNameController = viewModel.habitNameController,
-        habitCountabilityController = viewModel.habitCountabilityController,
+        firstTrackValueInputController = viewModel.firstTrackValueInputController,
         firstTrackRangeInputController = viewModel.firstTrackRangeInputController,
         creationController = viewModel.creationController
     )
@@ -83,15 +81,15 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
 private fun Content(
     habitIconSelectionController: SingleSelectionController<Habit.IconResource>,
     habitNameController: ValidatedInputController<Habit.Name, ValidatedHabitNewName>,
-    habitCountabilityController: ValidatedInputController<HabitCountability?, Unit>,
-    firstTrackRangeInputController: ValidatedInputController<HabitTrack.Range?, ValidatedHabitTrackRange>,
+    firstTrackValueInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackValue>,
+    firstTrackRangeInputController: ValidatedInputController<HabitTrack.Range, ValidatedHabitTrackRange>,
     creationController: RequestController
 ) {
     val context = LocalContext.current
     val habitIconResources = LocalHabitIconResources.current
     var intervalSelectionShow by remember { mutableStateOf(false) }
 
-    val habitCountabilityState by habitCountabilityController.state.collectAsState()
+    val habitCountabilityState by firstTrackValueInputController.state.collectAsState()
     val firstTrackRangeState by firstTrackRangeInputController.state.collectAsState()
 
     ClearFocusWhenKeyboardHiddenEffect()
@@ -135,14 +133,17 @@ private fun Content(
                     decodeInput = Habit.Name::value,
                     encodeInput = Habit::Name,
                     extractErrorMessage = {
-                        val incorrect = (it as? IncorrectHabitNewName) ?: return@TextFieldAdapter null
+                        val incorrect =
+                            (it as? IncorrectHabitNewName) ?: return@TextFieldAdapter null
                         when (incorrect.reason) {
                             is IncorrectHabitNewName.Reason.AlreadyUsed -> {
                                 context.getString(R.string.habitCreation_habitNameValidation_used)
                             }
+
                             is IncorrectHabitNewName.Reason.Empty -> {
                                 context.getString(R.string.habitCreation_habitNameValidation_empty)
                             }
+
                             is IncorrectHabitNewName.Reason.TooLong -> {
                                 context.getString(
                                     R.string.habitCreation_habitNameValidation_tooLong,
@@ -176,71 +177,36 @@ private fun Content(
             }
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    val checked = habitCountabilityState.input is HabitCountability.Countable
-                    habitCountabilityController.changeInput(
-                        if (!checked) {
-                            HabitCountability.Countable(0.0)
-                        } else {
-                            HabitCountability.Uncountable
+        ValidatedInputField(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            controller = firstTrackValueInputController,
+            adapter = remember {
+                TextFieldAdapter(
+                    decodeInput = {
+                        it?.value?.toString()
+                    },
+                    encodeInput = {
+                        try {
+                            HabitTrack.EventCount(it.toInt(), HabitTrack.EventCount.TimeUnit.DAYS)
+                        } catch (e: Exception) {
+                            HabitTrack.EventCount(0, HabitTrack.EventCount.TimeUnit.DAYS)
                         }
-                    )
-                }
-                .padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = habitCountabilityState.input is HabitCountability.Countable,
-                onCheckedChange = {
-                    habitCountabilityController.changeInput(
-                        if (it) {
-                            HabitCountability.Countable(0.0)
-                        } else {
-                            HabitCountability.Uncountable
+                    },
+                    extractErrorMessage = {
+                        val incorrect =
+                            (it as? IncorrectHabitTrackValue) ?: return@TextFieldAdapter null
+                        when (incorrect.reason) {
+                            is IncorrectHabitTrackValue.Reason.Empty -> "Поле не может быть пустым"
                         }
-                    )
-                }
-            )
-            Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                text = "Habit is countable?"
-            )
-        }
-
-        if (habitCountabilityState.input is HabitCountability.Countable) {
-            ValidatedInputField(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                controller = habitCountabilityController,
-                adapter = remember {
-                    TextFieldAdapter(
-                        decodeInput = {
-                            when (it) {
-                                is HabitCountability.Countable -> {
-                                    it.averageDailyValue.toInt().toString()
-                                }
-                                else -> ""
-                            }
-                        },
-                        encodeInput = {
-                            try {
-                                HabitCountability.Countable(it.toDouble())
-                            } catch (e: Exception) {
-                                HabitCountability.Countable(0.0)
-                            }
-                        },
-                        extractErrorMessage = { null }
-                    )
-                },
-                label = "Число событий привычки в день",
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                regex = Regexps.integersOrEmpty
-            )
-        }
+                    }
+                )
+            },
+            label = "Число событий привычки в день",
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            ),
+            regex = Regexps.integersOrEmpty
+        )
 
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
@@ -252,11 +218,11 @@ private fun Content(
         Button(
             modifier = Modifier.padding(16.dp),
             onClick = { intervalSelectionShow = true },
-            text = firstTrackRangeState.input?.let {
+            text = firstTrackRangeState.input.let {
                 val start = formatter.format(it.value.start.date.toJavaLocalDate())
                 val end = formatter.format(it.value.endInclusive.date.toJavaLocalDate())
                 "Первое событие: $start, последнее событие: $end"
-            } ?: "Указать первое и последнне событие"
+            }
         )
 
         Spacer(modifier = Modifier.weight(1.0f))

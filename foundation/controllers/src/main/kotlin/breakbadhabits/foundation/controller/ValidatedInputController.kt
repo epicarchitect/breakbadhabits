@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 class ValidatedInputController<INPUT, VALIDATION_RESULT>(
     private val coroutineScope: CoroutineScope,
     initialInput: INPUT,
-    private val validation: suspend (INPUT) -> VALIDATION_RESULT?
+    private val validation: suspend INPUT.() -> VALIDATION_RESULT?
 ) {
     private val inputState = MutableStateFlow(initialInput)
     private val validationResultState = MutableStateFlow<VALIDATION_RESULT?>(null)
@@ -26,7 +26,7 @@ class ValidatedInputController<INPUT, VALIDATION_RESULT>(
         initialValue = State(initialInput, null)
     )
 
-    suspend fun validateAndAwait() = validation(inputState.value).also {
+    suspend fun validateAndAwait() = inputState.value.validation().also {
         validationResultState.value = it
     }
 

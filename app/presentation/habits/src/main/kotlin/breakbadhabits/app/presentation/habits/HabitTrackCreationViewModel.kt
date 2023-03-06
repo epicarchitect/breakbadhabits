@@ -18,7 +18,7 @@ class HabitTrackCreationViewModel(
 
     private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
     private val rangeState = MutableStateFlow<HabitTrack.Range?>(null)
-    private val valueState = MutableStateFlow<HabitTrack.Value?>(null)
+    private val valueState = MutableStateFlow<HabitTrack.EventCount?>(null)
     private val commentState = MutableStateFlow<HabitTrack.Comment?>(null)
 
     val state = combine(
@@ -75,7 +75,7 @@ class HabitTrackCreationViewModel(
         rangeState.value = range
     }
 
-    fun updateDailyCount(value: HabitTrack.Value) {
+    fun updateDailyCount(value: HabitTrack.EventCount) {
         require(state.value is State.Input)
         valueState.value = value
     }
@@ -88,7 +88,7 @@ class HabitTrackCreationViewModel(
     sealed class State {
         data class Input(
             val range: HabitTrack.Range?,
-            val value: HabitTrack.Value?,
+            val value: HabitTrack.EventCount?,
             val comment: HabitTrack.Comment?,
             val creationAllowed: Boolean
         ) : State()

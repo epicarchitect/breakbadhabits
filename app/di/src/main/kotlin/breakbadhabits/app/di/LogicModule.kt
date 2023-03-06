@@ -11,8 +11,10 @@ import breakbadhabits.app.logic.habits.deleter.HabitDeleter
 import breakbadhabits.app.logic.habits.provider.HabitIconProvider
 import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
+import breakbadhabits.app.logic.habits.serializer.HabitTrackSerializer
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackIntervalValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackValueValidator
 
 class LogicModule(private val context: Context) {
 
@@ -25,6 +27,10 @@ class LogicModule(private val context: Context) {
 
     private val idGenerator by lazy {
         IdGenerator(context)
+    }
+
+    private val habitTrackSerializer by lazy {
+        HabitTrackSerializer()
     }
 
     val dateTimeProvider by lazy {
@@ -41,7 +47,7 @@ class LogicModule(private val context: Context) {
     }
 
     val habitCreator by lazy {
-        HabitCreator(appDatabase, idGenerator)
+        HabitCreator(appDatabase, idGenerator, habitTrackSerializer)
     }
 
     val habitNewNameValidator by lazy {
@@ -50,6 +56,10 @@ class LogicModule(private val context: Context) {
 
     val habitTrackIntervalValidator by lazy {
         HabitTrackIntervalValidator(getCurrentTime = dateTimeProvider::getCurrentTime)
+    }
+
+    val habitTrackValueValidator by lazy {
+        HabitTrackValueValidator()
     }
 
     val habitDeleter by lazy {
@@ -65,10 +75,10 @@ class LogicModule(private val context: Context) {
     }
 
     val habitTrackCreator by lazy {
-        HabitTrackCreator(appDatabase, idGenerator)
+        HabitTrackCreator(appDatabase, idGenerator, habitTrackSerializer)
     }
 
     val habitTrackProvider by lazy {
-        HabitTrackProvider(appDatabase)
+        HabitTrackProvider(appDatabase, habitTrackSerializer)
     }
 }

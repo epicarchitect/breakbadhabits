@@ -24,6 +24,7 @@ class PresentationModule(private val logicModule: LogicModule) {
             habitCreator,
             habitNewNameValidator,
             habitTrackIntervalValidator,
+            habitTrackValueValidator,
             habitIconProvider
         )
     }

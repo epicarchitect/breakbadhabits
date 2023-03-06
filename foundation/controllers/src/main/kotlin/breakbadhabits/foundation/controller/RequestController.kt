@@ -35,11 +35,15 @@ class RequestController(
     )
 
     fun request() {
-        require(state.value.isRequestAllowed)
         coroutineScope.launch {
-            requestState.value = RequestState.Executing()
-            internalRequest()
-            requestState.value = RequestState.Executed()
+            try {
+                requestState.value = RequestState.Executing()
+                require(state.value.isRequestAllowed)
+                internalRequest()
+                requestState.value = RequestState.Executed()
+            } catch (e: Exception) {
+                requestState.value = RequestState.NotExecuted()
+            }
         }
     }
 

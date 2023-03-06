@@ -20,13 +20,13 @@ import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.ext.onFocusLost
 
 interface TextFieldAdapter<INPUT, VALIDATION_RESULT> {
-    fun decodeInput(input: INPUT): String
+    fun decodeInput(input: INPUT): String?
     fun encodeInput(input: String): INPUT
     fun extractErrorMessage(result: VALIDATION_RESULT?): String?
 }
 
 fun <INPUT, VALIDATION_RESULT> TextFieldAdapter(
-    decodeInput: (input: INPUT) -> String,
+    decodeInput: (input: INPUT) -> String?,
     encodeInput: (input: String) -> INPUT,
     extractErrorMessage: (result: VALIDATION_RESULT?) -> String?
 ) = object : TextFieldAdapter<INPUT, VALIDATION_RESULT> {
@@ -74,7 +74,7 @@ fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusLost(controller::validate),
-            value = adapter.decodeInput(state.input),
+            value = adapter.decodeInput(state.input) ?: "",
             onValueChange = {
                 controller.changeInput(adapter.encodeInput(it))
             },
