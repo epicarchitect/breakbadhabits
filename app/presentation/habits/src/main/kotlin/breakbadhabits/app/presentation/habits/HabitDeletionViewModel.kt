@@ -1,9 +1,9 @@
 package breakbadhabits.app.presentation.habits
 
-import breakbadhabits.foundation.viewmodel.ViewModel
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.deleter.HabitDeleter
+import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

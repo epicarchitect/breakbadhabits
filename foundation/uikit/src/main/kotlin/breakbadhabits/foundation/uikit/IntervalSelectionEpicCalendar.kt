@@ -47,7 +47,7 @@ import java.time.Month
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.Locale
+import java.util.*
 
 @Composable
 fun IntervalSelectionEpicCalendar(
@@ -192,7 +192,8 @@ fun IntervalSelectionEpicCalendar(
                                             .defaultMinSize(minWidth = 90.dp)
                                             .clickable {
                                                 yearMonth = yearMonth.withMonth(it + 1)
-                                            }.padding(
+                                            }
+                                            .padding(
                                                 vertical = 8.dp,
                                                 horizontal = 20.dp
                                             ),

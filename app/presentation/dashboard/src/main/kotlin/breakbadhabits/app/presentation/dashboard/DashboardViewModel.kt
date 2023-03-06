@@ -30,7 +30,8 @@ class DashboardViewModel(
             if (habits.isEmpty()) flowOf(emptyList())
             else combine(
                 habits.map { habit ->
-                    habitTrackProvider.provideByHabitIdAndMaxRangeEnd(habit.id).asAbstinenceTimeFlow()
+                    habitTrackProvider.provideByHabitIdAndMaxRangeEnd(habit.id)
+                        .asAbstinenceTimeFlow()
                 }
             ) { tracks ->
                 habits.mapIndexed { index, habit ->
