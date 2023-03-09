@@ -29,19 +29,26 @@ import breakbadhabits.foundation.uikit.text.Title
 
 @Composable
 fun HabitDetailsScreen(
-    habitController: LoadingController<Habit?>
+    habitController: LoadingController<Habit?>,
+    onEditClick: () -> Unit
 ) {
     LoadingBox(habitController) {
         if (it == null) {
             Text("Not exist")
         } else {
-            LoadedScreen(it)
+            LoadedScreen(
+                habit = it,
+                onEditClick = onEditClick
+            )
         }
     }
 }
 
 @Composable
-private fun LoadedScreen(habit: Habit) {
+private fun LoadedScreen(
+    habit: Habit,
+    onEditClick: () -> Unit
+) {
     val habitIconResources = LocalHabitIconResources.current
     val appDependencies = LocalPresentationModule.current
 //    val habitAbstinenceViewModel = viewModel {
@@ -137,9 +144,7 @@ private fun LoadedScreen(habit: Habit) {
 
             IconButton(
                 modifier = Modifier.align(Alignment.TopEnd),
-                onClick = {
-//                    openHabitEditing()
-                }
+                onClick = onEditClick
             ) {
                 Icon(painterResource(R.drawable.ic_settings))
             }

@@ -11,7 +11,7 @@ class HabitDetailsViewModel(
     habitId: Habit.Id
 ) : ViewModel() {
 
-    val habitController = LoadingController(
+    val habitLoadingController = LoadingController(
         coroutineScope = viewModelScope,
         flow = habitProvider.provideHabitFlowById(habitId)
     )

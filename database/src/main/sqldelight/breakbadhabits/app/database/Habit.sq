@@ -8,6 +8,10 @@ insert:
 INSERT INTO Habit
 VALUES (?, ?, ?);
 
+update:
+UPDATE Habit SET name = ?, iconId = ?
+WHERE id = ?;
+
 deleteById:
 DELETE FROM Habit WHERE id = ?;
 

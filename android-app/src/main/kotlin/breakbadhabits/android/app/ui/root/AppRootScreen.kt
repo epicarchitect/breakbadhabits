@@ -1,5 +1,6 @@
 package breakbadhabits.android.app.ui.root
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -14,19 +15,56 @@ import breakbadhabits.android.app.ui.LocalPresentationModule
 import breakbadhabits.android.app.ui.dashboard.DashboardScreen
 import breakbadhabits.android.app.ui.habits.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
-import breakbadhabits.android.app.ui.settings.AppSettingsScreen
+import breakbadhabits.android.app.ui.habits.HabitEditingScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackCreationScreen
+import breakbadhabits.android.app.ui.settings.AppSettingsScreen
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.foundation.controller.RequestController
+
+
+private object Screens {
+    object Dashboard {
+        const val route = "dashboard"
+    }
+
+    object AppSettings {
+        const val route = "appSettings"
+    }
+
+    object HabitCreation {
+        const val route = "habitCreation"
+    }
+
+    object HabitDetails {
+        const val route = "habit?id={id}"
+        val arguments = listOf(navArgument("id") { type = NavType.LongType })
+        fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
+        fun buildRoute(id: Habit.Id) = "habit?id=${id.value}"
+    }
+
+    object HabitUpdating {
+        const val route = "habitUpdating?id={id}"
+        val arguments = listOf(navArgument("id") { type = NavType.LongType })
+        fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
+        fun buildRoute(id: Habit.Id) = "habitUpdating?id=${id.value}"
+    }
+
+    object HabitTrackCreation {
+        const val route = "habitTrackCreation?id={id}"
+        val arguments = listOf(navArgument("id") { type = NavType.LongType })
+        fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
+        fun buildRoute(id: Habit.Id) = "habitTrackCreation?id=${id.value}"
+    }
+}
 
 @Composable
 fun AppRootScreen() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = "habits"
+        startDestination = Screens.Dashboard.route
     ) {
-        composable(route = "appSettings") {
+        composable(route = Screens.AppSettings.route) {
             AppSettingsScreen(
                 openWidgetSettings = {
                     navController.navigate("habitsAppWidgets")
@@ -34,7 +72,7 @@ fun AppRootScreen() {
             )
         }
 
-        composable(route = "habitCreation") {
+        composable(route = Screens.HabitCreation.route) {
             val presentationModule = LocalPresentationModule.current
             val viewModel = viewModel {
                 presentationModule.createHabitCreationViewModel()
@@ -58,32 +96,54 @@ fun AppRootScreen() {
         }
 
         composable(
-            route = "habitEditing?habitId={habitId}",
-            arguments = listOf(navArgument("habitId") { type = NavType.LongType })
+            route = Screens.HabitUpdating.route,
+            arguments = Screens.HabitUpdating.arguments
         ) {
-//                    val navController = LocalNavController.current
-//                    val habitId = it.arguments!!.getInt("habitId")
-//                    HabitEditingScreen(
-//                        habitId = habitId,
-//                        onFinished = {
-//                            navController.popBackStack()
-//                        },
-//                        onHabitDeleted = {
-//                            navController.popBackStack(route = "habits", inclusive = false)
-//                        }
-//                    )
+            val presentationModule = LocalPresentationModule.current
+            val habitId = Screens.HabitUpdating.getHabitId(it.arguments)
+            val viewModel = viewModel {
+                presentationModule.createHabitUpdatingViewModel(habitId)
+            }
+
+            val updatingState by viewModel.updatingController.state.collectAsState()
+            val deletionState by viewModel.deletionController.state.collectAsState()
+
+            LaunchedEffect(deletionState.requestState) {
+                if (deletionState.requestState is RequestController.RequestState.Executed) {
+                    navController.popBackStack(
+                        route = Screens.Dashboard.route,
+                        inclusive = false
+                    )
+                }
+            }
+
+            LaunchedEffect(updatingState.requestState) {
+                if (updatingState.requestState is RequestController.RequestState.Executed) {
+                    navController.popBackStack()
+                }
+            }
+
+            HabitEditingScreen(
+                habitNameController = viewModel.habitNameController,
+                habitIconSelectionController = viewModel.habitIconSelectionController,
+                updatingController = viewModel.updatingController,
+                deletionController = viewModel.deletionController
+            )
         }
 
         composable(
-            route = "habitEventCreation?habitId={habitId}",
-            arguments = listOf(navArgument("habitId") { type = NavType.LongType })
+            route = Screens.HabitTrackCreation.route,
+            arguments = Screens.HabitTrackCreation.arguments
         ) {
             val presentationModule = LocalPresentationModule.current
-            val habitId = it.arguments!!.getLong("habitId")
-            val viewModel = viewModel {
-                presentationModule.createHabitTrackCreationViewModel(Habit.Id(habitId))
+            val habitId = Screens.HabitTrackCreation.getHabitId(it.arguments)
+            val habitTrackCreationViewModel = viewModel {
+                presentationModule.createHabitTrackCreationViewModel(habitId)
             }
-            val creationState by viewModel.creationController.state.collectAsState()
+            val habitDetailsViewModel = viewModel {
+                presentationModule.createHabitDetailsViewModel(habitId)
+            }
+            val creationState by habitTrackCreationViewModel.creationController.state.collectAsState()
 
             LaunchedEffect(creationState) {
                 if (creationState.requestState is RequestController.RequestState.Executed) {
@@ -92,11 +152,11 @@ fun AppRootScreen() {
             }
 
             HabitTrackCreationScreen(
-                eventCountInputController = viewModel.eventCountInputController,
-                rangeInputController = viewModel.rangeInputController,
-                creationController = viewModel.creationController,
-                habitController = viewModel.habitController,
-                commentInputController = viewModel.commentInputController
+                eventCountInputController = habitTrackCreationViewModel.eventCountInputController,
+                rangeInputController = habitTrackCreationViewModel.rangeInputController,
+                creationController = habitTrackCreationViewModel.creationController,
+                habitController = habitDetailsViewModel.habitLoadingController,
+                commentInputController = habitTrackCreationViewModel.commentInputController
             )
         }
 
@@ -138,17 +198,20 @@ fun AppRootScreen() {
         }
 
         composable(
-            route = "habit?habitId={habitId}",
-            arguments = listOf(navArgument("habitId") { type = NavType.LongType })
+            route = Screens.HabitDetails.route,
+            arguments = Screens.HabitDetails.arguments
         ) {
-            val habitId = it.arguments!!.getLong("habitId")
+            val habitId = Screens.HabitDetails.getHabitId(it.arguments)
             val presentationModule = LocalPresentationModule.current
             val viewModel = viewModel {
-                presentationModule.createHabitDetailsViewModel(Habit.Id(habitId))
+                presentationModule.createHabitDetailsViewModel(habitId)
             }
 
             HabitDetailsScreen(
-                habitController = viewModel.habitController
+                habitController = viewModel.habitLoadingController,
+                onEditClick = {
+                    navController.navigate(Screens.HabitUpdating.buildRoute(habitId))
+                }
             )
         }
 
@@ -166,7 +229,7 @@ fun AppRootScreen() {
 //                    )
         }
 
-        composable(route = "habits") {
+        composable(route = Screens.Dashboard.route) {
             val presentationModule = LocalPresentationModule.current
             val viewModel = viewModel {
                 presentationModule.createDashboardViewModel()
@@ -175,16 +238,16 @@ fun AppRootScreen() {
             DashboardScreen(
                 habitItemsController = viewModel.habitItemsController,
                 openHabit = { habitId ->
-                    navController.navigate("habit?habitId=${habitId.value}")
+                    navController.navigate(Screens.HabitDetails.buildRoute(habitId))
                 },
                 openHabitEventCreation = { habitId ->
-                    navController.navigate("habitEventCreation?habitId=${habitId.value}")
+                    navController.navigate(Screens.HabitTrackCreation.buildRoute(habitId))
                 },
                 openHabitCreation = {
-                    navController.navigate("habitCreation")
+                    navController.navigate(Screens.HabitCreation.route)
                 },
                 openSettings = {
-                    navController.navigate("appSettings")
+                    navController.navigate(Screens.AppSettings.route)
                 }
             )
         }

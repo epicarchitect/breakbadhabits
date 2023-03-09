@@ -4,10 +4,10 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.app.presentation.habits.HabitCreationViewModel
-import breakbadhabits.app.presentation.habits.HabitDeletionViewModel
 import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
 import breakbadhabits.app.presentation.habits.HabitTrackCreationViewModel
 import breakbadhabits.app.presentation.habits.HabitTrackViewModel
+import breakbadhabits.app.presentation.habits.HabitUpdatingViewModel
 
 class PresentationModule(private val logicModule: LogicModule) {
     fun createDashboardViewModel() = with(logicModule) {
@@ -29,9 +29,13 @@ class PresentationModule(private val logicModule: LogicModule) {
         )
     }
 
-    fun createHabitDeletionViewModel(habitId: Habit.Id) = with(logicModule) {
-        HabitDeletionViewModel(
+    fun createHabitUpdatingViewModel(habitId: Habit.Id) = with(logicModule) {
+        HabitUpdatingViewModel(
+            habitProvider,
+            habitUpdater,
             habitDeleter,
+            habitNewNameValidator,
+            habitIconProvider,
             habitId
         )
     }
@@ -55,7 +59,6 @@ class PresentationModule(private val logicModule: LogicModule) {
             habitTrackCreator,
             habitTrackRangeValidator,
             habitTrackEventCountValidator,
-            habitProvider,
             habitId
         )
     }

@@ -12,6 +12,7 @@ import breakbadhabits.app.logic.habits.provider.HabitIconProvider
 import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
 import breakbadhabits.app.logic.habits.serializer.HabitTrackSerializer
+import breakbadhabits.app.logic.habits.updater.HabitUpdater
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
@@ -72,6 +73,10 @@ class LogicModule(private val context: Context) {
 
     val habitProvider by lazy {
         HabitProvider(appDatabase)
+    }
+
+    val habitUpdater by lazy {
+        HabitUpdater(appDatabase)
     }
 
     val habitTrackCreator by lazy {
