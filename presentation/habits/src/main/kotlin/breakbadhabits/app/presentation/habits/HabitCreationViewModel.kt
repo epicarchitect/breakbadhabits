@@ -6,11 +6,11 @@ import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.provider.HabitIconProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
-import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -31,7 +31,7 @@ class HabitCreationViewModel(
     val habitIconSelectionController = SingleSelectionController(
         coroutineScope = viewModelScope,
         items = habitIconProvider.provide(),
-        default = List<Habit.IconResource>::first
+        default = List<Habit.Icon>::first
     )
 
     val habitNameController = ValidatedInputController(

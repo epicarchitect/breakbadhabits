@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,7 @@ import breakbadhabits.foundation.controller.DataFlowController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.DataFlowBox
+import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
@@ -55,6 +57,7 @@ fun HabitTrackCreationScreen(
     commentInputController: ValidatedInputController<HabitTrack.Comment?, Nothing>
 ) {
     var rangeSelectionShow by remember { mutableStateOf(false) }
+    val eventCountState by eventCountInputController.state.collectAsState()
     val rangeState by rangeInputController.state.collectAsState()
 
     ClearFocusWhenKeyboardHiddenEffect()
@@ -104,26 +107,54 @@ fun HabitTrackCreationScreen(
                 TextFieldAdapter(
                     decodeInput = { it.value.toString() },
                     encodeInput = {
-                        try {
-                            HabitTrack.EventCount(it.toInt(), HabitTrack.EventCount.TimeUnit.DAYS)
-                        } catch (e: Exception) {
-                            HabitTrack.EventCount(0, HabitTrack.EventCount.TimeUnit.DAYS)
-                        }
+                        eventCountState.input.copy(
+                            value = try {
+                                it.toInt()
+                            } catch (e: Exception) {
+                                0
+                            }
+                        )
                     },
                     extractErrorMessage = {
-                        val incorrect =
-                            (it as? IncorrectHabitTrackEventCount) ?: return@TextFieldAdapter null
+                        val incorrect = (it as? IncorrectHabitTrackEventCount)
+                            ?: return@TextFieldAdapter null
                         when (incorrect.reason) {
                             is IncorrectHabitTrackEventCount.Reason.Empty -> "Поле не может быть пустым"
                         }
                     }
                 )
             },
-            label = "Число событий в день",
+            label = "Число событий",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
-            regex = Regexps.integersOrEmpty
+            regex = Regexps.integersOrEmpty,
+            trailingIcon = {
+                val input = eventCountState.input
+                val timeUnit = input.timeUnit
+                Button(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    onClick = {
+                        eventCountInputController.changeInput(
+                            input.copy(
+                                timeUnit = when (timeUnit) {
+                                    HabitTrack.EventCount.TimeUnit.MINUTES -> HabitTrack.EventCount.TimeUnit.HOURS
+                                    HabitTrack.EventCount.TimeUnit.HOURS -> HabitTrack.EventCount.TimeUnit.DAYS
+                                    HabitTrack.EventCount.TimeUnit.DAYS -> HabitTrack.EventCount.TimeUnit.MINUTES
+                                }
+                            )
+                        )
+                    },
+                    text = when (timeUnit) {
+                        HabitTrack.EventCount.TimeUnit.MINUTES -> "Каждую минуту"
+                        HabitTrack.EventCount.TimeUnit.HOURS -> "Каждый час"
+                        HabitTrack.EventCount.TimeUnit.DAYS -> "Каждый день"
+                    },
+                    icon = {
+                        Icon(painterResource(R.drawable.ic_change_circle))
+                    }
+                )
+            }
         )
 
         Text(

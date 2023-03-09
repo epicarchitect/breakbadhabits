@@ -100,7 +100,7 @@ private fun LoadedScreen(habit: Habit) {
             ) {
                 Icon(
                     modifier = Modifier.size(44.dp),
-                    painter = painterResource(habitIconResources[habit.iconResource.iconId])
+                    painter = painterResource(habitIconResources[habit.icon.iconId])
                 )
 
                 Title(

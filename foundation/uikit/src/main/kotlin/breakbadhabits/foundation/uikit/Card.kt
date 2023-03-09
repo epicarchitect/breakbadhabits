@@ -32,6 +32,6 @@ fun Card(
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor,
             contentColor = contentColor
-        )
+        ),
     )
 }

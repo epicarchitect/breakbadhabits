@@ -181,7 +181,7 @@ private fun LazyItemScope.HabitItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(habitIconResources[item.habit.iconResource.iconId]),
+                        painter = painterResource(habitIconResources[item.habit.icon.iconId]),
                     )
                     Title(
                         modifier = Modifier.padding(start = 12.dp),

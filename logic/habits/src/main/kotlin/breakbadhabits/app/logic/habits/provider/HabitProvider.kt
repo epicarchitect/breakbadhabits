@@ -36,6 +36,6 @@ class HabitProvider(private val appDatabase: AppDatabase) {
     private fun DatabaseHabit.toEntity() = Habit(
         Habit.Id(id),
         Habit.Name(name),
-        Habit.IconResource(iconId)
+        Habit.Icon(iconId)
     )
 }

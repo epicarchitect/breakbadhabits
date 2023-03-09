@@ -1,5 +1,7 @@
 package breakbadhabits.foundation.uikit.button
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.foundation.uikit.text.Text
 import androidx.compose.material3.Button as MaterialButton
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Button(
     onClick: () -> Unit,
@@ -54,15 +57,21 @@ fun Button(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (icon != null) {
-                icon()
-                Spacer(modifier = Modifier.padding(4.dp))
+            AnimatedContent(targetState = icon) {
+                if (it != null) {
+                    Row {
+                        it()
+                        Spacer(modifier = Modifier.padding(4.dp))
+                    }
+                }
             }
 
-            Text(
-                text = text,
-                fontWeight = FontWeight.Medium,
-            )
+            AnimatedContent(targetState = text) {
+                Text(
+                    text = it,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
         }
     }
 }
