@@ -4,11 +4,11 @@ import com.android.build.gradle.BaseExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 configure<BaseExtension> {
-    compileSdkVersion(Versions.MAX_ANDROID_SDK)
+    compileSdkVersion(Versions.TARGET_ANDROID_SDK)
 
     defaultConfig {
         minSdk = Versions.MIN_ANDROID_SDK
-        targetSdk = Versions.MAX_ANDROID_SDK
+        targetSdk = Versions.TARGET_ANDROID_SDK
     }
 
     compileOptions {
