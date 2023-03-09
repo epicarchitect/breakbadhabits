@@ -1,5 +1,11 @@
 package breakbadhabits.foundation.uikit.text
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -19,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.foundation.uikit.Icon
 import androidx.compose.material3.Text as MaterialText
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Text(
     text: String,
@@ -46,14 +53,21 @@ fun Text(
             )
         }
 
-        MaterialText(
-            text = text,
-            style = style,
-            color = color,
-            fontWeight = fontWeight,
-            fontSize = fontSize,
-            textAlign = textAlign,
-            overflow = overflow
-        )
+        AnimatedContent(
+            targetState = text,
+            transitionSpec = {
+                fadeIn(tween(220)) with fadeOut(tween(220))
+            }
+        ) {
+            MaterialText(
+                text = it,
+                style = style,
+                color = color,
+                fontWeight = fontWeight,
+                fontSize = fontSize,
+                textAlign = textAlign,
+                overflow = overflow
+            )
+        }
     }
 }

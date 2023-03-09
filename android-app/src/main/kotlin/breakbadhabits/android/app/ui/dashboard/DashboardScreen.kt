@@ -35,9 +35,9 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.LocalHabitIconResources
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
-import breakbadhabits.foundation.controller.DataFlowController
+import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.uikit.Card
-import breakbadhabits.foundation.uikit.DataFlowBox
+import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.button.Button
@@ -48,7 +48,7 @@ import breakbadhabits.foundation.uikit.text.Title
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DashboardScreen(
-    habitItemsController: DataFlowController<List<DashboardViewModel.HabitItem>>,
+    habitItemsController: LoadingController<List<DashboardViewModel.HabitItem>>,
     openHabit: (Habit.Id) -> Unit,
     openHabitEventCreation: (Habit.Id) -> Unit,
     openHabitCreation: () -> Unit,
@@ -76,7 +76,7 @@ fun DashboardScreen(
                 }
             }
 
-            DataFlowBox(habitItemsController) { items ->
+            LoadingBox(habitItemsController) { items ->
                 if (items.isEmpty()) {
                     NotExistsHabits()
                 } else {
@@ -93,7 +93,7 @@ fun DashboardScreen(
             modifier = Modifier
                 .padding(24.dp)
                 .align(Alignment.BottomCenter),
-            visible = itemsState !is DataFlowController.State.Loading,
+            visible = itemsState !is LoadingController.State.Loading,
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut()
         ) {

@@ -26,10 +26,10 @@ import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
-import breakbadhabits.foundation.controller.DataFlowController
+import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.uikit.DataFlowBox
+import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.button.Button
@@ -53,7 +53,7 @@ fun HabitTrackCreationScreen(
     eventCountInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackEventCount>,
     rangeInputController: ValidatedInputController<HabitTrack.Range, ValidatedHabitTrackRange>,
     creationController: RequestController,
-    habitController: DataFlowController<Habit?>,
+    habitController: LoadingController<Habit?>,
     commentInputController: ValidatedInputController<HabitTrack.Comment?, Nothing>
 ) {
     var rangeSelectionShow by remember { mutableStateOf(false) }
@@ -88,7 +88,7 @@ fun HabitTrackCreationScreen(
             text = stringResource(R.string.habitEventCreation_title)
         )
 
-        DataFlowBox(habitController) {
+        LoadingBox(habitController) {
             if (it != null) {
                 Text(
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
@@ -108,11 +108,7 @@ fun HabitTrackCreationScreen(
                     decodeInput = { it.value.toString() },
                     encodeInput = {
                         eventCountState.input.copy(
-                            value = try {
-                                it.toInt()
-                            } catch (e: Exception) {
-                                0
-                            }
+                            value = it.toIntOrNull() ?: 0
                         )
                     },
                     extractErrorMessage = {
@@ -138,15 +134,13 @@ fun HabitTrackCreationScreen(
                         eventCountInputController.changeInput(
                             input.copy(
                                 timeUnit = when (timeUnit) {
-                                    HabitTrack.EventCount.TimeUnit.MINUTES -> HabitTrack.EventCount.TimeUnit.HOURS
                                     HabitTrack.EventCount.TimeUnit.HOURS -> HabitTrack.EventCount.TimeUnit.DAYS
-                                    HabitTrack.EventCount.TimeUnit.DAYS -> HabitTrack.EventCount.TimeUnit.MINUTES
+                                    HabitTrack.EventCount.TimeUnit.DAYS -> HabitTrack.EventCount.TimeUnit.HOURS
                                 }
                             )
                         )
                     },
                     text = when (timeUnit) {
-                        HabitTrack.EventCount.TimeUnit.MINUTES -> "Каждую минуту"
                         HabitTrack.EventCount.TimeUnit.HOURS -> "Каждый час"
                         HabitTrack.EventCount.TimeUnit.DAYS -> "Каждый день"
                     },

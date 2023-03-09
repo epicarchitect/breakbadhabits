@@ -3,7 +3,7 @@ package breakbadhabits.android.app.ui.habits
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -91,27 +91,31 @@ fun HabitCreationScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(16.dp)
     ) {
+        Spacer(Modifier.height(24.dp))
+
         Title(
-            modifier = Modifier.padding(start = 18.dp, top = 18.dp, end = 18.dp, bottom = 4.dp),
             text = stringResource(R.string.habitCreation_title)
         )
 
+        Spacer(Modifier.height(24.dp))
+
         Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
             text = stringResource(R.string.habitCreation_habitName_description)
         )
 
+        Spacer(Modifier.height(16.dp))
+
         ValidatedInputField(
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
             controller = habitNameController,
             adapter = remember {
                 TextFieldAdapter(
                     decodeInput = Habit.Name::value,
                     encodeInput = Habit::Name,
                     extractErrorMessage = {
-                        val incorrect =
-                            (it as? IncorrectHabitNewName) ?: return@TextFieldAdapter null
+                        val incorrect = (it as? IncorrectHabitNewName)
+                            ?: return@TextFieldAdapter null
                         when (incorrect.reason) {
                             is IncorrectHabitNewName.Reason.AlreadyUsed -> {
                                 context.getString(R.string.habitCreation_habitNameValidation_used)
@@ -134,15 +138,15 @@ fun HabitCreationScreen(
             label = stringResource(R.string.habitCreation_habitName)
         )
 
+        Spacer(Modifier.height(24.dp))
+
         Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
             text = stringResource(R.string.habitCreation_habitIcon_description)
         )
 
+        Spacer(Modifier.height(16.dp))
+
         SingleSelectionGrid(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                .fillMaxWidth(),
             controller = habitIconSelectionController,
             ceil = {
                 Icon(
@@ -154,19 +158,44 @@ fun HabitCreationScreen(
             }
         )
 
+        Spacer(Modifier.height(24.dp))
+
+        Text(
+            text = "Укажите даты первого и последнего события привычки."
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+
+        Button(
+            onClick = { rangeSelectionShow = true },
+            text = firstTrackRangeState.input.let {
+                val start = formatter.format(it.value.start.date.toJavaLocalDate())
+                val end = formatter.format(it.value.endInclusive.date.toJavaLocalDate())
+                "Первое событие: $start, последнее событие: $end"
+            }
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        Text(
+            text = "Укажите сколько примерно было событий привычки " + when (firstTrackEventCountState.input.timeUnit) {
+                HabitTrack.EventCount.TimeUnit.HOURS -> "каждый час"
+                HabitTrack.EventCount.TimeUnit.DAYS -> "каждый день"
+            }
+        )
+
+        Spacer(Modifier.height(16.dp))
+
         ValidatedInputField(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
             controller = firstTrackEventCountInputController,
             adapter = remember {
                 TextFieldAdapter(
                     decodeInput = { it.value.toString() },
                     encodeInput = {
                         firstTrackEventCountState.input.copy(
-                            value = try {
-                                it.toInt()
-                            } catch (e: Exception) {
-                                0
-                            }
+                            value = it.toIntOrNull() ?: 0
                         )
                     },
                     extractErrorMessage = {
@@ -192,15 +221,13 @@ fun HabitCreationScreen(
                         firstTrackEventCountInputController.changeInput(
                             input.copy(
                                 timeUnit = when (timeUnit) {
-                                    HabitTrack.EventCount.TimeUnit.MINUTES -> HabitTrack.EventCount.TimeUnit.HOURS
                                     HabitTrack.EventCount.TimeUnit.HOURS -> HabitTrack.EventCount.TimeUnit.DAYS
-                                    HabitTrack.EventCount.TimeUnit.DAYS -> HabitTrack.EventCount.TimeUnit.MINUTES
+                                    HabitTrack.EventCount.TimeUnit.DAYS -> HabitTrack.EventCount.TimeUnit.HOURS
                                 }
                             )
                         )
                     },
                     text = when (timeUnit) {
-                        HabitTrack.EventCount.TimeUnit.MINUTES -> "Каждую минуту"
                         HabitTrack.EventCount.TimeUnit.HOURS -> "Каждый час"
                         HabitTrack.EventCount.TimeUnit.DAYS -> "Каждый день"
                     },
@@ -211,36 +238,17 @@ fun HabitCreationScreen(
             }
         )
 
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = "Укажите первое и последнее событие привычки:"
-        )
-
-        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
-        Button(
-            modifier = Modifier.padding(16.dp),
-            onClick = { rangeSelectionShow = true },
-            text = firstTrackRangeState.input.let {
-                val start = formatter.format(it.value.start.date.toJavaLocalDate())
-                val end = formatter.format(it.value.endInclusive.date.toJavaLocalDate())
-                "Первое событие: $start, последнее событие: $end"
-            }
-        )
-
         Spacer(modifier = Modifier.weight(1.0f))
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         Text(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(start = 16.dp, end = 16.dp, top = 32.dp),
+            modifier = Modifier.align(Alignment.End),
             text = stringResource(R.string.habitCreation_finish_description)
         )
 
         RequestButton(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.End),
+            modifier = Modifier.align(Alignment.End),
             requestController = creationController,
             text = stringResource(R.string.habitCreation_finish),
             interactionType = InteractionType.MAIN

@@ -18,8 +18,8 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.LocalHabitIconResources
 import breakbadhabits.android.app.ui.LocalPresentationModule
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.foundation.controller.DataFlowController
-import breakbadhabits.foundation.uikit.DataFlowBox
+import breakbadhabits.foundation.controller.LoadingController
+import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.button.Button
@@ -29,9 +29,9 @@ import breakbadhabits.foundation.uikit.text.Title
 
 @Composable
 fun HabitDetailsScreen(
-    habitController: DataFlowController<Habit?>
+    habitController: LoadingController<Habit?>
 ) {
-    DataFlowBox(habitController) {
+    LoadingBox(habitController) {
         if (it == null) {
             Text("Not exist")
         } else {

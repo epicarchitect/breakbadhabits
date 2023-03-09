@@ -18,7 +18,6 @@ data class HabitTrack(
         val timeUnit: TimeUnit
     ) {
         enum class TimeUnit {
-            MINUTES,
             HOURS,
             DAYS,
         }

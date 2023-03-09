@@ -11,11 +11,11 @@ class ValidatedInputController<INPUT, VALIDATION_RESULT>(
     private val coroutineScope: CoroutineScope,
     initialInput: INPUT,
     private val validation: suspend INPUT.() -> VALIDATION_RESULT?
-) {
+) : StateController<ValidatedInputController.State<INPUT, out VALIDATION_RESULT?>> {
     private val inputState = MutableStateFlow(initialInput)
     private val validationResultState = MutableStateFlow<VALIDATION_RESULT?>(null)
 
-    val state = combine(
+    override val state = combine(
         inputState,
         validationResultState
     ) { input, result ->

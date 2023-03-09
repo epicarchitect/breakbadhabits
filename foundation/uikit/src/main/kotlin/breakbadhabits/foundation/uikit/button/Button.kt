@@ -66,12 +66,10 @@ fun Button(
                 }
             }
 
-            AnimatedContent(targetState = text) {
-                Text(
-                    text = it,
-                    fontWeight = FontWeight.Medium,
-                )
-            }
+            Text(
+                text = text,
+                fontWeight = FontWeight.Medium,
+            )
         }
     }
 }

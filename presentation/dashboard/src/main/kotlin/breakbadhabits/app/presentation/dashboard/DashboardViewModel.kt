@@ -7,7 +7,7 @@ import breakbadhabits.app.logic.datetime.formatter.DateTimeFormatter
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
-import breakbadhabits.foundation.controller.DataFlowController
+import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +24,7 @@ class DashboardViewModel(
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val habitItemsController = DataFlowController(
+    val habitItemsController = LoadingController(
         coroutineScope = viewModelScope,
         flow = habitProvider.provideHabitsFlow().flatMapLatest { habits ->
             if (habits.isEmpty()) flowOf(emptyList())

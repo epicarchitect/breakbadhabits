@@ -9,7 +9,7 @@ import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
-import breakbadhabits.foundation.controller.DataFlowController
+import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.viewmodel.ViewModel
@@ -26,7 +26,7 @@ class HabitTrackCreationViewModel(
     private val habitId: Habit.Id
 ) : ViewModel() {
 
-    val habitController = DataFlowController(
+    val habitController = LoadingController(
         coroutineScope = viewModelScope,
         flow = habitProvider.provideHabitFlowById(habitId)
     )

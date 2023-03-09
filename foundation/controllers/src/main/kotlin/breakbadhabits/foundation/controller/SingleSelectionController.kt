@@ -10,10 +10,10 @@ class SingleSelectionController<T>(
     coroutineScope: CoroutineScope,
     items: List<T>,
     default: (List<T>) -> T
-) {
+) : StateController<SingleSelectionController.State<T>>{
     private val selected = MutableStateFlow(default(items))
 
-    val state = selected.map {
+    override val state = selected.map {
         State(items, it)
     }.stateIn(
         scope = coroutineScope,

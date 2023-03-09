@@ -4,7 +4,6 @@ import breakbadhabits.app.entity.HabitTrack
 
 class HabitTrackSerializer {
     private val timeUnitMap = mapOf(
-        HabitTrack.EventCount.TimeUnit.MINUTES to 0L,
         HabitTrack.EventCount.TimeUnit.HOURS to 1L,
         HabitTrack.EventCount.TimeUnit.DAYS to 2L
     )

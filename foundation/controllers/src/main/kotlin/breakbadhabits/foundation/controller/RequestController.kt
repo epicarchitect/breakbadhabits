@@ -13,11 +13,11 @@ class RequestController(
     private val coroutineScope: CoroutineScope,
     request: suspend () -> Unit,
     isAllowedFlow: Flow<Boolean> = flowOf(true),
-) {
+) : StateController<RequestController.State> {
     private val internalRequest = request
 
     private val requestState = MutableStateFlow<RequestState>(RequestState.NotExecuted())
-    val state = combine(
+    override val state = combine(
         requestState,
         isAllowedFlow
     ) { requestState, isAllowed ->
