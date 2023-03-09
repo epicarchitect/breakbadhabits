@@ -23,8 +23,8 @@ class PresentationModule(private val logicModule: LogicModule) {
         HabitCreationViewModel(
             habitCreator,
             habitNewNameValidator,
-            habitTrackIntervalValidator,
-            habitTrackValueValidator,
+            habitTrackRangeValidator,
+            habitTrackEventCountValidator,
             habitIconProvider
         )
     }
@@ -53,6 +53,9 @@ class PresentationModule(private val logicModule: LogicModule) {
     fun createHabitTrackCreationViewModel(habitId: Habit.Id) = with(logicModule) {
         HabitTrackCreationViewModel(
             habitTrackCreator,
+            habitTrackRangeValidator,
+            habitTrackEventCountValidator,
+            habitProvider,
             habitId
         )
     }

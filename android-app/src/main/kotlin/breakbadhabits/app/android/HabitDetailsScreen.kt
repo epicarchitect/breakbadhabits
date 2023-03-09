@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
+import breakbadhabits.foundation.controller.DataFlowController
 import breakbadhabits.foundation.uikit.DataFlowBox
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IconButton
@@ -25,32 +25,20 @@ import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
 
 @Composable
-fun HabitScreen(
-    habitId: Habit.Id,
-    openHabitEventCreation: () -> Unit,
-    openHabitEventEditing: (habitEventId: Int) -> Unit,
-    openHabitEditing: () -> Unit,
-    showALlEvents: () -> Unit
+fun HabitDetailsScreen(
+    habitController: DataFlowController<Habit?>
 ) {
-    val presentationModule = LocalPresentationModule.current
-    val habitViewModel = viewModel {
-        presentationModule.createHabitDetailsViewModel(habitId)
-    }
-
-    DataFlowBox(habitViewModel.habitController) {
+    DataFlowBox(habitController) {
         if (it == null) {
             Text("Not exist")
         } else {
-            LoadedScreen(habitId, it)
+            LoadedScreen(it)
         }
     }
 }
 
 @Composable
-private fun LoadedScreen(
-    habitId: Habit.Id,
-    habit: Habit
-) {
+private fun LoadedScreen(habit: Habit) {
     val habitIconResources = LocalHabitIconResources.current
     val appDependencies = LocalPresentationModule.current
 //    val habitAbstinenceViewModel = viewModel {

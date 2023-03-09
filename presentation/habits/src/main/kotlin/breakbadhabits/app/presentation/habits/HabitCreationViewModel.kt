@@ -7,10 +7,10 @@ import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.provider.HabitIconProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
-import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackValue
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackIntervalValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackValueValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -23,8 +23,8 @@ import kotlinx.datetime.toLocalDateTime
 class HabitCreationViewModel(
     private val habitCreator: HabitCreator,
     private val habitNameValidator: HabitNewNameValidator,
-    private val trackIntervalValidator: HabitTrackIntervalValidator,
-    private val trackValueValidator: HabitTrackValueValidator,
+    private val trackRangeValidator: HabitTrackRangeValidator,
+    private val trackValueValidator: HabitTrackEventCountValidator,
     habitIconProvider: HabitIconProvider
 ) : ViewModel() {
 
@@ -40,10 +40,10 @@ class HabitCreationViewModel(
         validation = habitNameValidator::validate
     )
 
-    val firstTrackValueInputController = ValidatedInputController(
+    val firstTrackEventCountInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
         initialInput = HabitTrack.EventCount(
-            value = 0,
+            value = 1,
             timeUnit = HabitTrack.EventCount.TimeUnit.DAYS
         ),
         validation = trackValueValidator::validate
@@ -58,7 +58,7 @@ class HabitCreationViewModel(
                 it..it
             }
         ),
-        validation = trackIntervalValidator::validate
+        validation = trackRangeValidator::validate
     )
 
     val creationController = RequestController(
@@ -68,8 +68,8 @@ class HabitCreationViewModel(
             val habitName = habitNameController.validateAndAwait()
             require(habitName is CorrectHabitNewName)
 
-            val firstTrackValue = firstTrackValueInputController.validateAndAwait()
-            require(firstTrackValue is CorrectHabitTrackValue)
+            val firstTrackEventCount = firstTrackEventCountInputController.validateAndAwait()
+            require(firstTrackEventCount is CorrectHabitTrackEventCount)
 
             val firstTrackRange = firstTrackRangeInputController.validateAndAwait()
             require(firstTrackRange is CorrectHabitTrackRange)
@@ -77,21 +77,21 @@ class HabitCreationViewModel(
             habitCreator.createHabit(
                 habitName,
                 habitIcon,
-                firstTrackValue,
+                firstTrackEventCount,
                 firstTrackRange
             )
         },
         isAllowedFlow = combine(
             habitNameController.state,
-            firstTrackValueInputController.state,
+            firstTrackEventCountInputController.state,
             firstTrackRangeInputController.state,
-        ) { name, firstTrackValue, firstTrackRange ->
-            name.validationResult.let {
+        ) { habitName, firstTrackEventCount, firstTrackRange ->
+            habitName.validationResult.let {
                 it == null || it is CorrectHabitNewName
             } && firstTrackRange.validationResult.let {
                 it == null || it is CorrectHabitTrackRange
-            } && firstTrackValue.validationResult.let {
-                it == null || it is CorrectHabitTrackValue
+            } && firstTrackEventCount.validationResult.let {
+                it == null || it is CorrectHabitTrackEventCount
             }
         }
     )

@@ -3,7 +3,7 @@ package breakbadhabits.app.logic.habits.validator
 import breakbadhabits.app.entity.HabitTrack
 import kotlinx.datetime.LocalDateTime
 
-class HabitTrackIntervalValidator(
+class HabitTrackRangeValidator(
     private val getCurrentTime: () -> LocalDateTime
 ) {
 

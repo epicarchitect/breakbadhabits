@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,14 +22,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
-import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackValue
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
-import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackValue
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -53,57 +51,33 @@ import kotlinx.datetime.toKotlinLocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-@Composable
-fun HabitCreationScreen(onFinished: () -> Unit) {
-    val presentationModule = LocalPresentationModule.current
-    val viewModel = viewModel {
-        presentationModule.createHabitCreationViewModel()
-    }
-
-    val creationState by viewModel.creationController.state.collectAsState()
-
-    LaunchedEffect(creationState) {
-        if (creationState.requestState is RequestController.RequestState.Executed) {
-            onFinished()
-        }
-    }
-
-    Content(
-        habitIconSelectionController = viewModel.habitIconSelectionController,
-        habitNameController = viewModel.habitNameController,
-        firstTrackValueInputController = viewModel.firstTrackValueInputController,
-        firstTrackRangeInputController = viewModel.firstTrackRangeInputController,
-        creationController = viewModel.creationController
-    )
-}
 
 @Composable
-private fun Content(
+fun HabitCreationScreen(
     habitIconSelectionController: SingleSelectionController<Habit.IconResource>,
     habitNameController: ValidatedInputController<Habit.Name, ValidatedHabitNewName>,
-    firstTrackValueInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackValue>,
+    firstTrackEventCountInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackEventCount>,
     firstTrackRangeInputController: ValidatedInputController<HabitTrack.Range, ValidatedHabitTrackRange>,
     creationController: RequestController
 ) {
     val context = LocalContext.current
     val habitIconResources = LocalHabitIconResources.current
-    var intervalSelectionShow by remember { mutableStateOf(false) }
+    var rangeSelectionShow by remember { mutableStateOf(false) }
 
-    val habitCountabilityState by firstTrackValueInputController.state.collectAsState()
     val firstTrackRangeState by firstTrackRangeInputController.state.collectAsState()
 
     ClearFocusWhenKeyboardHiddenEffect()
 
-    if (intervalSelectionShow) {
+    if (rangeSelectionShow) {
         IntervalSelectionEpicCalendarDialog(
             onSelected = {
-                intervalSelectionShow = false
+                rangeSelectionShow = false
                 val start = LocalDateTime(it.start.toKotlinLocalDate(), LocalTime(0, 0))
                 val end = LocalDateTime(it.endInclusive.toKotlinLocalDate(), LocalTime(0, 0))
                 firstTrackRangeInputController.changeInput(HabitTrack.Range(start..end))
             },
             onCancel = {
-                intervalSelectionShow = false
+                rangeSelectionShow = false
             },
             maxYearMonth = YearMonth.now(),
             minYearMonth = YearMonth.now().minusYears(10),
@@ -179,7 +153,7 @@ private fun Content(
 
         ValidatedInputField(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            controller = firstTrackValueInputController,
+            controller = firstTrackEventCountInputController,
             adapter = remember {
                 TextFieldAdapter(
                     decodeInput = {
@@ -194,9 +168,9 @@ private fun Content(
                     },
                     extractErrorMessage = {
                         val incorrect =
-                            (it as? IncorrectHabitTrackValue) ?: return@TextFieldAdapter null
+                            (it as? IncorrectHabitTrackEventCount) ?: return@TextFieldAdapter null
                         when (incorrect.reason) {
-                            is IncorrectHabitTrackValue.Reason.Empty -> "Поле не может быть пустым"
+                            is IncorrectHabitTrackEventCount.Reason.Empty -> "Поле не может быть пустым"
                         }
                     }
                 )
@@ -217,7 +191,7 @@ private fun Content(
 
         Button(
             modifier = Modifier.padding(16.dp),
-            onClick = { intervalSelectionShow = true },
+            onClick = { rangeSelectionShow = true },
             text = firstTrackRangeState.input.let {
                 val start = formatter.format(it.value.start.date.toJavaLocalDate())
                 val end = formatter.format(it.value.endInclusive.date.toJavaLocalDate())

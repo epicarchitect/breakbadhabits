@@ -6,7 +6,7 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.serializer.HabitTrackSerializer
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
-import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackValue
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.foundation.datetime.toMillis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +19,7 @@ class HabitCreator(
     suspend fun createHabit(
         name: CorrectHabitNewName,
         iconResource: Habit.IconResource,
-        firstTrackValue: CorrectHabitTrackValue,
+        firstTrackValue: CorrectHabitTrackEventCount,
         firstTrackInterval: CorrectHabitTrackRange
     ) = withContext(Dispatchers.IO) {
         appDatabase.transaction {

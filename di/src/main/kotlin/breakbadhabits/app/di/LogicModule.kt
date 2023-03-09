@@ -13,8 +13,8 @@ import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
 import breakbadhabits.app.logic.habits.serializer.HabitTrackSerializer
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackIntervalValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackValueValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
 
 class LogicModule(private val context: Context) {
 
@@ -54,12 +54,12 @@ class LogicModule(private val context: Context) {
         HabitNewNameValidator(appDatabase, maxNameLength = 30)
     }
 
-    val habitTrackIntervalValidator by lazy {
-        HabitTrackIntervalValidator(getCurrentTime = dateTimeProvider::getCurrentTime)
+    val habitTrackRangeValidator by lazy {
+        HabitTrackRangeValidator(getCurrentTime = dateTimeProvider::getCurrentTime)
     }
 
-    val habitTrackValueValidator by lazy {
-        HabitTrackValueValidator()
+    val habitTrackEventCountValidator by lazy {
+        HabitTrackEventCountValidator()
     }
 
     val habitDeleter by lazy {

@@ -31,7 +31,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.foundation.controller.DataFlowController
@@ -47,16 +46,13 @@ import breakbadhabits.foundation.uikit.text.Title
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DashboardScreen(
+    habitItemsController: DataFlowController<List<DashboardViewModel.HabitItem>>,
     openHabit: (Habit.Id) -> Unit,
     openHabitEventCreation: (Habit.Id) -> Unit,
     openHabitCreation: () -> Unit,
     openSettings: () -> Unit
 ) {
-    val presentationModule = LocalPresentationModule.current
-    val dashboardViewModel = viewModel {
-        presentationModule.createDashboardViewModel()
-    }
-    val itemsState by dashboardViewModel.habitItemsController.state.collectAsState()
+    val itemsState by habitItemsController.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -78,7 +74,7 @@ fun DashboardScreen(
                 }
             }
 
-            DataFlowBox(dashboardViewModel.habitItemsController) { items ->
+            DataFlowBox(habitItemsController) { items ->
                 if (items.isEmpty()) {
                     NotExistsHabits()
                 } else {

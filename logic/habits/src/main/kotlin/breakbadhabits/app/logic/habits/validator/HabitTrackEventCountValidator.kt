@@ -2,30 +2,30 @@ package breakbadhabits.app.logic.habits.validator
 
 import breakbadhabits.app.entity.HabitTrack
 
-class HabitTrackValueValidator {
+class HabitTrackEventCountValidator {
 
     fun validate(data: HabitTrack.EventCount) = data.incorrectReason()?.let {
-        IncorrectHabitTrackValue(data, it)
-    } ?: CorrectHabitTrackValue(data)
+        IncorrectHabitTrackEventCount(data, it)
+    } ?: CorrectHabitTrackEventCount(data)
 
     private fun HabitTrack.EventCount.incorrectReason() = when {
-        value <= 0 -> IncorrectHabitTrackValue.Reason.Empty()
+        value <= 0 -> IncorrectHabitTrackEventCount.Reason.Empty()
         else -> null
     }
 }
 
-sealed class ValidatedHabitTrackValue {
+sealed class ValidatedHabitTrackEventCount {
     abstract val data: HabitTrack.EventCount
 }
 
-data class CorrectHabitTrackValue internal constructor(
+data class CorrectHabitTrackEventCount internal constructor(
     override val data: HabitTrack.EventCount
-) : ValidatedHabitTrackValue()
+) : ValidatedHabitTrackEventCount()
 
-data class IncorrectHabitTrackValue internal constructor(
+data class IncorrectHabitTrackEventCount internal constructor(
     override val data: HabitTrack.EventCount,
     val reason: Reason
-) : ValidatedHabitTrackValue() {
+) : ValidatedHabitTrackEventCount() {
     sealed class Reason {
         class Empty : Reason()
     }

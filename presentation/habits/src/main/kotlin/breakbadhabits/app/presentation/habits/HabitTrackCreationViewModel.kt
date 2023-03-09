@@ -4,103 +4,86 @@ import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
+import breakbadhabits.app.logic.habits.provider.HabitProvider
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
+import breakbadhabits.foundation.controller.DataFlowController
+import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.viewmodel.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class HabitTrackCreationViewModel(
     private val habitTrackCreator: HabitTrackCreator,
+    private val trackRangeValidator: HabitTrackRangeValidator,
+    private val trackEventCountValidator: HabitTrackEventCountValidator,
+    habitProvider: HabitProvider,
     private val habitId: Habit.Id
 ) : ViewModel() {
 
-    private val creationState = MutableStateFlow<CreationState>(CreationState.NotExecuted())
-    private val rangeState = MutableStateFlow<HabitTrack.Range?>(null)
-    private val valueState = MutableStateFlow<HabitTrack.EventCount?>(null)
-    private val commentState = MutableStateFlow<HabitTrack.Comment?>(null)
-
-    val state = combine(
-        creationState,
-        rangeState,
-        valueState,
-        commentState
-    ) { creationState, interval, dailyCount, comment ->
-        when (creationState) {
-            is CreationState.NotExecuted -> State.Input(
-                interval,
-                dailyCount,
-                comment,
-                creationAllowed = interval != null && dailyCount != null
-            )
-
-            is CreationState.Executing -> State.Creating()
-            is CreationState.Executed -> State.Created()
-        }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(),
-        State.Input(
-            range = null,
-            value = null,
-            comment = null,
-            creationAllowed = false
-        )
+    val habitController = DataFlowController(
+        coroutineScope = viewModelScope,
+        flow = habitProvider.provideHabitFlowById(habitId)
     )
 
-    fun startCreation() {
-        val state = state.value
+    val eventCountInputController = ValidatedInputController(
+        coroutineScope = viewModelScope,
+        initialInput = HabitTrack.EventCount(
+            value = 1,
+            timeUnit = HabitTrack.EventCount.TimeUnit.DAYS
+        ),
+        validation = trackEventCountValidator::validate
+    )
 
-        require(state is State.Input)
-        require(state.creationAllowed)
-        requireNotNull(state.range)
-        requireNotNull(state.value)
+    val rangeInputController = ValidatedInputController(
+        coroutineScope = viewModelScope,
+        initialInput = HabitTrack.Range(
+            Clock.System.now().toLocalDateTime(
+                timeZone = TimeZone.currentSystemDefault()
+            ).let {
+                it..it
+            }
+        ),
+        validation = trackRangeValidator::validate
+    )
 
-        creationState.value = CreationState.Executing()
+    val commentInputController = ValidatedInputController<HabitTrack.Comment?, Nothing>(
+        coroutineScope = viewModelScope,
+        initialInput = null,
+        validation = { null }
+    )
 
-        viewModelScope.launch {
+    val creationController = RequestController(
+        coroutineScope = viewModelScope,
+        request = {
+            val eventCount = eventCountInputController.validateAndAwait()
+            require(eventCount is CorrectHabitTrackEventCount)
+            val trackRange = rangeInputController.validateAndAwait()
+            require(trackRange is CorrectHabitTrackRange)
+
+            val trackComment = commentInputController.state.value.input
+
             habitTrackCreator.createHabitTrack(
-                habitId,
-                state.range,
-                state.value,
-                state.comment
+                habitId = habitId,
+                range = trackRange,
+                eventCount = eventCount,
+                comment = trackComment
             )
-            creationState.value = CreationState.Executed()
+        },
+        isAllowedFlow = combine(
+            eventCountInputController.state,
+            rangeInputController.state,
+        ) { trackValue, trackRange ->
+            trackRange.validationResult.let {
+                it == null || it is CorrectHabitTrackRange
+            } && trackValue.validationResult.let {
+                it == null || it is CorrectHabitTrackEventCount
+            }
         }
-    }
-
-    fun updateInterval(range: HabitTrack.Range) {
-        require(state.value is State.Input)
-        rangeState.value = range
-    }
-
-    fun updateDailyCount(value: HabitTrack.EventCount) {
-        require(state.value is State.Input)
-        valueState.value = value
-    }
-
-    fun updateComment(comment: HabitTrack.Comment) {
-        require(state.value is State.Input)
-        commentState.value = comment
-    }
-
-    sealed class State {
-        data class Input(
-            val range: HabitTrack.Range?,
-            val value: HabitTrack.EventCount?,
-            val comment: HabitTrack.Comment?,
-            val creationAllowed: Boolean
-        ) : State()
-
-        class Creating : State()
-        class Created : State()
-    }
-
-    private sealed class CreationState {
-        class NotExecuted : CreationState()
-        class Executing : CreationState()
-        class Executed : CreationState()
-    }
-
+    )
 }
