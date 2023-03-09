@@ -5,17 +5,17 @@ rootProject.name = "breakbadhabits"
 includeBuild("build-logic")
 
 include(
-    ":app:android",
-    ":app:di",
-    ":app:database",
-    ":app:entities",
+    ":android-app",
+    ":di",
+    ":database",
+    ":entities",
 
-    ":app:logic:habits",
-    ":app:logic:datetime:formatter",
-    ":app:logic:datetime:provider",
+    ":logic:habits",
+    ":logic:datetime:formatter",
+    ":logic:datetime:provider",
 
-    ":app:presentation:dashboard",
-    ":app:presentation:habits",
+    ":presentation:dashboard",
+    ":presentation:habits",
 
     ":foundation:controllers",
     ":foundation:coroutines",

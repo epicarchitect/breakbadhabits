@@ -48,5 +48,5 @@ android {
 
 dependencies {
     implementation(projects.foundation.uikit)
-    implementation(projects.app.di)
+    implementation(projects.di)
 }

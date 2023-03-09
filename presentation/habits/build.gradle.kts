@@ -9,5 +9,5 @@ android {
 dependencies {
     api(projects.foundation.controllers)
     api(projects.foundation.viewmodel)
-    api(projects.app.logic.habits)
+    api(projects.logic.habits)
 }

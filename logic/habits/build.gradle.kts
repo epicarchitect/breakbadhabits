@@ -8,6 +8,6 @@ android {
 
 dependencies {
     api(projects.foundation.coroutines)
-    api(projects.app.entities)
-    implementation(projects.app.database)
+    api(projects.entities)
+    implementation(projects.database)
 }
