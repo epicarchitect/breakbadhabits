@@ -181,8 +181,8 @@ fun HabitCreationScreen(
 
         Text(
             text = "Укажите сколько примерно было событий привычки " + when (firstTrackEventCountState.input.timeUnit) {
-                HabitTrack.EventCount.TimeUnit.HOURS -> "каждый час"
-                HabitTrack.EventCount.TimeUnit.DAYS -> "каждый день"
+                HabitTrack.EventCount.TimeUnit.HOURS -> "каждый час."
+                HabitTrack.EventCount.TimeUnit.DAYS -> "каждый день."
             }
         )
 
@@ -240,12 +240,14 @@ fun HabitCreationScreen(
 
         Spacer(modifier = Modifier.weight(1.0f))
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(48.dp))
 
         Text(
             modifier = Modifier.align(Alignment.End),
             text = stringResource(R.string.habitCreation_finish_description)
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         RequestButton(
             modifier = Modifier.align(Alignment.End),
