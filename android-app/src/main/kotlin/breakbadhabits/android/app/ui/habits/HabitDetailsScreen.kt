@@ -16,12 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.LocalHabitIconResources
-import breakbadhabits.android.app.ui.LocalPresentationModule
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.foundation.controller.LoadingController
-import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IconButton
+import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.text.Text

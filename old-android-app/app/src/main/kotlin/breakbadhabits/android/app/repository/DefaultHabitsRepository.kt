@@ -59,11 +59,13 @@ class DefaultHabitsRepository(
 
     override fun habitsFlow() = habitDao.entityListFlow().mapItems { it.toEntity() }
 
-    override suspend fun habitsByIds(ids: List<Int>) = habitDao.entityListByIds(ids).map { it.toEntity() }
+    override suspend fun habitsByIds(ids: List<Int>) =
+        habitDao.entityListByIds(ids).map { it.toEntity() }
 
     override fun habitByIdFlow(id: Int) = habitDao.entityByIdFlow(id).map { it?.toEntity() }
 
-    override suspend fun habitNameExists(habitName: String) = habitDao.countEntitiesByName(habitName) > 0
+    override suspend fun habitNameExists(habitName: String) =
+        habitDao.countEntitiesByName(habitName) > 0
 
     override fun generateNextId() = idGenerator.nextId()
 

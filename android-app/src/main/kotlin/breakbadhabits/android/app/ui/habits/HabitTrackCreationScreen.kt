@@ -29,9 +29,9 @@ import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IntervalSelectionEpicCalendarDialog
+import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton

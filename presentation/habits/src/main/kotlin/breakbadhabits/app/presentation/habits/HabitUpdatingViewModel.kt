@@ -8,7 +8,6 @@ import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.app.logic.habits.updater.HabitUpdater
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
-import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController

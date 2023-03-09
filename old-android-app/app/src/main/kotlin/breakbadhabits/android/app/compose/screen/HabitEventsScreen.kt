@@ -41,7 +41,7 @@ fun HabitEventsScreen(
     openHabitEventEditing: (habitEventId: Int) -> Unit,
 ) {
     val dateTimeFormatter: DateTimeFormatter = appDependencies.dateTimeFormatter
-    val habitIconResources: HabitIconResources =appDependencies.habitIconResources
+    val habitIconResources: HabitIconResources = appDependencies.habitIconResources
 
     val habitNameFeature = rememberEpicStoreEntry {
         appDependencies.createHabitNameFeature(habitId)

@@ -14,8 +14,8 @@ import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
 import breakbadhabits.app.logic.habits.serializer.HabitTrackSerializer
 import breakbadhabits.app.logic.habits.updater.HabitUpdater
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
 
 class LogicModule(private val context: Context) {
 
