@@ -1,4 +1,4 @@
-package breakbadhabits.app.android
+package breakbadhabits.android.app.ui.habits
 
 //@OptIn(ExperimentalFoundationApi::class)
 //@Composable

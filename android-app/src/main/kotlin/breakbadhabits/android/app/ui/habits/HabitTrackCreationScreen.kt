@@ -1,4 +1,4 @@
-package breakbadhabits.app.android
+package breakbadhabits.android.app.ui.habits
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import breakbadhabits.android.app.R
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
@@ -176,7 +177,7 @@ fun HabitTrackCreationScreen(
                 .padding(16.dp)
                 .align(Alignment.End),
             requestController = creationController,
-            text =  stringResource(R.string.habitEventCreation_finish),
+            text = stringResource(R.string.habitEventCreation_finish),
             interactionType = InteractionType.MAIN
         )
     }

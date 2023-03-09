@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "breakbadhabits.app.android"
+    namespace = "breakbadhabits.android.app"
 
     base.archivesName.set("breakbadhabits")
 

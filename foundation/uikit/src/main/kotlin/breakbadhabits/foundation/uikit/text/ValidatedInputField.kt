@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
@@ -58,6 +59,7 @@ fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
     val error = adapter.extractErrorMessage(state.validationResult)
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    LocalDensity
     val finalKeyboardOptions = keyboardOptions ?: remember {
         KeyboardOptions(imeAction = ImeAction.Done)
     }

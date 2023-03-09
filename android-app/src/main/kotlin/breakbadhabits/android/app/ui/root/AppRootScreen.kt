@@ -1,4 +1,4 @@
-package breakbadhabits.app.android
+package breakbadhabits.android.app.ui.root
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -10,6 +10,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import breakbadhabits.android.app.ui.LocalPresentationModule
+import breakbadhabits.android.app.ui.dashboard.DashboardScreen
+import breakbadhabits.android.app.ui.habits.HabitCreationScreen
+import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
+import breakbadhabits.android.app.ui.settings.AppSettingsScreen
+import breakbadhabits.android.app.ui.habits.HabitTrackCreationScreen
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.foundation.controller.RequestController
 

@@ -1,4 +1,4 @@
-package breakbadhabits.app.android
+package breakbadhabits.android.app
 
 import android.app.Application
 import breakbadhabits.app.di.LogicModule

@@ -1,4 +1,4 @@
-package breakbadhabits.app.android
+package breakbadhabits.android.app.ui.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import breakbadhabits.android.app.R
 import breakbadhabits.foundation.uikit.activity.DarkMode
 import breakbadhabits.foundation.uikit.activity.LocalDarkModeManager
 import breakbadhabits.foundation.uikit.button.Button

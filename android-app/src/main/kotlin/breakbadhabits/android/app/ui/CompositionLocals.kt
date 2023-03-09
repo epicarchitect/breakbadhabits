@@ -1,6 +1,7 @@
-package breakbadhabits.app.android
+package breakbadhabits.android.app.ui
 
 import androidx.compose.runtime.compositionLocalOf
+import breakbadhabits.android.app.ui.habits.resources.HabitIconResources
 import breakbadhabits.app.di.PresentationModule
 
 val LocalPresentationModule = compositionLocalOf<PresentationModule> {

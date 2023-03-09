@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalAnimationApi::class)
 
-package breakbadhabits.app.android
+package breakbadhabits.android.app.ui.dashboard
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -31,6 +31,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import breakbadhabits.android.app.R
+import breakbadhabits.android.app.ui.LocalHabitIconResources
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.foundation.controller.DataFlowController

@@ -1,6 +1,7 @@
-package breakbadhabits.app.android
+package breakbadhabits.android.app.ui.habits.resources
 
 import android.content.Context
+import breakbadhabits.android.app.R
 
 class HabitIconResources(private val context: Context) {
 
