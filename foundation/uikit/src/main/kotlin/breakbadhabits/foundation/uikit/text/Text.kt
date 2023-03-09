@@ -56,7 +56,7 @@ fun Text(
         AnimatedContent(
             targetState = text,
             transitionSpec = {
-                fadeIn(tween(220)) with fadeOut(tween(220))
+                fadeIn(tween(150)) with fadeOut(tween(250))
             }
         ) {
             MaterialText(
