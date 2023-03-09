@@ -30,7 +30,8 @@ import breakbadhabits.foundation.uikit.text.Title
 @Composable
 fun HabitDetailsScreen(
     habitController: LoadingController<Habit?>,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onAddTrackClick: () -> Unit,
 ) {
     LoadingBox(habitController) {
         if (it == null) {
@@ -38,7 +39,8 @@ fun HabitDetailsScreen(
         } else {
             LoadedScreen(
                 habit = it,
-                onEditClick = onEditClick
+                onEditClick = onEditClick,
+                onAddTrackClick = onAddTrackClick
             )
         }
     }
@@ -47,47 +49,10 @@ fun HabitDetailsScreen(
 @Composable
 private fun LoadedScreen(
     habit: Habit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onAddTrackClick: () -> Unit,
 ) {
     val habitIconResources = LocalHabitIconResources.current
-    val appDependencies = LocalPresentationModule.current
-//    val habitAbstinenceViewModel = viewModel {
-//        appDependencies.createCurrentHabitAbstinenceViewModel(habitId)
-//    }
-//    val abstinenceState by habitAbstinenceViewModel.state.collectAsState()
-
-//    val habitDeletionViewModel = viewModel {
-//        appDependencies.createHabitIdsViewModel(habitId)
-//    }
-//    val habitDeletionState by habitDeletionViewModel.state.collectAsState()
-
-//    if (habitDeletionState is HabitDeletionViewModel.State.Confirming) {
-//        Dialog(onDismissRequest = habitDeletionViewModel::cancelConfirming) {
-//            Card {
-//                Column(
-//                    modifier = Modifier.padding(16.dp)
-//                ) {
-//                    Text(stringResource(R.string.habit_deleteConfirmation))
-//
-//                    Row(
-//                        modifier = Modifier.align(Alignment.End),
-//                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-//                    ) {
-//                        Button(
-//                            text = stringResource(R.string.cancel),
-//                            onClick = habitDeletionViewModel::cancelConfirming,
-//                            elevation = 0.dp
-//                        )
-//                        Button(
-//                            text = stringResource(R.string.yes),
-//                            onClick = habitDeletionViewModel::confirm,
-//                            elevation = 0.dp
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     Column(
         modifier = Modifier
@@ -115,30 +80,11 @@ private fun LoadedScreen(
                     text = habit.name.value
                 )
 
-//                Text(
-//                    text = when (val state = abstinenceState) {
-//                        is CurrentHabitAbstinenceViewModel.State.Loaded -> state.abstinence.range.toString()
-//                        is CurrentHabitAbstinenceViewModel.State.Loading -> "loading..."
-//                        is CurrentHabitAbstinenceViewModel.State.NotExist -> stringResource(R.string.habit_noEvents)
-//                    }
-//                )
-
                 Button(
                     modifier = Modifier.padding(top = 8.dp),
-                    onClick = {
-                        //openHabitEventCreation()
-                    },
+                    onClick = onAddTrackClick,
                     text = stringResource(R.string.habit_resetTime),
                     interactionType = InteractionType.MAIN
-                )
-
-                Button(
-                    modifier = Modifier.padding(top = 8.dp),
-                    onClick = {
-//                        habitDeletionViewModel::startDeletion
-                    },
-                    text = "Delete",
-                    interactionType = InteractionType.DANGEROUS
                 )
             }
 

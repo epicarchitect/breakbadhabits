@@ -211,6 +211,9 @@ fun AppRootScreen() {
                 habitController = viewModel.habitLoadingController,
                 onEditClick = {
                     navController.navigate(Screens.HabitUpdating.buildRoute(habitId))
+                },
+                onAddTrackClick = {
+                    navController.navigate(Screens.HabitTrackCreation.buildRoute(habitId))
                 }
             )
         }
@@ -237,16 +240,16 @@ fun AppRootScreen() {
 
             DashboardScreen(
                 habitItemsController = viewModel.habitItemsController,
-                openHabit = { habitId ->
+                onHabitClick = { habitId ->
                     navController.navigate(Screens.HabitDetails.buildRoute(habitId))
                 },
-                openHabitEventCreation = { habitId ->
+                onAddTrackClick = { habitId ->
                     navController.navigate(Screens.HabitTrackCreation.buildRoute(habitId))
                 },
-                openHabitCreation = {
+                onHabitCreationClick = {
                     navController.navigate(Screens.HabitCreation.route)
                 },
-                openSettings = {
+                onAppSettingsClick = {
                     navController.navigate(Screens.AppSettings.route)
                 }
             )

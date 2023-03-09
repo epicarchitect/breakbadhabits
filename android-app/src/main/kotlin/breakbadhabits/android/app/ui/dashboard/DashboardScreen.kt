@@ -49,10 +49,10 @@ import breakbadhabits.foundation.uikit.text.Title
 @Composable
 fun DashboardScreen(
     habitItemsController: LoadingController<List<DashboardViewModel.HabitItem>>,
-    openHabit: (Habit.Id) -> Unit,
-    openHabitEventCreation: (Habit.Id) -> Unit,
-    openHabitCreation: () -> Unit,
-    openSettings: () -> Unit
+    onHabitClick: (Habit.Id) -> Unit,
+    onAddTrackClick: (Habit.Id) -> Unit,
+    onHabitCreationClick: () -> Unit,
+    onAppSettingsClick: () -> Unit
 ) {
     val itemsState by habitItemsController.state.collectAsState()
 
@@ -70,7 +70,7 @@ fun DashboardScreen(
                 )
 
                 IconButton(
-                    onClick = openSettings
+                    onClick = onAppSettingsClick
                 ) {
                     Icon(painterResource(R.drawable.ic_settings))
                 }
@@ -82,8 +82,8 @@ fun DashboardScreen(
                 } else {
                     LoadedHabits(
                         items = items,
-                        onResetClick = openHabitEventCreation,
-                        onItemClick = openHabit
+                        onResetClick = onAddTrackClick,
+                        onItemClick = onHabitClick
                     )
                 }
             }
@@ -98,7 +98,7 @@ fun DashboardScreen(
             exit = scaleOut() + fadeOut()
         ) {
             Button(
-                onClick = openHabitCreation,
+                onClick = onHabitCreationClick,
                 text = stringResource(R.string.habits_newHabit),
                 interactionType = InteractionType.MAIN
             )
