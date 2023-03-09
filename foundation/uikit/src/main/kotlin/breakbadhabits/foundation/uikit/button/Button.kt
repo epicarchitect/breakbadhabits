@@ -24,7 +24,7 @@ fun Button(
     shape: Shape = MaterialTheme.shapes.small,
     enabled: Boolean = true,
     interactionType: InteractionType = InteractionType.REGULAR,
-    elevation: Dp = 3.dp,
+    elevation: Dp = 1.dp,
     icon: (@Composable () -> Unit)? = null
 ) {
     MaterialButton(

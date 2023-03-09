@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import breakbadhabits.foundation.uikit.Theme
+import breakbadhabits.foundation.uikit.AppTheme
 
 abstract class ComposeActivity : AppCompatActivity() {
 
@@ -30,7 +30,7 @@ abstract class ComposeActivity : AppCompatActivity() {
                 LocalComposeActivity provides this,
                 LocalDarkModeManager provides darkModeManager
             ) {
-                Theme(
+                AppTheme(
                     isDarkTheme = when (darkModeManager.mode.value) {
                         DarkMode.ENABLED -> true
                         DarkMode.DISABLED -> false

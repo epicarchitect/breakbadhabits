@@ -17,7 +17,7 @@ fun RequestButton(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.small,
     interactionType: InteractionType = InteractionType.REGULAR,
-    elevation: Dp = 3.dp,
+    elevation: Dp = 1.dp,
     icon: (@Composable () -> Unit)? = null
 ) {
     val state by requestController.state.collectAsState()

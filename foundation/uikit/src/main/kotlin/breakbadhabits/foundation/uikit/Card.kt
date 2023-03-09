@@ -17,7 +17,7 @@ import androidx.compose.material3.Card as MaterialCard
 fun Card(
     modifier: Modifier = Modifier,
     border: BorderStroke? = null,
-    elevation: Dp = 3.dp,
+    elevation: Dp = 1.dp,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(backgroundColor),
     content: @Composable BoxScope.() -> Unit
