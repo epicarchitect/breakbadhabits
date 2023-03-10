@@ -33,10 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.LocalDateTimeFormatter
-import breakbadhabits.android.app.ui.LocalHabitIconResources
+import breakbadhabits.android.app.ui.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardHabitItem
-import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.Icon
@@ -159,7 +158,7 @@ private fun LazyItemScope.HabitItem(
     onClick: () -> Unit,
     onResetClick: () -> Unit
 ) {
-    val habitIconResources = LocalHabitIconResources.current
+    val habitIconResources = LocalHabitIconResourceProvider.current
     val dateTimeFormatter = LocalDateTimeFormatter.current
 
     Card(
@@ -184,7 +183,7 @@ private fun LazyItemScope.HabitItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(habitIconResources[item.habit.icon.iconId]),
+                        painter = painterResource(habitIconResources[item.habit.icon].resourceId),
                     )
                     Title(
                         modifier = Modifier.padding(start = 12.dp),

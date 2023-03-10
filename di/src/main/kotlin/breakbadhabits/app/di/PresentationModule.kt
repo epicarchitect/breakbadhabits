@@ -7,7 +7,7 @@ import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
 import breakbadhabits.app.presentation.habits.HabitTrackCreationViewModel
 import breakbadhabits.app.presentation.habits.HabitUpdatingViewModel
 
-class PresentationModule(private val logicModule: LogicModule) {
+class PresentationModule(val logicModule: LogicModule) {
     fun createDashboardViewModel() = with(logicModule) {
         DashboardViewModel(
             habitProvider,

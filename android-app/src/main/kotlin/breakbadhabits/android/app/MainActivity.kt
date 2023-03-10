@@ -5,9 +5,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import breakbadhabits.android.app.ui.DateTimeFormatter
 import breakbadhabits.android.app.ui.LocalDateTimeFormatter
-import breakbadhabits.android.app.ui.LocalHabitIconResources
+import breakbadhabits.android.app.ui.LocalHabitIconResourceProvider
 import breakbadhabits.android.app.ui.LocalPresentationModule
-import breakbadhabits.android.app.ui.habits.resources.HabitIconResources
+import breakbadhabits.android.app.ui.habits.resources.HabitIconResourceProvider
 import breakbadhabits.android.app.ui.root.AppRootScreen
 import breakbadhabits.foundation.uikit.activity.ComposeActivity
 
@@ -17,9 +17,12 @@ class MainActivity : ComposeActivity() {
 
     @Composable
     override fun Content() {
+        val presentationModule = BreakBadHabitsApp.instance.presentationModule
         CompositionLocalProvider(
-            LocalPresentationModule provides BreakBadHabitsApp.instance.presentationModule,
-            LocalHabitIconResources provides HabitIconResources(LocalContext.current),
+            LocalPresentationModule provides presentationModule,
+            LocalHabitIconResourceProvider provides HabitIconResourceProvider(
+                habitIconProvider = presentationModule.logicModule.habitIconProvider
+            ),
             LocalDateTimeFormatter provides DateTimeFormatter(
                 secondText = getString(R.string.s),
                 minuteText = getString(R.string.m),

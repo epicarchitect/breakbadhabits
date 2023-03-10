@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.ui.LocalHabitIconResources
+import breakbadhabits.android.app.ui.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
@@ -42,7 +42,7 @@ fun HabitEditingScreen(
     deletionController: RequestController,
 ) {
     val context = LocalContext.current
-    val habitIconResources = LocalHabitIconResources.current
+    val habitIconResources = LocalHabitIconResourceProvider.current
     ClearFocusWhenKeyboardHiddenEffect()
 
     Column(
@@ -106,12 +106,12 @@ fun HabitEditingScreen(
 
         SingleSelectionGrid(
             controller = habitIconSelectionController,
-            ceil = {
+            ceil = { icon ->
                 Icon(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(24.dp),
-                    painter = painterResource(habitIconResources[it.iconId])
+                    painter = painterResource(habitIconResources[icon].resourceId)
                 )
             }
         )

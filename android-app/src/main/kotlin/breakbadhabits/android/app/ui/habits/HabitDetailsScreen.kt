@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.LocalDateTimeFormatter
-import breakbadhabits.android.app.ui.LocalHabitIconResources
+import breakbadhabits.android.app.ui.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAbstinence
 import breakbadhabits.foundation.controller.LoadingController
@@ -35,7 +35,7 @@ fun HabitDetailsScreen(
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
 ) {
-    val habitIconResources = LocalHabitIconResources.current
+    val habitIconResources = LocalHabitIconResourceProvider.current
     val dateTimeFormatter = LocalDateTimeFormatter.current
 
     LoadingBox(habitController) { habit ->
@@ -63,7 +63,7 @@ fun HabitDetailsScreen(
                     modifier = Modifier
                         .size(44.dp)
                         .align(Alignment.CenterHorizontally),
-                    painter = painterResource(habitIconResources[habit.icon.iconId])
+                    painter = painterResource(habitIconResources[habit.icon].resourceId)
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

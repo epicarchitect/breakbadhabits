@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.ui.LocalHabitIconResources
+import breakbadhabits.android.app.ui.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
@@ -63,7 +63,7 @@ fun HabitCreationScreen(
     creationController: RequestController
 ) {
     val context = LocalContext.current
-    val habitIconResources = LocalHabitIconResources.current
+    val habitIconResources = LocalHabitIconResourceProvider.current
     var rangeSelectionShow by remember { mutableStateOf(false) }
 
     val firstTrackEventCountState by firstTrackEventCountInputController.state.collectAsState()
@@ -148,12 +148,12 @@ fun HabitCreationScreen(
 
         SingleSelectionGrid(
             controller = habitIconSelectionController,
-            ceil = {
+            ceil = { icon ->
                 Icon(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(24.dp),
-                    painter = painterResource(habitIconResources[it.iconId])
+                    painter = painterResource(habitIconResources[icon].resourceId)
                 )
             }
         )
