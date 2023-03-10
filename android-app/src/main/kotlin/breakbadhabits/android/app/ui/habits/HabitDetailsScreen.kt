@@ -138,11 +138,19 @@ fun HabitDetailsScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Title(
-                            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                            text = stringResource(R.string.habitAnalyze_statistics_title)
-                        )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = 16.dp,
+                                top = 16.dp,
+                                end = 16.dp,
+                                bottom = 8.dp
+                            )
+                    ) {
+                        Title(stringResource(R.string.habitAnalyze_statistics_title))
+
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         LoadingBox(statisticsController) { statistics ->
                             val data = remember(statistics) {
@@ -200,7 +208,8 @@ fun HabitDetailsScreen(
 
                             Statistics(
                                 modifier = Modifier.fillMaxWidth(),
-                                statistics = data
+                                statistics = data,
+                                horizontalItemPadding = 0.dp
                             )
                         }
                     }
