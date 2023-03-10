@@ -21,19 +21,13 @@ class DateTimeFormatter(
     }
 
     fun formatDistance(
-        range: ClosedRange<LocalDateTime>,
+        distanceInMillis: Long,
         maxValueCount: Int = 4
     ) = buildString {
-        val timeInMillis = if (range.endInclusive > range.start) {
-            range.endInclusive.toMillis() - range.start.toMillis()
-        } else {
-            range.start.toMillis() - range.endInclusive.toMillis()
-        }
-
-        val seconds = timeInMillis / 1000 % 60
-        val minutes = timeInMillis / 1000 / 60 % 60
-        val hours = timeInMillis / 1000 / 60 / 60 % 24
-        val days = timeInMillis / 1000 / 60 / 60 / 24
+        val seconds = distanceInMillis / 1000 % 60
+        val minutes = distanceInMillis / 1000 / 60 % 60
+        val hours = distanceInMillis / 1000 / 60 / 60 % 24
+        val days = distanceInMillis / 1000 / 60 / 60 / 24
 
         val appendDays = days != 0L
         val appendHours = hours != 0L && (!appendDays || maxValueCount > 1)
@@ -63,4 +57,16 @@ class DateTimeFormatter(
             append(secondText)
         }
     }
+
+    fun formatDistance(
+        range: ClosedRange<LocalDateTime>,
+        maxValueCount: Int = 4
+    ) = formatDistance(
+        distanceInMillis = if (range.endInclusive > range.start) {
+            range.endInclusive.toMillis() - range.start.toMillis()
+        } else {
+            range.start.toMillis() - range.endInclusive.toMillis()
+        },
+        maxValueCount = maxValueCount
+    )
 }

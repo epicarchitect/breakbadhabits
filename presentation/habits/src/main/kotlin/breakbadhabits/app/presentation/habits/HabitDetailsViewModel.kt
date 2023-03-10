@@ -20,6 +20,11 @@ class HabitDetailsViewModel(
 
     val habitAbstinenceController = LoadingController(
         coroutineScope = viewModelScope,
-        flow = habitAbstinenceProvider.provideFlowById(habitId)
+        flow = habitAbstinenceProvider.provideCurrentAbstinenceFlowById(habitId)
+    )
+
+    val abstinenceListController = LoadingController(
+        coroutineScope = viewModelScope,
+        flow = habitAbstinenceProvider.provideAbstinenceListById(habitId)
     )
 }

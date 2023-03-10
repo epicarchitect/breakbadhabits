@@ -1,8 +1,6 @@
 package breakbadhabits.app.presentation.dashboard
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitAbstinence
 import breakbadhabits.app.logic.habits.provider.HabitAbstinenceProvider
 import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.foundation.controller.LoadingController
@@ -24,7 +22,7 @@ class DashboardViewModel(
             if (habits.isEmpty()) flowOf(emptyList())
             else combine(
                 habits.map { habit ->
-                    habitAbstinenceProvider.provideFlowById(habit.id)
+                    habitAbstinenceProvider.provideCurrentAbstinenceFlowById(habit.id)
                 }
             ) { abstinenceList ->
                 habits.mapIndexed { index, habit ->

@@ -210,6 +210,7 @@ fun AppRootScreen() {
             HabitDetailsScreen(
                 habitController = viewModel.habitController,
                 habitAbstinenceController = viewModel.habitAbstinenceController,
+                abstinenceListController = viewModel.abstinenceListController,
                 onEditClick = {
                     navController.navigate(Screens.HabitUpdating.buildRoute(habitId))
                 },

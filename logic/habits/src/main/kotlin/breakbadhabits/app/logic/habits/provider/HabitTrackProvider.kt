@@ -23,6 +23,15 @@ class HabitTrackProvider(
             it.executeAsOneOrNull()?.toEntity()
         }
 
+    fun provideByHabitId(id: Habit.Id) = appDatabase.habitTrackQueries
+        .selectByHabitId(id.value)
+        .asFlow()
+        .map {
+            it.executeAsList().map {
+                it.toEntity()
+            }
+        }
+
     fun provideByHabitIdAndMaxRangeEnd(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitIdAndMaxRangeEnd(id.value)
         .asFlow()
