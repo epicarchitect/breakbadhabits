@@ -11,3 +11,7 @@ val LocalPresentationModule = compositionLocalOf<PresentationModule> {
 val LocalHabitIconResources = compositionLocalOf<HabitIconResources> {
     error("LocalHabitIconResources not provided")
 }
+
+val LocalDateTimeFormatter = compositionLocalOf<DateTimeFormatter> {
+    error("LocalDateTimeFormatter not provided")
+}

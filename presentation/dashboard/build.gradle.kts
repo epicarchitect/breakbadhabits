@@ -10,6 +10,5 @@ dependencies {
     api(projects.foundation.controllers)
     api(projects.foundation.viewmodel)
     api(projects.logic.habits)
-    api(projects.logic.datetime.formatter)
-    api(projects.logic.datetime.provider)
+    api(projects.logic.datetime)
 }

@@ -32,8 +32,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.ui.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.LocalHabitIconResources
 import breakbadhabits.app.entity.Habit
+import breakbadhabits.app.presentation.dashboard.DashboardHabitItem
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.uikit.Card
@@ -48,7 +50,7 @@ import breakbadhabits.foundation.uikit.text.Title
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DashboardScreen(
-    habitItemsController: LoadingController<List<DashboardViewModel.HabitItem>>,
+    habitItemsController: LoadingController<List<DashboardHabitItem>>,
     onHabitClick: (Habit.Id) -> Unit,
     onAddTrackClick: (Habit.Id) -> Unit,
     onHabitCreationClick: () -> Unit,
@@ -108,7 +110,7 @@ fun DashboardScreen(
 
 @Composable
 private fun LoadedHabits(
-    items: List<DashboardViewModel.HabitItem>,
+    items: List<DashboardHabitItem>,
     onResetClick: (Habit.Id) -> Unit,
     onItemClick: (Habit.Id) -> Unit
 ) {
@@ -153,11 +155,12 @@ private fun NotExistsHabits() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LazyItemScope.HabitItem(
-    item: DashboardViewModel.HabitItem,
+    item: DashboardHabitItem,
     onClick: () -> Unit,
     onResetClick: () -> Unit
 ) {
     val habitIconResources = LocalHabitIconResources.current
+    val dateTimeFormatter = LocalDateTimeFormatter.current
 
     Card(
         modifier = Modifier
@@ -198,7 +201,9 @@ private fun LazyItemScope.HabitItem(
 
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
-                        text = item.abstinenceTime ?: stringResource(R.string.habits_noEvents)
+                        text = item.abstinence?.let {
+                            dateTimeFormatter.formatDistance(it.range.value)
+                        } ?: stringResource(R.string.habits_noEvents)
                     )
                 }
             }

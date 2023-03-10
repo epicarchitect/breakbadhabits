@@ -3,11 +3,11 @@ package breakbadhabits.app.di
 import android.content.Context
 import breakbadhabits.app.database.AppDatabaseFactory
 import breakbadhabits.app.database.IdGenerator
-import breakbadhabits.app.logic.datetime.formatter.DateTimeFormatter
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
 import breakbadhabits.app.logic.habits.deleter.HabitDeleter
+import breakbadhabits.app.logic.habits.provider.HabitAbstinenceProvider
 import breakbadhabits.app.logic.habits.provider.HabitIconProvider
 import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
@@ -34,16 +34,14 @@ class LogicModule(private val context: Context) {
         HabitTrackSerializer()
     }
 
-    val dateTimeProvider by lazy {
+    private val dateTimeProvider by lazy {
         DateTimeProvider(updatePeriodMillis = 1000L)
     }
 
-    val dateTimeFormatter by lazy {
-        DateTimeFormatter(
-            secondText = context.getString(R.string.s),
-            minuteText = context.getString(R.string.m),
-            hourText = context.getString(R.string.h),
-            dayText = context.getString(R.string.d),
+    val habitAbstinenceProvider by lazy {
+        HabitAbstinenceProvider(
+            habitTrackProvider,
+            dateTimeProvider
         )
     }
 

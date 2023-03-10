@@ -1,9 +1,9 @@
 package breakbadhabits.android.app.ui.habits
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -15,8 +15,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.ui.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.LocalHabitIconResources
 import breakbadhabits.app.entity.Habit
+import breakbadhabits.app.entity.HabitAbstinence
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IconButton
@@ -29,69 +31,69 @@ import breakbadhabits.foundation.uikit.text.Title
 @Composable
 fun HabitDetailsScreen(
     habitController: LoadingController<Habit?>,
-    onEditClick: () -> Unit,
-    onAddTrackClick: () -> Unit,
-) {
-    LoadingBox(habitController) {
-        if (it == null) {
-            Text("Not exist")
-        } else {
-            LoadedScreen(
-                habit = it,
-                onEditClick = onEditClick,
-                onAddTrackClick = onAddTrackClick
-            )
-        }
-    }
-}
-
-@Composable
-private fun LoadedScreen(
-    habit: Habit,
+    habitAbstinenceController: LoadingController<HabitAbstinence?>,
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
 ) {
     val habitIconResources = LocalHabitIconResources.current
+    val dateTimeFormatter = LocalDateTimeFormatter.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp)
-        ) {
+    LoadingBox(habitController) { habit ->
+        if (habit == null) {
+            Text("Not exist")
+        } else {
+            IconButton(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.TopEnd),
+                onClick = onEditClick
+            ) {
+                Icon(painterResource(R.drawable.ic_settings))
+            }
+
             Column(
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
             ) {
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Icon(
-                    modifier = Modifier.size(44.dp),
+                    modifier = Modifier
+                        .size(44.dp)
+                        .align(Alignment.CenterHorizontally),
                     painter = painterResource(habitIconResources[habit.icon.iconId])
                 )
 
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Title(
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = habit.name.value
                 )
 
+                Spacer(modifier = Modifier.height(8.dp))
+
+                LoadingBox(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    controller = habitAbstinenceController
+                ) { abstinence ->
+                    Text(
+                        text = abstinence?.let {
+                            dateTimeFormatter.formatDistance(it.range.value)
+                        } ?: stringResource(R.string.habits_noEvents)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Button(
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                     onClick = onAddTrackClick,
                     text = stringResource(R.string.habit_resetTime),
                     interactionType = InteractionType.MAIN
                 )
-            }
-
-            IconButton(
-                modifier = Modifier.align(Alignment.TopEnd),
-                onClick = onEditClick
-            ) {
-                Icon(painterResource(R.drawable.ic_settings))
             }
         }
     }

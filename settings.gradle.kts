@@ -11,8 +11,7 @@ include(
     ":entities",
 
     ":logic:habits",
-    ":logic:datetime:formatter",
-    ":logic:datetime:provider",
+    ":logic:datetime",
 
     ":presentation:dashboard",
     ":presentation:habits",

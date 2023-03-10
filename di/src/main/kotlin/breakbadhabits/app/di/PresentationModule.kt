@@ -1,21 +1,17 @@
 package breakbadhabits.app.di
 
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.app.presentation.habits.HabitCreationViewModel
 import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
 import breakbadhabits.app.presentation.habits.HabitTrackCreationViewModel
-import breakbadhabits.app.presentation.habits.HabitTrackViewModel
 import breakbadhabits.app.presentation.habits.HabitUpdatingViewModel
 
 class PresentationModule(private val logicModule: LogicModule) {
     fun createDashboardViewModel() = with(logicModule) {
         DashboardViewModel(
             habitProvider,
-            habitTrackProvider,
-            dateTimeProvider,
-            dateTimeFormatter
+            habitAbstinenceProvider
         )
     }
 
@@ -43,14 +39,8 @@ class PresentationModule(private val logicModule: LogicModule) {
     fun createHabitDetailsViewModel(habitId: Habit.Id) = with(logicModule) {
         HabitDetailsViewModel(
             habitProvider,
+            habitAbstinenceProvider,
             habitId
-        )
-    }
-
-    fun createHabitTrackViewModel(habitTrackId: HabitTrack.Id) = with(logicModule) {
-        HabitTrackViewModel(
-            habitTrackProvider,
-            habitTrackId
         )
     }
 

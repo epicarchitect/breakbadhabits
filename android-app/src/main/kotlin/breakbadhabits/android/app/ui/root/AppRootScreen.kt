@@ -155,7 +155,7 @@ fun AppRootScreen() {
                 eventCountInputController = habitTrackCreationViewModel.eventCountInputController,
                 rangeInputController = habitTrackCreationViewModel.rangeInputController,
                 creationController = habitTrackCreationViewModel.creationController,
-                habitController = habitDetailsViewModel.habitLoadingController,
+                habitController = habitDetailsViewModel.habitController,
                 commentInputController = habitTrackCreationViewModel.commentInputController
             )
         }
@@ -208,7 +208,8 @@ fun AppRootScreen() {
             }
 
             HabitDetailsScreen(
-                habitController = viewModel.habitLoadingController,
+                habitController = viewModel.habitController,
+                habitAbstinenceController = viewModel.habitAbstinenceController,
                 onEditClick = {
                     navController.navigate(Screens.HabitUpdating.buildRoute(habitId))
                 },

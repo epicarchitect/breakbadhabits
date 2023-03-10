@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "breakbadhabits.app.logic.datetime.provider"
+    namespace = "breakbadhabits.app.logic.datetime"
 }
 
 dependencies {

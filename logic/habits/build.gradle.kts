@@ -10,4 +10,5 @@ dependencies {
     api(projects.foundation.coroutines)
     api(projects.entities)
     implementation(projects.database)
+    implementation(projects.logic.datetime)
 }
