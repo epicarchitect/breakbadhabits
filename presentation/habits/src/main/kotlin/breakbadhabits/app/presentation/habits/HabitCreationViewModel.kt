@@ -22,7 +22,7 @@ import kotlinx.datetime.toLocalDateTime
 
 class HabitCreationViewModel(
     private val habitCreator: HabitCreator,
-    private val habitNameValidator: HabitNewNameValidator,
+    private val habitNewNameValidator: HabitNewNameValidator,
     private val trackRangeValidator: HabitTrackRangeValidator,
     private val trackValueValidator: HabitTrackEventCountValidator,
     habitIconProvider: HabitIconProvider
@@ -37,7 +37,7 @@ class HabitCreationViewModel(
     val habitNameController = ValidatedInputController(
         coroutineScope = viewModelScope,
         initialInput = Habit.Name(""),
-        validation = habitNameValidator::validate
+        validation = habitNewNameValidator::validate
     )
 
     val firstTrackEventCountInputController = ValidatedInputController(

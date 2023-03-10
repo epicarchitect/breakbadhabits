@@ -42,15 +42,6 @@ fun HabitDetailsScreen(
         if (habit == null) {
             Text("Not exist")
         } else {
-            IconButton(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.TopEnd),
-                onClick = onEditClick
-            ) {
-                Icon(painterResource(R.drawable.ic_settings))
-            }
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -95,6 +86,15 @@ fun HabitDetailsScreen(
                     interactionType = InteractionType.MAIN
                 )
             }
+        }
+
+        IconButton(
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.TopEnd),
+            onClick = onEditClick
+        ) {
+            Icon(painterResource(R.drawable.ic_settings))
         }
     }
 }

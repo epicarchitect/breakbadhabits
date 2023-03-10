@@ -12,6 +12,7 @@ import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.viewmodel.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -19,12 +20,12 @@ class HabitUpdatingViewModel(
     private val habitProvider: HabitProvider,
     private val habitUpdater: HabitUpdater,
     private val habitDeleter: HabitDeleter,
-    private val habitNameValidator: HabitNewNameValidator,
+    private val habitNewNameValidator: HabitNewNameValidator,
     habitIconProvider: HabitIconProvider,
     private val habitId: Habit.Id,
 ) : ViewModel() {
 
-    private var initialHabit: Habit? = null
+    private val initialHabit = MutableStateFlow<Habit?>(null)
 
     val habitIconSelectionController = SingleSelectionController(
         coroutineScope = viewModelScope,
@@ -36,9 +37,10 @@ class HabitUpdatingViewModel(
         coroutineScope = viewModelScope,
         initialInput = Habit.Name(""),
         validation = {
-            if (initialHabit == null) null
-            else if (this == initialHabit?.name) null
-            else habitNameValidator.validate(this)
+            habitNewNameValidator.validate(
+                data = this,
+                initial = initialHabit.value?.name
+            )
         }
     )
 
@@ -58,8 +60,9 @@ class HabitUpdatingViewModel(
         isAllowedFlow = combine(
             habitNameController.state,
             habitIconSelectionController.state,
-        ) { name, icon ->
-            (initialHabit?.name != name.input || initialHabit?.icon != icon.selectedItem)
+            initialHabit
+        ) { name, icon, initialHabit ->
+            (initialHabit?.name != name.input || initialHabit.icon != icon.selectedItem)
                     && name.validationResult.let { it == null || it is CorrectHabitNewName }
         }
     )
@@ -74,9 +77,9 @@ class HabitUpdatingViewModel(
     init {
         viewModelScope.launch {
             val habit = checkNotNull(habitProvider.provideHabitById(habitId))
+            initialHabit.value = habit
             habitNameController.changeInput(habit.name)
             habitIconSelectionController.select(habit.icon)
-            initialHabit = habit
         }
     }
 }

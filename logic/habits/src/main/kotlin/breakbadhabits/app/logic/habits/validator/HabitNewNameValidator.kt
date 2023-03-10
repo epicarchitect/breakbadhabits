@@ -10,11 +10,15 @@ class HabitNewNameValidator(
     private val maxNameLength: Int
 ) {
 
-    suspend fun validate(data: Habit.Name) = data.incorrectReason()?.let {
+    suspend fun validate(
+        data: Habit.Name,
+        initial: Habit.Name? = null
+    ) = data.incorrectReason(initial)?.let {
         IncorrectHabitNewName(data, it)
     } ?: CorrectHabitNewName(data)
 
-    private suspend fun Habit.Name.incorrectReason() = when {
+    private suspend fun Habit.Name.incorrectReason(initial: Habit.Name? = null) = when {
+        initial == this -> null
         value.isEmpty() -> IncorrectHabitNewName.Reason.Empty()
         value.length > maxNameLength -> IncorrectHabitNewName.Reason.TooLong(maxNameLength)
         value.isAlreadyUsed() -> IncorrectHabitNewName.Reason.AlreadyUsed()
