@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,7 @@ import breakbadhabits.android.app.ui.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAbstinence
+import breakbadhabits.app.entity.HabitStatistics
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.toMillis
 import breakbadhabits.foundation.uikit.Card
@@ -28,6 +30,8 @@ import breakbadhabits.foundation.uikit.Histogram
 import breakbadhabits.foundation.uikit.Icon
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
+import breakbadhabits.foundation.uikit.StatisticData
+import breakbadhabits.foundation.uikit.Statistics
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.text.Text
@@ -38,11 +42,13 @@ fun HabitDetailsScreen(
     habitController: LoadingController<Habit?>,
     habitAbstinenceController: LoadingController<HabitAbstinence?>,
     abstinenceListController: LoadingController<List<HabitAbstinence>>,
+    statisticsController: LoadingController<HabitStatistics>,
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
 ) {
     val habitIconResources = LocalHabitIconResourceProvider.current
     val dateTimeFormatter = LocalDateTimeFormatter.current
+    val context = LocalContext.current
 
     LoadingBox(habitController) { habit ->
         if (habit == null) {
@@ -125,6 +131,77 @@ fun HabitDetailsScreen(
                             } else {
                                 Text("No data for chart")
                             }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Title(
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                            text = stringResource(R.string.habitAnalyze_statistics_title)
+                        )
+
+                        LoadingBox(statisticsController) { statistics ->
+                            val data = remember(statistics) {
+                                listOfNotNull(
+                                    statistics.abstinence?.let {
+                                        StatisticData(
+                                            name = context.getString(R.string.habitAnalyze_statistics_averageAbstinenceTime),
+                                            value = dateTimeFormatter.formatDistance(
+                                                distanceInMillis = it.averageTime,
+                                                maxValueCount = 2
+                                            )
+                                        )
+                                    },
+                                    statistics.abstinence?.let {
+                                        StatisticData(
+                                            name = context.getString(R.string.habitAnalyze_statistics_maxAbstinenceTime),
+                                            value = dateTimeFormatter.formatDistance(
+                                                distanceInMillis = it.maxTime,
+                                                maxValueCount = 2
+                                            )
+                                        )
+                                    },
+                                    statistics.abstinence?.let {
+                                        StatisticData(
+                                            name = context.getString(R.string.habitAnalyze_statistics_minAbstinenceTime),
+                                            value = dateTimeFormatter.formatDistance(
+                                                distanceInMillis = it.minTime,
+                                                maxValueCount = 2
+                                            )
+                                        )
+                                    },
+                                    statistics.abstinence?.let {
+                                        StatisticData(
+                                            name = context.getString(R.string.habitAnalyze_statistics_timeFromFirstEvent),
+                                            value = dateTimeFormatter.formatDistance(
+                                                distanceInMillis = it.timeSinceFirstTrack,
+                                                maxValueCount = 2
+                                            )
+                                        )
+                                    },
+                                    StatisticData(
+                                        name = context.getString(R.string.habitAnalyze_statistics_countEventsInCurrentMonth),
+                                        value = statistics.eventCount.currentMonthCount.toString()
+                                    ),
+                                    StatisticData(
+                                        name = context.getString(R.string.habitAnalyze_statistics_countEventsInPreviousMonth),
+                                        value = statistics.eventCount.previousMonthCount.toString()
+                                    ),
+                                    StatisticData(
+                                        name = context.getString(R.string.habitAnalyze_statistics_countEvents),
+                                        value = statistics.eventCount.totalCount.toString()
+                                    )
+                                )
+                            }
+
+                            Statistics(
+                                modifier = Modifier.fillMaxWidth(),
+                                statistics = data
+                            )
                         }
                     }
                 }

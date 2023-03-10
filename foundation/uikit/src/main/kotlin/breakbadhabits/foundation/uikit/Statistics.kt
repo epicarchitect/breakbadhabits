@@ -3,6 +3,7 @@ package breakbadhabits.foundation.uikit
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
@@ -24,7 +25,6 @@ fun Statistics(
     statistics: List<StatisticData>,
     verticalItemPadding: Dp = 8.dp,
     horizontalItemPadding: Dp = 16.dp,
-    nameTextFraction: Float = 0.6f
 ) {
     Column(
         modifier = modifier
@@ -40,13 +40,11 @@ fun Statistics(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(nameTextFraction),
-                    text = item.name
-                )
-                Text(
-                    text = item.value
-                )
+                Text(item.name)
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(item.value)
             }
 
             if (item != statistics.last()) {

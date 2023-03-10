@@ -211,12 +211,13 @@ fun AppRootScreen() {
                 habitController = viewModel.habitController,
                 habitAbstinenceController = viewModel.habitAbstinenceController,
                 abstinenceListController = viewModel.abstinenceListController,
+                statisticsController = viewModel.statisticsController,
                 onEditClick = {
                     navController.navigate(Screens.HabitUpdating.buildRoute(habitId))
                 },
                 onAddTrackClick = {
                     navController.navigate(Screens.HabitTrackCreation.buildRoute(habitId))
-                }
+                },
             )
         }
 

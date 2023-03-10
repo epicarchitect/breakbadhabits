@@ -40,6 +40,7 @@ class PresentationModule(val logicModule: LogicModule) {
         HabitDetailsViewModel(
             habitProvider,
             habitAbstinenceProvider,
+            habitStatisticsProvider,
             habitId
         )
     }
