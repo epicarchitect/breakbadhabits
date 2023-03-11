@@ -155,8 +155,7 @@ fun AppRootScreen() {
                 rangeInputController = habitTrackCreationViewModel.rangeInputController,
                 creationController = habitTrackCreationViewModel.creationController,
                 habitController = habitDetailsViewModel.habitController,
-                commentInputController = habitTrackCreationViewModel.commentInputController,
-                habitTracksController = habitTrackCreationViewModel.habitTracksController
+                commentInputController = habitTrackCreationViewModel.commentInputController
             )
         }
 

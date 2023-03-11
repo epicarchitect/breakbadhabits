@@ -4,12 +4,10 @@ import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
-import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
-import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.viewmodel.ViewModel
@@ -22,7 +20,6 @@ class HabitTrackCreationViewModel(
     private val habitTrackCreator: HabitTrackCreator,
     private val trackRangeValidator: HabitTrackRangeValidator,
     private val trackEventCountValidator: HabitTrackEventCountValidator,
-    habitTrackProvider: HabitTrackProvider,
     private val habitId: Habit.Id
 ) : ViewModel() {
 
@@ -51,11 +48,6 @@ class HabitTrackCreationViewModel(
         coroutineScope = viewModelScope,
         initialInput = null,
         validation = { null }
-    )
-
-    val habitTracksController = LoadingController(
-        coroutineScope = viewModelScope,
-        flow = habitTrackProvider.provideByHabitId(habitId)
     )
 
     val creationController = RequestController(
