@@ -1,5 +1,6 @@
 package breakbadhabits.foundation.uikit
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -21,8 +22,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.listSaver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,8 +48,8 @@ fun EpicCalendar(
     state: EpicCalendarState,
     onDayClick: ((EpicCalendarState.Day) -> Unit)? = null,
     horizontalInnerPadding: Dp = 0.dp,
-    rangeColor: Color = MaterialTheme.colorScheme.primary,
-    rangeContentColor: Color = MaterialTheme.colorScheme.onPrimary
+    rangeColor: @Composable (EpicCalendarState.Range) -> Color = { MaterialTheme.colorScheme.primary },
+    rangeContentColor: @Composable (EpicCalendarState.Range) -> Color = { MaterialTheme.colorScheme.onPrimary }
 ) {
     var cellWidth by remember { mutableStateOf(Dp.Unspecified) }
     val cellHeight = remember { 44.dp }
@@ -101,7 +100,7 @@ fun EpicCalendar(
                                     .height(cellHeight)
                                     .background(
                                         if (isDayAtStartOfInterval == true || range == null) Color.Transparent
-                                        else rangeColor
+                                        else rangeColor(range)
                                     )
                             )
                         }
@@ -140,7 +139,7 @@ fun EpicCalendar(
                                         }
                                     }
                                 )
-                                .background(if (range != null) rangeColor else Color.Transparent),
+                                .background(if (range != null) rangeColor(range) else Color.Transparent),
                         ) {
                             Text(
                                 modifier = Modifier
@@ -154,7 +153,7 @@ fun EpicCalendar(
                                     },
                                 text = day.date.dayOfMonth.toString(),
                                 textAlign = TextAlign.Center,
-                                color = if (range != null) rangeContentColor else Color.Unspecified
+                                color = if (range != null) rangeContentColor(range) else Color.Unspecified
                             )
                         }
 
@@ -165,7 +164,7 @@ fun EpicCalendar(
                                     .height(cellHeight)
                                     .background(
                                         if (isDayAtEndOfInterval == true || range == null) Color.Transparent
-                                        else rangeColor
+                                        else rangeColor(range)
                                     )
                             )
                         }

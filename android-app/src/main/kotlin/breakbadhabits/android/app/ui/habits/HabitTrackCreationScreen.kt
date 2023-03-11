@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -29,9 +28,10 @@ import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.uikit.LocalResourceIcon
+import breakbadhabits.foundation.uikit.EpicCalendarState
 import breakbadhabits.foundation.uikit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.LoadingBox
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
@@ -56,12 +56,24 @@ fun HabitTrackCreationScreen(
     rangeInputController: ValidatedInputController<HabitTrack.Range, ValidatedHabitTrackRange>,
     creationController: RequestController,
     habitController: LoadingController<Habit?>,
-    commentInputController: ValidatedInputController<HabitTrack.Comment?, Nothing>
+    commentInputController: ValidatedInputController<HabitTrack.Comment?, Nothing>,
+    habitTracksController: LoadingController<List<HabitTrack>>
 ) {
     var rangeSelectionShow by remember { mutableStateOf(false) }
     val eventCountState by eventCountInputController.state.collectAsState()
     val rangeState by rangeInputController.state.collectAsState()
-
+    val tracksState by habitTracksController.state.collectAsState()
+    val tracks = remember(tracksState) {
+        (tracksState as? LoadingController.State.Loaded)?.data ?: emptyList()
+    }
+    val disabledRanges = remember(tracks) {
+        tracks.map {
+            EpicCalendarState.Range(
+                it.range.value.endInclusive.toJavaLocalDateTime().toLocalDate(),
+                it.range.value.start.toJavaLocalDateTime().toLocalDate(),
+            )
+        }
+    }
     ClearFocusWhenKeyboardHiddenEffect()
 
     if (rangeSelectionShow) {
@@ -69,7 +81,10 @@ fun HabitTrackCreationScreen(
             currentMonth = YearMonth.now(),
             maxMonth = YearMonth.now(),
             minMonth = YearMonth.now().minusYears(10),
-            initialRange = rangeState.input.value.start.toJavaLocalDateTime().toLocalDate()..rangeState.input.value.endInclusive.toJavaLocalDateTime().toLocalDate()
+            initialRange = rangeState.input.value.start.toJavaLocalDateTime()
+                .toLocalDate()..rangeState.input.value.endInclusive.toJavaLocalDateTime()
+                .toLocalDate(),
+            disabledRanges = disabledRanges
         )
 
         IntervalSelectionEpicCalendarDialog(

@@ -63,6 +63,7 @@ class IntervalSelectionEpicCalendarState {
     var endDate by mutableStateOf<LocalDate?>(null)
     var yearMonth by mutableStateOf(maxYearMonth)
     var showYearMonthSelection by mutableStateOf(false)
+    var disabledRanges by mutableStateOf<List<EpicCalendarState.Range>>(emptyList())
 }
 
 @Composable
@@ -251,17 +252,28 @@ fun IntervalSelectionEpicCalendar(
         EpicCalendar(
             state = rememberEpicCalendarState(
                 yearMonth = state.yearMonth,
-                ranges = listOfNotNull(calculateInterval(state.startDate, state.endDate))
+                ranges = listOfNotNull(
+                    calculateInterval(state.startDate, state.endDate)
+                ) + state.disabledRanges
             ),
-            onDayClick = {
-                state.showYearMonthSelection = false
-                if (state.selectedTab == 0) {
-                    state.startDate = it.date
-                } else if (state.selectedTab == 1) {
-                    state.endDate = it.date
+            onDayClick = { day ->
+                val isDateAllowed = state.disabledRanges.all { day.date !in it }
+
+                if (isDateAllowed) {
+                    state.showYearMonthSelection = false
+                    if (state.selectedTab == 0) {
+                        state.startDate = day.date
+                    } else if (state.selectedTab == 1) {
+                        state.endDate = day.date
+                    }
                 }
             },
-            horizontalInnerPadding = intervalsInnerPadding
+            horizontalInnerPadding = intervalsInnerPadding,
+            rangeColor = { range ->
+                val isDisabled = state.disabledRanges.any { it == range }
+                if (isDisabled) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                else MaterialTheme.colorScheme.primary
+            }
         )
 
         AnimatedVisibility(visible = !state.showYearMonthSelection) {
@@ -378,7 +390,7 @@ fun IntervalSelectionEpicCalendarDialog(
                 state = state,
                 onSelected = onSelected,
                 intervalsInnerPadding = 8.dp,
-                onCancel = onCancel
+                onCancel = onCancel,
             )
         }
     }
@@ -389,13 +401,15 @@ fun rememberRangeSelectionEpicCalendarState(
     currentMonth: YearMonth = YearMonth.now(),
     maxMonth: YearMonth = YearMonth.now(),
     minMonth: YearMonth = YearMonth.now(),
-    initialRange: ClosedRange<LocalDate>? = null
-) = remember(currentMonth, maxMonth, minMonth, initialRange) {
+    initialRange: ClosedRange<LocalDate>? = null,
+    disabledRanges: List<EpicCalendarState.Range> = emptyList()
+) = remember(currentMonth, maxMonth, minMonth, initialRange, disabledRanges) {
     IntervalSelectionEpicCalendarState().also {
         it.yearMonth = currentMonth
         it.maxYearMonth = maxMonth
         it.minYearMonth = minMonth
         it.startDate = initialRange?.start
         it.endDate = initialRange?.endInclusive
+        it.disabledRanges = disabledRanges
     }
 }

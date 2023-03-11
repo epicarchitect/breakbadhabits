@@ -51,6 +51,7 @@ class PresentationModule(val logicModule: LogicModule) {
             habitTrackCreator,
             habitTrackRangeValidator,
             habitTrackEventCountValidator,
+            habitTrackProvider,
             habitId
         )
     }
