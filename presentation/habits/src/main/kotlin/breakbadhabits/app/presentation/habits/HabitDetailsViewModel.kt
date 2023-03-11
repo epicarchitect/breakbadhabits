@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 
 class HabitDetailsViewModel(
     habitProvider: HabitProvider,
+    habitTrackProvider: HabitTrackProvider,
     habitAbstinenceProvider: HabitAbstinenceProvider,
     habitStatisticsProvider: HabitStatisticsProvider,
     habitId: Habit.Id
@@ -20,6 +21,11 @@ class HabitDetailsViewModel(
     val habitController = LoadingController(
         coroutineScope = viewModelScope,
         flow = habitProvider.provideHabitFlowById(habitId)
+    )
+
+    val habitTracksController = LoadingController(
+        coroutineScope = viewModelScope,
+        flow = habitTrackProvider.provideByHabitId(habitId)
     )
 
     val habitAbstinenceController = LoadingController(

@@ -1,6 +1,7 @@
-package breakbadhabits.android.app.ui
+package breakbadhabits.android.app.ui.app
 
 import androidx.compose.runtime.compositionLocalOf
+import breakbadhabits.android.app.format.DateTimeFormatter
 import breakbadhabits.android.app.ui.habits.resources.HabitIconResourceProvider
 import breakbadhabits.app.di.PresentationModule
 

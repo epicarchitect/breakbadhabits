@@ -29,7 +29,7 @@ import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.uikit.Icon
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
@@ -153,7 +153,7 @@ fun HabitTrackCreationScreen(
                         HabitTrack.EventCount.TimeUnit.DAYS -> "Каждый день"
                     },
                     icon = {
-                        Icon(painterResource(R.drawable.ic_change_circle))
+                        LocalResourceIcon(R.drawable.ic_change_circle)
                     }
                 )
             }

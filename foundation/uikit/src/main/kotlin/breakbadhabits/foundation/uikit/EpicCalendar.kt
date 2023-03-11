@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -48,6 +49,8 @@ fun EpicCalendar(
     state: EpicCalendarState,
     onDayClick: ((EpicCalendarState.Day) -> Unit)? = null,
     horizontalInnerPadding: Dp = 0.dp,
+    rangeColor: Color = MaterialTheme.colorScheme.primary,
+    rangeContentColor: Color = MaterialTheme.colorScheme.onPrimary
 ) {
     var cellWidth by remember { mutableStateOf(Dp.Unspecified) }
     val cellHeight = remember { 44.dp }
@@ -98,7 +101,7 @@ fun EpicCalendar(
                                     .height(cellHeight)
                                     .background(
                                         if (isDayAtStartOfInterval == true || range == null) Color.Transparent
-                                        else range.backgroundColor
+                                        else rangeColor
                                     )
                             )
                         }
@@ -137,7 +140,7 @@ fun EpicCalendar(
                                         }
                                     }
                                 )
-                                .background(range?.backgroundColor ?: Color.Transparent),
+                                .background(if (range != null) rangeColor else Color.Transparent),
                         ) {
                             Text(
                                 modifier = Modifier
@@ -151,7 +154,7 @@ fun EpicCalendar(
                                     },
                                 text = day.date.dayOfMonth.toString(),
                                 textAlign = TextAlign.Center,
-                                color = range?.contentColor ?: Color.Unspecified
+                                color = if (range != null) rangeContentColor else Color.Unspecified
                             )
                         }
 
@@ -162,7 +165,7 @@ fun EpicCalendar(
                                     .height(cellHeight)
                                     .background(
                                         if (isDayAtEndOfInterval == true || range == null) Color.Transparent
-                                        else range.backgroundColor
+                                        else rangeColor
                                     )
                             )
                         }
@@ -184,20 +187,20 @@ fun EpicCalendar(
 
 @Composable
 fun rememberEpicCalendarState(
-    initialMonth: YearMonth,
+    yearMonth: YearMonth,
     ranges: List<EpicCalendarState.Range> = emptyList()
-) = rememberSaveable(initialMonth, ranges, saver = EpicCalendarState.Saver) {
+) = remember(yearMonth, ranges) {
     EpicCalendarState().also {
-        it.currentMonth = initialMonth
+        it.yearMonth = yearMonth
         it.ranges = ranges
     }
 }
 
 class EpicCalendarState {
-    var currentMonth: YearMonth by mutableStateOf(YearMonth.now())
+    var yearMonth: YearMonth by mutableStateOf(YearMonth.now())
     val firstDayOfWeek: DayOfWeek by mutableStateOf(calculateFirstDayOfWeek())
     val weekDays: List<WeekDay> by derivedStateOf { calculateWeekDays(firstDayOfWeek) }
-    val days: List<Day> by derivedStateOf { calculateDays(currentMonth) }
+    val days: List<Day> by derivedStateOf { calculateDays(yearMonth) }
     var ranges: List<Range> by mutableStateOf(emptyList())
 
     private fun calculateFirstDayOfWeek() = WeekFields.of(Locale.getDefault()).firstDayOfWeek
@@ -209,9 +212,9 @@ class EpicCalendarState {
         WeekDay(it.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
     }
 
-    private fun calculateDays(currentMonth: YearMonth): List<Day> {
-        val previousYearMonth = currentMonth.minusMonths(1)
-        val nextYearMonth = currentMonth.plusMonths(1)
+    private fun calculateDays(currentYearMonth: YearMonth): List<Day> {
+        val previousYearMonth = currentYearMonth.minusMonths(1)
+        val nextYearMonth = currentYearMonth.plusMonths(1)
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
 
         val previousMonthLastDayOfWeek = previousYearMonth.atDay(
@@ -233,7 +236,7 @@ class EpicCalendarState {
 
             else -> error("Unexpected firstDayOfWeek: $firstDayOfWeek")
         }
-        val countDaysInCurrentMonth = currentMonth.lengthOfMonth()
+        val countDaysInCurrentMonth = currentYearMonth.lengthOfMonth()
         val countFirstDaysInNextMonth =
             VISIBLE_DAYS_COUNT - countLastDaysInPreviousMonth - countDaysInCurrentMonth
 
@@ -253,7 +256,7 @@ class EpicCalendarState {
         }
 
         repeat(countDaysInCurrentMonth) {
-            val date = currentMonth.atDay(it + 1)
+            val date = currentYearMonth.atDay(it + 1)
             days.add(
                 Day(
                     date = date,
@@ -284,34 +287,10 @@ class EpicCalendarState {
 
     data class Range(
         override val endInclusive: LocalDate,
-        override val start: LocalDate,
-        val backgroundColor: Color,
-        val contentColor: Color,
+        override val start: LocalDate
     ) : ClosedRange<LocalDate>
 
     companion object {
         const val VISIBLE_DAYS_COUNT = 42
-
-        val Saver = listSaver(
-            save = {
-                listOf(
-                    it.currentMonth,
-                    it.ranges
-                )
-            },
-            restore = {
-                EpicCalendarState().apply {
-                    currentMonth = it[1] as YearMonth
-                    ranges = it[2] as List<Range>
-                }
-            }
-        )
     }
-}
-
-private fun calculateWeekDays(firstDayOfWeek: DayOfWeek) = DayOfWeek.values().let {
-    val n = 7 - firstDayOfWeek.ordinal
-    it.takeLast(n) + it.dropLast(n)
-}.map {
-    EpicCalendarState.WeekDay(it.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
 }

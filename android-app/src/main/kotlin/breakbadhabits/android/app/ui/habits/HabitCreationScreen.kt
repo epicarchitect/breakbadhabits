@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.ui.LocalHabitIconResourceProvider
+import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
@@ -34,7 +34,7 @@ import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.uikit.Icon
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.SingleSelectionGrid
 import breakbadhabits.foundation.uikit.button.Button
@@ -42,7 +42,6 @@ import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.regex.Regexps
-import breakbadhabits.foundation.uikit.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.rememberRangeSelectionEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
@@ -158,11 +157,11 @@ fun HabitCreationScreen(
         SingleSelectionGrid(
             controller = habitIconSelectionController,
             ceil = { icon ->
-                Icon(
+                LocalResourceIcon(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(24.dp),
-                    painter = painterResource(habitIconResources[icon].resourceId)
+                    resourceId = habitIconResources[icon].resourceId
                 )
             }
         )
@@ -189,9 +188,9 @@ fun HabitCreationScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Укажите сколько примерно было событий привычки " + when (firstTrackEventCountState.input.timeUnit) {
-                HabitTrack.EventCount.TimeUnit.HOURS -> "каждый час."
-                HabitTrack.EventCount.TimeUnit.DAYS -> "каждый день."
+            text = "Укажите сколько примерно было событий привычки каждый " + when (firstTrackEventCountState.input.timeUnit) {
+                HabitTrack.EventCount.TimeUnit.HOURS -> "час."
+                HabitTrack.EventCount.TimeUnit.DAYS -> "день."
             }
         )
 
@@ -216,7 +215,7 @@ fun HabitCreationScreen(
                     }
                 )
             },
-            label = "Число событий привычки",
+            label = "Число событий",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
@@ -241,7 +240,7 @@ fun HabitCreationScreen(
                         HabitTrack.EventCount.TimeUnit.DAYS -> "Каждый день"
                     },
                     icon = {
-                        Icon(painterResource(R.drawable.ic_change_circle))
+                        LocalResourceIcon(R.drawable.ic_change_circle)
                     }
                 )
             }

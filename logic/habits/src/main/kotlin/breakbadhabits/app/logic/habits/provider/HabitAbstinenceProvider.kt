@@ -40,15 +40,17 @@ class HabitAbstinenceProvider(
 fun List<HabitTrack>.toAbstinenceList(
     habitId: Habit.Id,
     currentTime: LocalDateTime
-) = List(size) { index ->
-    HabitAbstinence(
-        habitId = habitId,
-        range = HabitAbstinence.Range(
-            if (index == indices.last) {
-                this[index].range.value.endInclusive..currentTime
-            } else {
-                this[index].range.value.endInclusive..this[index + 1].range.value.start
-            }
+) = sortedBy { it.range.value.start }.let { sortedList ->
+    List(sortedList.size) { index ->
+        HabitAbstinence(
+            habitId = habitId,
+            range = HabitAbstinence.Range(
+                if (index == indices.last) {
+                    sortedList[index].range.value.endInclusive..currentTime
+                } else {
+                    sortedList[index].range.value.endInclusive..sortedList[index + 1].range.value.start
+                }
+            )
         )
-    )
+    }
 }

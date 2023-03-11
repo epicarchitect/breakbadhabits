@@ -81,9 +81,7 @@ fun IntervalSelectionEpicCalendar(
             if (endDate != null) {
                 return EpicCalendarState.Range(
                     start = endDate,
-                    endInclusive = endDate,
-                    backgroundColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    endInclusive = endDate
                 )
             }
 
@@ -92,16 +90,12 @@ fun IntervalSelectionEpicCalendar(
         if (endDate != null) {
             return EpicCalendarState.Range(
                 start = startDate,
-                endInclusive = endDate,
-                backgroundColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                endInclusive = endDate
             )
         }
         return EpicCalendarState.Range(
             start = startDate,
-            endInclusive = startDate,
-            backgroundColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            endInclusive = startDate
         )
     }
 
@@ -122,7 +116,7 @@ fun IntervalSelectionEpicCalendar(
                                 state.yearMonth = state.yearMonth.minusMonths(1)
                             },
                             content = {
-                                Icon(Icons.Default.ArrowLeft)
+                                LocalResourceIcon(Icons.Default.ArrowLeft)
                             },
                         )
                         Text(
@@ -143,7 +137,7 @@ fun IntervalSelectionEpicCalendar(
                                 state.yearMonth = state.yearMonth.plusMonths(1)
                             },
                             content = {
-                                Icon(Icons.Default.ArrowRight)
+                                LocalResourceIcon(Icons.Default.ArrowRight)
                             }
                         )
                     }
@@ -163,7 +157,7 @@ fun IntervalSelectionEpicCalendar(
                                 },
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            LocalResourceIcon(
                                 modifier = Modifier.padding(4.dp),
                                 imageVector = Icons.Default.KeyboardArrowUp
                             )
@@ -256,7 +250,7 @@ fun IntervalSelectionEpicCalendar(
 
         EpicCalendar(
             state = rememberEpicCalendarState(
-                initialMonth = state.yearMonth,
+                yearMonth = state.yearMonth,
                 ranges = listOfNotNull(calculateInterval(state.startDate, state.endDate))
             ),
             onDayClick = {

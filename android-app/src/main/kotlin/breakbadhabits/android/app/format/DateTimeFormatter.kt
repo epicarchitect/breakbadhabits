@@ -1,4 +1,4 @@
-package breakbadhabits.android.app.ui
+package breakbadhabits.android.app.format
 
 import breakbadhabits.foundation.datetime.toMillis
 import kotlinx.datetime.LocalDate

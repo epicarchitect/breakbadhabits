@@ -1,4 +1,4 @@
-package breakbadhabits.android.app.ui.root
+package breakbadhabits.android.app.ui.app
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import breakbadhabits.android.app.ui.LocalPresentationModule
 import breakbadhabits.android.app.ui.dashboard.DashboardScreen
 import breakbadhabits.android.app.ui.habits.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
@@ -212,12 +211,13 @@ fun AppRootScreen() {
                 habitAbstinenceController = viewModel.habitAbstinenceController,
                 abstinenceListController = viewModel.abstinenceListController,
                 statisticsController = viewModel.statisticsController,
+                habitTracksController = viewModel.habitTracksController,
                 onEditClick = {
                     navController.navigate(Screens.HabitUpdating.buildRoute(habitId))
                 },
                 onAddTrackClick = {
                     navController.navigate(Screens.HabitTrackCreation.buildRoute(habitId))
-                },
+                }
             )
         }
 

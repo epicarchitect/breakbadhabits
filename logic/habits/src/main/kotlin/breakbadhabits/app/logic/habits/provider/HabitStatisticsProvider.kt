@@ -35,9 +35,9 @@ class HabitStatisticsProvider(
                 )
             },
             eventCount = HabitStatistics.EventCount( // TODO
-                currentMonthCount = 0,
-                previousMonthCount = 0,
-                totalCount = 0
+                currentMonthCount = 123,
+                previousMonthCount = 123,
+                totalCount = 123
             )
         )
     }

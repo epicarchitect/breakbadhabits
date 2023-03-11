@@ -32,13 +32,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.ui.LocalDateTimeFormatter
-import breakbadhabits.android.app.ui.LocalHabitIconResourceProvider
+import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
+import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardHabitItem
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.uikit.Card
-import breakbadhabits.foundation.uikit.Icon
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
@@ -73,7 +73,7 @@ fun DashboardScreen(
                 IconButton(
                     onClick = onAppSettingsClick
                 ) {
-                    Icon(painterResource(R.drawable.ic_settings))
+                    LocalResourceIcon(R.drawable.ic_settings)
                 }
             }
 
@@ -182,9 +182,7 @@ private fun LazyItemScope.HabitItem(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(habitIconResources[item.habit.icon].resourceId),
-                    )
+                    LocalResourceIcon(habitIconResources[item.habit.icon].resourceId)
                     Title(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.habit.name.value
@@ -194,9 +192,7 @@ private fun LazyItemScope.HabitItem(
                     modifier = Modifier.padding(top = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_time)
-                    )
+                    LocalResourceIcon(R.drawable.ic_time)
 
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
@@ -213,9 +209,7 @@ private fun LazyItemScope.HabitItem(
                     .padding(4.dp),
                 onClick = onResetClick
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_reset)
-                )
+                LocalResourceIcon(R.drawable.ic_reset)
             }
         }
     }

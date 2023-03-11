@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import breakbadhabits.foundation.uikit.Icon
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import androidx.compose.material3.Text as MaterialText
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -38,15 +38,16 @@ fun Text(
     imageVector: ImageVector? = null,
     textAlign: TextAlign? = null,
     iconTint: Color = LocalContentColor.current,
-    overflow: TextOverflow = TextOverflow.Clip
+    overflow: TextOverflow = TextOverflow.Clip,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.Center,
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = horizontalArrangement
     ) {
         if (imageVector != null) {
-            Icon(
+            LocalResourceIcon(
                 modifier = iconModifier,
                 imageVector = imageVector,
                 tint = iconTint

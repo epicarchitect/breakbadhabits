@@ -39,6 +39,7 @@ class PresentationModule(val logicModule: LogicModule) {
     fun createHabitDetailsViewModel(habitId: Habit.Id) = with(logicModule) {
         HabitDetailsViewModel(
             habitProvider,
+            habitTrackProvider,
             habitAbstinenceProvider,
             habitStatisticsProvider,
             habitId
