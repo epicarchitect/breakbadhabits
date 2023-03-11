@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Histogram(
     modifier: Modifier = Modifier,
-    values: List<Long>,
-    valueFormatter: (Long) -> String = Long::toString,
+    values: List<Float>,
+    valueFormatter: (Float) -> String = Float::toString,
     barPadding: Dp = 12.dp,
     startPadding: Dp = 12.dp,
     endPadding: Dp = 12.dp,

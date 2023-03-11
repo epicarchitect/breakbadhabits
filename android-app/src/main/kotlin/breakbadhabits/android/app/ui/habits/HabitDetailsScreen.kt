@@ -165,7 +165,8 @@ fun HabitDetailsScreen(
                         if (abstinenceList.isNotEmpty()) {
                             val abstinenceTimes = remember(abstinenceList) {
                                 abstinenceList.map {
-                                    it.range.value.endInclusive.toMillis() - it.range.value.start.toMillis()
+                                    val time = it.range.value.endInclusive.toMillis() - it.range.value.start.toMillis()
+                                    time.toFloat()
                                 }
                             }
 
@@ -176,7 +177,7 @@ fun HabitDetailsScreen(
                                 values = abstinenceTimes,
                                 valueFormatter = {
                                     dateTimeFormatter.formatDistance(
-                                        distanceInMillis = it,
+                                        distanceInMillis = it.toLong(),
                                         maxValueCount = 2
                                     )
                                 },
