@@ -37,6 +37,7 @@ import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.regex.Regexps
+import breakbadhabits.foundation.uikit.rememberRangeSelectionEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
 import breakbadhabits.foundation.uikit.text.Title
@@ -44,6 +45,7 @@ import breakbadhabits.foundation.uikit.text.ValidatedInputField
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -63,7 +65,15 @@ fun HabitTrackCreationScreen(
     ClearFocusWhenKeyboardHiddenEffect()
 
     if (rangeSelectionShow) {
+        val epicCalendarState = rememberRangeSelectionEpicCalendarState(
+            currentMonth = YearMonth.now(),
+            maxMonth = YearMonth.now(),
+            minMonth = YearMonth.now().minusYears(10),
+            initialRange = rangeState.input.value.start.toJavaLocalDateTime().toLocalDate()..rangeState.input.value.endInclusive.toJavaLocalDateTime().toLocalDate()
+        )
+
         IntervalSelectionEpicCalendarDialog(
+            state = epicCalendarState,
             onSelected = {
                 rangeSelectionShow = false
                 val start = LocalDateTime(it.start.toKotlinLocalDate(), LocalTime(0, 0))
@@ -72,9 +82,7 @@ fun HabitTrackCreationScreen(
             },
             onCancel = {
                 rangeSelectionShow = false
-            },
-            maxYearMonth = YearMonth.now(),
-            minYearMonth = YearMonth.now().minusYears(10),
+            }
         )
     }
 

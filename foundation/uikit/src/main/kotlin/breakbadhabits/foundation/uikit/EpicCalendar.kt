@@ -85,14 +85,11 @@ fun EpicCalendar(
             }
 
             state.days.chunked(7).forEach {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                Row(modifier = Modifier.fillMaxWidth()) {
                     it.forEachIndexed { index, day ->
-                        val interval =
-                            state.intervals.find { day.date in it.startDate..it.endDate }
-                        val isDayAtStartOfInterval = interval?.startDate?.let { it == day.date }
-                        val isDayAtEndOfInterval = interval?.endDate?.let { it == day.date }
+                        val range = state.ranges.find { day.date in it }
+                        val isDayAtStartOfInterval = range?.start?.let { it == day.date }
+                        val isDayAtEndOfInterval = range?.endInclusive?.let { it == day.date }
 
                         if (index == 0) {
                             Spacer(
@@ -100,8 +97,8 @@ fun EpicCalendar(
                                     .width(horizontalInnerPadding)
                                     .height(cellHeight)
                                     .background(
-                                        if (isDayAtStartOfInterval == true || interval == null) Color.Transparent
-                                        else interval.backgroundColor
+                                        if (isDayAtStartOfInterval == true || range == null) Color.Transparent
+                                        else range.backgroundColor
                                     )
                             )
                         }
@@ -140,7 +137,7 @@ fun EpicCalendar(
                                         }
                                     }
                                 )
-                                .background(interval?.backgroundColor ?: Color.Transparent),
+                                .background(range?.backgroundColor ?: Color.Transparent),
                         ) {
                             Text(
                                 modifier = Modifier
@@ -154,7 +151,7 @@ fun EpicCalendar(
                                     },
                                 text = day.date.dayOfMonth.toString(),
                                 textAlign = TextAlign.Center,
-                                color = interval?.contentColor ?: Color.Unspecified
+                                color = range?.contentColor ?: Color.Unspecified
                             )
                         }
 
@@ -164,8 +161,8 @@ fun EpicCalendar(
                                     .width(horizontalInnerPadding)
                                     .height(cellHeight)
                                     .background(
-                                        if (isDayAtEndOfInterval == true || interval == null) Color.Transparent
-                                        else interval.backgroundColor
+                                        if (isDayAtEndOfInterval == true || range == null) Color.Transparent
+                                        else range.backgroundColor
                                     )
                             )
                         }
@@ -187,34 +184,16 @@ fun EpicCalendar(
 
 @Composable
 fun rememberEpicCalendarState(
-    yearMonth: YearMonth,
-    intervals: List<EpicCalendarState.Interval> = emptyList()
-) = remember(yearMonth, intervals) {
-    calculateState(yearMonth, intervals)
+    initialMonth: YearMonth,
+    ranges: List<EpicCalendarState.Range> = emptyList()
+) = rememberSaveable(initialMonth, ranges, saver = EpicCalendarState.Saver) {
+    EpicCalendarState().also {
+        it.currentMonth = initialMonth
+        it.ranges = ranges
+    }
 }
 
-data class EpicCalendarState(
-    val weekDays: List<WeekDay>,
-    val days: List<Day>,
-    val intervals: List<Interval>
-) {
-    data class Day(
-        val date: LocalDate,
-        val inCurrentMonth: Boolean,
-        val appropriateInterval: Interval?
-    )
-
-    data class WeekDay(val name: String)
-
-    data class Interval(
-        val startDate: LocalDate,
-        val endDate: LocalDate,
-        val backgroundColor: Color,
-        val contentColor: Color,
-    )
-}
-
-class EpicCalendarState2 {
+class EpicCalendarState {
     var currentMonth: YearMonth by mutableStateOf(YearMonth.now())
     val firstDayOfWeek: DayOfWeek by mutableStateOf(calculateFirstDayOfWeek())
     val weekDays: List<WeekDay> by derivedStateOf { calculateWeekDays(firstDayOfWeek) }
@@ -252,10 +231,7 @@ class EpicCalendarState2 {
                 }
             }
 
-            else -> {
-                // TODO: must calculate for each weekday
-                error("Unexpected firstDayOfWeek: $firstDayOfWeek")
-            }
+            else -> error("Unexpected firstDayOfWeek: $firstDayOfWeek")
         }
         val countDaysInCurrentMonth = currentMonth.lengthOfMonth()
         val countFirstDaysInNextMonth =
@@ -324,7 +300,7 @@ class EpicCalendarState2 {
                 )
             },
             restore = {
-                EpicCalendarState2().apply {
+                EpicCalendarState().apply {
                     currentMonth = it[1] as YearMonth
                     ranges = it[2] as List<Range>
                 }
@@ -332,98 +308,6 @@ class EpicCalendarState2 {
         )
     }
 }
-
-@Composable
-fun rememberEpicCalendarState(
-    initialMonth: YearMonth = YearMonth.now(),
-    ranges: List<EpicCalendarState2.Range> = emptyList(),
-    vararg inputs: Any?,
-) = rememberSaveable(inputs = inputs, saver = EpicCalendarState2.Saver) {
-    EpicCalendarState2().apply {
-        currentMonth = initialMonth
-        this.ranges = ranges
-    }
-}
-
-fun calculateState(
-    yearMonth: YearMonth,
-    intervals: List<EpicCalendarState.Interval>
-): EpicCalendarState {
-    val previousYearMonth = yearMonth.minusMonths(1)
-    val nextYearMonth = yearMonth.plusMonths(1)
-    val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
-
-    val previousMonthLastDayOfWeek = previousYearMonth.atDay(
-        previousYearMonth.lengthOfMonth()
-    ).dayOfWeek
-
-    val countLastDaysInPreviousMonth = when (firstDayOfWeek) {
-        DayOfWeek.MONDAY -> {
-            previousMonthLastDayOfWeek.value
-        }
-
-        DayOfWeek.SUNDAY -> {
-            if (previousMonthLastDayOfWeek == DayOfWeek.SATURDAY) {
-                0
-            } else {
-                previousMonthLastDayOfWeek.value + 1
-            }
-        }
-
-        else -> {
-            error("Unexpected firstDayOfWeek: $firstDayOfWeek")
-        }
-    }
-    val countDaysInCurrentMonth = yearMonth.lengthOfMonth()
-    val countFirstDaysInNextMonth = 42 - countLastDaysInPreviousMonth - countDaysInCurrentMonth
-
-    val weekDays = calculateWeekDays(firstDayOfWeek)
-
-    val days = mutableListOf<EpicCalendarState.Day>()
-
-    repeat(countLastDaysInPreviousMonth) {
-        val date = previousYearMonth.atDay(
-            previousYearMonth.lengthOfMonth() + it + 1 - countLastDaysInPreviousMonth
-        )
-
-        days.add(
-            EpicCalendarState.Day(
-                date = date,
-                inCurrentMonth = false,
-                appropriateInterval = intervals.find { date in it.startDate..it.endDate }
-            )
-        )
-    }
-
-    repeat(countDaysInCurrentMonth) {
-        val date = yearMonth.atDay(it + 1)
-        days.add(
-            EpicCalendarState.Day(
-                date = date,
-                inCurrentMonth = true,
-                appropriateInterval = intervals.find { date in it.startDate..it.endDate }
-            )
-        )
-    }
-
-    repeat(countFirstDaysInNextMonth) {
-        val date = nextYearMonth.atDay(it + 1)
-        days.add(
-            EpicCalendarState.Day(
-                date = date,
-                inCurrentMonth = false,
-                appropriateInterval = intervals.find { date in it.startDate..it.endDate }
-            )
-        )
-    }
-
-    return EpicCalendarState(
-        weekDays = weekDays,
-        days = days,
-        intervals = intervals
-    )
-}
-
 
 private fun calculateWeekDays(firstDayOfWeek: DayOfWeek) = DayOfWeek.values().let {
     val n = 7 - firstDayOfWeek.ordinal
