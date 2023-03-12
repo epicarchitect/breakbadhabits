@@ -26,7 +26,7 @@ import breakbadhabits.app.entity.HabitAbstinence
 import breakbadhabits.app.entity.HabitStatistics
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
-import breakbadhabits.foundation.datetime.toMillis
+import breakbadhabits.foundation.datetime.toDuration
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.EpicCalendar
 import breakbadhabits.foundation.uikit.EpicCalendarState
@@ -41,10 +41,13 @@ import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.*
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HabitDetailsScreen(
@@ -94,7 +97,7 @@ fun HabitDetailsScreen(
             ) { abstinence ->
                 Text(
                     text = abstinence?.let {
-                        dateTimeFormatter.formatDistance(it.range.value)
+                        dateTimeFormatter.formatDuration(it.range.value.toDuration())
                     } ?: stringResource(R.string.habits_noEvents)
                 )
             }
@@ -119,9 +122,13 @@ fun HabitDetailsScreen(
                             ranges = remember(tracks) {
                                 tracks.map {
                                     EpicCalendarState.Range(
-                                        start = it.range.value.start.toJavaLocalDateTime()
+                                        start = it.range.value.start
+                                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                                            .toJavaLocalDateTime()
                                             .toLocalDate(),
-                                        endInclusive = it.range.value.endInclusive.toJavaLocalDateTime()
+                                        endInclusive = it.range.value.endInclusive
+                                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                                            .toJavaLocalDateTime()
                                             .toLocalDate()
                                     )
                                 }
@@ -164,9 +171,7 @@ fun HabitDetailsScreen(
                         if (abstinenceList.isNotEmpty()) {
                             val abstinenceTimes = remember(abstinenceList) {
                                 abstinenceList.map {
-                                    val time =
-                                        it.range.value.endInclusive.toMillis() - it.range.value.start.toMillis()
-                                    time.toFloat()
+                                    it.range.value.toDuration().inWholeSeconds.toFloat()
                                 }
                             }
 
@@ -176,8 +181,8 @@ fun HabitDetailsScreen(
                                     .height(300.dp),
                                 values = abstinenceTimes,
                                 valueFormatter = {
-                                    dateTimeFormatter.formatDistance(
-                                        distanceInMillis = it.toLong(),
+                                    dateTimeFormatter.formatDuration(
+                                        duration = it.toLong().seconds,
                                         maxValueCount = 2
                                     )
                                 },
@@ -239,8 +244,8 @@ private fun HabitStatistics.toStatisticsData(
     abstinence?.let {
         StatisticData(
             name = context.getString(R.string.habitAnalyze_statistics_averageAbstinenceTime),
-            value = dateTimeFormatter.formatDistance(
-                distanceInMillis = it.averageTime,
+            value = dateTimeFormatter.formatDuration(
+                duration = it.averageTime,
                 maxValueCount = 2
             )
         )
@@ -248,8 +253,8 @@ private fun HabitStatistics.toStatisticsData(
     abstinence?.let {
         StatisticData(
             name = context.getString(R.string.habitAnalyze_statistics_maxAbstinenceTime),
-            value = dateTimeFormatter.formatDistance(
-                distanceInMillis = it.maxTime,
+            value = dateTimeFormatter.formatDuration(
+                duration = it.maxTime,
                 maxValueCount = 2
             )
         )
@@ -257,8 +262,8 @@ private fun HabitStatistics.toStatisticsData(
     abstinence?.let {
         StatisticData(
             name = context.getString(R.string.habitAnalyze_statistics_minAbstinenceTime),
-            value = dateTimeFormatter.formatDistance(
-                distanceInMillis = it.minTime,
+            value = dateTimeFormatter.formatDuration(
+                duration = it.minTime,
                 maxValueCount = 2
             )
         )
@@ -266,8 +271,8 @@ private fun HabitStatistics.toStatisticsData(
     abstinence?.let {
         StatisticData(
             name = context.getString(R.string.habitAnalyze_statistics_timeFromFirstEvent),
-            value = dateTimeFormatter.formatDistance(
-                distanceInMillis = it.timeSinceFirstTrack,
+            value = dateTimeFormatter.formatDuration(
+                duration = it.timeSinceFirstTrack,
                 maxValueCount = 2
             )
         )

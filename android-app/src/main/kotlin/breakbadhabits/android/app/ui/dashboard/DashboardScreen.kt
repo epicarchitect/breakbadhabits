@@ -36,6 +36,7 @@ import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardHabitItem
 import breakbadhabits.foundation.controller.LoadingController
+import breakbadhabits.foundation.datetime.toDuration
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
@@ -196,7 +197,7 @@ private fun LazyItemScope.HabitItem(
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.abstinence?.let {
-                            dateTimeFormatter.formatDistance(it.range.value)
+                            dateTimeFormatter.formatDuration(it.range.value.toDuration())
                         } ?: stringResource(R.string.habits_noEvents)
                     )
                 }

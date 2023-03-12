@@ -8,25 +8,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class DateTimeProvider(updatePeriodMillis: Long) {
+class DateTimeProvider(updatePeriodMillis: () -> Long) {
     private val currentTime = MutableStateFlow(getCurrentTime())
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
             while (isActive) {
                 currentTime.value = getCurrentTime()
-                delay(updatePeriodMillis)
+                delay(updatePeriodMillis())
             }
         }
     }
 
-    fun currentTimeFlow(): Flow<LocalDateTime> = currentTime
+    fun currentTimeFlow(): Flow<Instant> = currentTime
 
-    fun getCurrentTime() = Clock.System.now().toLocalDateTime(
-        timeZone = TimeZone.currentSystemDefault()
-    )
+    fun getCurrentTime() = Clock.System.now()
 }

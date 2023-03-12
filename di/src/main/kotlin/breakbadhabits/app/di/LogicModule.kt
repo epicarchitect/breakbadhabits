@@ -31,7 +31,7 @@ class LogicModule(private val context: Context) {
     }
 
     private val dateTimeProvider by lazy {
-        DateTimeProvider(updatePeriodMillis = 1000L)
+        DateTimeProvider(updatePeriodMillis = { 1000L })
     }
 
     val habitAbstinenceProvider by lazy {

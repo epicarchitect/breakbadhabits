@@ -4,7 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.foundation.datetime.millisToLocalDateTime
+import breakbadhabits.foundation.datetime.secondsToInstantRange
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -47,7 +47,7 @@ class HabitTrackProvider(
     private fun DatabaseHabitTrack.toEntity() = HabitTrack(
         HabitTrack.Id(id),
         Habit.Id(habitId),
-        HabitTrack.Range(rangeStart.millisToLocalDateTime()..rangeEnd.millisToLocalDateTime()),
+        HabitTrack.Range((startTimeInSeconds..endTimeInSeconds).secondsToInstantRange()),
         HabitTrack.EventCount(dailyCount.toInt()),
         comment?.let(HabitTrack::Comment)
     )

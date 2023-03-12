@@ -1,20 +1,22 @@
 package breakbadhabits.app.entity
 
+import kotlin.time.Duration
+
 data class HabitStatistics(
     val habitId: Habit.Id,
     val abstinence: Abstinence?,
     val eventCount: EventCount
 ) {
     data class Abstinence(
-        val averageTime: Long,
-        val maxTime: Long,
-        val minTime: Long,
-        val timeSinceFirstTrack: Long
+        val averageTime: Duration,
+        val maxTime: Duration,
+        val minTime: Duration,
+        val timeSinceFirstTrack: Duration
     )
 
     data class EventCount(
-        val currentMonthCount: Long,
-        val previousMonthCount: Long,
-        val totalCount: Long
+        val currentMonthCount: Int,
+        val previousMonthCount: Int,
+        val totalCount: Int
     )
 }

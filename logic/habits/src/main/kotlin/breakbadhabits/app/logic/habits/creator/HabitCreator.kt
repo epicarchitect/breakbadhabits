@@ -6,7 +6,6 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
-import breakbadhabits.foundation.datetime.toMillis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -33,8 +32,8 @@ class HabitCreator(
             appDatabase.habitTrackQueries.insert(
                 id = trackId,
                 habitId = habitId,
-                rangeStart = firstTrackInterval.data.value.start.toMillis(),
-                rangeEnd = firstTrackInterval.data.value.endInclusive.toMillis(),
+                startTimeInSeconds = firstTrackInterval.data.value.start.epochSeconds,
+                endTimeInSeconds = firstTrackInterval.data.value.endInclusive.epochSeconds,
                 dailyCount = firstTrackValue.data.dailyCount.toLong(),
                 comment = null
             )

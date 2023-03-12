@@ -48,13 +48,7 @@ class HabitCreationViewModel(
 
     val firstTrackRangeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.Range(
-            Clock.System.now().toLocalDateTime(
-                timeZone = TimeZone.currentSystemDefault()
-            ).let {
-                it..it
-            }
-        ),
+        initialInput = HabitTrack.Range(Clock.System.now()..Clock.System.now()),
         validation = trackRangeValidator::validate
     )
 

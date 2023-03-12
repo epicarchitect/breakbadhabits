@@ -1,10 +1,9 @@
 package breakbadhabits.android.app.format
 
-import breakbadhabits.foundation.datetime.toMillis
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.time.Duration
 
 class DateTimeFormatter(
     private val secondText: String,
@@ -20,14 +19,16 @@ class DateTimeFormatter(
         return "${formatter.format(start)} - ${formatter.format(end)}"
     }
 
-    fun formatDistance(
-        distanceInMillis: Long,
+    fun formatDuration(
+        duration: Duration,
         maxValueCount: Int = 4
     ) = buildString {
-        val seconds = distanceInMillis / 1000 % 60
-        val minutes = distanceInMillis / 1000 / 60 % 60
-        val hours = distanceInMillis / 1000 / 60 / 60 % 24
-        val days = distanceInMillis / 1000 / 60 / 60 / 24
+        duration.inWholeDays
+        val durationInSeconds = duration.inWholeSeconds
+        val seconds = durationInSeconds % 60
+        val minutes = durationInSeconds / 60 % 60
+        val hours = durationInSeconds / 60 / 60 % 24
+        val days = durationInSeconds / 60 / 60 / 24
 
         val appendDays = days != 0L
         val appendHours = hours != 0L && (!appendDays || maxValueCount > 1)
@@ -57,16 +58,4 @@ class DateTimeFormatter(
             append(secondText)
         }
     }
-
-    fun formatDistance(
-        range: ClosedRange<LocalDateTime>,
-        maxValueCount: Int = 4
-    ) = formatDistance(
-        distanceInMillis = if (range.endInclusive > range.start) {
-            range.endInclusive.toMillis() - range.start.toMillis()
-        } else {
-            range.start.toMillis() - range.endInclusive.toMillis()
-        },
-        maxValueCount = maxValueCount
-    )
 }

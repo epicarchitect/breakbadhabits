@@ -48,9 +48,12 @@ import breakbadhabits.foundation.uikit.text.Title
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
+import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
@@ -77,8 +80,12 @@ fun HabitCreationScreen(
             currentMonth = YearMonth.now(),
             maxMonth = YearMonth.now(),
             minMonth = YearMonth.now().minusYears(10),
-            initialRange = firstTrackRangeState.input.value.start.toJavaLocalDateTime()
-                .toLocalDate()..firstTrackRangeState.input.value.endInclusive.toJavaLocalDateTime()
+            initialRange = firstTrackRangeState.input.value.start
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .toJavaLocalDateTime()
+                .toLocalDate()..firstTrackRangeState.input.value.endInclusive
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .toJavaLocalDateTime()
                 .toLocalDate()
         )
 
@@ -88,7 +95,15 @@ fun HabitCreationScreen(
                 rangeSelectionShow = false
                 val start = LocalDateTime(it.start.toKotlinLocalDate(), LocalTime(0, 0))
                 val end = LocalDateTime(it.endInclusive.toKotlinLocalDate(), LocalTime(0, 0))
-                firstTrackRangeInputController.changeInput(HabitTrack.Range(start..end))
+                firstTrackRangeInputController.changeInput(
+                    HabitTrack.Range(
+                        start.toInstant(
+                            TimeZone.currentSystemDefault()
+                        )..end.toInstant(
+                            TimeZone.currentSystemDefault()
+                        )
+                    )
+                )
             },
             onCancel = {
                 rangeSelectionShow = false
@@ -180,8 +195,10 @@ fun HabitCreationScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = firstTrackRangeState.input.let {
-                val start = formatter.format(it.value.start.date.toJavaLocalDate())
-                val end = formatter.format(it.value.endInclusive.date.toJavaLocalDate())
+                val start =
+                    formatter.format(it.value.start.toLocalDateTime(TimeZone.currentSystemDefault()).date.toJavaLocalDate())
+                val end =
+                    formatter.format(it.value.endInclusive.toLocalDateTime(TimeZone.currentSystemDefault()).date.toJavaLocalDate())
                 "Первое событие: $start, последнее событие: $end"
             }
         )
