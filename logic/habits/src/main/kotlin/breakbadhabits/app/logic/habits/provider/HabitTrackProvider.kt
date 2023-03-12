@@ -4,7 +4,6 @@ import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.app.logic.habits.serializer.HabitTrackSerializer
 import breakbadhabits.foundation.datetime.millisToLocalDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -12,8 +11,7 @@ import kotlinx.coroutines.withContext
 import breakbadhabits.app.database.HabitTrack as DatabaseHabitTrack
 
 class HabitTrackProvider(
-    private val appDatabase: AppDatabase,
-    private val habitTrackSerializer: HabitTrackSerializer
+    private val appDatabase: AppDatabase
 ) {
 
     fun provideById(id: HabitTrack.Id) = appDatabase.habitTrackQueries
@@ -50,10 +48,7 @@ class HabitTrackProvider(
         HabitTrack.Id(id),
         Habit.Id(habitId),
         HabitTrack.Range(rangeStart.millisToLocalDateTime()..rangeEnd.millisToLocalDateTime()),
-        HabitTrack.EventCount(
-            value = eventCount.toInt(),
-            timeUnit = habitTrackSerializer.decodeEventCountTimeUnit(eventCountTimeUnit)
-        ),
+        HabitTrack.EventCount(dailyCount.toInt()),
         comment?.let(HabitTrack::Comment)
     )
 }

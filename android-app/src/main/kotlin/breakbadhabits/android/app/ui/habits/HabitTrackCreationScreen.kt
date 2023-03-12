@@ -113,10 +113,10 @@ fun HabitTrackCreationScreen(
             controller = eventCountInputController,
             adapter = remember {
                 TextFieldAdapter(
-                    decodeInput = { it.value.toString() },
+                    decodeInput = { it.dailyCount.toString() },
                     encodeInput = {
                         eventCountState.input.copy(
-                            value = it.toIntOrNull() ?: 0
+                            dailyCount = it.toIntOrNull() ?: 0
                         )
                     },
                     extractErrorMessage = {
@@ -128,35 +128,11 @@ fun HabitTrackCreationScreen(
                     }
                 )
             },
-            label = "Число событий",
+            label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
-            regex = Regexps.integersOrEmpty,
-            trailingIcon = {
-                val input = eventCountState.input
-                val timeUnit = input.timeUnit
-                Button(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    onClick = {
-                        eventCountInputController.changeInput(
-                            input.copy(
-                                timeUnit = when (timeUnit) {
-                                    HabitTrack.EventCount.TimeUnit.HOURS -> HabitTrack.EventCount.TimeUnit.DAYS
-                                    HabitTrack.EventCount.TimeUnit.DAYS -> HabitTrack.EventCount.TimeUnit.HOURS
-                                }
-                            )
-                        )
-                    },
-                    text = when (timeUnit) {
-                        HabitTrack.EventCount.TimeUnit.HOURS -> "Каждый час"
-                        HabitTrack.EventCount.TimeUnit.DAYS -> "Каждый день"
-                    },
-                    icon = {
-                        LocalResourceIcon(R.drawable.ic_change_circle)
-                    }
-                )
-            }
+            regex = Regexps.integersOrEmpty
         )
 
         Text(

@@ -13,15 +13,7 @@ data class HabitTrack(
 
     data class Range(val value: ClosedRange<LocalDateTime>)
 
-    data class EventCount(
-        val value: Int,
-        val timeUnit: TimeUnit
-    ) {
-        enum class TimeUnit {
-            HOURS,
-            DAYS,
-        }
-    }
+    data class EventCount(val dailyCount: Int)
 
     data class Comment(val value: String)
 }

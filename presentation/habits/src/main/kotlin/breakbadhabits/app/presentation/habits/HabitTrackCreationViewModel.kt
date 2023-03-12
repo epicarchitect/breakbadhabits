@@ -25,10 +25,7 @@ class HabitTrackCreationViewModel(
 
     val eventCountInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.EventCount(
-            value = 1,
-            timeUnit = HabitTrack.EventCount.TimeUnit.DAYS
-        ),
+        initialInput = HabitTrack.EventCount(dailyCount = 1),
         validation = trackEventCountValidator::validate
     )
 

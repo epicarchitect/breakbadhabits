@@ -188,10 +188,7 @@ fun HabitCreationScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Укажите сколько примерно было событий привычки каждый " + when (firstTrackEventCountState.input.timeUnit) {
-                HabitTrack.EventCount.TimeUnit.HOURS -> "час."
-                HabitTrack.EventCount.TimeUnit.DAYS -> "день."
-            }
+            text = "Укажите сколько примерно было событий привычки каждый день"
         )
 
         Spacer(Modifier.height(16.dp))
@@ -200,10 +197,10 @@ fun HabitCreationScreen(
             controller = firstTrackEventCountInputController,
             adapter = remember {
                 TextFieldAdapter(
-                    decodeInput = { it.value.toString() },
+                    decodeInput = { it.dailyCount.toString() },
                     encodeInput = {
                         firstTrackEventCountState.input.copy(
-                            value = it.toIntOrNull() ?: 0
+                            dailyCount = it.toIntOrNull() ?: 0
                         )
                     },
                     extractErrorMessage = {
@@ -215,35 +212,11 @@ fun HabitCreationScreen(
                     }
                 )
             },
-            label = "Число событий",
+            label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
-            regex = Regexps.integersOrEmpty,
-            trailingIcon = {
-                val input = firstTrackEventCountState.input
-                val timeUnit = input.timeUnit
-                Button(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    onClick = {
-                        firstTrackEventCountInputController.changeInput(
-                            input.copy(
-                                timeUnit = when (timeUnit) {
-                                    HabitTrack.EventCount.TimeUnit.HOURS -> HabitTrack.EventCount.TimeUnit.DAYS
-                                    HabitTrack.EventCount.TimeUnit.DAYS -> HabitTrack.EventCount.TimeUnit.HOURS
-                                }
-                            )
-                        )
-                    },
-                    text = when (timeUnit) {
-                        HabitTrack.EventCount.TimeUnit.HOURS -> "Каждый час"
-                        HabitTrack.EventCount.TimeUnit.DAYS -> "Каждый день"
-                    },
-                    icon = {
-                        LocalResourceIcon(R.drawable.ic_change_circle)
-                    }
-                )
-            }
+            regex = Regexps.integersOrEmpty
         )
 
         Spacer(modifier = Modifier.weight(1.0f))

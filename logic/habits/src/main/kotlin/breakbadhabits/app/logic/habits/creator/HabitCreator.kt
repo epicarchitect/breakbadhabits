@@ -3,7 +3,6 @@ package breakbadhabits.app.logic.habits.creator
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.database.IdGenerator
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.logic.habits.serializer.HabitTrackSerializer
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
@@ -13,8 +12,7 @@ import kotlinx.coroutines.withContext
 
 class HabitCreator(
     private val appDatabase: AppDatabase,
-    private val idGenerator: IdGenerator,
-    private val habitTrackSerializer: HabitTrackSerializer
+    private val idGenerator: IdGenerator
 ) {
     suspend fun createHabit(
         name: CorrectHabitNewName,
@@ -37,8 +35,7 @@ class HabitCreator(
                 habitId = habitId,
                 rangeStart = firstTrackInterval.data.value.start.toMillis(),
                 rangeEnd = firstTrackInterval.data.value.endInclusive.toMillis(),
-                eventCount = firstTrackValue.data.value.toLong(),
-                eventCountTimeUnit = habitTrackSerializer.encodeEventCountTimeUnit(firstTrackValue.data.timeUnit),
+                dailyCount = firstTrackValue.data.dailyCount.toLong(),
                 comment = null
             )
         }

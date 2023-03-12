@@ -9,7 +9,7 @@ class HabitTrackEventCountValidator {
     } ?: CorrectHabitTrackEventCount(data)
 
     private fun HabitTrack.EventCount.incorrectReason() = when {
-        value <= 0 -> IncorrectHabitTrackEventCount.Reason.Empty()
+        dailyCount <= 0 -> IncorrectHabitTrackEventCount.Reason.Empty()
         else -> null
     }
 }
