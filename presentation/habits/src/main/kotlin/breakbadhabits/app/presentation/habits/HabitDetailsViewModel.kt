@@ -8,7 +8,6 @@ import breakbadhabits.app.logic.habits.provider.HabitStatisticsProvider
 import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.viewmodel.ViewModel
-import kotlinx.coroutines.flow.map
 
 class HabitDetailsViewModel(
     habitProvider: HabitProvider,

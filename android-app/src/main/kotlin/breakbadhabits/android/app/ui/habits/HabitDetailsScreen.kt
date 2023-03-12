@@ -1,7 +1,6 @@
 package breakbadhabits.android.app.ui.habits
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -165,7 +164,8 @@ fun HabitDetailsScreen(
                         if (abstinenceList.isNotEmpty()) {
                             val abstinenceTimes = remember(abstinenceList) {
                                 abstinenceList.map {
-                                    val time = it.range.value.endInclusive.toMillis() - it.range.value.start.toMillis()
+                                    val time =
+                                        it.range.value.endInclusive.toMillis() - it.range.value.start.toMillis()
                                     time.toFloat()
                                 }
                             }

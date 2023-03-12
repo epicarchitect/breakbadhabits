@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -34,8 +33,8 @@ import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.IntervalSelectionEpicCalendarDialog
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.SingleSelectionGrid
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
@@ -78,7 +77,9 @@ fun HabitCreationScreen(
             currentMonth = YearMonth.now(),
             maxMonth = YearMonth.now(),
             minMonth = YearMonth.now().minusYears(10),
-            initialRange = firstTrackRangeState.input.value.start.toJavaLocalDateTime().toLocalDate()..firstTrackRangeState.input.value.endInclusive.toJavaLocalDateTime().toLocalDate()
+            initialRange = firstTrackRangeState.input.value.start.toJavaLocalDateTime()
+                .toLocalDate()..firstTrackRangeState.input.value.endInclusive.toJavaLocalDateTime()
+                .toLocalDate()
         )
 
         IntervalSelectionEpicCalendarDialog(

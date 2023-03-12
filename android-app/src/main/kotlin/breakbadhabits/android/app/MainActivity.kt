@@ -3,11 +3,11 @@ package breakbadhabits.android.app
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import breakbadhabits.android.app.format.DateTimeFormatter
+import breakbadhabits.android.app.ui.app.AppRootScreen
 import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.android.app.ui.app.LocalPresentationModule
 import breakbadhabits.android.app.ui.habits.resources.HabitIconResourceProvider
-import breakbadhabits.android.app.ui.app.AppRootScreen
 import breakbadhabits.foundation.uikit.activity.ComposeActivity
 
 class MainActivity : ComposeActivity() {
