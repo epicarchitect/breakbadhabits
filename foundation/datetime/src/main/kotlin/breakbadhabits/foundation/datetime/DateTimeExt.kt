@@ -28,7 +28,7 @@ fun ClosedRange<Instant>.countDaysInMonth(
     val startDateInMonth = startDate.year == year && startDate.month == month
     val startDateBeforeMonth = startDate.year < year || startDate.month < month
     val endDateInMonth = endDate.year == year && endDate.month == month
-    val endDateAfterMonth = endDate.year > year || endDate.month < month
+    val endDateAfterMonth = endDate.year > year || endDate.month > month
 
     return when {
         startDateInMonth && endDateInMonth -> {
