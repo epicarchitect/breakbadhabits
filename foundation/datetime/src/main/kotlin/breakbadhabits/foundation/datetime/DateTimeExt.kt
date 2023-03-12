@@ -11,10 +11,7 @@ fun Long.secondsToInstant() = Instant.fromEpochSeconds(this)
 fun ClosedRange<Long>.secondsToInstantRange() =
     start.secondsToInstant()..endInclusive.secondsToInstant()
 
-fun ClosedRange<Instant>.toDuration() =
-    if (endInclusive > start) endInclusive - start
-    else start - endInclusive
-
+fun ClosedRange<Instant>.toDuration() = endInclusive - start
 
 fun ClosedRange<Instant>.countDays(timeZone: TimeZone) =
     start.daysUntil(endInclusive, timeZone) + 1

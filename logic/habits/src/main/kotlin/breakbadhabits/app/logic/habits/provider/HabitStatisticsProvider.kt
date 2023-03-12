@@ -28,6 +28,8 @@ class HabitStatisticsProvider(
         habitTrackProvider.provideByHabitId(habitId),
         dateTimeProvider.currentTimeFlow()
     ) { abstinenceList, tracks, currentTime ->
+        if (tracks.isEmpty()) return@combine null
+
         val timeZone = TimeZone.currentSystemDefault()
         val currentDate = Clock.System.now().toLocalDateTime(timeZone).date
         val previousMonthDate = currentDate.minus(DateTimeUnit.MONTH)
@@ -35,8 +37,6 @@ class HabitStatisticsProvider(
         HabitStatistics(
             habitId = habitId,
             abstinence = abstinenceList.let { list ->
-                if (list.isEmpty()) return@let null
-
                 val timesInSeconds = list.map {
                     it.range.value.endInclusive.epochSeconds - it.range.value.start.epochSeconds
                 }
@@ -45,7 +45,7 @@ class HabitStatisticsProvider(
                     averageTime = timesInSeconds.average().toDuration(DurationUnit.SECONDS),
                     maxTime = timesInSeconds.max().toDuration(DurationUnit.SECONDS),
                     minTime = timesInSeconds.min().toDuration(DurationUnit.SECONDS),
-                    timeSinceFirstTrack = currentTime - list.minOf { it.range.value.start }
+                    timeSinceFirstTrack = currentTime - tracks.minOf { it.range.value.start }
                 )
             },
             eventCount = HabitStatistics.EventCount(

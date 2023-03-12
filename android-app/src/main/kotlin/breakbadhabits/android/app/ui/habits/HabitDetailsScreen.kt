@@ -54,7 +54,7 @@ fun HabitDetailsScreen(
     habitController: LoadingController<Habit?>,
     habitAbstinenceController: LoadingController<HabitAbstinence?>,
     abstinenceListController: LoadingController<List<HabitAbstinence>>,
-    statisticsController: LoadingController<HabitStatistics>,
+    statisticsController: LoadingController<HabitStatistics?>,
     habitTracksController: LoadingController<List<HabitTrack>>,
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
@@ -158,62 +158,64 @@ fun HabitDetailsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            LoadingBox(abstinenceListController) { abstinenceList ->
+                if (abstinenceList.size < 3) return@LoadingBox
+                Card(
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .fillMaxWidth()
+                ) {
+                    Column {
+                        Title(
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                            text = stringResource(R.string.habitAnalyze_abstinenceChart_title)
+                        )
 
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column {
-                    Title(
-                        modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                        text = stringResource(R.string.habitAnalyze_abstinenceChart_title)
-                    )
-
-                    LoadingBox(abstinenceListController) { abstinenceList ->
-                        if (abstinenceList.isNotEmpty()) {
-                            val abstinenceTimes = remember(abstinenceList) {
-                                abstinenceList.map {
-                                    it.range.value.toDuration().inWholeSeconds.toFloat()
-                                }
+                        val abstinenceTimes = remember(abstinenceList) {
+                            abstinenceList.map {
+                                it.range.value.toDuration().inWholeSeconds.toFloat()
                             }
-
-                            Histogram(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(300.dp),
-                                values = abstinenceTimes,
-                                valueFormatter = {
-                                    dateTimeFormatter.formatDuration(
-                                        duration = it.toLong().seconds,
-                                        maxValueCount = 2
-                                    )
-                                },
-                                startPadding = 16.dp,
-                                endPadding = 16.dp,
-                            )
-                        } else {
-                            Text("No data for chart")
                         }
+
+                        Histogram(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp),
+                            values = abstinenceTimes,
+                            valueFormatter = {
+                                dateTimeFormatter.formatDuration(
+                                    duration = it.toLong().seconds,
+                                    maxValueCount = 2
+                                )
+                            },
+                            startPadding = 16.dp,
+                            endPadding = 16.dp,
+                        )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Card {
-                Column(
+            LoadingBox(statisticsController) { statistics ->
+                statistics ?: return@LoadingBox
+                Card(
                     modifier = Modifier
-                        .padding(
-                            start = 16.dp,
-                            top = 16.dp,
-                            end = 16.dp,
-                            bottom = 12.dp
-                        )
+                        .padding(top = 24.dp)
                         .fillMaxWidth()
                 ) {
-                    Title(stringResource(R.string.habitAnalyze_statistics_title))
+                    Column(
+                        modifier = Modifier
+                            .padding(
+                                start = 16.dp,
+                                top = 16.dp,
+                                end = 16.dp,
+                                bottom = 16.dp
+                            )
+                            .fillMaxWidth()
+                    ) {
+                        Title(stringResource(R.string.habitAnalyze_statistics_title))
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    LoadingBox(statisticsController) { statistics ->
                         Statistics(
                             modifier = Modifier.fillMaxWidth(),
                             statistics = remember(statistics) {
@@ -240,43 +242,35 @@ fun HabitDetailsScreen(
 private fun HabitStatistics.toStatisticsData(
     context: Context,
     dateTimeFormatter: DateTimeFormatter,
-) = listOfNotNull(
-    abstinence?.let {
-        StatisticData(
-            name = context.getString(R.string.habitAnalyze_statistics_averageAbstinenceTime),
-            value = dateTimeFormatter.formatDuration(
-                duration = it.averageTime,
-                maxValueCount = 2
-            )
+) = listOf(
+    StatisticData(
+        name = context.getString(R.string.habitAnalyze_statistics_averageAbstinenceTime),
+        value = dateTimeFormatter.formatDuration(
+            duration = abstinence.averageTime,
+            maxValueCount = 2
         )
-    },
-    abstinence?.let {
-        StatisticData(
-            name = context.getString(R.string.habitAnalyze_statistics_maxAbstinenceTime),
-            value = dateTimeFormatter.formatDuration(
-                duration = it.maxTime,
-                maxValueCount = 2
-            )
+    ),
+    StatisticData(
+        name = context.getString(R.string.habitAnalyze_statistics_maxAbstinenceTime),
+        value = dateTimeFormatter.formatDuration(
+            duration = abstinence.maxTime,
+            maxValueCount = 2
         )
-    },
-    abstinence?.let {
-        StatisticData(
-            name = context.getString(R.string.habitAnalyze_statistics_minAbstinenceTime),
-            value = dateTimeFormatter.formatDuration(
-                duration = it.minTime,
-                maxValueCount = 2
-            )
+    ),
+    StatisticData(
+        name = context.getString(R.string.habitAnalyze_statistics_minAbstinenceTime),
+        value = dateTimeFormatter.formatDuration(
+            duration = abstinence.minTime,
+            maxValueCount = 2
         )
-    },
-    abstinence?.let {
-        StatisticData(
-            name = context.getString(R.string.habitAnalyze_statistics_timeFromFirstEvent),
-            value = dateTimeFormatter.formatDuration(
-                duration = it.timeSinceFirstTrack,
-                maxValueCount = 2
-            )
+    ),
+    StatisticData(
+        name = context.getString(R.string.habitAnalyze_statistics_timeFromFirstEvent),
+        value = dateTimeFormatter.formatDuration(
+            duration = abstinence.timeSinceFirstTrack,
+            maxValueCount = 2
         )
-    },
+    ),
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_countEventsInCurrentMonth),
         value = eventCount.currentMonthCount.toString()

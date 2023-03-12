@@ -4,7 +4,7 @@ import kotlin.time.Duration
 
 data class HabitStatistics(
     val habitId: Habit.Id,
-    val abstinence: Abstinence?,
+    val abstinence: Abstinence,
     val eventCount: EventCount
 ) {
     data class Abstinence(
