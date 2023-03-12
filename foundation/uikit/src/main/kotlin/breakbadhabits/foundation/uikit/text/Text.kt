@@ -54,21 +54,14 @@ fun Text(
             )
         }
 
-        AnimatedContent(
-            targetState = text,
-            transitionSpec = {
-                fadeIn(tween(150)) with fadeOut(tween(250))
-            }
-        ) {
-            MaterialText(
-                text = it,
-                style = style,
-                color = color,
-                fontWeight = fontWeight,
-                fontSize = fontSize,
-                textAlign = textAlign,
-                overflow = overflow
-            )
-        }
+        MaterialText(
+            text = text,
+            style = style,
+            color = color,
+            fontWeight = fontWeight,
+            fontSize = fontSize,
+            textAlign = textAlign,
+            overflow = overflow
+        )
     }
 }

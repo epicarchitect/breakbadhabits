@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
@@ -50,7 +51,6 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
@@ -67,6 +67,7 @@ fun HabitCreationScreen(
     creationController: RequestController
 ) {
     val context = LocalContext.current
+    val dateTimeFormatter = LocalDateTimeFormatter.current
     val habitIconResources = LocalHabitIconResourceProvider.current
     var rangeSelectionShow by remember { mutableStateOf(false) }
 
@@ -190,15 +191,11 @@ fun HabitCreationScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
         Button(
             onClick = { rangeSelectionShow = true },
             text = firstTrackRangeState.input.let {
-                val start =
-                    formatter.format(it.value.start.toLocalDateTime(TimeZone.currentSystemDefault()).date.toJavaLocalDate())
-                val end =
-                    formatter.format(it.value.endInclusive.toLocalDateTime(TimeZone.currentSystemDefault()).date.toJavaLocalDate())
+                val start = dateTimeFormatter.formatInstantAsDate(it.value.start)
+                val end = dateTimeFormatter.formatInstantAsDate(it.value.endInclusive)
                 "Первое событие: $start, последнее событие: $end"
             }
         )

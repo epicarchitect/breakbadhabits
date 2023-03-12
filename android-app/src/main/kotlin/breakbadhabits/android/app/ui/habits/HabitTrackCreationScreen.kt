@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
@@ -59,6 +60,7 @@ fun HabitTrackCreationScreen(
     habitController: LoadingController<Habit?>,
     commentInputController: ValidatedInputController<HabitTrack.Comment?, Nothing>
 ) {
+    val dateTimeFormatter = LocalDateTimeFormatter.current
     var rangeSelectionShow by remember { mutableStateOf(false) }
     val eventCountState by eventCountInputController.state.collectAsState()
     val rangeState by rangeInputController.state.collectAsState()
@@ -155,14 +157,12 @@ fun HabitTrackCreationScreen(
             text = "Интервал:"
         )
 
-        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
         Button(
             modifier = Modifier.padding(16.dp),
             onClick = { rangeSelectionShow = true },
             text = rangeState.input.let {
-                val start = formatter.format(it.value.start.toLocalDateTime(TimeZone.currentSystemDefault()).date.toJavaLocalDate())
-                val end = formatter.format(it.value.endInclusive.toLocalDateTime(TimeZone.currentSystemDefault()).date.toJavaLocalDate())
+                val start = dateTimeFormatter.formatInstantAsDate(it.value.start)
+                val end = dateTimeFormatter.formatInstantAsDate(it.value.endInclusive)
                 "Первое событие: $start, последнее событие: $end"
             }
         )
@@ -181,7 +181,7 @@ fun HabitTrackCreationScreen(
             adapter = remember {
                 TextFieldAdapter(
                     decodeInput = { it?.value ?: "" },
-                    encodeInput = { HabitTrack.Comment(it) },
+                    encodeInput = { if (it.isEmpty()) null else HabitTrack.Comment(it) },
                     extractErrorMessage = { null }
                 )
             }

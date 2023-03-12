@@ -1,7 +1,10 @@
 package breakbadhabits.android.app.format
 
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.time.Duration
 
@@ -13,17 +16,18 @@ class DateTimeFormatter(
 ) {
     private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
-    fun formatAsToDates(range: ClosedRange<LocalDate>): String {
-        val start = range.start.toJavaLocalDate()
-        val end = range.endInclusive.toJavaLocalDate()
-        return "${formatter.format(start)} - ${formatter.format(end)}"
+    fun formatInstantAsDate(instant: Instant): String {
+        return formatDate(instant.toLocalDateTime(TimeZone.currentSystemDefault()).date)
+    }
+
+    fun formatDate(date: LocalDate): String {
+        return formatter.format(date.toJavaLocalDate())
     }
 
     fun formatDuration(
         duration: Duration,
         maxValueCount: Int = 4
     ) = buildString {
-        duration.inWholeDays
         val durationInSeconds = duration.inWholeSeconds
         val seconds = durationInSeconds % 60
         val minutes = durationInSeconds / 60 % 60
