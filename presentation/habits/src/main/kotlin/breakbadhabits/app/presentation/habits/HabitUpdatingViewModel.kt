@@ -70,13 +70,13 @@ class HabitUpdatingViewModel(
     val deletionController = RequestController(
         coroutineScope = viewModelScope,
         request = {
-            habitDeleter.deleteById(habitId)
+            habitDeleter.deleteHabit(habitId)
         }
     )
 
     init {
         viewModelScope.launch {
-            val habit = checkNotNull(habitProvider.provideHabitById(habitId))
+            val habit = checkNotNull(habitProvider.getHabit(habitId))
             initialHabit.value = habit
             habitNameController.changeInput(habit.name)
             habitIconSelectionController.select(habit.icon)

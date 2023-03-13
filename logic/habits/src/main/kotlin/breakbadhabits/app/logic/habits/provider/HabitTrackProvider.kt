@@ -14,14 +14,7 @@ class HabitTrackProvider(
     private val appDatabase: AppDatabase
 ) {
 
-    fun provideById(id: HabitTrack.Id) = appDatabase.habitTrackQueries
-        .selectById(id.value)
-        .asFlow()
-        .map {
-            it.executeAsOneOrNull()?.toEntity()
-        }
-
-    fun provideByHabitId(id: Habit.Id) = appDatabase.habitTrackQueries
+    fun habitTracksFlow(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitId(id.value)
         .asFlow()
         .map {
@@ -30,19 +23,12 @@ class HabitTrackProvider(
             }
         }
 
-    fun provideByHabitIdAndMaxRangeEnd(id: Habit.Id) = appDatabase.habitTrackQueries
+    fun habitTrackFlowByMaxEnd(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitIdAndMaxRangeEnd(id.value)
         .asFlow()
         .map {
             it.executeAsOneOrNull()?.toEntity()
         }
-
-    suspend fun provide(id: HabitTrack.Id) = withContext(Dispatchers.IO) {
-        appDatabase.habitTrackQueries
-            .selectById(id.value)
-            .executeAsOneOrNull()
-            ?.toEntity()
-    }
 
     private fun DatabaseHabitTrack.toEntity() = HabitTrack(
         HabitTrack.Id(id),

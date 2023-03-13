@@ -10,21 +10,21 @@ import breakbadhabits.app.database.Habit as DatabaseHabit
 
 class HabitProvider(private val appDatabase: AppDatabase) {
 
-    fun provideHabitFlowById(id: Habit.Id) = appDatabase.habitQueries
+    fun habitFlow(id: Habit.Id) = appDatabase.habitQueries
         .selectById(id.value)
         .asFlow()
         .map {
             it.executeAsOneOrNull()?.toEntity()
         }
 
-    suspend fun provideHabitById(id: Habit.Id) = withContext(Dispatchers.IO) {
+    suspend fun getHabit(id: Habit.Id) = withContext(Dispatchers.IO) {
         appDatabase.habitQueries
             .selectById(id.value)
             .executeAsOneOrNull()
             ?.toEntity()
     }
 
-    fun provideHabitsFlow() = appDatabase.habitQueries
+    fun habitsFlow() = appDatabase.habitQueries
         .selectAll()
         .asFlow()
         .map {

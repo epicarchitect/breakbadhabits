@@ -7,6 +7,7 @@ import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.foundation.datetime.countDays
 import breakbadhabits.foundation.datetime.countDaysInMonth
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Month
@@ -21,46 +22,58 @@ class HabitStatisticsProvider(
     private val habitAbstinenceProvider: HabitAbstinenceProvider,
     private val dateTimeProvider: DateTimeProvider
 ) {
-    fun habitStatisticsFlowById(
+    fun statisticsFlow(habitId: Habit.Id) = combine(
+        habitAbstinenceFlow(habitId),
+        habitEventCountFlow(habitId)
+    ) { abstinence, eventCount ->
+        if (abstinence == null) null
+        else HabitStatistics(
+            habitId,
+            abstinence,
+            eventCount
+        )
+    }
+
+    private fun habitAbstinenceFlow(
         habitId: Habit.Id
     ) = combine(
-        habitAbstinenceProvider.provideAbstinenceListById(habitId),
-        habitTrackProvider.provideByHabitId(habitId),
+        habitAbstinenceProvider.abstinenceListFlow(habitId),
+        habitTrackProvider.habitTracksFlow(habitId),
         dateTimeProvider.currentTimeFlow()
     ) { abstinenceList, tracks, currentTime ->
         if (tracks.isEmpty()) return@combine null
 
+        val timesInSeconds = abstinenceList.map {
+            it.range.value.endInclusive.epochSeconds - it.range.value.start.epochSeconds
+        }
+
+        HabitStatistics.Abstinence(
+            averageTime = timesInSeconds.average().toDuration(DurationUnit.SECONDS),
+            maxTime = timesInSeconds.max().toDuration(DurationUnit.SECONDS),
+            minTime = timesInSeconds.min().toDuration(DurationUnit.SECONDS),
+            timeSinceFirstTrack = currentTime - tracks.minOf { it.range.value.start }
+        )
+    }
+
+    private fun habitEventCountFlow(
+        habitId: Habit.Id
+    ) = habitTrackProvider.habitTracksFlow(habitId).map { tracks ->
         val timeZone = TimeZone.currentSystemDefault()
         val currentDate = Clock.System.now().toLocalDateTime(timeZone).date
         val previousMonthDate = currentDate.minus(DateTimeUnit.MONTH)
 
-        HabitStatistics(
-            habitId = habitId,
-            abstinence = abstinenceList.let { list ->
-                val timesInSeconds = list.map {
-                    it.range.value.endInclusive.epochSeconds - it.range.value.start.epochSeconds
-                }
-
-                HabitStatistics.Abstinence(
-                    averageTime = timesInSeconds.average().toDuration(DurationUnit.SECONDS),
-                    maxTime = timesInSeconds.max().toDuration(DurationUnit.SECONDS),
-                    minTime = timesInSeconds.min().toDuration(DurationUnit.SECONDS),
-                    timeSinceFirstTrack = currentTime - tracks.minOf { it.range.value.start }
-                )
-            },
-            eventCount = HabitStatistics.EventCount(
-                currentMonthCount = tracks.countEventsInMonth(
-                    year = currentDate.year,
-                    month = currentDate.month,
-                    timeZone = timeZone
-                ),
-                previousMonthCount = tracks.countEventsInMonth(
-                    year = previousMonthDate.year,
-                    month = previousMonthDate.month,
-                    timeZone = timeZone
-                ),
-                totalCount = tracks.countEvents(timeZone)
-            )
+        HabitStatistics.EventCount(
+            currentMonthCount = tracks.countEventsInMonth(
+                year = currentDate.year,
+                month = currentDate.month,
+                timeZone = timeZone
+            ),
+            previousMonthCount = tracks.countEventsInMonth(
+                year = previousMonthDate.year,
+                month = previousMonthDate.month,
+                timeZone = timeZone
+            ),
+            totalCount = tracks.countEvents(timeZone)
         )
     }
 }

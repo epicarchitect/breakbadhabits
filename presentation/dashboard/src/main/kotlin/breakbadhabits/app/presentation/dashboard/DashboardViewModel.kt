@@ -18,11 +18,11 @@ class DashboardViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val habitItemsController = LoadingController(
         coroutineScope = viewModelScope,
-        flow = habitProvider.provideHabitsFlow().flatMapLatest { habits ->
+        flow = habitProvider.habitsFlow().flatMapLatest { habits ->
             if (habits.isEmpty()) flowOf(emptyList())
             else combine(
                 habits.map { habit ->
-                    habitAbstinenceProvider.provideCurrentAbstinenceFlowById(habit.id)
+                    habitAbstinenceProvider.currentAbstinenceFlow(habit.id)
                 }
             ) { abstinenceList ->
                 habits.mapIndexed { index, habit ->

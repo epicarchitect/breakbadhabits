@@ -19,26 +19,26 @@ class HabitDetailsViewModel(
 
     val habitController = LoadingController(
         coroutineScope = viewModelScope,
-        flow = habitProvider.provideHabitFlowById(habitId)
+        flow = habitProvider.habitFlow(habitId)
     )
 
     val habitTracksController = LoadingController(
         coroutineScope = viewModelScope,
-        flow = habitTrackProvider.provideByHabitId(habitId)
+        flow = habitTrackProvider.habitTracksFlow(habitId)
     )
 
     val habitAbstinenceController = LoadingController(
         coroutineScope = viewModelScope,
-        flow = habitAbstinenceProvider.provideCurrentAbstinenceFlowById(habitId)
+        flow = habitAbstinenceProvider.currentAbstinenceFlow(habitId)
     )
 
     val abstinenceListController = LoadingController(
         coroutineScope = viewModelScope,
-        flow = habitAbstinenceProvider.provideAbstinenceListById(habitId)
+        flow = habitAbstinenceProvider.abstinenceListFlow(habitId)
     )
 
     val statisticsController = LoadingController(
         coroutineScope = viewModelScope,
-        flow = habitStatisticsProvider.habitStatisticsFlowById(habitId)
+        flow = habitStatisticsProvider.statisticsFlow(habitId)
     )
 }

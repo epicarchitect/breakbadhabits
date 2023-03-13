@@ -12,9 +12,9 @@ class HabitAbstinenceProvider(
     private val habitTrackProvider: HabitTrackProvider,
     private val dateTimeProvider: DateTimeProvider
 ) {
-    fun provideCurrentAbstinenceFlowById(
+    fun currentAbstinenceFlow(
         habitId: Habit.Id
-    ) = habitTrackProvider.provideByHabitIdAndMaxRangeEnd(habitId).flatMapLatest { lastTrack ->
+    ) = habitTrackProvider.habitTrackFlowByMaxEnd(habitId).flatMapLatest { lastTrack ->
         if (lastTrack == null) flowOf(null)
         else dateTimeProvider.currentTimeFlow().map { currentTime ->
             HabitAbstinence(
@@ -24,10 +24,8 @@ class HabitAbstinenceProvider(
         }
     }
 
-    fun provideAbstinenceListById(
-        habitId: Habit.Id
-    ) = combine(
-        habitTrackProvider.provideByHabitId(habitId),
+    fun abstinenceListFlow(habitId: Habit.Id) = combine(
+        habitTrackProvider.habitTracksFlow(habitId),
         dateTimeProvider.currentTimeFlow(),
     ) { tracks, currentTime ->
         tracks.sortedBy { it.range.value.start }.let { sortedList ->
