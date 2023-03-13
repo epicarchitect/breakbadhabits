@@ -5,10 +5,13 @@ import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.datetime.MonthOfYear
+import breakbadhabits.foundation.datetime.monthOfYear
 import breakbadhabits.foundation.datetime.secondsToInstantRange
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.TimeZone
 import java.time.YearMonth
 import breakbadhabits.app.database.HabitTrack as DatabaseHabitTrack
 
@@ -25,17 +28,26 @@ class HabitTrackProvider(
             }
         }
 
-    fun monthsToHabitTracksFlow(id: Habit.Id) = habitTracksFlow(id).map {
-        val month = MonthOfYear.now()
-        mapOf(month to it)
-    }
-
     fun habitTrackFlowByMaxEnd(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitIdAndMaxRangeEnd(id.value)
         .asFlow()
         .map {
             it.executeAsOneOrNull()?.toEntity()
         }
+
+    fun monthsToHabitTracksFlow(id: Habit.Id) = habitTracksFlow(id).map { tracks ->
+        val timeZone = TimeZone.currentSystemDefault()
+        val map = mutableMapOf<MonthOfYear, MutableSet<HabitTrack>>()
+        tracks.forEach { track ->
+            map.getOrPut(
+                track.range.value.start.monthOfYear(timeZone)
+            ) { mutableSetOf() }.add(track)
+            map.getOrPut(
+                track.range.value.endInclusive.monthOfYear(timeZone)
+            ) { mutableSetOf() }.add(track)
+        }
+        map.mapValues { it.value.toList() }
+    }
 
     private fun DatabaseHabitTrack.toEntity() = HabitTrack(
         HabitTrack.Id(id),

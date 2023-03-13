@@ -12,12 +12,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
@@ -52,11 +53,11 @@ fun HabitTracksScreen(
     val dateTimeFormatter = LocalDateTimeFormatter.current
 
     LoadingBox(habitTracksController) { tracks ->
-        val months = tracks.keys
-        var currentMonth by remember { mutableStateOf(months.first()) }
+        val months = remember(tracks) { tracks.keys }
+        var currentMonth by remember(months) { mutableStateOf(months.max()) }
         val currentTracks = remember(currentMonth) { tracks[currentMonth] ?: emptyList() }
-        val currentRanges = remember(currentTracks) {
-            currentTracks.map {
+        val ranges = remember(tracks) {
+            tracks.values.flatten().map {
                 EpicCalendarState.Range(
                     start = it.range.value.start
                         .toLocalDateTime(TimeZone.currentSystemDefault())
@@ -69,10 +70,11 @@ fun HabitTracksScreen(
                 )
             }
         }
-        val jtYearMonth = remember { YearMonth.of(currentMonth.year, currentMonth.month) }
+        val jtYearMonth =
+            remember(currentMonth) { YearMonth.of(currentMonth.year, currentMonth.month) }
         val epicCalendarState = rememberEpicCalendarState(
             yearMonth = jtYearMonth,
-            ranges = currentRanges
+            ranges = ranges
         )
 
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -139,7 +141,8 @@ fun HabitTracksScreen(
                                     val end =
                                         dateTimeFormatter.formatInstantAsDate(it.endInclusive)
                                     "$start - $end"
-                                }
+                                },
+                                fontWeight = FontWeight.Bold
                             )
 
                             Text(
@@ -149,7 +152,8 @@ fun HabitTracksScreen(
 
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = track.comment?.value ?: stringResource(R.string.habitEvents_noComment)
+                                text = track.comment?.value
+                                    ?: stringResource(R.string.habitEvents_noComment)
                             )
                         }
                     }
