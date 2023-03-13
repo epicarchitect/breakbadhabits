@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import breakbadhabits.foundation.controller.SingleSelectionController
+import breakbadhabits.foundation.uikit.ext.collectState
 import kotlin.math.ceil
 
 @Composable
@@ -27,7 +28,7 @@ fun <T> SingleSelectionGrid(
     ceil: @Composable BoxScope.(T) -> Unit,
     countInRow: Int = 7
 ) {
-    val state by controller.state.collectAsState()
+    val state by controller.collectState()
 
     val countRows = ceil((state.items.size / countInRow.toFloat())).toInt()
 

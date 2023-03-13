@@ -49,6 +49,10 @@ class HabitTrackProvider(
         map.mapValues { it.value.toList() }
     }
 
+    suspend fun getHabitTrack(id: HabitTrack.Id) = withContext(Dispatchers.IO) {
+        appDatabase.habitTrackQueries.selectById(id.value).executeAsOneOrNull()?.toEntity()
+    }
+
     private fun DatabaseHabitTrack.toEntity() = HabitTrack(
         HabitTrack.Id(id),
         Habit.Id(habitId),

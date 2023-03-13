@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import breakbadhabits.foundation.controller.LoadingController
+import breakbadhabits.foundation.uikit.ext.collectState
 
 @Composable
 fun <DATA> LoadingBox(
@@ -16,7 +17,7 @@ fun <DATA> LoadingBox(
     modifier: Modifier = Modifier,
     loaded: @Composable BoxScope.(DATA) -> Unit
 ) {
-    val state by controller.state.collectAsState()
+    val state by controller.collectState()
 
     Box(modifier) {
         when (val state = state) {

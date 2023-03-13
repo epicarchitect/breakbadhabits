@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.uikit.ext.collectState
 
 @Composable
 fun RequestButton(
@@ -20,7 +21,7 @@ fun RequestButton(
     elevation: Dp = 1.dp,
     icon: (@Composable () -> Unit)? = null
 ) {
-    val state by requestController.state.collectAsState()
+    val state by requestController.collectState()
 
     Button(
         onClick = requestController::request,

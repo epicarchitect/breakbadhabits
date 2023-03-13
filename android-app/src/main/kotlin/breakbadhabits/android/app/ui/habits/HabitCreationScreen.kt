@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +40,7 @@ import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
+import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.rememberRangeSelectionEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
@@ -55,7 +55,6 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -71,8 +70,8 @@ fun HabitCreationScreen(
     val habitIconResources = LocalHabitIconResourceProvider.current
     var rangeSelectionShow by remember { mutableStateOf(false) }
 
-    val firstTrackEventCountState by firstTrackEventCountInputController.state.collectAsState()
-    val firstTrackRangeState by firstTrackRangeInputController.state.collectAsState()
+    val firstTrackEventCountState by firstTrackEventCountInputController.collectState()
+    val firstTrackRangeState by firstTrackRangeInputController.collectState()
 
     ClearFocusWhenKeyboardHiddenEffect()
 

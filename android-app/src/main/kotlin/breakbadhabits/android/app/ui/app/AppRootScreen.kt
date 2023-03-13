@@ -3,7 +3,6 @@ package breakbadhabits.android.app.ui.app
 import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -22,6 +21,7 @@ import breakbadhabits.android.app.ui.settings.AppSettingsScreen
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.uikit.ext.collectState
 
 
 private object Screens {
@@ -94,7 +94,7 @@ fun AppRootScreen() {
                 presentationModule.createHabitCreationViewModel()
             }
 
-            val creationState by viewModel.creationController.state.collectAsState()
+            val creationState by viewModel.creationController.collectState()
 
             LaunchedEffect(creationState) {
                 if (creationState.requestState is RequestController.RequestState.Executed) {
@@ -121,8 +121,8 @@ fun AppRootScreen() {
                 presentationModule.createHabitUpdatingViewModel(habitId)
             }
 
-            val updatingState by viewModel.updatingController.state.collectAsState()
-            val deletionState by viewModel.deletionController.state.collectAsState()
+            val updatingState by viewModel.updatingController.collectState()
+            val deletionState by viewModel.deletionController.collectState()
 
             LaunchedEffect(deletionState.requestState) {
                 if (deletionState.requestState is RequestController.RequestState.Executed) {
@@ -153,13 +153,10 @@ fun AppRootScreen() {
         ) {
             val presentationModule = LocalPresentationModule.current
             val habitId = Screens.HabitTrackCreation.getHabitId(it.arguments)
-            val habitTrackCreationViewModel = viewModel {
+            val viewModel = viewModel {
                 presentationModule.createHabitTrackCreationViewModel(habitId)
             }
-            val habitDetailsViewModel = viewModel {
-                presentationModule.createHabitDetailsViewModel(habitId)
-            }
-            val creationState by habitTrackCreationViewModel.creationController.state.collectAsState()
+            val creationState by viewModel.creationController.collectState()
 
             LaunchedEffect(creationState) {
                 if (creationState.requestState is RequestController.RequestState.Executed) {
@@ -168,11 +165,11 @@ fun AppRootScreen() {
             }
 
             HabitTrackCreationScreen(
-                eventCountInputController = habitTrackCreationViewModel.eventCountInputController,
-                rangeInputController = habitTrackCreationViewModel.rangeInputController,
-                creationController = habitTrackCreationViewModel.creationController,
-                habitController = habitDetailsViewModel.habitController,
-                commentInputController = habitTrackCreationViewModel.commentInputController
+                eventCountInputController = viewModel.eventCountInputController,
+                rangeInputController = viewModel.rangeInputController,
+                creationController = viewModel.creationController,
+                habitController = viewModel.habitController,
+                commentInputController = viewModel.commentInputController
             )
         }
 
@@ -181,7 +178,34 @@ fun AppRootScreen() {
             arguments = Screens.HabitTrackUpdating.arguments
         ) {
             val trackId = Screens.HabitTrackUpdating.getHabitTrackId(it.arguments)
-            HabitTrackUpdatingScreen()
+            val presentationModule = LocalPresentationModule.current
+            val viewModel = viewModel {
+                presentationModule.createHabitTrackUpdatingViewModel(trackId)
+            }
+
+            val updatingState by viewModel.updatingController.collectState()
+            val deletionState by viewModel.deletionController.collectState()
+
+            LaunchedEffect(deletionState.requestState) {
+                if (deletionState.requestState is RequestController.RequestState.Executed) {
+                    navController.popBackStack()
+                }
+            }
+
+            LaunchedEffect(updatingState.requestState) {
+                if (updatingState.requestState is RequestController.RequestState.Executed) {
+                    navController.popBackStack()
+                }
+            }
+
+            HabitTrackUpdatingScreen(
+                eventCountInputController = viewModel.eventCountInputController,
+                rangeInputController = viewModel.rangeInputController,
+                updatingController = viewModel.updatingController,
+                deletionController = viewModel.deletionController,
+                habitController = viewModel.habitController,
+                commentInputController = viewModel.commentInputController
+            )
         }
 
         composable(

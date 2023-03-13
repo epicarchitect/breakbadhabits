@@ -62,8 +62,12 @@ class HabitUpdatingViewModel(
             habitIconSelectionController.state,
             initialHabit
         ) { name, icon, initialHabit ->
-            (initialHabit?.name != name.input || initialHabit.icon != icon.selectedItem)
-                    && name.validationResult.let { it == null || it is CorrectHabitNewName }
+            val isChanged = initialHabit?.name != name.input
+                    || initialHabit.icon != icon.selectedItem
+
+            isChanged && name.validationResult.let {
+                it == null || it is CorrectHabitNewName
+            }
         }
     )
 

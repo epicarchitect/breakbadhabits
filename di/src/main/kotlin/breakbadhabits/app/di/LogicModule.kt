@@ -7,11 +7,13 @@ import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
 import breakbadhabits.app.logic.habits.deleter.HabitDeleter
+import breakbadhabits.app.logic.habits.deleter.HabitTrackDeleter
 import breakbadhabits.app.logic.habits.provider.HabitAbstinenceProvider
 import breakbadhabits.app.logic.habits.provider.HabitIconProvider
 import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.app.logic.habits.provider.HabitStatisticsProvider
 import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
+import breakbadhabits.app.logic.habits.updater.HabitTrackUpdater
 import breakbadhabits.app.logic.habits.updater.HabitUpdater
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
@@ -71,6 +73,14 @@ class LogicModule(private val context: Context) {
 
     val habitUpdater by lazy {
         HabitUpdater(appDatabase)
+    }
+
+    val habitTrackUpdater by lazy {
+        HabitTrackUpdater(appDatabase)
+    }
+
+    val habitTrackDeleter by lazy {
+        HabitTrackDeleter(appDatabase)
     }
 
     val habitStatisticsProvider by lazy {

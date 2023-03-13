@@ -43,6 +43,7 @@ import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
+import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
 
@@ -55,7 +56,7 @@ fun DashboardScreen(
     onHabitCreationClick: () -> Unit,
     onAppSettingsClick: () -> Unit
 ) {
-    val itemsState by habitItemsController.state.collectAsState()
+    val itemsState by habitItemsController.collectState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {

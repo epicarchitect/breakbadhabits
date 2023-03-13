@@ -36,6 +36,7 @@ import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
+import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.rememberRangeSelectionEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
@@ -63,8 +64,8 @@ fun HabitTrackCreationScreen(
 ) {
     val dateTimeFormatter = LocalDateTimeFormatter.current
     var rangeSelectionShow by remember { mutableStateOf(false) }
-    val eventCountState by eventCountInputController.state.collectAsState()
-    val rangeState by rangeInputController.state.collectAsState()
+    val eventCountState by eventCountInputController.collectState()
+    val rangeState by rangeInputController.collectState()
 
     ClearFocusWhenKeyboardHiddenEffect()
 

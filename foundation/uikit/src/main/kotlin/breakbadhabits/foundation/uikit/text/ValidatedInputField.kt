@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.ext.onFocusLost
 
 interface TextFieldAdapter<INPUT, VALIDATION_RESULT> {
@@ -55,7 +56,7 @@ fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
     trailingIcon: @Composable (() -> Unit)? = null,
     regex: Regex? = null,
 ) {
-    val state by controller.state.collectAsState()
+    val state by controller.collectState()
     val error = adapter.extractErrorMessage(state.validationResult)
     val keyboardController = LocalSoftwareKeyboardController.current
 

@@ -1,10 +1,12 @@
 package breakbadhabits.app.di
 
 import breakbadhabits.app.entity.Habit
+import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.app.presentation.habits.HabitCreationViewModel
 import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
 import breakbadhabits.app.presentation.habits.HabitTrackCreationViewModel
+import breakbadhabits.app.presentation.habits.HabitTrackUpdatingViewModel
 import breakbadhabits.app.presentation.habits.HabitTracksViewModel
 import breakbadhabits.app.presentation.habits.HabitUpdatingViewModel
 
@@ -49,6 +51,7 @@ class PresentationModule(val logicModule: LogicModule) {
 
     fun createHabitTrackCreationViewModel(habitId: Habit.Id) = with(logicModule) {
         HabitTrackCreationViewModel(
+            habitProvider,
             habitTrackCreator,
             habitTrackRangeValidator,
             habitTrackEventCountValidator,
@@ -61,6 +64,18 @@ class PresentationModule(val logicModule: LogicModule) {
             habitProvider,
             habitTrackProvider,
             habitId
+        )
+    }
+
+    fun createHabitTrackUpdatingViewModel(id: HabitTrack.Id) = with(logicModule) {
+        HabitTrackUpdatingViewModel(
+            habitProvider,
+            habitTrackProvider,
+            habitTrackUpdater,
+            habitTrackDeleter,
+            habitTrackRangeValidator,
+            habitTrackEventCountValidator,
+            id
         )
     }
 }
