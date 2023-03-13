@@ -26,9 +26,7 @@ class HabitTrackProvider(
         }
 
     fun monthsToHabitTracksFlow(id: Habit.Id) = habitTracksFlow(id).map {
-        val month = YearMonth.now().let {
-            MonthOfYear(it.year, it.month)
-        }
+        val month = MonthOfYear.now()
         mapOf(month to it)
     }
 
