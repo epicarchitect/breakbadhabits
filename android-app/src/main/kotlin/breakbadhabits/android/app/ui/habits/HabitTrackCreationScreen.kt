@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -107,16 +108,17 @@ fun HabitTrackCreationScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(16.dp)
     ) {
-        Title(
-            modifier = Modifier.padding(start = 18.dp, top = 18.dp, end = 18.dp, bottom = 4.dp),
-            text = stringResource(R.string.habitEventCreation_title)
-        )
+        Spacer(Modifier.height(24.dp))
+
+        Title(stringResource(R.string.habitEventCreation_title))
+
+        Spacer(Modifier.height(8.dp))
 
         LoadingBox(habitController) {
             if (it != null) {
                 Text(
-                    modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
                     text = stringResource(
                         R.string.habitEventCreation_habitName,
                         it.name.value
@@ -125,8 +127,13 @@ fun HabitTrackCreationScreen(
             }
         }
 
+        Spacer(Modifier.height(24.dp))
+
+        Text(text = "Укажите сколько примерно было событий привычки каждый день")
+
+        Spacer(Modifier.height(16.dp))
+
         ValidatedInputField(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
             controller = eventCountInputController,
             adapter = remember {
                 TextFieldAdapter(
@@ -152,13 +159,15 @@ fun HabitTrackCreationScreen(
             regex = Regexps.integersOrEmpty
         )
 
+        Spacer(Modifier.height(24.dp))
+
         Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = "Интервал:"
+            text = "Укажите даты первого и последнего события привычки."
         )
 
+        Spacer(Modifier.height(16.dp))
+
         Button(
-            modifier = Modifier.padding(16.dp),
             onClick = { rangeSelectionShow = true },
             text = rangeState.input.let {
                 val start = dateTimeFormatter.formatInstantAsDate(it.value.start)
@@ -167,15 +176,16 @@ fun HabitTrackCreationScreen(
             }
         )
 
+        Spacer(Modifier.height(24.dp))
+
         Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
             text = stringResource(R.string.habitEventCreation_comment_description)
         )
 
+
+        Spacer(Modifier.height(16.dp))
+
         ValidatedInputField(
-            modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-                .fillMaxWidth(),
             label = stringResource(R.string.habitEventCreation_comment),
             controller = commentInputController,
             adapter = remember {
@@ -189,17 +199,17 @@ fun HabitTrackCreationScreen(
 
         Spacer(modifier = Modifier.weight(1.0f))
 
+        Spacer(modifier = Modifier.height(48.dp))
+
         Text(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 32.dp)
-                .align(Alignment.End),
+            modifier = Modifier.align(Alignment.End),
             text = stringResource(R.string.habitEventCreation_finish_description)
         )
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         RequestButton(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.End),
+            modifier = Modifier.align(Alignment.End),
             requestController = creationController,
             text = stringResource(R.string.habitEventCreation_finish),
             interactionType = InteractionType.MAIN
