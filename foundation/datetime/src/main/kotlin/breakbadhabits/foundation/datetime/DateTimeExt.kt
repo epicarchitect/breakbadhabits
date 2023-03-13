@@ -1,7 +1,6 @@
 package breakbadhabits.foundation.datetime
 
 import kotlinx.datetime.Instant
-import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toLocalDateTime
@@ -17,10 +16,11 @@ fun ClosedRange<Instant>.countDays(timeZone: TimeZone) =
     start.daysUntil(endInclusive, timeZone) + 1
 
 fun ClosedRange<Instant>.countDaysInMonth(
-    year: Int,
-    month: Month,
+    monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ): Int {
+    val month = monthOfYear.month
+    val year = monthOfYear.year
     val startDate = start.toLocalDateTime(timeZone).date
     val endDate = endInclusive.toLocalDateTime(timeZone).date
     val lengthOfMonth = month.length(isLeapYear(year.toLong()))

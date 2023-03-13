@@ -4,8 +4,10 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitStatistics
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.countDays
 import breakbadhabits.foundation.datetime.countDaysInMonth
+import breakbadhabits.foundation.datetime.monthOfYear
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
@@ -64,13 +66,11 @@ class HabitStatisticsProvider(
 
         HabitStatistics.EventCount(
             currentMonthCount = tracks.countEventsInMonth(
-                year = currentDate.year,
-                month = currentDate.month,
+                monthOfYear = currentDate.monthOfYear,
                 timeZone = timeZone
             ),
             previousMonthCount = tracks.countEventsInMonth(
-                year = previousMonthDate.year,
-                month = previousMonthDate.month,
+                monthOfYear = previousMonthDate.monthOfYear,
                 timeZone = timeZone
             ),
             totalCount = tracks.countEvents(timeZone)
@@ -79,11 +79,10 @@ class HabitStatisticsProvider(
 }
 
 private fun List<HabitTrack>.countEventsInMonth(
-    year: Int,
-    month: Month,
+    monthOfYear: MonthOfYear,
     timeZone: TimeZone
-) = filterByMonth(year, month, timeZone).fold(0) { total, track ->
-    total + track.range.value.countDaysInMonth(year, month, timeZone) * track.eventCount.dailyCount
+) = filterByMonth(monthOfYear, timeZone).fold(0) { total, track ->
+    total + track.range.value.countDaysInMonth(monthOfYear, timeZone) * track.eventCount.dailyCount
 }
 
 private fun List<HabitTrack>.countEvents(
@@ -93,13 +92,12 @@ private fun List<HabitTrack>.countEvents(
 }
 
 private fun List<HabitTrack>.filterByMonth(
-    year: Int,
-    month: Month,
+    monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ) = filter { track ->
     track.range.value.endInclusive.toLocalDateTime(timeZone).let {
-        it.month == month && it.year == year
+        it.month == monthOfYear.month && it.year == monthOfYear.year
     } || track.range.value.start.toLocalDateTime(timeZone).let {
-        it.month == month && it.year == year
+        it.month == monthOfYear.month && it.year == monthOfYear.year
     }
 }

@@ -5,6 +5,7 @@ import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.app.presentation.habits.HabitCreationViewModel
 import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
 import breakbadhabits.app.presentation.habits.HabitTrackCreationViewModel
+import breakbadhabits.app.presentation.habits.HabitTracksViewModel
 import breakbadhabits.app.presentation.habits.HabitUpdatingViewModel
 
 class PresentationModule(val logicModule: LogicModule) {
@@ -51,6 +52,14 @@ class PresentationModule(val logicModule: LogicModule) {
             habitTrackCreator,
             habitTrackRangeValidator,
             habitTrackEventCountValidator,
+            habitId
+        )
+    }
+
+    fun createHabitTracksViewModel(habitId: Habit.Id) = with(logicModule) {
+        HabitTracksViewModel(
+            habitProvider,
+            habitTrackProvider,
             habitId
         )
     }

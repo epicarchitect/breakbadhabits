@@ -1,6 +1,8 @@
 package breakbadhabits.android.app.ui.habits
 
 import android.content.Context
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.format.DateTimeFormatter
@@ -58,6 +61,7 @@ fun HabitDetailsScreen(
     habitTracksController: LoadingController<List<HabitTrack>>,
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
+    onAllTracksClick: () -> Unit
 ) {
     val habitIconResources = LocalHabitIconResourceProvider.current
     val dateTimeFormatter = LocalDateTimeFormatter.current
@@ -154,6 +158,19 @@ fun HabitDetailsScreen(
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(44.dp)
+                                .clickable(onClick = onAllTracksClick)
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                fontWeight = FontWeight.Medium,
+                                text = stringResource(R.string.habit_showAllEvents)
+                            )
+                        }
                     }
                 }
             }

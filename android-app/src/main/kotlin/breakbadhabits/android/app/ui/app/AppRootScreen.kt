@@ -16,8 +16,11 @@ import breakbadhabits.android.app.ui.habits.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
 import breakbadhabits.android.app.ui.habits.HabitEditingScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackCreationScreen
+import breakbadhabits.android.app.ui.habits.HabitTrackUpdatingScreen
+import breakbadhabits.android.app.ui.habits.HabitTracksScreen
 import breakbadhabits.android.app.ui.settings.AppSettingsScreen
 import breakbadhabits.app.entity.Habit
+import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.RequestController
 
 
@@ -53,6 +56,20 @@ private object Screens {
         val arguments = listOf(navArgument("id") { type = NavType.LongType })
         fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
         fun buildRoute(id: Habit.Id) = "habitTrackCreation?id=${id.value}"
+    }
+
+    object HabitTracks {
+        const val route = "habitTracks?id={id}"
+        val arguments = listOf(navArgument("id") { type = NavType.LongType })
+        fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
+        fun buildRoute(id: Habit.Id) = "habitTracks?id=${id.value}"
+    }
+
+    object HabitTrackUpdating {
+        const val route = "habitTrackUpdating?id={id}"
+        val arguments = listOf(navArgument("id") { type = NavType.LongType })
+        fun getHabitTrackId(arguments: Bundle?) = HabitTrack.Id(arguments!!.getLong("id"))
+        fun buildRoute(id: HabitTrack.Id) = "habitTrackUpdating?id=${id.value}"
     }
 }
 
@@ -160,20 +177,11 @@ fun AppRootScreen() {
         }
 
         composable(
-            route = "habitEventEditing?habitEventId={habitEventId}",
-            arguments = listOf(navArgument("habitEventId") { type = NavType.LongType })
+            route = Screens.HabitTrackUpdating.route,
+            arguments = Screens.HabitTrackUpdating.arguments
         ) {
-//                    val navController = LocalNavController.current
-//                    val habitEventId = it.arguments!!.getInt("habitEventId")
-//                    HabitEventEditingScreen(
-//                        habitEventId = habitEventId,
-//                        onFinished = {
-//                            navController.popBackStack()
-//                        },
-//                        onHabitEventDeleted = {
-//                            navController.popBackStack()
-//                        }
-//                    )
+            val trackId = Screens.HabitTrackUpdating.getHabitTrackId(it.arguments)
+            HabitTrackUpdatingScreen()
         }
 
         composable(
@@ -217,22 +225,30 @@ fun AppRootScreen() {
                 },
                 onAddTrackClick = {
                     navController.navigate(Screens.HabitTrackCreation.buildRoute(habitId))
+                },
+                onAllTracksClick = {
+                    navController.navigate(Screens.HabitTracks.buildRoute(habitId))
                 }
             )
         }
 
         composable(
-            route = "habitEvents?habitId={habitId}",
-            arguments = listOf(navArgument("habitId") { type = NavType.LongType })
+            route = Screens.HabitTracks.route,
+            arguments = Screens.HabitTracks.arguments
         ) {
-//                    val navController = LocalNavController.current
-//                    val habitId = it.arguments!!.getInt("habitId")
-//                    HabitEventsScreen(
-//                        habitId = habitId,
-//                        openHabitEventEditing = { habitEventId ->
-//                            navController.navigate("habitEventEditing?habitEventId=$habitEventId")
-//                        }
-//                    )
+            val presentationModule = LocalPresentationModule.current
+            val habitId = Screens.HabitTracks.getHabitId(it.arguments)
+            val viewModel = viewModel {
+                presentationModule.createHabitTracksViewModel(habitId)
+            }
+
+            HabitTracksScreen(
+                habitController = viewModel.habitController,
+                habitTracksController = viewModel.habitTracksController,
+                onTrackClick = {
+                    navController.navigate(Screens.HabitTrackUpdating.buildRoute(it))
+                }
+            )
         }
 
         composable(route = Screens.Dashboard.route) {
