@@ -1,9 +1,7 @@
 package breakbadhabits.app.logic.habits.updater
 
 import breakbadhabits.app.database.AppDatabase
-import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
 import kotlinx.coroutines.Dispatchers
