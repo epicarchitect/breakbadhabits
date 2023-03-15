@@ -4,9 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.foundation.datetime.MonthOfYear
-import breakbadhabits.foundation.datetime.monthOfYear
-import breakbadhabits.foundation.datetime.secondsToInstantRange
+import breakbadhabits.foundation.datetime.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -37,12 +35,14 @@ class HabitTrackProvider(
         val timeZone = TimeZone.currentSystemDefault()
         val map = mutableMapOf<MonthOfYear, MutableSet<HabitTrack>>()
         tracks.forEach { track ->
-            map.getOrPut(
-                track.range.value.start.monthOfYear(timeZone)
-            ) { mutableSetOf() }.add(track)
-            map.getOrPut(
-                track.range.value.endInclusive.monthOfYear(timeZone)
-            ) { mutableSetOf() }.add(track)
+            val startMonth = track.range.value.start.monthOfYear(timeZone)
+            val endMonth = track.range.value.endInclusive.monthOfYear(timeZone)
+            val monthRange = startMonth..endMonth
+            map.getOrPut(startMonth, ::mutableSetOf).add(track)
+            map.getOrPut(endMonth, ::mutableSetOf).add(track)
+            monthRange.mountsBetween().forEach {
+                map.getOrPut(it, ::mutableSetOf).add(track)
+            }
         }
         map.mapValues { it.value.toList() }
     }
