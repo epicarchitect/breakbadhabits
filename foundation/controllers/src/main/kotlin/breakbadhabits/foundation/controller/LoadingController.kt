@@ -21,6 +21,6 @@ class LoadingController<DATA>(
 
     sealed class State<DATA> {
         class Loading : State<Nothing>()
-        class Loaded<DATA>(val data: DATA) : State<DATA>()
+        data class Loaded<DATA>(val data: DATA) : State<DATA>()
     }
 }

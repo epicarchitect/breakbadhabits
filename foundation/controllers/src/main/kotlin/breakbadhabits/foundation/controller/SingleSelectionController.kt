@@ -25,7 +25,7 @@ class SingleSelectionController<T>(
         selected.value = item
     }
 
-    class State<T>(
+    data class State<T>(
         val items: List<T>,
         val selectedItem: T
     )

@@ -41,7 +41,7 @@ class ValidatedInputController<INPUT, VALIDATION_RESULT>(
         validate()
     }
 
-    class State<INPUT, VALIDATION_RESULT>(
+    data class State<INPUT, VALIDATION_RESULT>(
         val input: INPUT,
         val validationResult: VALIDATION_RESULT
     )

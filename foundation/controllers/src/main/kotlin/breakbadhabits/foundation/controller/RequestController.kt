@@ -47,7 +47,7 @@ class RequestController(
         }
     }
 
-    class State(
+    data class State(
         val isRequestAllowed: Boolean,
         val requestState: RequestState
     )
