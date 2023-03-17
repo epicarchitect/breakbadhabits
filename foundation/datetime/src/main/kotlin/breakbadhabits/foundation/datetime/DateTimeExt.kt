@@ -1,15 +1,13 @@
 package breakbadhabits.foundation.datetime
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
-import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
-import java.time.format.DateTimeFormatter
 
 fun Long.secondsToInstant() = Instant.fromEpochSeconds(this)
 
@@ -69,3 +67,10 @@ fun Instant.atEndOfDay(
     .plus(59, DateTimeUnit.MINUTE)
     .plus(59, DateTimeUnit.SECOND)
     .plus(999_999_999, DateTimeUnit.NANOSECOND)
+
+fun ClosedRange<Instant>.asOneDayOrNull(timeZone: TimeZone): LocalDate? {
+    val startDate = start.toLocalDateTime(timeZone).date
+    val endDate = endInclusive.toLocalDateTime(timeZone).date
+    return if (startDate == endDate) startDate
+    else null
+}

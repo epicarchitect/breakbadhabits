@@ -32,6 +32,7 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.MonthOfYear
+import breakbadhabits.foundation.datetime.asOneDayOrNull
 import breakbadhabits.foundation.uikit.EpicCalendar
 import breakbadhabits.foundation.uikit.EpicCalendarState
 import breakbadhabits.foundation.uikit.LoadingBox
@@ -176,11 +177,15 @@ fun HabitTracksScreen(
                             Text(
                                 modifier = Modifier.padding(2.dp),
                                 text = track.range.value.let {
-                                    val start =
-                                        dateTimeFormatter.formatInstantAsDate(it.start)
-                                    val end =
-                                        dateTimeFormatter.formatInstantAsDate(it.endInclusive)
-                                    "$start - $end"
+                                    it.asOneDayOrNull(TimeZone.currentSystemDefault())
+                                        ?.let(dateTimeFormatter::formatDate)
+                                        ?: run {
+                                            val start =
+                                                dateTimeFormatter.formatInstantAsDate(it.start)
+                                            val end =
+                                                dateTimeFormatter.formatInstantAsDate(it.endInclusive)
+                                            "$start - $end"
+                                        }
                                 },
                                 fontWeight = FontWeight.Bold
                             )

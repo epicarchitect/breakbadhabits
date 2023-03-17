@@ -20,7 +20,7 @@ class DateTimeFormatter(
         return formatDate(instant.toLocalDateTime(TimeZone.currentSystemDefault()).date)
     }
 
-    private fun formatDate(date: LocalDate): String {
+    fun formatDate(date: LocalDate): String {
         return formatter.format(date.toJavaLocalDate())
     }
 
