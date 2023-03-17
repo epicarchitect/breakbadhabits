@@ -1,9 +1,15 @@
 package breakbadhabits.foundation.datetime
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.daysUntil
+import kotlinx.datetime.plus
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeFormatter
 
 fun Long.secondsToInstant() = Instant.fromEpochSeconds(this)
 
@@ -51,3 +57,15 @@ fun ClosedRange<Instant>.countDaysInMonth(
 fun isLeapYear(year: Long): Boolean {
     return year and 3L == 0L && (year % 100 != 0L || year % 400 == 0L)
 }
+
+fun Instant.atStartOfDay(
+    timeZone: TimeZone
+) = toLocalDateTime(timeZone).date.atStartOfDayIn(timeZone)
+
+fun Instant.atEndOfDay(
+    timeZone: TimeZone
+) = atStartOfDay(timeZone)
+    .plus(23, DateTimeUnit.HOUR)
+    .plus(59, DateTimeUnit.MINUTE)
+    .plus(59, DateTimeUnit.SECOND)
+    .plus(999_999_999, DateTimeUnit.NANOSECOND)

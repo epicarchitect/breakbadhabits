@@ -2,12 +2,16 @@ package breakbadhabits.android.app.ui.habits
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -15,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -30,6 +35,7 @@ import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.uikit.EpicCalendar
 import breakbadhabits.foundation.uikit.EpicCalendarState
 import breakbadhabits.foundation.uikit.LoadingBox
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
@@ -78,35 +84,69 @@ fun HabitTracksScreen(
         )
 
         Column(modifier = Modifier.fillMaxWidth()) {
-            Button(
-                onClick = {
-                    val r = YearMonth.of(currentMonth.year, currentMonth.month).minusMonths(1)
-                    currentMonth = MonthOfYear(r.year, r.month)
-                },
-                text = "minus"
-            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = {
-                    val r = YearMonth.of(currentMonth.year, currentMonth.month).plusMonths(1)
-                    currentMonth = MonthOfYear(r.year, r.month)
-                },
-                text = "plus"
-            )
+            LoadingBox(habitController) { habit ->
+                habit ?: return@LoadingBox
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.width(16.dp))
 
-            val title = remember(jtYearMonth) {
-                "${
-                    jtYearMonth.month.getDisplayName(
-                        TextStyle.FULL_STANDALONE,
-                        Locale.getDefault()
-                    ).replaceFirstChar { it.titlecase(Locale.getDefault()) }
-                } ${jtYearMonth.year}"
+                    LocalResourceIcon(
+                        modifier = Modifier.size(22.dp),
+                        resourceId = habitIconResources[habit.icon].resourceId
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = habit.name.value
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
             }
 
-            Title(
-                modifier = Modifier.padding(16.dp),
-                text = title
-            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val title = remember(jtYearMonth) {
+                    "${
+                        jtYearMonth.month.getDisplayName(
+                            TextStyle.FULL_STANDALONE,
+                            Locale.getDefault()
+                        ).replaceFirstChar { it.titlecase(Locale.getDefault()) }
+                    } ${jtYearMonth.year}"
+                }
+
+                Button(
+                    onClick = {
+                        val r = YearMonth.of(currentMonth.year, currentMonth.month).minusMonths(1)
+                        currentMonth = MonthOfYear(r.year, r.month)
+                    },
+                    text = "minus"
+                )
+
+                Title(text = title)
+
+                Button(
+                    onClick = {
+                        val r = YearMonth.of(currentMonth.year, currentMonth.month).plusMonths(1)
+                        currentMonth = MonthOfYear(r.year, r.month)
+                    },
+                    text = "plus"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             EpicCalendar(
                 state = epicCalendarState,
