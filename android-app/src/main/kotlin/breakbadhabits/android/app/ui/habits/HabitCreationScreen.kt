@@ -193,8 +193,8 @@ fun HabitCreationScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = firstTrackRangeState.input.let {
-                val start = dateTimeFormatter.formatInstantAsDate(it.value.start)
-                val end = dateTimeFormatter.formatInstantAsDate(it.value.endInclusive)
+                val start = dateTimeFormatter.format(it.value.start)
+                val end = dateTimeFormatter.format(it.value.endInclusive)
                 "Первое событие: $start, последнее событие: $end"
             }
         )

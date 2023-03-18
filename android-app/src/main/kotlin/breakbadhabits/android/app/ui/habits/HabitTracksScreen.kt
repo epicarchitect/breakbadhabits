@@ -174,12 +174,12 @@ fun HabitTracksScreen(
                                 modifier = Modifier.padding(2.dp),
                                 text = track.range.value.let {
                                     it.asOneDayOrNull(TimeZone.currentSystemDefault())
-                                        ?.let(dateTimeFormatter::formatDate)
+                                        ?.let(dateTimeFormatter::format)
                                         ?: run {
                                             val start =
-                                                dateTimeFormatter.formatInstantAsDate(it.start)
+                                                dateTimeFormatter.format(it.start)
                                             val end =
-                                                dateTimeFormatter.formatInstantAsDate(it.endInclusive)
+                                                dateTimeFormatter.format(it.endInclusive)
                                             "$start - $end"
                                         }
                                 },

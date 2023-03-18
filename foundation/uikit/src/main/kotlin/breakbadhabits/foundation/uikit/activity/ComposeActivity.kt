@@ -27,7 +27,7 @@ abstract class ComposeActivity : AppCompatActivity() {
         themeResourceId?.let(::setTheme)
         setContent {
             CompositionLocalProvider(
-                LocalComposeActivity provides this,
+                LocalActivity provides this,
                 LocalDarkModeManager provides darkModeManager
             ) {
                 AppTheme(

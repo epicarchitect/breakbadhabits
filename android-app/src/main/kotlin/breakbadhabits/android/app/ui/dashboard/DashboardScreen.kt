@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
+import breakbadhabits.android.app.ui.app.LocalDurationFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardHabitItem
@@ -159,7 +159,7 @@ private fun LazyItemScope.HabitItem(
     onResetClick: () -> Unit
 ) {
     val habitIconResources = LocalHabitIconResourceProvider.current
-    val dateTimeFormatter = LocalDateTimeFormatter.current
+    val durationFormatter = LocalDurationFormatter.current
 
     Card(
         modifier = Modifier
@@ -197,7 +197,7 @@ private fun LazyItemScope.HabitItem(
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.abstinence?.let {
-                            dateTimeFormatter.formatDuration(it.range.value.toDuration())
+                            durationFormatter.format(it.range.value.toDuration())
                         } ?: stringResource(R.string.habits_noEvents)
                     )
                 }

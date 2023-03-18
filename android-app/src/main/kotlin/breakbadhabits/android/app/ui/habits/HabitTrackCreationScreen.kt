@@ -32,7 +32,6 @@ import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
-import breakbadhabits.foundation.uikit.calendar.EpicCalendarState
 import breakbadhabits.foundation.uikit.calendar.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.calendar.rememberRangeSelectionEpicCalendarState
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
@@ -168,8 +167,8 @@ fun HabitTrackCreationScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = rangeState.input.let {
-                val start = dateTimeFormatter.formatInstantAsDate(it.value.start)
-                val end = dateTimeFormatter.formatInstantAsDate(it.value.endInclusive)
+                val start = dateTimeFormatter.format(it.value.start)
+                val end = dateTimeFormatter.format(it.value.endInclusive)
                 "Первое событие: $start, последнее событие: $end"
             }
         )

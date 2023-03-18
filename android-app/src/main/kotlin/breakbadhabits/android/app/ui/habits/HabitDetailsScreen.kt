@@ -21,8 +21,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.format.DateTimeFormatter
+import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
+import breakbadhabits.android.app.ui.app.LocalDurationFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAbstinence
@@ -63,7 +64,7 @@ fun HabitDetailsScreen(
     onAllTracksClick: () -> Unit
 ) {
     val habitIconResources = LocalHabitIconResourceProvider.current
-    val dateTimeFormatter = LocalDateTimeFormatter.current
+    val durationFormatter = LocalDurationFormatter.current
     val context = LocalContext.current
 
     LoadingBox(
@@ -100,7 +101,7 @@ fun HabitDetailsScreen(
             ) { abstinence ->
                 Text(
                     text = abstinence?.let {
-                        dateTimeFormatter.formatDuration(it.range.value.toDuration())
+                        durationFormatter.format(it.range.value.toDuration())
                     } ?: stringResource(R.string.habits_noEvents)
                 )
             }
@@ -196,9 +197,9 @@ fun HabitDetailsScreen(
                                 .height(300.dp),
                             values = abstinenceTimes,
                             valueFormatter = {
-                                dateTimeFormatter.formatDuration(
+                                durationFormatter.format(
                                     duration = it.toLong().seconds,
-                                    maxValueCount = 2
+                                    accuracy = DurationFormatter.Accuracy.HOURS
                                 )
                             },
                             startPadding = 16.dp,
@@ -234,7 +235,7 @@ fun HabitDetailsScreen(
                             statistics = remember(statistics) {
                                 statistics.toStatisticsData(
                                     context,
-                                    dateTimeFormatter
+                                    durationFormatter
                                 )
                             }
                         )
@@ -254,34 +255,34 @@ fun HabitDetailsScreen(
 
 private fun HabitStatistics.toStatisticsData(
     context: Context,
-    dateTimeFormatter: DateTimeFormatter,
+    durationFormatter: DurationFormatter,
 ) = listOf(
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_averageAbstinenceTime),
-        value = dateTimeFormatter.formatDuration(
+        value = durationFormatter.format(
             duration = abstinence.averageTime,
-            maxValueCount = 2
+            accuracy = DurationFormatter.Accuracy.HOURS
         )
     ),
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_maxAbstinenceTime),
-        value = dateTimeFormatter.formatDuration(
+        value = durationFormatter.format(
             duration = abstinence.maxTime,
-            maxValueCount = 2
+            accuracy = DurationFormatter.Accuracy.HOURS
         )
     ),
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_minAbstinenceTime),
-        value = dateTimeFormatter.formatDuration(
+        value = durationFormatter.format(
             duration = abstinence.minTime,
-            maxValueCount = 2
+            accuracy = DurationFormatter.Accuracy.HOURS
         )
     ),
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_timeFromFirstEvent),
-        value = dateTimeFormatter.formatDuration(
+        value = durationFormatter.format(
             duration = abstinence.timeSinceFirstTrack,
-            maxValueCount = 2
+            accuracy = DurationFormatter.Accuracy.HOURS
         )
     ),
     StatisticData(
