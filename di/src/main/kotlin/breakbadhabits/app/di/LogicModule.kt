@@ -52,7 +52,7 @@ class LogicModule(
     }
 
     val habitCreator by lazy {
-        HabitCreator(appDatabase, idGenerator)
+        HabitCreator(appDatabase, idGenerator, dateTimeConfigProvider)
     }
 
     val habitsConfigProvider by lazy {
@@ -96,11 +96,16 @@ class LogicModule(
     }
 
     val habitStatisticsProvider by lazy {
-        HabitStatisticsProvider(habitTrackProvider, habitAbstinenceProvider, dateTimeProvider)
+        HabitStatisticsProvider(
+            habitTrackProvider,
+            habitAbstinenceProvider,
+            dateTimeProvider,
+            dateTimeConfigProvider
+        )
     }
 
     val habitTrackCreator by lazy {
-        HabitTrackCreator(appDatabase, idGenerator)
+        HabitTrackCreator(appDatabase, idGenerator, dateTimeConfigProvider)
     }
 
     val habitTrackProvider by lazy {
