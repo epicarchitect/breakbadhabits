@@ -1,4 +1,4 @@
-package breakbadhabits.foundation.uikit
+package breakbadhabits.foundation.uikit.calendar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +40,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import breakbadhabits.foundation.uikit.Card
+import breakbadhabits.foundation.uikit.Dialog
+import breakbadhabits.foundation.uikit.IconButton
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.text.Text
@@ -63,6 +68,16 @@ class IntervalSelectionEpicCalendarState {
     var endDate by mutableStateOf<LocalDate?>(null)
     var yearMonth by mutableStateOf(maxYearMonth)
     var showYearMonthSelection by mutableStateOf(false)
+    val selectedRange by derivedStateOf {
+        val start = startDate
+        val end = endDate
+        when {
+            start != null && end == null -> start..start
+            start == null && end != null -> end..end
+            start != null && end != null -> start..end
+            else -> null
+        }
+    }
 }
 
 @Composable
@@ -72,33 +87,6 @@ fun IntervalSelectionEpicCalendar(
     onCancel: () -> Unit,
     intervalsInnerPadding: Dp = 0.dp,
 ) {
-    @Composable
-    fun calculateInterval(
-        startDate: LocalDate?,
-        endDate: LocalDate?
-    ): EpicCalendarState.Range? {
-        if (startDate == null) {
-            if (endDate != null) {
-                return EpicCalendarState.Range(
-                    start = endDate,
-                    endInclusive = endDate
-                )
-            }
-
-            return null
-        }
-        if (endDate != null) {
-            return EpicCalendarState.Range(
-                start = startDate,
-                endInclusive = endDate
-            )
-        }
-        return EpicCalendarState.Range(
-            start = startDate,
-            endInclusive = startDate
-        )
-    }
-
     Column(modifier = Modifier.padding(top = 8.dp)) {
         Card(
             modifier = Modifier
@@ -251,7 +239,7 @@ fun IntervalSelectionEpicCalendar(
         EpicCalendar(
             state = rememberEpicCalendarState(
                 yearMonth = state.yearMonth,
-                ranges = listOfNotNull(calculateInterval(state.startDate, state.endDate))
+                ranges = listOfNotNull(state.selectedRange)
             ),
             onDayClick = {
                 state.showYearMonthSelection = false

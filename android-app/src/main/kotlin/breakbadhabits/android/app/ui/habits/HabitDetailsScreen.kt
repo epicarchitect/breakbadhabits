@@ -31,8 +31,6 @@ import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.toDuration
 import breakbadhabits.foundation.uikit.Card
-import breakbadhabits.foundation.uikit.EpicCalendar
-import breakbadhabits.foundation.uikit.EpicCalendarState
 import breakbadhabits.foundation.uikit.Histogram
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
@@ -41,7 +39,8 @@ import breakbadhabits.foundation.uikit.StatisticData
 import breakbadhabits.foundation.uikit.Statistics
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
-import breakbadhabits.foundation.uikit.rememberEpicCalendarState
+import breakbadhabits.foundation.uikit.calendar.EpicCalendar
+import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
 import kotlinx.datetime.TimeZone
@@ -125,16 +124,13 @@ fun HabitDetailsScreen(
                             yearMonth = yearMonth,
                             ranges = remember(tracks) {
                                 tracks.map {
-                                    EpicCalendarState.Range(
-                                        start = it.range.value.start
-                                            .toLocalDateTime(TimeZone.currentSystemDefault())
-                                            .toJavaLocalDateTime()
-                                            .toLocalDate(),
-                                        endInclusive = it.range.value.endInclusive
-                                            .toLocalDateTime(TimeZone.currentSystemDefault())
-                                            .toJavaLocalDateTime()
-                                            .toLocalDate()
-                                    )
+                                    it.range.value.start
+                                        .toLocalDateTime(TimeZone.currentSystemDefault())
+                                        .toJavaLocalDateTime()
+                                        .toLocalDate()..it.range.value.endInclusive
+                                        .toLocalDateTime(TimeZone.currentSystemDefault())
+                                        .toJavaLocalDateTime()
+                                        .toLocalDate()
                                 }
                             }
                         )

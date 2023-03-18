@@ -33,12 +33,11 @@ import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.asOneDayOrNull
-import breakbadhabits.foundation.uikit.EpicCalendar
-import breakbadhabits.foundation.uikit.EpicCalendarState
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
-import breakbadhabits.foundation.uikit.rememberEpicCalendarState
+import breakbadhabits.foundation.uikit.calendar.EpicCalendar
+import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
 import kotlinx.datetime.TimeZone
@@ -65,16 +64,13 @@ fun HabitTracksScreen(
         val currentTracks = remember(currentMonth) { tracks[currentMonth] ?: emptyList() }
         val ranges = remember(tracks) {
             tracks.values.flatten().map {
-                EpicCalendarState.Range(
-                    start = it.range.value.start
-                        .toLocalDateTime(TimeZone.currentSystemDefault())
-                        .toJavaLocalDateTime()
-                        .toLocalDate(),
-                    endInclusive = it.range.value.endInclusive
-                        .toLocalDateTime(TimeZone.currentSystemDefault())
-                        .toJavaLocalDateTime()
-                        .toLocalDate()
-                )
+                it.range.value.start
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .toJavaLocalDateTime()
+                    .toLocalDate()..it.range.value.endInclusive
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .toJavaLocalDateTime()
+                    .toLocalDate()
             }
         }
         val jtYearMonth =

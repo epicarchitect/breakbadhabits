@@ -1,4 +1,4 @@
-package breakbadhabits.foundation.uikit
+package breakbadhabits.foundation.uikit.calendar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -186,7 +186,7 @@ fun EpicCalendar(
 @Composable
 fun rememberEpicCalendarState(
     yearMonth: YearMonth,
-    ranges: List<EpicCalendarState.Range> = emptyList()
+    ranges: List<ClosedRange<LocalDate>> = emptyList()
 ) = remember(yearMonth, ranges) {
     EpicCalendarState().also {
         it.yearMonth = yearMonth
@@ -199,7 +199,7 @@ class EpicCalendarState {
     val firstDayOfWeek: DayOfWeek by mutableStateOf(calculateFirstDayOfWeek())
     val weekDays: List<WeekDay> by derivedStateOf { calculateWeekDays(firstDayOfWeek) }
     val days: List<Day> by derivedStateOf { calculateDays(yearMonth) }
-    var ranges: List<Range> by mutableStateOf(emptyList())
+    var ranges: List<ClosedRange<LocalDate>> by mutableStateOf(emptyList())
 
     private fun calculateFirstDayOfWeek() = WeekFields.of(Locale.getDefault()).firstDayOfWeek
 
@@ -282,11 +282,6 @@ class EpicCalendarState {
     )
 
     data class WeekDay(val name: String)
-
-    data class Range(
-        override val endInclusive: LocalDate,
-        override val start: LocalDate
-    ) : ClosedRange<LocalDate>
 
     companion object {
         const val VISIBLE_DAYS_COUNT = 42
