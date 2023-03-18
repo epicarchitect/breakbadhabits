@@ -2,6 +2,7 @@ package breakbadhabits.android.app.ui.app
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -10,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import breakbadhabits.android.app.format.DateTimeFormatter
+import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.ui.dashboard.DashboardScreen
 import breakbadhabits.android.app.ui.habits.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
@@ -17,7 +20,9 @@ import breakbadhabits.android.app.ui.habits.HabitEditingScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackUpdatingScreen
 import breakbadhabits.android.app.ui.habits.HabitTracksScreen
+import breakbadhabits.android.app.ui.habits.resources.HabitIconResourceProvider
 import breakbadhabits.android.app.ui.settings.AppSettingsScreen
+import breakbadhabits.app.di.PresentationModule
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.RequestController
@@ -74,7 +79,24 @@ private object Screens {
 }
 
 @Composable
-fun AppRootScreen() {
+fun AppScreen(
+    presentationModule: PresentationModule,
+    habitIconResourceProvider: HabitIconResourceProvider,
+    dateTimeFormatter: DateTimeFormatter,
+    durationFormatter: DurationFormatter
+) {
+    CompositionLocalProvider(
+        LocalPresentationModule provides presentationModule,
+        LocalHabitIconResourceProvider provides habitIconResourceProvider,
+        LocalDateTimeFormatter provides dateTimeFormatter,
+        LocalDurationFormatter provides durationFormatter
+    ) {
+        AppScreenContent()
+    }
+}
+
+@Composable
+private fun AppScreenContent() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
