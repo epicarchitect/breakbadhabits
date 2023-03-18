@@ -9,7 +9,7 @@ class HabitTrackEventCountValidator {
     } ?: CorrectHabitTrackEventCount(data)
 
     private fun HabitTrack.EventCount.incorrectReason() = when {
-        dailyCount <= 0 -> IncorrectHabitTrackEventCount.Reason.Empty()
+        dailyCount <= 0 -> IncorrectHabitTrackEventCount.Reason.Empty
         else -> null
     }
 }
@@ -27,6 +27,6 @@ data class IncorrectHabitTrackEventCount internal constructor(
     val reason: Reason
 ) : ValidatedHabitTrackEventCount() {
     sealed class Reason {
-        class Empty : Reason()
+        object Empty : Reason()
     }
 }

@@ -1,6 +1,7 @@
 package breakbadhabits.app.logic.datetime.config
 
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.datetime.TimeZone
 import kotlin.time.Duration.Companion.seconds
 
 class DateTimeConfigProvider {
@@ -11,7 +12,8 @@ class DateTimeConfigProvider {
 
     companion object {
         private val defaultConfig = DateTimeConfig(
-            delayDuration = 1L.seconds
+            delayDuration = 1L.seconds,
+            timeZone = TimeZone.currentSystemDefault()
         )
     }
 }

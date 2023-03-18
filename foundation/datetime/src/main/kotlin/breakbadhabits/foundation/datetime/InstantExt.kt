@@ -8,6 +8,8 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 fun Long.secondsToInstant() = Instant.fromEpochSeconds(this)
 
@@ -74,3 +76,11 @@ fun ClosedRange<Instant>.asOneDayOrNull(timeZone: TimeZone): LocalDate? {
     return if (startDate == endDate) startDate
     else null
 }
+
+fun List<ClosedRange<Instant>>.averageDuration() = map {
+    it.endInclusive.epochSeconds - it.start.epochSeconds
+}.average().toDuration(DurationUnit.SECONDS)
+
+fun List<ClosedRange<Instant>>.maxDuration() = maxOf { it.toDuration() }
+
+fun List<ClosedRange<Instant>>.minDuration() = minOf { it.toDuration() }

@@ -22,9 +22,9 @@ class HabitNewNameValidator(
 
     private suspend fun Habit.Name.incorrectReason(initial: Habit.Name? = null) = when {
         initial == this -> null
-        value.isEmpty() -> IncorrectHabitNewName.Reason.Empty()
+        value.isEmpty() -> IncorrectHabitNewName.Reason.Empty
         value.length > maxLength -> IncorrectHabitNewName.Reason.TooLong(maxLength)
-        value.isAlreadyUsed() -> IncorrectHabitNewName.Reason.AlreadyUsed()
+        value.isAlreadyUsed() -> IncorrectHabitNewName.Reason.AlreadyUsed
         else -> null
     }
 
@@ -46,8 +46,8 @@ data class IncorrectHabitNewName internal constructor(
     val reason: Reason
 ) : ValidatedHabitNewName() {
     sealed class Reason {
-        class Empty : Reason()
-        class AlreadyUsed : Reason()
+        object Empty : Reason()
+        object AlreadyUsed : Reason()
         class TooLong(val maxLength: Int) : Reason()
     }
 }

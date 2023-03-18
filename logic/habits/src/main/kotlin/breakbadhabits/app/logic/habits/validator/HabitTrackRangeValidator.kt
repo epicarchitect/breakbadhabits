@@ -13,7 +13,7 @@ class HabitTrackRangeValidator(
     } ?: CorrectHabitTrackRange(data)
 
     private fun HabitTrack.Range.incorrectReason() = when {
-        dateTimeProvider.getCurrentTime() < value.endInclusive -> IncorrectHabitTrackRange.Reason.BiggestThenCurrentTime()
+        dateTimeProvider.getCurrentTime() < value.endInclusive -> IncorrectHabitTrackRange.Reason.BiggestThenCurrentTime
         else -> null
     }
 }
@@ -31,6 +31,6 @@ data class IncorrectHabitTrackRange internal constructor(
     val reason: Reason
 ) : ValidatedHabitTrackRange() {
     sealed class Reason {
-        class BiggestThenCurrentTime : Reason()
+        object BiggestThenCurrentTime : Reason()
     }
 }
