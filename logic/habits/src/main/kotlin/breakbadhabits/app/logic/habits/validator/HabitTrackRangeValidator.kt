@@ -1,10 +1,11 @@
 package breakbadhabits.app.logic.habits.validator
 
 import breakbadhabits.app.entity.HabitTrack
+import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import kotlinx.datetime.Instant
 
 class HabitTrackRangeValidator(
-    private val getCurrentTime: () -> Instant
+    private val dateTimeProvider: DateTimeProvider
 ) {
 
     fun validate(data: HabitTrack.Range) = data.incorrectReason()?.let {
@@ -12,7 +13,7 @@ class HabitTrackRangeValidator(
     } ?: CorrectHabitTrackRange(data)
 
     private fun HabitTrack.Range.incorrectReason() = when {
-        getCurrentTime() < value.endInclusive -> IncorrectHabitTrackRange.Reason.BiggestThenCurrentTime()
+        dateTimeProvider.getCurrentTime() < value.endInclusive -> IncorrectHabitTrackRange.Reason.BiggestThenCurrentTime()
         else -> null
     }
 }

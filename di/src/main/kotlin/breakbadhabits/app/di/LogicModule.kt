@@ -3,7 +3,9 @@ package breakbadhabits.app.di
 import android.content.Context
 import breakbadhabits.app.database.AppDatabaseFactory
 import breakbadhabits.app.database.IdGenerator
+import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.app.logic.habits.config.HabitsConfigProvider
 import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
 import breakbadhabits.app.logic.habits.deleter.HabitDeleter
@@ -19,12 +21,14 @@ import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
 
-class LogicModule(private val context: Context) {
-
+class LogicModule(
+    private val context: Context,
+    private val databaseName: String
+) {
     private val appDatabase by lazy {
         AppDatabaseFactory.create(
-            context,
-            name = "breakbadhabits-v4.db"
+            context = context,
+            name = databaseName
         )
     }
 
@@ -32,8 +36,12 @@ class LogicModule(private val context: Context) {
         IdGenerator(context)
     }
 
+    private val dateTimeConfigProvider by lazy {
+        DateTimeConfigProvider()
+    }
+
     private val dateTimeProvider by lazy {
-        DateTimeProvider(updatePeriodMillis = { 1000L })
+        DateTimeProvider(dateTimeConfigProvider)
     }
 
     val habitAbstinenceProvider by lazy {
@@ -47,12 +55,16 @@ class LogicModule(private val context: Context) {
         HabitCreator(appDatabase, idGenerator)
     }
 
+    val habitsConfigProvider by lazy {
+        HabitsConfigProvider()
+    }
+
     val habitNewNameValidator by lazy {
-        HabitNewNameValidator(appDatabase, maxNameLength = 30)
+        HabitNewNameValidator(appDatabase, habitsConfigProvider)
     }
 
     val habitTrackRangeValidator by lazy {
-        HabitTrackRangeValidator(getCurrentTime = dateTimeProvider::getCurrentTime)
+        HabitTrackRangeValidator(dateTimeProvider)
     }
 
     val habitTrackEventCountValidator by lazy {

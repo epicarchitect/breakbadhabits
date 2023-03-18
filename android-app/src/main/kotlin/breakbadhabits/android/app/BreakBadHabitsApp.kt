@@ -8,7 +8,10 @@ class BreakBadHabitsApp : Application() {
 
     val presentationModule by lazy {
         PresentationModule(
-            LogicModule(context = this)
+            LogicModule(
+                context = this,
+                databaseName = MAIN_DATABASE_NAME
+            )
         )
     }
 
@@ -19,5 +22,6 @@ class BreakBadHabitsApp : Application() {
 
     companion object {
         lateinit var instance: BreakBadHabitsApp
+        private const val MAIN_DATABASE_NAME = "breakbadhabits-main"
     }
 }

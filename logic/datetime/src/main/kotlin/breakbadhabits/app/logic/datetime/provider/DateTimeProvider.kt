@@ -1,5 +1,6 @@
 package breakbadhabits.app.logic.datetime.provider
 
+import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -10,14 +11,16 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
-class DateTimeProvider(updatePeriodMillis: () -> Long) {
+class DateTimeProvider(
+    private val configProvider: DateTimeConfigProvider
+) {
     private val currentTime = MutableStateFlow(getCurrentTime())
 
     init {
         CoroutineScope(Dispatchers.Default).launch {
             while (isActive) {
                 currentTime.value = getCurrentTime()
-                delay(updatePeriodMillis())
+                delay(configProvider.getConfig().delayDuration)
             }
         }
     }
