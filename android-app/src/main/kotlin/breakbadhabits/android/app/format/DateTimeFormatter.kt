@@ -15,7 +15,7 @@ import java.time.format.FormatStyle as JavaFormatStyle
 class DateTimeFormatter(
     private val dateTimeConfigProvider: DateTimeConfigProvider
 ) {
-    private val systemTimeZone get() = dateTimeConfigProvider.getConfig().systemTimeZone
+    private val appTimeZone get() = dateTimeConfigProvider.getConfig().appTimeZone
     private val dateFormatter = JavaDateTimeFormatter.ofLocalizedDate(dateFormatStyle)
     private val dateTimeFormatter = JavaDateTimeFormatter.ofLocalizedDateTime(
         dateFormatStyle,
@@ -24,7 +24,7 @@ class DateTimeFormatter(
 
     fun formatDate(
         instant: Instant,
-    ) = formatDate(instant.toLocalDateTime(systemTimeZone).date)
+    ) = formatDate(instant.toLocalDateTime(appTimeZone).date)
 
     private fun formatDate(
         date: LocalDate,
@@ -32,14 +32,11 @@ class DateTimeFormatter(
 
     fun formatDateTime(
         instant: Instant,
-    ) = formatDateTime(instant.toLocalDateTime(systemTimeZone))
+    ) = formatDateTime(instant.toLocalDateTime(appTimeZone))
 
     private fun formatDateTime(
         dateTime: LocalDateTime
     ) = dateTimeFormatter.format(dateTime.toJavaLocalDateTime())!!
-
-
-
 
     private fun formatTimeZone(
         timeZone: TimeZone
@@ -47,13 +44,6 @@ class DateTimeFormatter(
         false,
         timeZoneFormatStyle
     )!!
-
-    private fun getFormattedSystemTimeZone() = formatTimeZone(systemTimeZone)
-
-    private fun getFormattedSystemTimeZoneIfNotEquals(
-        timeZone: TimeZone
-    ) = if (timeZone == systemTimeZone) ""
-    else "(${getFormattedSystemTimeZone()})"
 
     companion object {
         private val dateFormatStyle = JavaFormatStyle.LONG

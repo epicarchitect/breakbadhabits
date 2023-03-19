@@ -62,7 +62,7 @@ class HabitStatisticsProvider(
         dateTimeConfigProvider.configFlow(),
         habitTrackProvider.habitTracksFlow(habitId)
     ) { dateTimeConfig, tracks ->
-        val timeZone = dateTimeConfig.universalTimeZone
+        val timeZone = dateTimeConfig.appTimeZone
         val currentDate = Clock.System.now().toLocalDateTime(timeZone).date
         val previousMonthDate = currentDate.minus(DateTimeUnit.MONTH)
 

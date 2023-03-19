@@ -69,10 +69,10 @@ fun HabitTracksScreen(
         val ranges = remember(tracks) {
             tracks.values.flatten().map {
                 it.time.start
-                    .toLocalDateTime(dateTimeConfig.systemTimeZone)
+                    .toLocalDateTime(dateTimeConfig.appTimeZone)
                     .toJavaLocalDateTime()
                     .toLocalDate()..it.time.endInclusive
-                    .toLocalDateTime(dateTimeConfig.systemTimeZone)
+                    .toLocalDateTime(dateTimeConfig.appTimeZone)
                     .toJavaLocalDateTime()
                     .toLocalDate()
             }

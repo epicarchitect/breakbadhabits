@@ -8,8 +8,7 @@ import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
-import breakbadhabits.foundation.datetime.atEndOfDay
-import breakbadhabits.foundation.datetime.atStartOfDay
+import breakbadhabits.foundation.datetime.atMiddleOfDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -26,9 +25,10 @@ class HabitCreator(
         trackTime: CorrectHabitTrackTime
     ) = withContext(Dispatchers.IO) {
         appDatabase.transaction {
+            val appTimeZone = dateTimeConfigProvider.getConfig().appTimeZone
             val habitId = idGenerator.nextId()
             val trackId = idGenerator.nextId()
-            val createdInTimeZone = dateTimeConfigProvider.getConfig().systemTimeZone.id
+            val createdInTimeZone = appTimeZone.id
             val createdAtTimeInSeconds = dateTimeProvider.getCurrentTime().epochSeconds
 
             appDatabase.habitQueries.insert(
@@ -42,8 +42,8 @@ class HabitCreator(
             appDatabase.habitTrackQueries.insert(
                 id = trackId,
                 habitId = habitId,
-                startTimeInSecondsUtc = trackTime.data.start.epochSeconds,
-                endTimeInSecondsUtc = trackTime.data.endInclusive.epochSeconds,
+                startTimeInSecondsUtc = trackTime.data.start.atMiddleOfDay(appTimeZone).epochSeconds,
+                endTimeInSecondsUtc = trackTime.data.endInclusive.atMiddleOfDay(appTimeZone).epochSeconds,
                 dailyCount = trackEventCount.data.dailyCount.toLong(),
                 comment = null,
                 createdInTimeZone = createdInTimeZone,

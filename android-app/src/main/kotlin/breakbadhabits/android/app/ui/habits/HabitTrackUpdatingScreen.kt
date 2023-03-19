@@ -77,10 +77,10 @@ fun HabitTrackUpdatingScreen(
             maxMonth = YearMonth.now(),
             minMonth = YearMonth.now().minusYears(10),
             initialRange = rangeState.input.start
-                .toLocalDateTime(dateTimeConfig.systemTimeZone)
+                .toLocalDateTime(dateTimeConfig.appTimeZone)
                 .toJavaLocalDateTime()
                 .toLocalDate()..rangeState.input.endInclusive
-                .toLocalDateTime(dateTimeConfig.systemTimeZone)
+                .toLocalDateTime(dateTimeConfig.appTimeZone)
                 .toJavaLocalDateTime()
                 .toLocalDate()
         )
@@ -94,9 +94,9 @@ fun HabitTrackUpdatingScreen(
                 timeInputController.changeInput(
                     HabitTrack.Time.of(
                         start.toInstant(
-                            dateTimeConfig.systemTimeZone
+                            dateTimeConfig.appTimeZone
                         )..end.toInstant(
-                            dateTimeConfig.systemTimeZone
+                            dateTimeConfig.appTimeZone
                         )
                     )
                 )

@@ -20,7 +20,7 @@ class DateTimeProvider(
         CoroutineScope(Dispatchers.Default).launch {
             while (isActive) {
                 currentTime.value = getCurrentTime()
-                delay(configProvider.getConfig().delayDuration)
+                delay(configProvider.getConfig().timeUpdateDelay)
             }
         }
     }

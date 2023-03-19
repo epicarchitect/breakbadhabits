@@ -76,7 +76,7 @@ fun HabitCreationScreen(
     val habitIconResources = LocalHabitIconResourceProvider.current
     var rangeSelectionShow by remember { mutableStateOf(false) }
     val nowYearMonth = remember(dateTimeConfig) {
-        YearMonth.now(dateTimeConfig.systemTimeZone.toJavaZoneId())
+        YearMonth.now(dateTimeConfig.appTimeZone.toJavaZoneId())
     }
 
     val firstTrackEventCountState by firstTrackEventCountInputController.collectState()
@@ -90,10 +90,10 @@ fun HabitCreationScreen(
             maxMonth = nowYearMonth,
             minMonth = nowYearMonth.minusYears(10),
             initialRange = firstTrackRangeState.input.start
-                .toLocalDateTime(dateTimeConfig.systemTimeZone)
+                .toLocalDateTime(dateTimeConfig.appTimeZone)
                 .toJavaLocalDateTime()
                 .toLocalDate()..firstTrackRangeState.input.endInclusive
-                .toLocalDateTime(dateTimeConfig.systemTimeZone)
+                .toLocalDateTime(dateTimeConfig.appTimeZone)
                 .toJavaLocalDateTime()
                 .toLocalDate()
         )
@@ -107,9 +107,9 @@ fun HabitCreationScreen(
                 firstTrackTimeInputController.changeInput(
                     HabitTrack.Time.of(
                         start.toInstant(
-                            dateTimeConfig.systemTimeZone
+                            dateTimeConfig.appTimeZone
                         )..end.toInstant(
-                           dateTimeConfig.systemTimeZone
+                           dateTimeConfig.appTimeZone
                         )
                     )
                 )

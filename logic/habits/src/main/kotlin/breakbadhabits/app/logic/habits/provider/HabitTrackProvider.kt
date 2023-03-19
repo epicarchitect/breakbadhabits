@@ -42,7 +42,7 @@ class HabitTrackProvider(
         habitTracksFlow(id),
         dateTimeConfigProvider.configFlow()
     ) { tracks, dateTimeConfig ->
-        val timeZone = dateTimeConfig.universalTimeZone
+        val timeZone = dateTimeConfig.appTimeZone
         val map = mutableMapOf<MonthOfYear, MutableSet<HabitTrack>>()
         tracks.forEach { track ->
             val startMonth = track.time.start.monthOfYear(timeZone)

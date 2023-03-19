@@ -132,10 +132,10 @@ fun HabitDetailsScreen(
                             ranges = remember(tracks) {
                                 tracks.map {
                                     it.time.start
-                                        .toLocalDateTime(dateTimeConfig.systemTimeZone)
+                                        .toLocalDateTime(dateTimeConfig.appTimeZone)
                                         .toJavaLocalDateTime()
                                         .toLocalDate()..it.time.endInclusive
-                                        .toLocalDateTime(dateTimeConfig.systemTimeZone)
+                                        .toLocalDateTime(dateTimeConfig.appTimeZone)
                                         .toJavaLocalDateTime()
                                         .toLocalDate()
                                 }

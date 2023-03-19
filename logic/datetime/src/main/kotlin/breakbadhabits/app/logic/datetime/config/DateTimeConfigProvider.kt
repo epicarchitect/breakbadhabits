@@ -11,8 +11,7 @@ class DateTimeConfigProvider {
     fun getConfig() = defaultConfig()
 
     private fun defaultConfig() = DateTimeConfig(
-        delayDuration = 1.seconds,
-        universalTimeZone = TimeZone.UTC,
-        systemTimeZone = TimeZone.currentSystemDefault(),
+        timeUpdateDelay = 1.seconds,
+        appTimeZone = TimeZone.currentSystemDefault()
     )
 }

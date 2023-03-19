@@ -62,13 +62,9 @@ fun Instant.atStartOfDay(
     timeZone: TimeZone
 ) = toLocalDateTime(timeZone).date.atStartOfDayIn(timeZone)
 
-fun Instant.atEndOfDay(
+fun Instant.atMiddleOfDay(
     timeZone: TimeZone
-) = atStartOfDay(timeZone)
-    .plus(23, DateTimeUnit.HOUR)
-    .plus(59, DateTimeUnit.MINUTE)
-    .plus(59, DateTimeUnit.SECOND)
-    .plus(999_999_999, DateTimeUnit.NANOSECOND)
+) = atStartOfDay(timeZone).plus(12, DateTimeUnit.HOUR)
 
 fun ClosedRange<Instant>.asOneDayOrNull(timeZone: TimeZone): LocalDate? {
     val startDate = start.toLocalDateTime(timeZone).date
