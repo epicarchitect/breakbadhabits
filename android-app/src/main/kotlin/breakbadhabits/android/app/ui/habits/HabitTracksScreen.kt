@@ -179,10 +179,10 @@ fun HabitTracksScreen(
                             Text(
                                 modifier = Modifier.padding(2.dp),
                                 text = when (val time = track.time) {
-                                    is HabitTrack.Time.Date -> dateTimeFormatter.formatDateTime(time.value)
+                                    is HabitTrack.Time.Date -> dateTimeFormatter.formatDate(time.value)
                                     is HabitTrack.Time.Range -> {
-                                        val start = dateTimeFormatter.formatDateTime(time.start)
-                                        val end = dateTimeFormatter.formatDateTime(time.endInclusive)
+                                        val start = dateTimeFormatter.formatDate(time.start)
+                                        val end = dateTimeFormatter.formatDate(time.endInclusive)
                                         "$start - $end"
                                     }
                                 },

@@ -252,7 +252,7 @@ fun HabitDetailsScreen(
             Text(
                 modifier = Modifier.padding(24.dp),
                 text = "Привычка создана:\n${
-                    dateTimeFormatter.formatDateTime(habit.creationTime.time)
+                    dateTimeFormatter.formatDate(habit.creationTime.time)
                 }"
             )
         }
