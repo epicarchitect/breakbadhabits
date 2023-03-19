@@ -96,7 +96,10 @@ class LogicModule(
     }
 
     val habitTrackUpdater by lazy {
-        HabitTrackUpdater(appDatabase = appDatabase)
+        HabitTrackUpdater(
+            appDatabase = appDatabase,
+            dateTimeConfigProvider = dateTimeConfigProvider
+        )
     }
 
     val habitTrackDeleter by lazy {
