@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
+import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.app.LocalDurationFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
@@ -67,6 +68,7 @@ fun HabitDetailsScreen(
     val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
     val dateTimeConfig = dateTimeConfigState.value ?: return
 
+    val dateTimeFormatter = LocalDateTimeFormatter.current
     val habitIconResources = LocalHabitIconResourceProvider.current
     val durationFormatter = LocalDurationFormatter.current
     val context = LocalContext.current
@@ -246,6 +248,13 @@ fun HabitDetailsScreen(
                     }
                 }
             }
+
+            Text(
+                modifier = Modifier.padding(24.dp),
+                text = "Привычка создана:\n${
+                    dateTimeFormatter.formatDateTime(habit.creationTime.time)
+                } " + dateTimeFormatter.formatTimeZoneIfNotSystemOrEmpty(habit.creationTime.timeZone)
+            )
         }
 
         IconButton(

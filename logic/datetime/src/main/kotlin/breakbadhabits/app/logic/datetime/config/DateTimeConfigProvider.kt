@@ -6,15 +6,13 @@ import kotlin.time.Duration.Companion.seconds
 
 class DateTimeConfigProvider {
 
-    fun configFlow() = flowOf(defaultConfig)
+    fun configFlow() = flowOf(getConfig())
 
-    fun getConfig() = defaultConfig
+    fun getConfig() = defaultConfig()
 
-    companion object {
-        private val defaultConfig = DateTimeConfig(
-            delayDuration = 1.seconds,
-            universalTimeZone = TimeZone.UTC,
-            systemTimeZone = TimeZone.currentSystemDefault(),
-        )
-    }
+    private fun defaultConfig() = DateTimeConfig(
+        delayDuration = 1.seconds,
+        universalTimeZone = TimeZone.UTC,
+        systemTimeZone = TimeZone.currentSystemDefault(),
+    )
 }

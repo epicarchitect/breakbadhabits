@@ -107,9 +107,9 @@ fun HabitCreationScreen(
                 firstTrackTimeInputController.changeInput(
                     HabitTrack.Time.of(
                         start.toInstant(
-                            dateTimeConfig.universalTimeZone
+                            dateTimeConfig.systemTimeZone
                         )..end.toInstant(
-                           dateTimeConfig.universalTimeZone
+                           dateTimeConfig.systemTimeZone
                         )
                     )
                 )
@@ -202,8 +202,8 @@ fun HabitCreationScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = firstTrackRangeState.input.let {
-                val start = dateTimeFormatter.format(it.start)
-                val end = dateTimeFormatter.format(it.endInclusive)
+                val start = dateTimeFormatter.formatDate(it.start)
+                val end = dateTimeFormatter.formatDate(it.endInclusive)
                 "Первое событие: $start, последнее событие: $end"
             }
         )

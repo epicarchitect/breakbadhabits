@@ -34,7 +34,6 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.MonthOfYear
-import breakbadhabits.foundation.datetime.asOneDayOrNull
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
@@ -178,13 +177,15 @@ fun HabitTracksScreen(
                             Text(
                                 modifier = Modifier.padding(2.dp),
                                 text = when (val time = track.time) {
-                                    is HabitTrack.Time.Date -> dateTimeFormatter.format(time.value)
+                                    is HabitTrack.Time.Date -> dateTimeFormatter.formatDateTime(time.value)
                                     is HabitTrack.Time.Range -> {
-                                        val start = dateTimeFormatter.format(time.start)
-                                        val end = dateTimeFormatter.format(time.endInclusive)
+                                        val start = dateTimeFormatter.formatDateTime(time.start)
+                                        val end = dateTimeFormatter.formatDateTime(time.endInclusive)
                                         "$start - $end"
                                     }
-                                },
+                                } + " " + dateTimeFormatter.formatTimeZoneIfNotSystemOrEmpty(
+                                    track.creationTime.timeZone
+                                ),
                                 fontWeight = FontWeight.Bold
                             )
 
