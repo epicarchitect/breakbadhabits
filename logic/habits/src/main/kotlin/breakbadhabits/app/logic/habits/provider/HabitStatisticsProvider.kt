@@ -44,7 +44,7 @@ class HabitStatisticsProvider(
         habitTrackProvider.habitTracksFlow(habitId),
         dateTimeProvider.currentTimeFlow()
     ) { abstinenceList, tracks, currentTime ->
-        if (tracks.isEmpty()) return@combine null
+        if (tracks.isEmpty() || abstinenceList.isEmpty()) return@combine null
 
         val ranges = abstinenceList.map { it.range }
 

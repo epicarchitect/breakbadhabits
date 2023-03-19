@@ -64,7 +64,9 @@ fun HabitTracksScreen(
 
     LoadingBox(habitTracksController) { tracks ->
         val months = remember(tracks) { tracks.keys }
-        var currentMonth by remember(months) { mutableStateOf(months.max()) }
+        var currentMonth by remember(months) {
+            mutableStateOf(months.maxOrNull() ?: MonthOfYear.now(dateTimeConfig.appTimeZone))
+        }
         val currentTracks = remember(currentMonth) { tracks[currentMonth] ?: emptyList() }
         val ranges = remember(tracks) {
             tracks.values.flatten().map {
