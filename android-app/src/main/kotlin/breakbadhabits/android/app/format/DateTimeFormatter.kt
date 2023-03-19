@@ -1,5 +1,7 @@
 package breakbadhabits.android.app.format
 
+import android.content.Context
+import android.text.format.DateFormat
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -13,13 +15,14 @@ import java.time.format.DateTimeFormatter as JavaDateTimeFormatter
 import java.time.format.FormatStyle as JavaFormatStyle
 
 class DateTimeFormatter(
-    private val dateTimeConfigProvider: DateTimeConfigProvider
+    private val dateTimeConfigProvider: DateTimeConfigProvider,
+    private val context: Context
 ) {
     private val appTimeZone get() = dateTimeConfigProvider.getConfig().appTimeZone
     private val dateFormatter = JavaDateTimeFormatter.ofLocalizedDate(dateFormatStyle)
-    private val dateTimeFormatter = JavaDateTimeFormatter.ofLocalizedDateTime(
-        dateFormatStyle,
-        timeFormatStyle
+    private val timeFormatter = JavaDateTimeFormatter.ofPattern(
+        if (DateFormat.is24HourFormat(context)) "HH:mm"
+        else "hh:mm a"
     )
 
     fun formatDate(
@@ -36,7 +39,14 @@ class DateTimeFormatter(
 
     private fun formatDateTime(
         dateTime: LocalDateTime
-    ) = dateTimeFormatter.format(dateTime.toJavaLocalDateTime())!!
+    ): String {
+        val jDateTime = dateTime.toJavaLocalDateTime()
+        return dateFormatter.format(
+            jDateTime.toLocalDate()
+        ) + ", " + timeFormatter.format(
+            jDateTime.toLocalTime()
+        )
+    }
 
     private fun formatTimeZone(
         timeZone: TimeZone
@@ -47,7 +57,6 @@ class DateTimeFormatter(
 
     companion object {
         private val dateFormatStyle = JavaFormatStyle.LONG
-        private val timeFormatStyle = JavaFormatStyle.SHORT
         private const val timeZoneFormatStyle = AndroidTimeZone.LONG_GMT
     }
 }

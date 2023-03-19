@@ -10,9 +10,10 @@ import kotlinx.coroutines.launch
 class ValidatedInputController<INPUT, VALIDATION_RESULT>(
     private val coroutineScope: CoroutineScope,
     initialInput: INPUT,
-    private val validation: suspend INPUT.() -> VALIDATION_RESULT?
+    private val validation: suspend INPUT.() -> VALIDATION_RESULT?,
+    private val decorateInput: (INPUT) -> INPUT = { it }
 ) : StateController<ValidatedInputController.State<INPUT, out VALIDATION_RESULT?>> {
-    private val inputState = MutableStateFlow(initialInput)
+    private val inputState = MutableStateFlow(decorateInput(initialInput))
     private val validationResultState = MutableStateFlow<VALIDATION_RESULT?>(null)
 
     override val state = combine(
@@ -23,7 +24,10 @@ class ValidatedInputController<INPUT, VALIDATION_RESULT>(
     }.stateIn(
         scope = coroutineScope,
         started = SharingStarted.Eagerly,
-        initialValue = State(initialInput, null)
+        initialValue = State(
+            input = inputState.value,
+            validationResult = validationResultState.value
+        )
     )
 
     suspend fun validateAndAwait() = inputState.value.validation().also {
@@ -37,7 +41,7 @@ class ValidatedInputController<INPUT, VALIDATION_RESULT>(
     }
 
     fun changeInput(value: INPUT) {
-        inputState.value = value
+        inputState.value = decorateInput(value)
         validate()
     }
 

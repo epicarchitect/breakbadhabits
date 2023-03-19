@@ -17,12 +17,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class HabitUpdatingViewModel(
-    private val habitProvider: HabitProvider,
-    private val habitUpdater: HabitUpdater,
-    private val habitDeleter: HabitDeleter,
-    private val habitNewNameValidator: HabitNewNameValidator,
+    habitProvider: HabitProvider,
+    habitUpdater: HabitUpdater,
+    habitDeleter: HabitDeleter,
+    habitNewNameValidator: HabitNewNameValidator,
     habitIconProvider: HabitIconProvider,
-    private val habitId: Habit.Id,
+    habitId: Habit.Id,
 ) : ViewModel() {
 
     private val initialHabit = MutableStateFlow<Habit?>(null)

@@ -8,7 +8,6 @@ import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
-import breakbadhabits.foundation.datetime.atMiddleOfDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -25,12 +24,11 @@ class HabitTrackCreator(
         eventCount: CorrectHabitTrackEventCount,
         comment: HabitTrack.Comment?,
     ) = withContext(Dispatchers.IO) {
-        val appTimeZone = dateTimeConfigProvider.getConfig().appTimeZone
         appDatabase.habitTrackQueries.insert(
             id = idGenerator.nextId(),
             habitId = habitId.value,
-            startTimeInSecondsUtc = range.data.start.atMiddleOfDay(appTimeZone).epochSeconds,
-            endTimeInSecondsUtc = range.data.endInclusive.atMiddleOfDay(appTimeZone).epochSeconds,
+            startTimeInSecondsUtc = range.data.start.epochSeconds,
+            endTimeInSecondsUtc = range.data.endInclusive.epochSeconds,
             dailyCount = eventCount.data.dailyCount.toLong(),
             comment = comment?.value,
             createdInTimeZone = dateTimeConfigProvider.getConfig().appTimeZone.id,

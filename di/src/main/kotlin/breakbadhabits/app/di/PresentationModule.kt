@@ -13,69 +13,74 @@ import breakbadhabits.app.presentation.habits.HabitUpdatingViewModel
 class PresentationModule(val logicModule: LogicModule) {
     fun createDashboardViewModel() = with(logicModule) {
         DashboardViewModel(
-            habitProvider,
-            habitAbstinenceProvider
+            habitProvider = habitProvider,
+            habitAbstinenceProvider = habitAbstinenceProvider
         )
     }
 
     fun createHabitCreationViewModel() = with(logicModule) {
         HabitCreationViewModel(
-            habitCreator,
-            habitNewNameValidator,
-            habitTrackTimeValidator,
-            habitTrackEventCountValidator,
-            habitIconProvider
+            habitCreator = habitCreator,
+            habitNewNameValidator = habitNewNameValidator,
+            trackTimeValidator = habitTrackTimeValidator,
+            trackEventCountValidator = habitTrackEventCountValidator,
+            dateTimeProvider = dateTimeProvider,
+            dateTimeConfigProvider = dateTimeConfigProvider,
+            habitIconProvider = habitIconProvider
         )
     }
 
     fun createHabitUpdatingViewModel(habitId: Habit.Id) = with(logicModule) {
         HabitUpdatingViewModel(
-            habitProvider,
-            habitUpdater,
-            habitDeleter,
-            habitNewNameValidator,
-            habitIconProvider,
-            habitId
+            habitProvider = habitProvider,
+            habitUpdater = habitUpdater,
+            habitDeleter = habitDeleter,
+            habitNewNameValidator = habitNewNameValidator,
+            habitIconProvider = habitIconProvider,
+            habitId = habitId
         )
     }
 
     fun createHabitDetailsViewModel(habitId: Habit.Id) = with(logicModule) {
         HabitDetailsViewModel(
-            habitProvider,
-            habitTrackProvider,
-            habitAbstinenceProvider,
-            habitStatisticsProvider,
-            habitId
+            habitProvider = habitProvider,
+            habitTrackProvider = habitTrackProvider,
+            habitAbstinenceProvider = habitAbstinenceProvider,
+            habitStatisticsProvider = habitStatisticsProvider,
+            habitId = habitId
         )
     }
 
     fun createHabitTrackCreationViewModel(habitId: Habit.Id) = with(logicModule) {
         HabitTrackCreationViewModel(
-            habitProvider,
-            habitTrackCreator,
-            habitTrackTimeValidator,
-            habitTrackEventCountValidator,
-            habitId
+            habitProvider = habitProvider,
+            habitTrackCreator = habitTrackCreator,
+            trackRangeValidator = habitTrackTimeValidator,
+            trackEventCountValidator = habitTrackEventCountValidator,
+            dateTimeProvider = dateTimeProvider,
+            dateTimeConfigProvider = dateTimeConfigProvider,
+            habitId = habitId
         )
     }
 
     fun createHabitTracksViewModel(habitId: Habit.Id) = with(logicModule) {
         HabitTracksViewModel(
-            habitProvider,
-            habitTrackProvider,
-            habitId
+            habitProvider = habitProvider,
+            habitTrackProvider = habitTrackProvider,
+            habitId = habitId
         )
     }
 
     fun createHabitTrackUpdatingViewModel(id: HabitTrack.Id) = with(logicModule) {
         HabitTrackUpdatingViewModel(
-            habitProvider,
-            habitTrackProvider,
-            habitTrackUpdater,
-            habitTrackDeleter,
-            habitTrackTimeValidator,
-            habitTrackEventCountValidator,
-            id
+            habitProvider = habitProvider,
+            habitTrackProvider = habitTrackProvider,
+            habitTrackUpdater = habitTrackUpdater,
+            habitTrackDeleter = habitTrackDeleter,
+            trackRangeValidator = habitTrackTimeValidator,
+            trackEventCountValidator = habitTrackEventCountValidator,
+            dateTimeConfigProvider = dateTimeConfigProvider,
+            habitTrackId = id
         )
     }
 }

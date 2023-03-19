@@ -1,8 +1,11 @@
 package breakbadhabits.app.presentation.habits
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
+import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
+import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.provider.HabitIconProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
@@ -14,15 +17,22 @@ import breakbadhabits.app.logic.habits.validator.HabitTrackTimeValidator
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.datetime.toInstantRange
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.combine
-import kotlinx.datetime.Clock
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.toLocalDateTime
 
 class HabitCreationViewModel(
-    private val habitCreator: HabitCreator,
-    private val habitNewNameValidator: HabitNewNameValidator,
-    private val trackRangeValidator: HabitTrackTimeValidator,
-    private val trackValueValidator: HabitTrackEventCountValidator,
+    habitCreator: HabitCreator,
+    habitNewNameValidator: HabitNewNameValidator,
+    trackTimeValidator: HabitTrackTimeValidator,
+    trackEventCountValidator: HabitTrackEventCountValidator,
+    dateTimeProvider: DateTimeProvider,
+    dateTimeConfigProvider: DateTimeConfigProvider,
     habitIconProvider: HabitIconProvider
 ) : ViewModel() {
 
@@ -41,13 +51,21 @@ class HabitCreationViewModel(
     val firstTrackEventCountInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
         initialInput = HabitTrack.EventCount(dailyCount = 1),
-        validation = trackValueValidator::validate
+        validation = trackEventCountValidator::validate,
     )
 
     val firstTrackTimeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.Time.of(Clock.System.now()),
-        validation = trackRangeValidator::validate
+        initialInput = HabitTrack.Time.of(dateTimeProvider.getCurrentTime()),
+        validation = trackTimeValidator::validate,
+        decorateInput = {
+            val timeZone = dateTimeConfigProvider.getConfig().appTimeZone
+            val start = it.start.toLocalDateTime(timeZone)
+            val end = it.endInclusive.toLocalDateTime(timeZone)
+            val fixedStart = LocalDateTime(start.date, LocalTime(start.hour, 0, 0))
+            val fixedEnd = LocalDateTime(end.date, LocalTime(end.hour, 0, 0))
+            HabitTrack.Time.of((fixedStart..fixedEnd).toInstantRange(timeZone))
+        }
     )
 
     val creationController = RequestController(

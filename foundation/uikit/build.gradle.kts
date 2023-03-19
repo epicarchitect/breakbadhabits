@@ -19,4 +19,5 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.0.1")
     implementation("androidx.compose.material:material-icons-extended:1.3.1")
     implementation("com.google.accompanist:accompanist-pager:0.28.0")
+    implementation("com.chargemap.compose:numberpicker:1.0.3")
 }

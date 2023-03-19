@@ -1,18 +1,31 @@
 package breakbadhabits.foundation.datetime
 
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.daysUntil
-import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toKotlinLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToLong
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 fun Long.secondsToInstant() = Instant.fromEpochSeconds(this)
+
+fun ClosedRange<java.time.LocalDateTime>.toKotlinRange() =
+    start.toKotlinLocalDateTime()..endInclusive.toKotlinLocalDateTime()
+
+fun ClosedRange<Instant>.toJavaLocalDateTimeRange(
+    timeZone: TimeZone
+) = start.toLocalDateTime(timeZone)
+    .toJavaLocalDateTime()..endInclusive
+    .toLocalDateTime(timeZone)
+    .toJavaLocalDateTime()
+
+fun ClosedRange<LocalDateTime>.toInstantRange(timeZone: TimeZone) =
+    start.toInstant(timeZone)..endInclusive.toInstant(timeZone)
 
 fun ClosedRange<Long>.secondsToInstantRange() =
     start.secondsToInstant()..endInclusive.secondsToInstant()
@@ -57,24 +70,6 @@ fun ClosedRange<Instant>.countDaysInMonth(
 // copied from IsoChronology
 fun isLeapYear(year: Long): Boolean {
     return year and 3L == 0L && (year % 100 != 0L || year % 400 == 0L)
-}
-
-fun Instant.atStartOfDay(
-    timeZone: TimeZone
-) = toLocalDateTime(timeZone).date.atStartOfDayIn(timeZone)
-
-fun Instant.atMiddleOfDay(
-    timeZone: TimeZone
-) = atStartOfDay(timeZone)
-    .plus(12, DateTimeUnit.HOUR)
-    .plus(30, DateTimeUnit.MINUTE)
-    .plus(30, DateTimeUnit.SECOND)
-
-fun ClosedRange<Instant>.asOneDayOrNull(timeZone: TimeZone): LocalDate? {
-    val startDate = start.toLocalDateTime(timeZone).date
-    val endDate = endInclusive.toLocalDateTime(timeZone).date
-    return if (startDate == endDate) startDate
-    else null
 }
 
 fun List<ClosedRange<Instant>>.averageDuration() = map {

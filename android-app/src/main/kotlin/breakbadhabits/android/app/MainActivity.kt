@@ -20,7 +20,8 @@ class MainActivity : ComposeActivity() {
                 habitIconProvider = presentationModule.logicModule.habitIconProvider
             ),
             dateTimeFormatter = DateTimeFormatter(
-                dateTimeConfigProvider = presentationModule.logicModule.dateTimeConfigProvider
+                dateTimeConfigProvider = presentationModule.logicModule.dateTimeConfigProvider,
+                context = this
             ),
             durationFormatter = DurationFormatter(
                 resources = resources,

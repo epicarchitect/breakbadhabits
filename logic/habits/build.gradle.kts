@@ -9,6 +9,6 @@ android {
 dependencies {
     api(projects.foundation.coroutines)
     api(projects.entities)
+    api(projects.logic.datetime)
     implementation(projects.database)
-    implementation(projects.logic.datetime)
 }

@@ -1,5 +1,6 @@
 package breakbadhabits.foundation.uikit.calendar
 
+import android.text.format.DateFormat
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,11 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import breakbadhabits.foundation.uikit.Card
@@ -48,9 +52,12 @@ import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.text.Text
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.Month
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.*
 
@@ -64,13 +71,13 @@ class IntervalSelectionEpicCalendarState {
     var maxYearMonth by mutableStateOf(YearMonth.now())
     var minYearMonth by mutableStateOf(YearMonth.now())
     var selectedTab by mutableStateOf(0)
-    var startDate by mutableStateOf<LocalDate?>(null)
-    var endDate by mutableStateOf<LocalDate?>(null)
+    var selectedStartDate by mutableStateOf<LocalDate?>(null)
+    var selectedEndDate by mutableStateOf<LocalDate?>(null)
     var yearMonth by mutableStateOf(maxYearMonth)
     var showYearMonthSelection by mutableStateOf(false)
     val selectedRange by derivedStateOf {
-        val start = startDate
-        val end = endDate
+        val start = selectedStartDate
+        val end = selectedEndDate
         when {
             start != null && end == null -> start..start
             start == null && end != null -> end..end
@@ -78,15 +85,23 @@ class IntervalSelectionEpicCalendarState {
             else -> null
         }
     }
+    var selectedStartTime by mutableStateOf(LocalTime.of(12, 0, 0))
+    var selectedEndTime by mutableStateOf(LocalTime.of(12, 0, 0))
 }
 
 @Composable
 fun IntervalSelectionEpicCalendar(
     state: IntervalSelectionEpicCalendarState,
-    onSelected: (ClosedRange<LocalDate>) -> Unit,
+    onSelected: (ClosedRange<LocalDateTime>) -> Unit,
     onCancel: () -> Unit,
     intervalsInnerPadding: Dp = 0.dp,
 ) {
+    val context = LocalContext.current
+    val timeFormatter = DateTimeFormatter.ofPattern(
+        if (DateFormat.is24HourFormat(context)) "HH:mm"
+        else "hh:mm a"
+    )
+    val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
     Column(modifier = Modifier.padding(top = 8.dp)) {
         Card(
             modifier = Modifier
@@ -244,9 +259,9 @@ fun IntervalSelectionEpicCalendar(
             onDayClick = {
                 state.showYearMonthSelection = false
                 if (state.selectedTab == 0) {
-                    state.startDate = it.date
+                    state.selectedStartDate = it.date
                 } else if (state.selectedTab == 1) {
-                    state.endDate = it.date
+                    state.selectedEndDate = it.date
                 }
             },
             horizontalInnerPadding = intervalsInnerPadding
@@ -254,20 +269,69 @@ fun IntervalSelectionEpicCalendar(
 
         AnimatedVisibility(visible = !state.showYearMonthSelection) {
             Column {
+                val selectedTime = if (state.selectedTab == 0) {
+                    state.selectedStartTime
+                } else {
+                    state.selectedEndTime
+                }
+
+                ScrollableTabRow(
+                    selectedTabIndex = selectedTime.hour,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    containerColor = Color.Transparent,
+                    indicator = {},
+                    divider = {},
+                    edgePadding = 12.dp
+                ) {
+                    repeat(24) {
+                        val itemTime = LocalTime.of(it, 0, 0)
+                        val isSelected = selectedTime.hour == itemTime.hour
+                        Card(
+                            modifier = Modifier.padding(4.dp),
+                            backgroundColor = if (isSelected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+                            },
+                            elevation = 0.dp,
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .clickable {
+                                        if (state.selectedTab == 0) {
+                                            state.selectedStartTime = itemTime
+                                        } else {
+                                            state.selectedEndTime = itemTime
+                                        }
+                                    }
+                                    .padding(
+                                        vertical = 8.dp,
+                                        horizontal = 20.dp
+                                    ),
+                                text = timeFormatter.format(itemTime),
+                                textAlign = TextAlign.Center,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+
                 TabRow(
                     modifier = Modifier.padding(top = 8.dp),
                     selectedTabIndex = state.selectedTab,
                     containerColor = Color.Transparent
                 ) {
-                    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
                     Tab(
                         selected = state.selectedTab == 0,
                         onClick = {
                             state.selectedTab = 0
-                            if (state.startDate != null) {
+                            if (state.selectedStartDate != null) {
                                 state.yearMonth = state.yearMonth
-                                    .withMonth(state.startDate!!.monthValue)
-                                    .withYear(state.startDate!!.year)
+                                    .withMonth(state.selectedStartDate!!.monthValue)
+                                    .withYear(state.selectedStartDate!!.year)
                             }
                         }
                     ) {
@@ -281,9 +345,17 @@ fun IntervalSelectionEpicCalendar(
                             )
 
                             Text(
-                                text = state.startDate?.format(formatter) ?: "не выбрано",
+                                text = state.selectedStartDate?.let {
+                                    it.format(dateFormatter) + "\n" + state.selectedStartTime.format(
+                                        timeFormatter
+                                    )
+                                } ?: "не выбрано",
                                 fontWeight = FontWeight.Light,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                style = androidx.compose.ui.text.TextStyle(
+                                    lineHeight = 12.sp
+                                ),
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
@@ -291,10 +363,10 @@ fun IntervalSelectionEpicCalendar(
                         selected = state.selectedTab == 1,
                         onClick = {
                             state.selectedTab = 1
-                            if (state.endDate != null) {
+                            if (state.selectedEndDate != null) {
                                 state.yearMonth = state.yearMonth
-                                    .withMonth(state.endDate!!.monthValue)
-                                    .withYear(state.endDate!!.year)
+                                    .withMonth(state.selectedEndDate!!.monthValue)
+                                    .withYear(state.selectedEndDate!!.year)
                             }
                         }
                     ) {
@@ -308,9 +380,17 @@ fun IntervalSelectionEpicCalendar(
                             )
 
                             Text(
-                                text = state.endDate?.format(formatter) ?: "не выбрано",
+                                text = state.selectedEndDate?.let {
+                                    it.format(dateFormatter) + "\n" + state.selectedEndTime.format(
+                                        timeFormatter
+                                    )
+                                } ?: "не выбрано",
                                 fontWeight = FontWeight.Light,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                style = androidx.compose.ui.text.TextStyle(
+                                    lineHeight = 12.sp
+                                ),
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
@@ -329,18 +409,26 @@ fun IntervalSelectionEpicCalendar(
                     Spacer(Modifier.padding(4.dp))
                     Button(
                         onClick = {
-                            if (state.selectedTab == 0 && state.endDate == null) {
+                            if (state.selectedTab == 0 && state.selectedEndDate == null) {
                                 state.selectedTab = 1
-                            } else if (state.selectedTab == 1 && state.startDate == null) {
+                            } else if (state.selectedTab == 1 && state.selectedStartDate == null) {
                                 state.selectedTab = 0
                             } else {
-                                val start = state.startDate ?: return@Button
-                                val end = state.endDate ?: return@Button
-                                onSelected(start..end)
+                                val start = state.selectedStartDate ?: return@Button
+                                val end = state.selectedEndDate ?: return@Button
+                                onSelected(
+                                    LocalDateTime.of(
+                                        start,
+                                        state.selectedStartTime
+                                    )..LocalDateTime.of(
+                                        end,
+                                        state.selectedEndTime
+                                    )
+                                )
                             }
                         },
-                        text = if (state.selectedTab == 0 && state.endDate == null || state.selectedTab == 1 && state.startDate == null) "Next" else "Apply",
-                        enabled = state.selectedTab == 0 && state.startDate != null || state.selectedTab == 1 && state.endDate != null,
+                        text = if (state.selectedTab == 0 && state.selectedEndDate == null || state.selectedTab == 1 && state.selectedStartDate == null) "Next" else "Apply",
+                        enabled = state.selectedTab == 0 && state.selectedStartDate != null || state.selectedTab == 1 && state.selectedEndDate != null,
                         interactionType = InteractionType.MAIN,
                         elevation = 0.dp
                     )
@@ -353,7 +441,7 @@ fun IntervalSelectionEpicCalendar(
 @Composable
 fun IntervalSelectionEpicCalendarDialog(
     state: IntervalSelectionEpicCalendarState,
-    onSelected: (ClosedRange<LocalDate>) -> Unit,
+    onSelected: (ClosedRange<LocalDateTime>) -> Unit,
     onCancel: () -> Unit,
 ) {
     Dialog(onDismiss = onCancel) {
@@ -377,13 +465,15 @@ fun rememberRangeSelectionEpicCalendarState(
     currentMonth: YearMonth = YearMonth.now(),
     maxMonth: YearMonth = YearMonth.now(),
     minMonth: YearMonth = YearMonth.now(),
-    initialRange: ClosedRange<LocalDate>? = null
+    initialRange: ClosedRange<LocalDateTime>? = null,
 ) = remember(currentMonth, maxMonth, minMonth, initialRange) {
     IntervalSelectionEpicCalendarState().also {
         it.yearMonth = currentMonth
         it.maxYearMonth = maxMonth
         it.minYearMonth = minMonth
-        it.startDate = initialRange?.start
-        it.endDate = initialRange?.endInclusive
+        it.selectedStartDate = initialRange?.start?.toLocalDate()
+        it.selectedEndDate = initialRange?.endInclusive?.toLocalDate()
+        it.selectedStartTime = initialRange?.start?.toLocalTime()
+        it.selectedEndTime = initialRange?.endInclusive?.toLocalTime()
     }
 }

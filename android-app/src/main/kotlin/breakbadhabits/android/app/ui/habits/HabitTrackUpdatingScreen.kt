@@ -30,6 +30,9 @@ import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.datetime.toInstantRange
+import breakbadhabits.foundation.datetime.toJavaLocalDateTimeRange
+import breakbadhabits.foundation.datetime.toKotlinRange
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.InteractionType
@@ -76,28 +79,16 @@ fun HabitTrackUpdatingScreen(
             currentMonth = YearMonth.now(),
             maxMonth = YearMonth.now(),
             minMonth = YearMonth.now().minusYears(10),
-            initialRange = rangeState.input.start
-                .toLocalDateTime(dateTimeConfig.appTimeZone)
-                .toJavaLocalDateTime()
-                .toLocalDate()..rangeState.input.endInclusive
-                .toLocalDateTime(dateTimeConfig.appTimeZone)
-                .toJavaLocalDateTime()
-                .toLocalDate()
+            initialRange = rangeState.input.toJavaLocalDateTimeRange(dateTimeConfig.appTimeZone)
         )
 
         IntervalSelectionEpicCalendarDialog(
             state = epicCalendarState,
             onSelected = {
                 rangeSelectionShow = false
-                val start = LocalDateTime(it.start.toKotlinLocalDate(), LocalTime(0, 0, 0, 0))
-                val end = LocalDateTime(it.endInclusive.toKotlinLocalDate(), LocalTime(0, 0, 0, 0))
                 timeInputController.changeInput(
                     HabitTrack.Time.of(
-                        start.toInstant(
-                            dateTimeConfig.appTimeZone
-                        )..end.toInstant(
-                            dateTimeConfig.appTimeZone
-                        )
+                        it.toKotlinRange().toInstantRange(dateTimeConfig.appTimeZone)
                     )
                 )
             },
@@ -173,8 +164,8 @@ fun HabitTrackUpdatingScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = rangeState.input.let {
-                val start = dateTimeFormatter.formatDate(it.start)
-                val end = dateTimeFormatter.formatDate(it.endInclusive)
+                val start = dateTimeFormatter.formatDateTime(it.start)
+                val end = dateTimeFormatter.formatDateTime(it.endInclusive)
                 "Первое событие: $start, последнее событие: $end"
             }
         )

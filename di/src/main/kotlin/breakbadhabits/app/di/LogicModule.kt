@@ -40,7 +40,7 @@ class LogicModule(
         DateTimeConfigProvider()
     }
 
-    private val dateTimeProvider by lazy {
+    val dateTimeProvider by lazy {
         DateTimeProvider(configProvider = dateTimeConfigProvider)
     }
 
