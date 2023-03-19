@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,12 +20,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
 import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackEventCount
-import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -43,7 +45,6 @@ import breakbadhabits.foundation.uikit.text.Title
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
@@ -53,16 +54,20 @@ import java.time.YearMonth
 @Composable
 fun HabitTrackUpdatingScreen(
     eventCountInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackEventCount>,
-    rangeInputController: ValidatedInputController<HabitTrack.Range, ValidatedHabitTrackRange>,
+    timeInputController: ValidatedInputController<HabitTrack.Time, ValidatedHabitTrackTime>,
     updatingController: RequestController,
     deletionController: RequestController,
     habitController: LoadingController<Habit?>,
     commentInputController: ValidatedInputController<HabitTrack.Comment?, Nothing>
 ) {
+    val dateTimeConfigProvider = LocalDateTimeConfigProvider.current
+    val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
+    val dateTimeConfig = dateTimeConfigState.value ?: return
+
     val dateTimeFormatter = LocalDateTimeFormatter.current
     var rangeSelectionShow by remember { mutableStateOf(false) }
     val eventCountState by eventCountInputController.collectState()
-    val rangeState by rangeInputController.collectState()
+    val rangeState by timeInputController.collectState()
 
     ClearFocusWhenKeyboardHiddenEffect()
 
@@ -71,11 +76,11 @@ fun HabitTrackUpdatingScreen(
             currentMonth = YearMonth.now(),
             maxMonth = YearMonth.now(),
             minMonth = YearMonth.now().minusYears(10),
-            initialRange = rangeState.input.value.start
-                .toLocalDateTime(TimeZone.currentSystemDefault())
+            initialRange = rangeState.input.start
+                .toLocalDateTime(dateTimeConfig.systemTimeZone)
                 .toJavaLocalDateTime()
-                .toLocalDate()..rangeState.input.value.endInclusive
-                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .toLocalDate()..rangeState.input.endInclusive
+                .toLocalDateTime(dateTimeConfig.systemTimeZone)
                 .toJavaLocalDateTime()
                 .toLocalDate()
         )
@@ -86,12 +91,12 @@ fun HabitTrackUpdatingScreen(
                 rangeSelectionShow = false
                 val start = LocalDateTime(it.start.toKotlinLocalDate(), LocalTime(0, 0, 0, 0))
                 val end = LocalDateTime(it.endInclusive.toKotlinLocalDate(), LocalTime(0, 0, 0, 0))
-                rangeInputController.changeInput(
-                    HabitTrack.Range(
+                timeInputController.changeInput(
+                    HabitTrack.Time.of(
                         start.toInstant(
-                            TimeZone.currentSystemDefault()
+                            dateTimeConfig.universalTimeZone
                         )..end.toInstant(
-                            TimeZone.currentSystemDefault()
+                            dateTimeConfig.universalTimeZone
                         )
                     )
                 )
@@ -168,8 +173,8 @@ fun HabitTrackUpdatingScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = rangeState.input.let {
-                val start = dateTimeFormatter.format(it.value.start)
-                val end = dateTimeFormatter.format(it.value.endInclusive)
+                val start = dateTimeFormatter.format(it.start)
+                val end = dateTimeFormatter.format(it.endInclusive)
                 "Первое событие: $start, последнее событие: $end"
             }
         )

@@ -6,5 +6,5 @@ data class HabitAbstinence(
     val habitId: Habit.Id,
     val range: Range
 ) {
-    data class Range(val value: ClosedRange<Instant>)
+    class Range(value: ClosedRange<Instant>): ClosedRange<Instant> by value
 }

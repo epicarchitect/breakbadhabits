@@ -22,7 +22,7 @@ class PresentationModule(val logicModule: LogicModule) {
         HabitCreationViewModel(
             habitCreator,
             habitNewNameValidator,
-            habitTrackRangeValidator,
+            habitTrackTimeValidator,
             habitTrackEventCountValidator,
             habitIconProvider
         )
@@ -53,7 +53,7 @@ class PresentationModule(val logicModule: LogicModule) {
         HabitTrackCreationViewModel(
             habitProvider,
             habitTrackCreator,
-            habitTrackRangeValidator,
+            habitTrackTimeValidator,
             habitTrackEventCountValidator,
             habitId
         )
@@ -73,7 +73,7 @@ class PresentationModule(val logicModule: LogicModule) {
             habitTrackProvider,
             habitTrackUpdater,
             habitTrackDeleter,
-            habitTrackRangeValidator,
+            habitTrackTimeValidator,
             habitTrackEventCountValidator,
             id
         )

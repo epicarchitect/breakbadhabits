@@ -5,6 +5,7 @@ import breakbadhabits.android.app.format.DateTimeFormatter
 import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.ui.habits.resources.HabitIconResourceProvider
 import breakbadhabits.app.di.PresentationModule
+import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 
 val LocalPresentationModule = compositionLocalOf<PresentationModule> {
     error("LocalPresentationModule not provided")
@@ -20,4 +21,8 @@ val LocalDateTimeFormatter = compositionLocalOf<DateTimeFormatter> {
 
 val LocalDurationFormatter = compositionLocalOf<DurationFormatter> {
     error("LocalDurationFormatter not provided")
+}
+
+val LocalDateTimeConfigProvider = compositionLocalOf<DateTimeConfigProvider> {
+    error("LocalDateTimeConfigProvider not provided")
 }

@@ -197,7 +197,7 @@ private fun LazyItemScope.HabitItem(
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.abstinence?.let {
-                            durationFormatter.format(it.range.value.toDuration())
+                            durationFormatter.format(it.range.toDuration())
                         } ?: stringResource(R.string.habits_noEvents)
                     )
                 }

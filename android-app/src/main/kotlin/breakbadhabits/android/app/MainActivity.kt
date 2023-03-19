@@ -19,11 +19,14 @@ class MainActivity : ComposeActivity() {
             habitIconResourceProvider = HabitIconResourceProvider(
                 habitIconProvider = presentationModule.logicModule.habitIconProvider
             ),
-            dateTimeFormatter = DateTimeFormatter(),
+            dateTimeFormatter = DateTimeFormatter(
+                dateTimeConfigProvider = presentationModule.logicModule.dateTimeConfigProvider
+            ),
             durationFormatter = DurationFormatter(
                 resources = resources,
                 defaultAccuracy = DurationFormatter.Accuracy.SECONDS
-            )
+            ),
+            dateTimeConfigProvider = presentationModule.logicModule.dateTimeConfigProvider
         )
     }
 }

@@ -18,8 +18,6 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 class HabitStatisticsProvider(
     private val habitTrackProvider: HabitTrackProvider,
@@ -48,13 +46,13 @@ class HabitStatisticsProvider(
     ) { abstinenceList, tracks, currentTime ->
         if (tracks.isEmpty()) return@combine null
 
-        val ranges = abstinenceList.map { it.range.value }
+        val ranges = abstinenceList.map { it.range }
 
         HabitStatistics.Abstinence(
             averageTime = ranges.averageDuration(),
             maxTime = ranges.maxDuration(),
             minTime = ranges.minDuration(),
-            timeSinceFirstTrack = currentTime - tracks.minOf { it.range.value.start }
+            timeSinceFirstTrack = currentTime - tracks.minOf { it.time.start }
         )
     }
 
@@ -64,7 +62,7 @@ class HabitStatisticsProvider(
         dateTimeConfigProvider.configFlow(),
         habitTrackProvider.habitTracksFlow(habitId)
     ) { dateTimeConfig, tracks ->
-        val timeZone = dateTimeConfig.timeZone
+        val timeZone = dateTimeConfig.universalTimeZone
         val currentDate = Clock.System.now().toLocalDateTime(timeZone).date
         val previousMonthDate = currentDate.minus(DateTimeUnit.MONTH)
 
@@ -86,22 +84,22 @@ private fun List<HabitTrack>.countEventsInMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ) = filterByMonth(monthOfYear, timeZone).fold(0) { total, track ->
-    total + track.range.value.countDaysInMonth(monthOfYear, timeZone) * track.eventCount.dailyCount
+    total + track.time.countDaysInMonth(monthOfYear, timeZone) * track.eventCount.dailyCount
 }
 
 private fun List<HabitTrack>.countEvents(
     timeZone: TimeZone
 ) = fold(0) { total, track ->
-    total + track.range.value.countDays(timeZone) * track.eventCount.dailyCount
+    total + track.time.countDays(timeZone) * track.eventCount.dailyCount
 }
 
 private fun List<HabitTrack>.filterByMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ) = filter { track ->
-    track.range.value.endInclusive.toLocalDateTime(timeZone).let {
+    track.time.endInclusive.toLocalDateTime(timeZone).let {
         it.month == monthOfYear.month && it.year == monthOfYear.year
-    } || track.range.value.start.toLocalDateTime(timeZone).let {
+    } || track.time.start.toLocalDateTime(timeZone).let {
         it.month == monthOfYear.month && it.year == monthOfYear.year
     }
 }

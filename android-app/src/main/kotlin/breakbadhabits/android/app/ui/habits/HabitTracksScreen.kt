@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
 import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
@@ -40,7 +42,6 @@ import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
@@ -54,6 +55,10 @@ fun HabitTracksScreen(
     habitTracksController: LoadingController<Map<MonthOfYear, List<HabitTrack>>>,
     onTrackClick: (HabitTrack.Id) -> Unit
 ) {
+    val dateTimeConfigProvider = LocalDateTimeConfigProvider.current
+    val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
+    val dateTimeConfig = dateTimeConfigState.value ?: return
+
     val context = LocalContext.current
     val habitIconResources = LocalHabitIconResourceProvider.current
     val dateTimeFormatter = LocalDateTimeFormatter.current
@@ -64,11 +69,11 @@ fun HabitTracksScreen(
         val currentTracks = remember(currentMonth) { tracks[currentMonth] ?: emptyList() }
         val ranges = remember(tracks) {
             tracks.values.flatten().map {
-                it.range.value.start
-                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                it.time.start
+                    .toLocalDateTime(dateTimeConfig.systemTimeZone)
                     .toJavaLocalDateTime()
-                    .toLocalDate()..it.range.value.endInclusive
-                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .toLocalDate()..it.time.endInclusive
+                    .toLocalDateTime(dateTimeConfig.systemTimeZone)
                     .toJavaLocalDateTime()
                     .toLocalDate()
             }
@@ -172,16 +177,13 @@ fun HabitTracksScreen(
                         ) {
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = track.range.value.let {
-                                    it.asOneDayOrNull(TimeZone.currentSystemDefault())
-                                        ?.let(dateTimeFormatter::format)
-                                        ?: run {
-                                            val start =
-                                                dateTimeFormatter.format(it.start)
-                                            val end =
-                                                dateTimeFormatter.format(it.endInclusive)
-                                            "$start - $end"
-                                        }
+                                text = when (val time = track.time) {
+                                    is HabitTrack.Time.Date -> dateTimeFormatter.format(time.value)
+                                    is HabitTrack.Time.Range -> {
+                                        val start = dateTimeFormatter.format(time.start)
+                                        val end = dateTimeFormatter.format(time.endInclusive)
+                                        "$start - $end"
+                                    }
                                 },
                                 fontWeight = FontWeight.Bold
                             )

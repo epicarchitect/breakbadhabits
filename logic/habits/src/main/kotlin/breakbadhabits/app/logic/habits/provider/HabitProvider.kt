@@ -3,9 +3,11 @@ package breakbadhabits.app.logic.habits.provider
 import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
+import breakbadhabits.foundation.datetime.secondsToInstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.TimeZone
 import breakbadhabits.app.database.Habit as DatabaseHabit
 
 class HabitProvider(private val appDatabase: AppDatabase) {
@@ -34,8 +36,12 @@ class HabitProvider(private val appDatabase: AppDatabase) {
         }
 
     private fun DatabaseHabit.toEntity() = Habit(
-        Habit.Id(id),
-        Habit.Name(name),
-        Habit.Icon(iconId)
+        id = Habit.Id(id),
+        name = Habit.Name(name),
+        icon = Habit.Icon(iconId),
+        creationTime = Habit.CreationTime(
+            time = createdAtTimeInSecondsUtc.secondsToInstant(),
+            timeZone = TimeZone.of(createdInTimeZone)
+        )
     )
 }

@@ -2,6 +2,7 @@ package breakbadhabits.app.logic.habits.provider
 
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAbstinence
+import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -19,7 +20,7 @@ class HabitAbstinenceProvider(
         else dateTimeProvider.currentTimeFlow().map { currentTime ->
             HabitAbstinence(
                 habitId = habitId,
-                range = HabitAbstinence.Range(lastTrack.range.value.endInclusive..currentTime)
+                range = HabitAbstinence.Range(lastTrack.time.endInclusive..currentTime)
             )
         }
     }
@@ -28,15 +29,15 @@ class HabitAbstinenceProvider(
         habitTrackProvider.habitTracksFlow(habitId),
         dateTimeProvider.currentTimeFlow(),
     ) { tracks, currentTime ->
-        tracks.sortedBy { it.range.value.start }.let { sortedList ->
+        tracks.sortedBy { it.time.start }.let { sortedList ->
             List(sortedList.size) { index ->
                 HabitAbstinence(
                     habitId = habitId,
                     range = HabitAbstinence.Range(
                         if (index == sortedList.lastIndex) {
-                            sortedList[index].range.value.endInclusive..currentTime
+                            sortedList[index].time.endInclusive..currentTime
                         } else {
-                            sortedList[index].range.value.endInclusive..sortedList[index + 1].range.value.start
+                            sortedList[index].time.endInclusive..sortedList[index + 1].time.start
                         }
                     )
                 )

@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
 import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
@@ -29,7 +31,7 @@ import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackEventCount
-import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackRange
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -49,9 +51,9 @@ import breakbadhabits.foundation.uikit.text.Title
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toJavaZoneId
 import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
@@ -62,29 +64,36 @@ fun HabitCreationScreen(
     habitIconSelectionController: SingleSelectionController<Habit.Icon>,
     habitNameController: ValidatedInputController<Habit.Name, ValidatedHabitNewName>,
     firstTrackEventCountInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackEventCount>,
-    firstTrackRangeInputController: ValidatedInputController<HabitTrack.Range, ValidatedHabitTrackRange>,
+    firstTrackTimeInputController: ValidatedInputController<HabitTrack.Time, ValidatedHabitTrackTime>,
     creationController: RequestController
 ) {
+    val dateTimeConfigProvider = LocalDateTimeConfigProvider.current
+    val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
+    val dateTimeConfig = dateTimeConfigState.value ?: return
+
     val context = LocalContext.current
     val dateTimeFormatter = LocalDateTimeFormatter.current
     val habitIconResources = LocalHabitIconResourceProvider.current
     var rangeSelectionShow by remember { mutableStateOf(false) }
+    val nowYearMonth = remember(dateTimeConfig) {
+        YearMonth.now(dateTimeConfig.systemTimeZone.toJavaZoneId())
+    }
 
     val firstTrackEventCountState by firstTrackEventCountInputController.collectState()
-    val firstTrackRangeState by firstTrackRangeInputController.collectState()
+    val firstTrackRangeState by firstTrackTimeInputController.collectState()
 
     ClearFocusWhenKeyboardHiddenEffect()
 
     if (rangeSelectionShow) {
         val epicCalendarState = rememberRangeSelectionEpicCalendarState(
-            currentMonth = YearMonth.now(),
-            maxMonth = YearMonth.now(),
-            minMonth = YearMonth.now().minusYears(10),
-            initialRange = firstTrackRangeState.input.value.start
-                .toLocalDateTime(TimeZone.currentSystemDefault())
+            currentMonth = nowYearMonth,
+            maxMonth = nowYearMonth,
+            minMonth = nowYearMonth.minusYears(10),
+            initialRange = firstTrackRangeState.input.start
+                .toLocalDateTime(dateTimeConfig.systemTimeZone)
                 .toJavaLocalDateTime()
-                .toLocalDate()..firstTrackRangeState.input.value.endInclusive
-                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .toLocalDate()..firstTrackRangeState.input.endInclusive
+                .toLocalDateTime(dateTimeConfig.systemTimeZone)
                 .toJavaLocalDateTime()
                 .toLocalDate()
         )
@@ -95,12 +104,12 @@ fun HabitCreationScreen(
                 rangeSelectionShow = false
                 val start = LocalDateTime(it.start.toKotlinLocalDate(), LocalTime(0, 0))
                 val end = LocalDateTime(it.endInclusive.toKotlinLocalDate(), LocalTime(0, 0))
-                firstTrackRangeInputController.changeInput(
-                    HabitTrack.Range(
+                firstTrackTimeInputController.changeInput(
+                    HabitTrack.Time.of(
                         start.toInstant(
-                            TimeZone.currentSystemDefault()
+                            dateTimeConfig.universalTimeZone
                         )..end.toInstant(
-                            TimeZone.currentSystemDefault()
+                           dateTimeConfig.universalTimeZone
                         )
                     )
                 )
@@ -193,8 +202,8 @@ fun HabitCreationScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = firstTrackRangeState.input.let {
-                val start = dateTimeFormatter.format(it.value.start)
-                val end = dateTimeFormatter.format(it.value.endInclusive)
+                val start = dateTimeFormatter.format(it.start)
+                val end = dateTimeFormatter.format(it.endInclusive)
                 "Первое событие: $start, последнее событие: $end"
             }
         )

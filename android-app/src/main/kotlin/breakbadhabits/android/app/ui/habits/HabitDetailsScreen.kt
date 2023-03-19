@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.format.DurationFormatter
-import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
+import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
 import breakbadhabits.android.app.ui.app.LocalDurationFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
@@ -44,7 +45,6 @@ import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
@@ -63,6 +63,10 @@ fun HabitDetailsScreen(
     onAddTrackClick: () -> Unit,
     onAllTracksClick: () -> Unit
 ) {
+    val dateTimeConfigProvider = LocalDateTimeConfigProvider.current
+    val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
+    val dateTimeConfig = dateTimeConfigState.value ?: return
+
     val habitIconResources = LocalHabitIconResourceProvider.current
     val durationFormatter = LocalDurationFormatter.current
     val context = LocalContext.current
@@ -101,7 +105,7 @@ fun HabitDetailsScreen(
             ) { abstinence ->
                 Text(
                     text = abstinence?.let {
-                        durationFormatter.format(it.range.value.toDuration())
+                        durationFormatter.format(it.range.toDuration())
                     } ?: stringResource(R.string.habits_noEvents)
                 )
             }
@@ -125,11 +129,11 @@ fun HabitDetailsScreen(
                             yearMonth = yearMonth,
                             ranges = remember(tracks) {
                                 tracks.map {
-                                    it.range.value.start
-                                        .toLocalDateTime(TimeZone.currentSystemDefault())
+                                    it.time.start
+                                        .toLocalDateTime(dateTimeConfig.systemTimeZone)
                                         .toJavaLocalDateTime()
-                                        .toLocalDate()..it.range.value.endInclusive
-                                        .toLocalDateTime(TimeZone.currentSystemDefault())
+                                        .toLocalDate()..it.time.endInclusive
+                                        .toLocalDateTime(dateTimeConfig.systemTimeZone)
                                         .toJavaLocalDateTime()
                                         .toLocalDate()
                                 }
@@ -187,7 +191,7 @@ fun HabitDetailsScreen(
 
                         val abstinenceTimes = remember(abstinenceList) {
                             abstinenceList.map {
-                                it.range.value.toDuration().inWholeSeconds.toFloat()
+                                it.range.toDuration().inWholeSeconds.toFloat()
                             }
                         }
 

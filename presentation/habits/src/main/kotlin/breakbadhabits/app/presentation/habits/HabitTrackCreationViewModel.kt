@@ -6,9 +6,9 @@ import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
 import breakbadhabits.app.logic.habits.provider.HabitProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackTimeValidator
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -19,7 +19,7 @@ import kotlinx.datetime.Clock
 class HabitTrackCreationViewModel(
     habitProvider: HabitProvider,
     private val habitTrackCreator: HabitTrackCreator,
-    private val trackRangeValidator: HabitTrackRangeValidator,
+    private val trackRangeValidator: HabitTrackTimeValidator,
     private val trackEventCountValidator: HabitTrackEventCountValidator,
     private val habitId: Habit.Id
 ) : ViewModel() {
@@ -35,9 +35,9 @@ class HabitTrackCreationViewModel(
         validation = trackEventCountValidator::validate
     )
 
-    val rangeInputController = ValidatedInputController(
+    val timeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.Range(Clock.System.now()..Clock.System.now()),
+        initialInput = HabitTrack.Time.of(Clock.System.now()),
         validation = trackRangeValidator::validate
     )
 
@@ -52,8 +52,8 @@ class HabitTrackCreationViewModel(
         request = {
             val eventCount = eventCountInputController.validateAndAwait()
             require(eventCount is CorrectHabitTrackEventCount)
-            val trackRange = rangeInputController.validateAndAwait()
-            require(trackRange is CorrectHabitTrackRange)
+            val trackRange = timeInputController.validateAndAwait()
+            require(trackRange is CorrectHabitTrackTime)
 
             val trackComment = commentInputController.state.value.input
 
@@ -66,10 +66,10 @@ class HabitTrackCreationViewModel(
         },
         isAllowedFlow = combine(
             eventCountInputController.state,
-            rangeInputController.state,
+            timeInputController.state,
         ) { trackValue, trackRange ->
             trackRange.validationResult.let {
-                it == null || it is CorrectHabitTrackRange
+                it == null || it is CorrectHabitTrackTime
             } && trackValue.validationResult.let {
                 it == null || it is CorrectHabitTrackEventCount
             }

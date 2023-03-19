@@ -25,6 +25,7 @@ import breakbadhabits.android.app.ui.settings.AppSettingsScreen
 import breakbadhabits.app.di.PresentationModule
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
+import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.uikit.ext.collectState
 
@@ -83,13 +84,15 @@ fun AppScreen(
     presentationModule: PresentationModule,
     habitIconResourceProvider: HabitIconResourceProvider,
     dateTimeFormatter: DateTimeFormatter,
-    durationFormatter: DurationFormatter
+    durationFormatter: DurationFormatter,
+    dateTimeConfigProvider: DateTimeConfigProvider
 ) {
     CompositionLocalProvider(
         LocalPresentationModule provides presentationModule,
         LocalHabitIconResourceProvider provides habitIconResourceProvider,
         LocalDateTimeFormatter provides dateTimeFormatter,
-        LocalDurationFormatter provides durationFormatter
+        LocalDurationFormatter provides durationFormatter,
+        LocalDateTimeConfigProvider provides dateTimeConfigProvider
     ) {
         AppScreenContent()
     }
@@ -128,7 +131,7 @@ private fun AppScreenContent() {
                 habitIconSelectionController = viewModel.habitIconSelectionController,
                 habitNameController = viewModel.habitNameController,
                 firstTrackEventCountInputController = viewModel.firstTrackEventCountInputController,
-                firstTrackRangeInputController = viewModel.firstTrackRangeInputController,
+                firstTrackTimeInputController = viewModel.firstTrackTimeInputController,
                 creationController = viewModel.creationController
             )
         }
@@ -188,7 +191,7 @@ private fun AppScreenContent() {
 
             HabitTrackCreationScreen(
                 eventCountInputController = viewModel.eventCountInputController,
-                rangeInputController = viewModel.rangeInputController,
+                timeInputController = viewModel.timeInputController,
                 creationController = viewModel.creationController,
                 habitController = viewModel.habitController,
                 commentInputController = viewModel.commentInputController
@@ -222,7 +225,7 @@ private fun AppScreenContent() {
 
             HabitTrackUpdatingScreen(
                 eventCountInputController = viewModel.eventCountInputController,
-                rangeInputController = viewModel.rangeInputController,
+                timeInputController = viewModel.timeInputController,
                 updatingController = viewModel.updatingController,
                 deletionController = viewModel.deletionController,
                 habitController = viewModel.habitController,

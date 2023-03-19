@@ -5,5 +5,6 @@ import kotlin.time.Duration
 
 data class DateTimeConfig(
     val delayDuration: Duration,
-    val timeZone: TimeZone
+    val universalTimeZone: TimeZone,
+    val systemTimeZone: TimeZone,
 )

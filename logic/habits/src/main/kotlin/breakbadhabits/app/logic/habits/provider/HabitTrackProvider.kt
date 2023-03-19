@@ -4,15 +4,22 @@ import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.foundation.datetime.*
+import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
+import breakbadhabits.foundation.datetime.MonthOfYear
+import breakbadhabits.foundation.datetime.monthOfYear
+import breakbadhabits.foundation.datetime.mountsBetween
+import breakbadhabits.foundation.datetime.secondsToInstant
+import breakbadhabits.foundation.datetime.secondsToInstantRange
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
 import breakbadhabits.app.database.HabitTrack as DatabaseHabitTrack
 
 class HabitTrackProvider(
-    private val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase,
+    private val dateTimeConfigProvider: DateTimeConfigProvider
 ) {
 
     fun habitTracksFlow(id: Habit.Id) = appDatabase.habitTrackQueries
@@ -31,12 +38,15 @@ class HabitTrackProvider(
             it.executeAsOneOrNull()?.toEntity()
         }
 
-    fun monthsToHabitTracksFlow(id: Habit.Id) = habitTracksFlow(id).map { tracks ->
-        val timeZone = TimeZone.currentSystemDefault()
+    fun monthsToHabitTracksFlow(id: Habit.Id) = combine(
+        habitTracksFlow(id),
+        dateTimeConfigProvider.configFlow()
+    ) { tracks, dateTimeConfig ->
+        val timeZone = dateTimeConfig.universalTimeZone
         val map = mutableMapOf<MonthOfYear, MutableSet<HabitTrack>>()
         tracks.forEach { track ->
-            val startMonth = track.range.value.start.monthOfYear(timeZone)
-            val endMonth = track.range.value.endInclusive.monthOfYear(timeZone)
+            val startMonth = track.time.start.monthOfYear(timeZone)
+            val endMonth = track.time.endInclusive.monthOfYear(timeZone)
             val monthRange = startMonth..endMonth
             map.getOrPut(startMonth, ::mutableSetOf).add(track)
             map.getOrPut(endMonth, ::mutableSetOf).add(track)
@@ -52,10 +62,14 @@ class HabitTrackProvider(
     }
 
     private fun DatabaseHabitTrack.toEntity() = HabitTrack(
-        HabitTrack.Id(id),
-        Habit.Id(habitId),
-        HabitTrack.Range((startTimeInSeconds..endTimeInSeconds).secondsToInstantRange()),
-        HabitTrack.EventCount(dailyCount.toInt()),
-        comment?.let(HabitTrack::Comment)
+        id = HabitTrack.Id(id),
+        habitId = Habit.Id(habitId),
+        time = HabitTrack.Time.of((startTimeInSecondsUtc..endTimeInSecondsUtc).secondsToInstantRange()),
+        eventCount = HabitTrack.EventCount(dailyCount.toInt()),
+        comment = comment?.let(HabitTrack::Comment),
+        creationTime = HabitTrack.CreationTime(
+            time = createdAtTimeInSecondsUtc.secondsToInstant(),
+            timeZone = TimeZone.of(createdInTimeZone)
+        )
     )
 }

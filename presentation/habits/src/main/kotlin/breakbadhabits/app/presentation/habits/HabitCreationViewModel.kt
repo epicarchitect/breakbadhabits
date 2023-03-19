@@ -7,10 +7,10 @@ import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.provider.HabitIconProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackRange
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackRangeValidator
+import breakbadhabits.app.logic.habits.validator.HabitTrackTimeValidator
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -21,7 +21,7 @@ import kotlinx.datetime.Clock
 class HabitCreationViewModel(
     private val habitCreator: HabitCreator,
     private val habitNewNameValidator: HabitNewNameValidator,
-    private val trackRangeValidator: HabitTrackRangeValidator,
+    private val trackRangeValidator: HabitTrackTimeValidator,
     private val trackValueValidator: HabitTrackEventCountValidator,
     habitIconProvider: HabitIconProvider
 ) : ViewModel() {
@@ -44,9 +44,9 @@ class HabitCreationViewModel(
         validation = trackValueValidator::validate
     )
 
-    val firstTrackRangeInputController = ValidatedInputController(
+    val firstTrackTimeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.Range(Clock.System.now()..Clock.System.now()),
+        initialInput = HabitTrack.Time.of(Clock.System.now()),
         validation = trackRangeValidator::validate
     )
 
@@ -60,8 +60,8 @@ class HabitCreationViewModel(
             val firstTrackEventCount = firstTrackEventCountInputController.validateAndAwait()
             require(firstTrackEventCount is CorrectHabitTrackEventCount)
 
-            val firstTrackRange = firstTrackRangeInputController.validateAndAwait()
-            require(firstTrackRange is CorrectHabitTrackRange)
+            val firstTrackRange = firstTrackTimeInputController.validateAndAwait()
+            require(firstTrackRange is CorrectHabitTrackTime)
 
             habitCreator.createHabit(
                 habitName,
@@ -73,12 +73,12 @@ class HabitCreationViewModel(
         isAllowedFlow = combine(
             habitNameController.state,
             firstTrackEventCountInputController.state,
-            firstTrackRangeInputController.state,
+            firstTrackTimeInputController.state,
         ) { habitName, firstTrackEventCount, firstTrackRange ->
             habitName.validationResult.let {
                 it == null || it is CorrectHabitNewName
             } && firstTrackRange.validationResult.let {
-                it == null || it is CorrectHabitTrackRange
+                it == null || it is CorrectHabitTrackTime
             } && firstTrackEventCount.validationResult.let {
                 it == null || it is CorrectHabitTrackEventCount
             }

@@ -1,18 +1,20 @@
 CREATE TABLE IF NOT EXISTS HabitTrack (
-  id                 INTEGER NOT NULL PRIMARY KEY,
-  habitId            INTEGER NOT NULL,
-  startTimeInSeconds INTEGER NOT NULL,
-  endTimeInSeconds   INTEGER NOT NULL,
-  dailyCount         INTEGER NOT NULL,
-  comment            TEXT
+  id                        INTEGER NOT NULL PRIMARY KEY,
+  habitId                   INTEGER NOT NULL,
+  startTimeInSecondsUtc     INTEGER NOT NULL,
+  endTimeInSecondsUtc       INTEGER NOT NULL,
+  createdInTimeZone         TEXT    NOT NULL,
+  createdAtTimeInSecondsUtc INTEGER NOT NULL,
+  dailyCount                INTEGER NOT NULL,
+  comment                   TEXT
 );
 
 insert:
 INSERT INTO HabitTrack
-VALUES (?, ?, ?, ?, ?, ?);
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 update:
-UPDATE HabitTrack SET startTimeInSeconds = ?, endTimeInSeconds = ?, dailyCount = ?, comment = ?
+UPDATE HabitTrack SET startTimeInSecondsUtc = ?, endTimeInSecondsUtc = ?, dailyCount = ?, comment = ?
 WHERE id = ?;
 
 deleteById:
@@ -28,4 +30,4 @@ selectByHabitId:
 SELECT * FROM HabitTrack WHERE habitId = ?;
 
 selectByHabitIdAndMaxRangeEnd:
-SELECT * FROM HabitTrack WHERE habitId = :habitId AND endTimeInSeconds = (SELECT max(endTimeInSeconds) FROM HabitTrack WHERE habitId = :habitId) LIMIT 1;
+SELECT * FROM HabitTrack WHERE habitId = :habitId AND endTimeInSecondsUtc = (SELECT max(endTimeInSecondsUtc) FROM HabitTrack WHERE habitId = :habitId) LIMIT 1;

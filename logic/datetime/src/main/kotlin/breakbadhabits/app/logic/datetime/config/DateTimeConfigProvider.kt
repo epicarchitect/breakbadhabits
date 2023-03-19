@@ -12,8 +12,9 @@ class DateTimeConfigProvider {
 
     companion object {
         private val defaultConfig = DateTimeConfig(
-            delayDuration = 1L.seconds,
-            timeZone = TimeZone.currentSystemDefault()
+            delayDuration = 1.seconds,
+            universalTimeZone = TimeZone.UTC,
+            systemTimeZone = TimeZone.currentSystemDefault(),
         )
     }
 }
