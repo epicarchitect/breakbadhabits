@@ -183,9 +183,7 @@ fun HabitTracksScreen(
                                         val end = dateTimeFormatter.formatDateTime(time.endInclusive)
                                         "$start - $end"
                                     }
-                                } + " " + dateTimeFormatter.formatTimeZoneIfNotSystemOrEmpty(
-                                    track.creationTime.timeZone
-                                ),
+                                },
                                 fontWeight = FontWeight.Bold
                             )
 

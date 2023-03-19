@@ -253,7 +253,7 @@ fun HabitDetailsScreen(
                 modifier = Modifier.padding(24.dp),
                 text = "Привычка создана:\n${
                     dateTimeFormatter.formatDateTime(habit.creationTime.time)
-                } " + dateTimeFormatter.formatTimeZoneIfNotSystemOrEmpty(habit.creationTime.timeZone)
+                }"
             )
         }
 

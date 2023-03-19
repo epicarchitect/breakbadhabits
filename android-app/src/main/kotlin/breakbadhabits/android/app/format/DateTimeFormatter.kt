@@ -22,9 +22,8 @@ class DateTimeFormatter(
         timeFormatStyle
     )
 
-
     fun formatDate(
-        instant: Instant
+        instant: Instant,
     ) = formatDate(instant.toLocalDateTime(systemTimeZone).date)
 
     private fun formatDate(
@@ -39,17 +38,22 @@ class DateTimeFormatter(
         dateTime: LocalDateTime
     ) = dateTimeFormatter.format(dateTime.toJavaLocalDateTime())!!
 
+
+
+
     private fun formatTimeZone(
         timeZone: TimeZone
     ) = AndroidTimeZone.getTimeZone(timeZone.id).getDisplayName(
         false,
         timeZoneFormatStyle
-    )
+    )!!
 
-    fun formatTimeZoneIfNotSystemOrEmpty(
+    private fun getFormattedSystemTimeZone() = formatTimeZone(systemTimeZone)
+
+    private fun getFormattedSystemTimeZoneIfNotEquals(
         timeZone: TimeZone
     ) = if (timeZone == systemTimeZone) ""
-    else "(${formatTimeZone(timeZone)})"
+    else "(${getFormattedSystemTimeZone()})"
 
     companion object {
         private val dateFormatStyle = JavaFormatStyle.LONG
