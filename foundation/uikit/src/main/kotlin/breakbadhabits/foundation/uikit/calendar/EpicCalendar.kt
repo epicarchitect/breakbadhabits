@@ -89,9 +89,9 @@ fun EpicCalendar(
             state.days.chunked(7).forEach {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     it.forEachIndexed { index, day ->
-                        val range = state.ranges.find { day.date in it }
-                        val isDayAtStartOfInterval = range?.start?.let { it == day.date }
-                        val isDayAtEndOfInterval = range?.endInclusive?.let { it == day.date }
+                        val ranges = state.visibleRanges.filter { day.date in it }
+                        val isDayAtStartOfInterval = ranges.all { it.start == day.date }
+                        val isDayAtEndOfInterval = ranges.all { it.endInclusive == day.date }
 
                         if (index == 0) {
                             Spacer(
@@ -99,7 +99,7 @@ fun EpicCalendar(
                                     .width(horizontalInnerPadding)
                                     .height(cellHeight)
                                     .background(
-                                        if (isDayAtStartOfInterval == true || range == null) Color.Transparent
+                                        if (isDayAtStartOfInterval || ranges.isEmpty()) Color.Transparent
                                         else rangeColor
                                     )
                             )
@@ -111,7 +111,7 @@ fun EpicCalendar(
                                 .height(cellHeight)
                                 .clip(
                                     when {
-                                        isDayAtStartOfInterval != null && isDayAtStartOfInterval && isDayAtEndOfInterval != null && isDayAtEndOfInterval -> {
+                                        isDayAtStartOfInterval && isDayAtEndOfInterval -> {
                                             RoundedCornerShape(
                                                 topStart = 100.dp,
                                                 bottomStart = 100.dp,
@@ -120,14 +120,14 @@ fun EpicCalendar(
                                             )
                                         }
 
-                                        isDayAtStartOfInterval != null && isDayAtStartOfInterval -> {
+                                        isDayAtStartOfInterval -> {
                                             RoundedCornerShape(
                                                 topStart = 100.dp,
                                                 bottomStart = 100.dp
                                             )
                                         }
 
-                                        isDayAtEndOfInterval != null && isDayAtEndOfInterval -> {
+                                        isDayAtEndOfInterval -> {
                                             RoundedCornerShape(
                                                 topEnd = 100.dp,
                                                 bottomEnd = 100.dp
@@ -139,7 +139,7 @@ fun EpicCalendar(
                                         }
                                     }
                                 )
-                                .background(if (range != null) rangeColor else Color.Transparent),
+                                .background(if (ranges.isNotEmpty()) rangeColor else Color.Transparent),
                         ) {
                             Text(
                                 modifier = Modifier
@@ -153,7 +153,7 @@ fun EpicCalendar(
                                     },
                                 text = day.date.dayOfMonth.toString(),
                                 textAlign = TextAlign.Center,
-                                color = if (range != null) rangeContentColor else Color.Unspecified
+                                color = if (ranges.isNotEmpty()) rangeContentColor else Color.Unspecified
                             )
                         }
 
@@ -163,7 +163,7 @@ fun EpicCalendar(
                                     .width(horizontalInnerPadding)
                                     .height(cellHeight)
                                     .background(
-                                        if (isDayAtEndOfInterval == true || range == null) Color.Transparent
+                                        if (isDayAtEndOfInterval || ranges.isEmpty()) Color.Transparent
                                         else rangeColor
                                     )
                             )
@@ -201,6 +201,13 @@ class EpicCalendarState {
     val weekDays: List<WeekDay> by derivedStateOf { calculateWeekDays(firstDayOfWeek) }
     val days: List<Day> by derivedStateOf { calculateDays(yearMonth) }
     var ranges: List<ClosedRange<LocalDate>> by mutableStateOf(emptyList())
+    val visibleRanges: List<ClosedRange<LocalDate>> by derivedStateOf {
+        ranges.filter { range ->
+            days.any { day ->
+                day.date in range
+            }
+        }
+    }
 
     private fun calculateFirstDayOfWeek() = WeekFields.of(Locale.getDefault()).firstDayOfWeek
 
