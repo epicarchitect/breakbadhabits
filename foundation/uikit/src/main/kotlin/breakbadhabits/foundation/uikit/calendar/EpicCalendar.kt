@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,15 +36,25 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import breakbadhabits.foundation.uikit.text.Text
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.time.temporal.WeekFields
 import java.util.*
 
+private val ZeroRangeShape = RoundedCornerShape(0)
+private val StartRangeShape = RoundedCornerShape(
+    topStartPercent = 100,
+    bottomStartPercent = 100
+)
+private val EndRangeShape = RoundedCornerShape(
+    topEndPercent = 100,
+    bottomEndPercent = 100
+)
+private val FullRangeShape = CircleShape
 
 @Composable
 fun EpicCalendar(
@@ -49,10 +63,11 @@ fun EpicCalendar(
     onDayClick: ((EpicCalendarState.Day) -> Unit)? = null,
     horizontalInnerPadding: Dp = 0.dp,
     rangeColor: Color = MaterialTheme.colorScheme.primary,
-    rangeContentColor: Color = MaterialTheme.colorScheme.onPrimary
+    rangeContentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    dayBadgeText: (EpicCalendarState.Day) -> String? = { null },
 ) {
     var cellWidth by remember { mutableStateOf(Dp.Unspecified) }
-    val cellHeight = remember { 44.dp }
+    val cellHeight = remember { 38.dp }
     val density = LocalDensity.current
 
     Box(modifier.onSizeChanged {
@@ -61,7 +76,7 @@ fun EpicCalendar(
             Dp(((it.width / 7f) - cellSpacersWidth + 1f) / density.density) // +1f to fix right padding
     }) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth()
@@ -77,7 +92,8 @@ fun EpicCalendar(
                     ) {
                         Text(
                             modifier = Modifier.align(Alignment.Center),
-                            text = it.name
+                            text = it.name,
+                            fontSize = 14.sp
                         )
                     }
                     if (index == 6) {
@@ -89,72 +105,81 @@ fun EpicCalendar(
             state.days.chunked(7).forEach {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     it.forEachIndexed { index, day ->
-                        val ranges = state.visibleRanges.filter { day.date in it }
-                        val isDayAtStartOfInterval = ranges.all { it.start == day.date }
-                        val isDayAtEndOfInterval = ranges.all { it.endInclusive == day.date }
+                        val ranges = remember(state.visibleRanges, day) {
+                            state.visibleRanges.filter { day.date in it }
+                        }
+                        val isDayAtStartOfRange = remember(ranges, day) {
+                            ranges.all { it.start == day.date }
+                        }
+                        val isDayAtEndOfRange = remember(ranges, day) {
+                            ranges.all { it.endInclusive == day.date }
+                        }
+
+                        val startSpacerBackgroundColor = remember(isDayAtStartOfRange, ranges) {
+                            if (isDayAtStartOfRange || ranges.isEmpty()) Color.Transparent else rangeColor
+                        }
+
+                        val endSpacerBackgroundColor = remember(isDayAtEndOfRange, ranges) {
+                            if (isDayAtEndOfRange || ranges.isEmpty()) Color.Transparent else rangeColor
+                        }
 
                         if (index == 0) {
                             Spacer(
                                 modifier = Modifier
                                     .width(horizontalInnerPadding)
                                     .height(cellHeight)
-                                    .background(
-                                        if (isDayAtStartOfInterval || ranges.isEmpty()) Color.Transparent
-                                        else rangeColor
-                                    )
+                                    .background(startSpacerBackgroundColor)
                             )
+                        }
+
+                        val badgeText = remember(day, dayBadgeText) {
+                            dayBadgeText(day)
                         }
 
                         Box(
                             modifier = Modifier
                                 .width(cellWidth)
                                 .height(cellHeight)
-                                .clip(
-                                    when {
-                                        isDayAtStartOfInterval && isDayAtEndOfInterval -> {
-                                            RoundedCornerShape(
-                                                topStart = 100.dp,
-                                                bottomStart = 100.dp,
-                                                topEnd = 100.dp,
-                                                bottomEnd = 100.dp
-                                            )
-                                        }
-
-                                        isDayAtStartOfInterval -> {
-                                            RoundedCornerShape(
-                                                topStart = 100.dp,
-                                                bottomStart = 100.dp
-                                            )
-                                        }
-
-                                        isDayAtEndOfInterval -> {
-                                            RoundedCornerShape(
-                                                topEnd = 100.dp,
-                                                bottomEnd = 100.dp
-                                            )
-                                        }
-
-                                        else -> {
-                                            RoundedCornerShape(0.dp)
-                                        }
-                                    }
-                                )
-                                .background(if (ranges.isNotEmpty()) rangeColor else Color.Transparent),
                         ) {
                             Text(
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .height(cellHeight)
                                     .width(cellWidth)
-                                    .clip(RoundedCornerShape(100.dp))
+                                    .clip(
+                                        when {
+                                            isDayAtStartOfRange && isDayAtEndOfRange -> FullRangeShape
+                                            isDayAtStartOfRange -> StartRangeShape
+                                            isDayAtEndOfRange -> EndRangeShape
+                                            else -> ZeroRangeShape
+                                        }
+                                    )
+                                    .background(if (ranges.isNotEmpty()) rangeColor else Color.Transparent)
+                                    .clip(CircleShape)
                                     .alpha(if (day.inCurrentMonth) 1.0f else 0.5f)
                                     .clickable(enabled = onDayClick != null) {
                                         onDayClick?.invoke(day)
                                     },
                                 text = day.date.dayOfMonth.toString(),
                                 textAlign = TextAlign.Center,
-                                color = if (ranges.isNotEmpty()) rangeContentColor else Color.Unspecified
+                                color = if (ranges.isNotEmpty()) rangeContentColor else Color.Unspecified,
+                                fontSize = 14.sp
                             )
+
+                            if (badgeText != null) {
+                                Text(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(top = 2.dp, end = 8.dp)
+                                        .defaultMinSize(minHeight = 12.dp, minWidth = 12.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.background.copy(alpha = 0.1f))
+                                        .padding(horizontal = 2.dp),
+                                    text = badgeText,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 8.sp,
+                                )
+                            }
                         }
 
                         if (index == 6) {
@@ -162,10 +187,7 @@ fun EpicCalendar(
                                 modifier = Modifier
                                     .width(horizontalInnerPadding)
                                     .height(cellHeight)
-                                    .background(
-                                        if (isDayAtEndOfInterval || ranges.isEmpty()) Color.Transparent
-                                        else rangeColor
-                                    )
+                                    .background(endSpacerBackgroundColor)
                             )
                         }
                     }

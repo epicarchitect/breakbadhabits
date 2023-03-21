@@ -47,6 +47,7 @@ import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
 import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -157,7 +158,24 @@ fun HabitDetailsScreen(
 
                         EpicCalendar(
                             state = epicCalendarState,
-                            horizontalInnerPadding = 8.dp
+                            horizontalInnerPadding = 8.dp,
+                            dayBadgeText = { day ->
+                                val date = day.date.toKotlinLocalDate()
+                                val count = tracks.fold(0) { count, track ->
+                                    val inTrack = date in track.time.start.toLocalDateTime(
+                                        dateTimeConfig.appTimeZone
+                                    ).date..track.time.endInclusive.toLocalDateTime(
+                                        dateTimeConfig.appTimeZone
+                                    ).date
+
+                                    if (inTrack) count + track.eventCount.dailyCount
+                                    else count
+                                }
+
+                                if (count == 0) null
+                                else if (count > 100) "99+"
+                                else count.toString()
+                            }
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))

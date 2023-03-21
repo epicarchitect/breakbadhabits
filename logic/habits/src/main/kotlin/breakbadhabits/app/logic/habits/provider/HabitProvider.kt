@@ -5,6 +5,7 @@ import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.foundation.datetime.secondsToInstant
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
@@ -17,7 +18,7 @@ class HabitProvider(private val appDatabase: AppDatabase) {
         .asFlow()
         .map {
             it.executeAsOneOrNull()?.toEntity()
-        }
+        }.flowOn(Dispatchers.IO)
 
     suspend fun getHabit(id: Habit.Id) = withContext(Dispatchers.IO) {
         appDatabase.habitQueries
@@ -33,7 +34,7 @@ class HabitProvider(private val appDatabase: AppDatabase) {
             it.executeAsList().map {
                 it.toEntity()
             }
-        }
+        }.flowOn(Dispatchers.IO)
 
     private fun DatabaseHabit.toEntity() = Habit(
         id = Habit.Id(id),

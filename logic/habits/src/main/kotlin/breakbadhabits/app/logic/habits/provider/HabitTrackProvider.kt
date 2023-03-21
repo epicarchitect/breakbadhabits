@@ -12,6 +12,7 @@ import breakbadhabits.foundation.datetime.secondsToInstant
 import breakbadhabits.foundation.datetime.secondsToInstantRange
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
@@ -29,14 +30,14 @@ class HabitTrackProvider(
             it.executeAsList().map {
                 it.toEntity()
             }
-        }
+        }.flowOn(Dispatchers.IO)
 
     fun habitTrackFlowByMaxEnd(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitIdAndMaxRangeEnd(id.value)
         .asFlow()
         .map {
             it.executeAsOneOrNull()?.toEntity()
-        }
+        }.flowOn(Dispatchers.IO)
 
     fun monthsToHabitTracksFlow(id: Habit.Id) = combine(
         habitTracksFlow(id),
@@ -55,7 +56,7 @@ class HabitTrackProvider(
             }
         }
         map.mapValues { it.value.toList() }
-    }
+    }.flowOn(Dispatchers.Default)
 
     suspend fun getHabitTrack(id: HabitTrack.Id) = withContext(Dispatchers.IO) {
         appDatabase.habitTrackQueries.selectById(id.value).executeAsOneOrNull()?.toEntity()

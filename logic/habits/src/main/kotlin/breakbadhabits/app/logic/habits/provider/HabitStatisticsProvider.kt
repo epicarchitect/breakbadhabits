@@ -12,7 +12,9 @@ import breakbadhabits.foundation.datetime.countDaysInMonth
 import breakbadhabits.foundation.datetime.maxDuration
 import breakbadhabits.foundation.datetime.minDuration
 import breakbadhabits.foundation.datetime.monthOfYear
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
@@ -35,7 +37,7 @@ class HabitStatisticsProvider(
             abstinence,
             eventCount
         )
-    }
+    }.flowOn(Dispatchers.Default)
 
     private fun habitAbstinenceFlow(
         habitId: Habit.Id

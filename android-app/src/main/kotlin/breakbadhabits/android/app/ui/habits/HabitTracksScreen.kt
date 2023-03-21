@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,6 +43,7 @@ import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
 import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -63,6 +65,7 @@ fun HabitTracksScreen(
     val dateTimeFormatter = LocalDateTimeFormatter.current
 
     LoadingBox(habitTracksController) { tracks ->
+        val allTracks = remember(tracks) { tracks.values.flatten().toSet() }
         val months = remember(tracks) { tracks.keys }
         var currentMonth by remember(months) {
             mutableStateOf(months.maxOrNull() ?: MonthOfYear.now(dateTimeConfig.appTimeZone))
@@ -79,8 +82,9 @@ fun HabitTracksScreen(
                     .toLocalDate()
             }
         }
-        val jtYearMonth =
-            remember(currentMonth) { YearMonth.of(currentMonth.year, currentMonth.month) }
+        val jtYearMonth = remember(currentMonth) {
+            YearMonth.of(currentMonth.year, currentMonth.month)
+        }
         val epicCalendarState = rememberEpicCalendarState(
             yearMonth = jtYearMonth,
             ranges = ranges
@@ -153,12 +157,31 @@ fun HabitTracksScreen(
 
             EpicCalendar(
                 state = epicCalendarState,
-                horizontalInnerPadding = 8.dp
+                horizontalInnerPadding = 8.dp,
+                dayBadgeText = { day ->
+                    val date = day.date.toKotlinLocalDate()
+                    val count = allTracks.fold(0) { count, track ->
+                        val inTrack = date in track.time.start.toLocalDateTime(
+                            dateTimeConfig.appTimeZone
+                        ).date..track.time.endInclusive.toLocalDateTime(
+                            dateTimeConfig.appTimeZone
+                        ).date
+
+                        if (inTrack) count + track.eventCount.dailyCount
+                        else count
+                    }
+
+                    if (count == 0) null
+                    else if (count > 100) "99+"
+                    else count.toString()
+                }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
                 items(currentTracks, key = { it.id.value }) { track ->
                     Box(
                         modifier = Modifier
@@ -182,7 +205,8 @@ fun HabitTracksScreen(
                                     is HabitTrack.Time.Date -> dateTimeFormatter.formatDateTime(time.value)
                                     is HabitTrack.Time.Range -> {
                                         val start = dateTimeFormatter.formatDateTime(time.start)
-                                        val end = dateTimeFormatter.formatDateTime(time.endInclusive)
+                                        val end =
+                                            dateTimeFormatter.formatDateTime(time.endInclusive)
                                         "$start - $end"
                                     }
                                 },
