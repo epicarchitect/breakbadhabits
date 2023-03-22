@@ -2,7 +2,7 @@ package breakbadhabits.android.app.ui.habits.resources
 
 import breakbadhabits.android.app.R
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.logic.habits.provider.HabitIconProvider
+import breakbadhabits.app.logic.habits.HabitIconProvider
 
 class HabitIconResourceProvider(habitIconProvider: HabitIconProvider) {
 

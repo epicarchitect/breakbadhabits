@@ -14,6 +14,8 @@ import androidx.navigation.navArgument
 import breakbadhabits.android.app.format.DateTimeFormatter
 import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.ui.dashboard.DashboardScreen
+import breakbadhabits.android.app.ui.habits.HabitAppWidgetUpdatingScreen
+import breakbadhabits.android.app.ui.habits.HabitAppWidgetsScreen
 import breakbadhabits.android.app.ui.habits.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
 import breakbadhabits.android.app.ui.habits.HabitEditingScreen
@@ -24,6 +26,7 @@ import breakbadhabits.android.app.ui.habits.resources.HabitIconResourceProvider
 import breakbadhabits.android.app.ui.settings.AppSettingsScreen
 import breakbadhabits.app.di.PresentationModule
 import breakbadhabits.app.entity.Habit
+import breakbadhabits.app.entity.HabitAppWidgetConfig
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.foundation.controller.RequestController
@@ -77,6 +80,19 @@ private object Screens {
         fun getHabitTrackId(arguments: Bundle?) = HabitTrack.Id(arguments!!.getLong("id"))
         fun buildRoute(id: HabitTrack.Id) = "habitTrackUpdating?id=${id.value}"
     }
+
+    object HabitAppWidgets {
+        const val route = "habitAppWidgets"
+    }
+
+    object HabitAppWidgetUpdating {
+        const val route = "habitAppWidgetUpdating?id={id}"
+        val arguments = listOf(navArgument("id") { type = NavType.LongType })
+        fun getHabitAppWidgetId(arguments: Bundle?) =
+            HabitAppWidgetConfig.Id(arguments!!.getLong("id"))
+
+        fun buildRoute(id: HabitAppWidgetConfig.Id) = "habitAppWidgetUpdating?id=${id.value}"
+    }
 }
 
 @Composable
@@ -108,7 +124,7 @@ private fun AppScreenContent() {
         composable(route = Screens.AppSettings.route) {
             AppSettingsScreen(
                 openWidgetSettings = {
-                    navController.navigate("habitsAppWidgets")
+                    navController.navigate(Screens.HabitAppWidgets.route)
                 }
             )
         }
@@ -234,23 +250,29 @@ private fun AppScreenContent() {
         }
 
         composable(
-            route = "habitsAppWidgetConfigEditing?configId={configId}",
-            arguments = listOf(navArgument("configId") { type = NavType.LongType })
+            route = Screens.HabitAppWidgetUpdating.route,
+            arguments = Screens.HabitAppWidgetUpdating.arguments
         ) {
-//                    val navController = LocalNavController.current
-//                    HabitsAppWidgetConfigEditingScreen(
-//                        configId = it.arguments!!.getInt("configId"),
-//                        onFinished = navController::popBackStack
-//                    )
+            val presentationModule = LocalPresentationModule.current
+            val id = Screens.HabitAppWidgetUpdating.getHabitAppWidgetId(it.arguments)
+            val viewModel = viewModel {
+                presentationModule.createHabitAppWidgetUpdatingViewModel(id)
+            }
+            HabitAppWidgetUpdatingScreen()
         }
 
-        composable(route = "habitsAppWidgets") {
-//                    val navController = LocalNavController.current
-//                    HabitsAppWidgetsScreen(
-//                        openHabitAppWidgetConfigEditing = { configId ->
-//                            navController.navigate("habitsAppWidgetConfigEditing?configId=$configId")
-//                        }
-//                    )
+        composable(route = Screens.HabitAppWidgets.route) {
+            val presentationModule = LocalPresentationModule.current
+            val viewModel = viewModel {
+                presentationModule.createHabitAppWidgetsViewModel()
+            }
+
+            HabitAppWidgetsScreen(
+                widgetsLoadingController = viewModel.widgetsLoadingController,
+                onWidgetClick = {
+                    navController.navigate(Screens.HabitAppWidgetUpdating.buildRoute(it))
+                }
+            )
         }
 
         composable(

@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits.validator
+package breakbadhabits.app.logic.habits.tracks
 
 import breakbadhabits.app.entity.HabitTrack
 

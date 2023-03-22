@@ -1,115 +1,101 @@
 package breakbadhabits.android.app.ui.habits
 
-//@Composable
-//fun HabitsAppWidgetsScreen(
-//    openHabitAppWidgetConfigEditing: (configId: Int) -> Unit
-//) {
-//    val habitsAppWidgetConfigIdsFeature = rememberEpicStoreEntry {
-//        appDependencies.createHabitsAppWidgetConfigIdsFeature()
-//    }
-//
-//    val configIds by habitsAppWidgetConfigIdsFeature.state.collectAsState()
-//
-//    Box(
-//        modifier = Modifier.fillMaxSize()
-//    ) {
-//        if (configIds.isEmpty()) {
-//            Text(
-//                modifier = Modifier
-//                    .align(Alignment.Center)
-//                    .padding(16.dp),
-//                text = stringResource(R.string.habitsAppWidgets_empty),
-//                textAlign = TextAlign.Center
-//            )
-//        } else {
-//            Column(
-//                modifier = Modifier.fillMaxSize()
-//            ) {
-//                Title(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-//                    text = stringResource(R.string.main_widgets)
-//                )
-//
-//                LazyColumn(
-//                    contentPadding = PaddingValues(
-//                        start = 16.dp,
-//                        end = 16.dp,
-//                        top = 16.dp,
-//                        bottom = 160.dp
-//                    ),
-//                    verticalArrangement = Arrangement.spacedBy(16.dp)
-//                ) {
-//                    epicStoreItems(configIds) { configid ->
-//                        WidgetConfigItem(
-//                            configId = configid,
-//                            onClick = {
-//                                openHabitAppWidgetConfigEditing(configid)
-//                            }
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//@Composable
-//fun WidgetConfigItem(
-//    configId: Int,
-//    onClick: () -> Unit
-//) {
-//    val habitsAppWidgetTitleFeature = rememberEpicStoreEntry {
-//        appDependencies.createHabitsAppWidgetTitleFeature(configId)
-//    }
-//
-//    val habitsAppWidgetHabitIdsFeature = rememberEpicStoreEntry {
-//        appDependencies.createHabitsAppWidgetHabitIdsFeature(configId)
-//    }
-//
-//    val title by habitsAppWidgetTitleFeature.state.collectAsState()
-//    val habitIds by habitsAppWidgetHabitIdsFeature.state.collectAsState()
-//
-//    Card(
-//        modifier = Modifier.fillMaxWidth()
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .clickable {
-//                    onClick()
-//                }
-//        ) {
-//            Title(
-//                modifier = Modifier.padding(
-//                    start = 16.dp,
-//                    top = 16.dp,
-//                    end = 54.dp
-//                ),
-//                text = title.orEmpty().ifEmpty { "#$configId" }
-//            )
-//
-//            Text(
-//                modifier = Modifier.padding(
-//                    start = 16.dp,
-//                    bottom = 16.dp,
-//                    end = 16.dp
-//                ),
-//                text = buildString {
-//                    val list = habitIds?.toList() ?: emptyList()
-//                    list.forEachIndexed { index, habitId ->
-//                        val habitNameFeature = rememberEpicStoreEntry {
-//                            appDependencies.createHabitNameFeature(habitId)
-//                        }
-//                        val habitName by habitNameFeature.state.collectAsState()
-//                        append(habitName)
-//                        if (index != list.lastIndex) {
-//                            appendLine()
-//                        }
-//                    }
-//                }
-//            )
-//        }
-//    }
-//}
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import breakbadhabits.android.app.R
+import breakbadhabits.app.entity.HabitAppWidgetConfig
+import breakbadhabits.foundation.controller.LoadingController
+import breakbadhabits.foundation.uikit.Card
+import breakbadhabits.foundation.uikit.LoadingBox
+import breakbadhabits.foundation.uikit.text.Text
+import breakbadhabits.foundation.uikit.text.Title
+
+@Composable
+fun HabitAppWidgetsScreen(
+    widgetsLoadingController: LoadingController<List<HabitAppWidgetConfig>>,
+    onWidgetClick: (HabitAppWidgetConfig.Id) -> Unit
+) {
+    LoadingBox(widgetsLoadingController) { widgets ->
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Title(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                text = stringResource(R.string.main_widgets)
+            )
+
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 16.dp,
+                    bottom = 160.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(widgets, key = { it.id.value }) {
+                    WidgetConfigItem(
+                        config = it,
+                        onClick = { onWidgetClick(it.id) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun WidgetConfigItem(
+    config: HabitAppWidgetConfig,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable {
+                    onClick()
+                }
+        ) {
+            Title(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    top = 16.dp,
+                    end = 54.dp
+                ),
+                text = config.title.value.ifEmpty { "#${config.id.value}" }
+            )
+
+            Text(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    bottom = 16.dp,
+                    end = 16.dp
+                ),
+                text = buildString {
+                    config.habitIds.forEachIndexed { index, habitId ->
+                        append(habitId.value)
+                        if (index != config.habitIds.lastIndex) {
+                            appendLine()
+                        }
+                    }
+                }
+            )
+        }
+    }
+}

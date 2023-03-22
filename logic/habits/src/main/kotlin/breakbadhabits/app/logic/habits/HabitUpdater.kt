@@ -1,10 +1,9 @@
-package breakbadhabits.app.logic.habits.updater
+package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
+import breakbadhabits.app.logic.habits.CorrectHabitNewName
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class HabitUpdater(

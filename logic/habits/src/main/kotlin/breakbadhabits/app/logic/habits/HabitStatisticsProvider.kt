@@ -1,10 +1,11 @@
-package breakbadhabits.app.logic.habits.provider
+package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitStatistics
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
-import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.app.logic.datetime.DateTimeProvider
+import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.averageDuration
@@ -13,7 +14,6 @@ import breakbadhabits.foundation.datetime.countDaysInMonth
 import breakbadhabits.foundation.datetime.maxDuration
 import breakbadhabits.foundation.datetime.minDuration
 import breakbadhabits.foundation.datetime.monthOfYear
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.datetime.Clock

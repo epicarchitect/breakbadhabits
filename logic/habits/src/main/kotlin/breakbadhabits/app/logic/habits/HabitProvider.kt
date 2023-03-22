@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits.provider
+package breakbadhabits.app.logic.habits
 
 import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
-import breakbadhabits.app.database.Habit as DatabaseHabit
 
 class HabitProvider(
     private val appDatabase: AppDatabase,
@@ -39,7 +38,7 @@ class HabitProvider(
             }
         }.flowOn(coroutineDispatchers.io)
 
-    private fun DatabaseHabit.toEntity() = Habit(
+    private fun breakbadhabits.app.database.Habit.toEntity() = Habit(
         id = Habit.Id(id),
         name = Habit.Name(name),
         icon = Habit.Icon(iconId),

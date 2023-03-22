@@ -1,8 +1,8 @@
 package breakbadhabits.app.presentation.dashboard
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.logic.habits.provider.HabitAbstinenceProvider
-import breakbadhabits.app.logic.habits.provider.HabitProvider
+import breakbadhabits.app.logic.habits.HabitAbstinenceProvider
+import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,10 +1,9 @@
-package breakbadhabits.app.logic.habits.validator
+package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.config.HabitsConfigProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class HabitNewNameValidator(

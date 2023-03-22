@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.datetime.provider
+package breakbadhabits.app.logic.datetime
 
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers

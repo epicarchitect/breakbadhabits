@@ -1,0 +1,31 @@
+import kotlin.Long;
+import kotlin.collections.List;
+
+CREATE TABLE IF NOT EXISTS HabitAppWidgetConfig (
+  id           INTEGER            NOT NULL PRIMARY KEY,
+  title        TEXT               NOT NULL,
+  appWidgetId  INTEGER            NOT NULL,
+  habitIds TEXT AS List<Long> NOT NULL
+);
+
+insert:
+INSERT INTO HabitAppWidgetConfig
+VALUES (?, ?, ?, ?);
+
+update:
+UPDATE HabitAppWidgetConfig SET title = ?, habitIds = ? WHERE id = ?;
+
+deleteById:
+DELETE FROM HabitAppWidgetConfig WHERE id = ?;
+
+deleteByWidgetId:
+DELETE FROM HabitAppWidgetConfig WHERE appWidgetId = ?;
+
+selectById:
+SELECT * FROM HabitAppWidgetConfig WHERE id = ?;
+
+selectByAppWidgetId:
+SELECT * FROM HabitAppWidgetConfig WHERE appWidgetId = ?;
+
+selectAll:
+SELECT * FROM HabitAppWidgetConfig;

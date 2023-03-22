@@ -4,22 +4,26 @@ import android.content.Context
 import breakbadhabits.app.database.AppDatabaseFactory
 import breakbadhabits.app.database.IdGenerator
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
-import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.app.logic.datetime.DateTimeProvider
 import breakbadhabits.app.logic.habits.config.HabitsConfigProvider
-import breakbadhabits.app.logic.habits.creator.HabitCreator
-import breakbadhabits.app.logic.habits.creator.HabitTrackCreator
-import breakbadhabits.app.logic.habits.deleter.HabitDeleter
-import breakbadhabits.app.logic.habits.deleter.HabitTrackDeleter
-import breakbadhabits.app.logic.habits.provider.HabitAbstinenceProvider
-import breakbadhabits.app.logic.habits.provider.HabitIconProvider
-import breakbadhabits.app.logic.habits.provider.HabitProvider
-import breakbadhabits.app.logic.habits.provider.HabitStatisticsProvider
-import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
-import breakbadhabits.app.logic.habits.updater.HabitTrackUpdater
-import breakbadhabits.app.logic.habits.updater.HabitUpdater
-import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
-import breakbadhabits.app.logic.habits.validator.HabitTrackTimeValidator
+import breakbadhabits.app.logic.habits.HabitCreator
+import breakbadhabits.app.logic.habits.tracks.HabitTrackCreator
+import breakbadhabits.app.logic.habits.HabitDeleter
+import breakbadhabits.app.logic.habits.tracks.HabitTrackDeleter
+import breakbadhabits.app.logic.habits.HabitAbstinenceProvider
+import breakbadhabits.app.logic.habits.HabitIconProvider
+import breakbadhabits.app.logic.habits.HabitProvider
+import breakbadhabits.app.logic.habits.HabitStatisticsProvider
+import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider
+import breakbadhabits.app.logic.habits.tracks.HabitTrackUpdater
+import breakbadhabits.app.logic.habits.HabitUpdater
+import breakbadhabits.app.logic.habits.HabitNewNameValidator
+import breakbadhabits.app.logic.habits.tracks.HabitTrackEventCountValidator
+import breakbadhabits.app.logic.habits.tracks.HabitTrackTimeValidator
+import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigCreator
+import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigDeleter
+import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigProvider
+import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigUpdater
 
 class LogicModule(
     private val context: Context,
@@ -147,6 +151,35 @@ class LogicModule(
         HabitTrackProvider(
             appDatabase = appDatabase,
             dateTimeConfigProvider = dateTimeConfigProvider,
+            coroutineDispatchers = DefaultCoroutineDispatchers
+        )
+    }
+
+    val habitAppWidgetConfigProvider by lazy {
+        HabitAppWidgetConfigProvider(
+            coroutineDispatchers = DefaultCoroutineDispatchers,
+            appDatabase = appDatabase
+        )
+    }
+
+    val habitAppWidgetConfigCreator by lazy {
+        HabitAppWidgetConfigCreator(
+            appDatabase = appDatabase,
+            idGenerator = idGenerator,
+            coroutineDispatchers = DefaultCoroutineDispatchers
+        )
+    }
+
+    val habitAppWidgetConfigUpdater by lazy {
+        HabitAppWidgetConfigUpdater(
+            appDatabase = appDatabase,
+            coroutineDispatchers = DefaultCoroutineDispatchers
+        )
+    }
+
+    val habitAppWidgetConfigDeleter by lazy {
+        HabitAppWidgetConfigDeleter(
+            appDatabase = appDatabase,
             coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }

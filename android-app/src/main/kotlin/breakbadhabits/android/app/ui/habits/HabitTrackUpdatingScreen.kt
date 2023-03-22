@@ -24,10 +24,10 @@ import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
 import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackTime
-import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackEventCount
-import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackTime
+import breakbadhabits.app.logic.habits.tracks.IncorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.tracks.IncorrectHabitTrackTime
+import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackEventCount
+import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -48,12 +48,6 @@ import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
 import breakbadhabits.foundation.uikit.text.Title
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toKotlinLocalDate
-import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
 
 @Composable

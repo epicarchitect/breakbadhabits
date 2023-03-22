@@ -12,6 +12,9 @@ object AppDatabaseFactory {
             schema = AppDatabase.Schema,
             context = context,
             name = name
+        ),
+        HabitAppWidgetConfig.Adapter(
+            habitIdsAdapter = ListOfLongsAdapter
         )
     )
 }

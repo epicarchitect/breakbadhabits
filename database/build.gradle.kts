@@ -1,5 +1,6 @@
 plugins {
     id("convention.android.library")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     id("app.cash.sqldelight") version "2.0.0-alpha05"
 }
 
@@ -11,6 +12,7 @@ dependencies {
     api("app.cash.sqldelight:coroutines-extensions:2.0.0-alpha05")
     api("app.cash.sqldelight:android-driver:2.0.0-alpha05")
     api("app.cash.sqldelight:primitive-adapters:2.0.0-alpha05")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 }
 
 sqldelight {

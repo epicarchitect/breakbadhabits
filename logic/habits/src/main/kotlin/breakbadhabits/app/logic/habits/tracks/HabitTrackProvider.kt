@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits.provider
+package breakbadhabits.app.logic.habits.tracks
 
 import app.cash.sqldelight.coroutines.asFlow
 import breakbadhabits.app.database.AppDatabase
@@ -11,7 +11,6 @@ import breakbadhabits.foundation.datetime.monthOfYear
 import breakbadhabits.foundation.datetime.mountsBetween
 import breakbadhabits.foundation.datetime.secondsToInstant
 import breakbadhabits.foundation.datetime.secondsToInstantRange
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -24,6 +23,15 @@ class HabitTrackProvider(
     private val dateTimeConfigProvider: DateTimeConfigProvider,
     private val coroutineDispatchers: CoroutineDispatchers
 ) {
+
+    fun habitTracksFlow() = appDatabase.habitTrackQueries
+        .selectAll()
+        .asFlow()
+        .map {
+            it.executeAsList().map {
+                it.toEntity()
+            }
+        }.flowOn(coroutineDispatchers.io)
 
     fun habitTracksFlow(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitId(id.value)

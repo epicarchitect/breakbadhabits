@@ -2,8 +2,8 @@ package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.logic.habits.provider.HabitProvider
-import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
+import breakbadhabits.app.logic.habits.HabitProvider
+import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.viewmodel.ViewModel
 

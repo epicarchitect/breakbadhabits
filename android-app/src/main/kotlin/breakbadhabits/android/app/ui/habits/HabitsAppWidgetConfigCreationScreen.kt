@@ -1,5 +1,64 @@
 package breakbadhabits.android.app.ui.habits
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import breakbadhabits.android.app.R
+import breakbadhabits.app.entity.HabitAppWidgetConfig
+import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.uikit.button.InteractionType
+import breakbadhabits.foundation.uikit.button.RequestButton
+import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
+import breakbadhabits.foundation.uikit.text.Text
+import breakbadhabits.foundation.uikit.text.TextFieldAdapter
+import breakbadhabits.foundation.uikit.text.Title
+import breakbadhabits.foundation.uikit.text.ValidatedInputField
+
+@Composable
+fun HabitsAppWidgetConfigCreationScreen(
+    titleInputController: ValidatedInputController<HabitAppWidgetConfig.Title, Nothing>,
+    creationController: RequestController
+) {
+    ClearFocusWhenKeyboardHiddenEffect()
+
+    Column {
+        Title(
+            text = stringResource(R.string.habitsAppWidgetConfigCreation_title)
+        )
+
+        Text(
+            text = stringResource(R.string.habitsAppWidgetConfigCreation_name_description)
+        )
+
+        ValidatedInputField(
+            controller = titleInputController,
+            label = stringResource(R.string.habitsAppWidgetConfigCreation_name),
+            adapter = TextFieldAdapter(
+                decodeInput = HabitAppWidgetConfig.Title::value,
+                encodeInput = HabitAppWidgetConfig::Title,
+                extractErrorMessage = { null }
+            )
+        )
+
+        Spacer(modifier = Modifier.weight(1.0f))
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        RequestButton(
+            modifier = Modifier.align(Alignment.End),
+            requestController = creationController,
+            text = stringResource(R.string.habitsAppWidgetConfigCreation_finish),
+            interactionType = InteractionType.MAIN
+        )
+    }
+}
+
 //@Composable
 //fun HabitsAppWidgetConfigCreationScreen(
 //    appWidgetId: Int,

@@ -23,6 +23,9 @@ DELETE FROM HabitTrack WHERE id = ?;
 deleteByHabitId:
 DELETE FROM HabitTrack WHERE habitId = ?;
 
+selectAll:
+SELECT * FROM HabitTrack;
+
 selectById:
 SELECT * FROM HabitTrack WHERE id = ?;
 

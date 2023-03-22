@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits.provider
+package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.entity.Habit
 

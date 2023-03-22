@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
-import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
+import breakbadhabits.app.logic.habits.IncorrectHabitNewName
+import breakbadhabits.app.logic.habits.ValidatedHabitNewName
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController

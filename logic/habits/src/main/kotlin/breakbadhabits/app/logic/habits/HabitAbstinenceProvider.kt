@@ -1,8 +1,9 @@
-package breakbadhabits.app.logic.habits.provider
+package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAbstinence
-import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.app.logic.datetime.DateTimeProvider
+import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import breakbadhabits.foundation.math.ranges.combineIntersections
 import kotlinx.coroutines.flow.combine

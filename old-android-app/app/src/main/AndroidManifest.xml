@@ -22,33 +22,33 @@
             </intent-filter>
         </activity>
 
-        <!--        <activity-->
-        <!--            android:name=".activity.HabitsAppWidgetConfigCreationActivity"-->
-        <!--            android:exported="true">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />-->
-        <!--            </intent-filter>-->
-        <!--        </activity>-->
+        <activity
+            android:name=".activity.HabitsAppWidgetConfigCreationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
 
-        <!--        <receiver-->
-        <!--            android:name=".appwidget.HabitsAppWidgetProvider"-->
-        <!--            android:banner="@mipmap/ic_launcher"-->
-        <!--            android:exported="false"-->
-        <!--            android:label="@string/habits_app_widget_name"-->
-        <!--            android:logo="@mipmap/ic_launcher"-->
-        <!--            android:roundIcon="@mipmap/ic_launcher_round">-->
+        <receiver
+            android:name=".appwidget.HabitsAppWidgetProvider"
+            android:banner="@mipmap/ic_launcher"
+            android:exported="false"
+            android:label="@string/habits_app_widget_name"
+            android:logo="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round">
 
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-        <!--            </intent-filter>-->
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
-        <!--            <meta-data-->
-        <!--                android:name="android.appwidget.provider"-->
-        <!--                android:resource="@xml/habits_appwidget_metadata" />-->
-        <!--        </receiver>-->
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/habits_appwidget_metadata" />
+        </receiver>
 
-        <!--        <service-->
-        <!--            android:name=".appwidget.HabitsAppWidgetRemoteViewsService"-->
-        <!--            android:permission="android.permission.BIND_REMOTEVIEWS" />-->
+        <service
+            android:name=".appwidget.HabitsAppWidgetRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 </manifest>

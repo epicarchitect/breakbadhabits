@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits.deleter
+package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit

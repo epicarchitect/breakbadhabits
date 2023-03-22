@@ -1,8 +1,12 @@
 package breakbadhabits.app.di
 
 import breakbadhabits.app.entity.Habit
+import breakbadhabits.app.entity.HabitAppWidgetConfig
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
+import breakbadhabits.app.presentation.habits.HabitAppWidgetCreationViewModel
+import breakbadhabits.app.presentation.habits.HabitAppWidgetUpdatingViewModel
+import breakbadhabits.app.presentation.habits.HabitAppWidgetsViewModel
 import breakbadhabits.app.presentation.habits.HabitCreationViewModel
 import breakbadhabits.app.presentation.habits.HabitDetailsViewModel
 import breakbadhabits.app.presentation.habits.HabitTrackCreationViewModel
@@ -81,6 +85,32 @@ class PresentationModule(val logicModule: LogicModule) {
             trackEventCountValidator = habitTrackEventCountValidator,
             dateTimeConfigProvider = dateTimeConfigProvider,
             habitTrackId = id
+        )
+    }
+
+    fun createHabitAppWidgetsViewModel() = with(logicModule) {
+        HabitAppWidgetsViewModel(
+            habitAppWidgetConfigProvider = habitAppWidgetConfigProvider
+        )
+    }
+
+    fun createHabitAppWidgetUpdatingViewModel(
+        id: HabitAppWidgetConfig.Id
+    ) = with(logicModule) {
+        HabitAppWidgetUpdatingViewModel(
+            habitProvider = habitProvider,
+            habitAppWidgetConfigUpdater = habitAppWidgetConfigUpdater,
+            id = id
+        )
+    }
+
+    fun createHabitAppWidgetCreationViewModel(
+        appWidgetId: HabitAppWidgetConfig.AppWidgetId
+    ) = with(logicModule) {
+        HabitAppWidgetCreationViewModel(
+            habitProvider = habitProvider,
+            habitAppWidgetConfigCreator = habitAppWidgetConfigCreator,
+            appWidgetId = appWidgetId
         )
     }
 }

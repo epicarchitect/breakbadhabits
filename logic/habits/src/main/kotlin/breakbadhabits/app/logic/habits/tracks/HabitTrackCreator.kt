@@ -1,15 +1,12 @@
-package breakbadhabits.app.logic.habits.creator
+package breakbadhabits.app.logic.habits.tracks
 
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.database.IdGenerator
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
-import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
-import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
+import breakbadhabits.app.logic.datetime.DateTimeProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class HabitTrackCreator(
