@@ -5,6 +5,7 @@ import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
+import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.monthOfYear
 import breakbadhabits.foundation.datetime.mountsBetween
@@ -20,7 +21,8 @@ import breakbadhabits.app.database.HabitTrack as DatabaseHabitTrack
 
 class HabitTrackProvider(
     private val appDatabase: AppDatabase,
-    private val dateTimeConfigProvider: DateTimeConfigProvider
+    private val dateTimeConfigProvider: DateTimeConfigProvider,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) {
 
     fun habitTracksFlow(id: Habit.Id) = appDatabase.habitTrackQueries
@@ -30,14 +32,14 @@ class HabitTrackProvider(
             it.executeAsList().map {
                 it.toEntity()
             }
-        }.flowOn(Dispatchers.IO)
+        }.flowOn(coroutineDispatchers.io)
 
     fun habitTrackFlowByMaxEnd(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitIdAndMaxRangeEnd(id.value)
         .asFlow()
         .map {
             it.executeAsOneOrNull()?.toEntity()
-        }.flowOn(Dispatchers.IO)
+        }.flowOn(coroutineDispatchers.io)
 
     fun monthsToHabitTracksFlow(id: Habit.Id) = combine(
         habitTracksFlow(id),
@@ -56,9 +58,9 @@ class HabitTrackProvider(
             }
         }
         map.mapValues { it.value.toList() }
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(coroutineDispatchers.default)
 
-    suspend fun getHabitTrack(id: HabitTrack.Id) = withContext(Dispatchers.IO) {
+    suspend fun getHabitTrack(id: HabitTrack.Id) = withContext(coroutineDispatchers.default) {
         appDatabase.habitTrackQueries.selectById(id.value).executeAsOneOrNull()?.toEntity()
     }
 

@@ -1,5 +1,7 @@
 package breakbadhabits.foundation.datetime
 
+import breakbadhabits.foundation.math.ranges.ascended
+import breakbadhabits.foundation.math.ranges.isAscended
 import kotlinx.datetime.*
 import kotlin.math.abs
 
@@ -85,7 +87,3 @@ fun ClosedRange<MonthOfYear>.mountsBetween(): List<MonthOfYear> {
 val LocalDate.monthOfYear get() = MonthOfYear(year, month)
 
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
-
-fun <T : Comparable<T>> ClosedRange<T>.ascended() = if (isAscended) this else endInclusive..start
-
-val <T : Comparable<T>> ClosedRange<T>.isAscended get() = start <= endInclusive

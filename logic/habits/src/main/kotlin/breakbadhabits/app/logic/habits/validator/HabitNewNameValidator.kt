@@ -3,12 +3,14 @@ package breakbadhabits.app.logic.habits.validator
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.config.HabitsConfigProvider
+import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class HabitNewNameValidator(
     private val appDatabase: AppDatabase,
-    private val configProvider: HabitsConfigProvider
+    private val configProvider: HabitsConfigProvider,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) {
 
     private val maxLength get() = configProvider.getConfig().maxHabitNameLength
@@ -28,7 +30,7 @@ class HabitNewNameValidator(
         else -> null
     }
 
-    private suspend fun String.isAlreadyUsed() = withContext(Dispatchers.IO) {
+    private suspend fun String.isAlreadyUsed() = withContext(coroutineDispatchers.io) {
         appDatabase.habitQueries.countWithName(this@isAlreadyUsed).executeAsOne() > 0
     }
 }

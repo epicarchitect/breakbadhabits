@@ -8,6 +8,7 @@ import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
+import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,7 +16,8 @@ class HabitTrackCreator(
     private val appDatabase: AppDatabase,
     private val idGenerator: IdGenerator,
     private val dateTimeConfigProvider: DateTimeConfigProvider,
-    private val dateTimeProvider: DateTimeProvider
+    private val dateTimeProvider: DateTimeProvider,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) {
 
     suspend fun createHabitTrack(
@@ -23,7 +25,7 @@ class HabitTrackCreator(
         range: CorrectHabitTrackTime,
         eventCount: CorrectHabitTrackEventCount,
         comment: HabitTrack.Comment?,
-    ) = withContext(Dispatchers.IO) {
+    ) = withContext(coroutineDispatchers.io) {
         appDatabase.habitTrackQueries.insert(
             id = idGenerator.nextId(),
             habitId = habitId.value,

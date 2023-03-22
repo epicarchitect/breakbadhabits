@@ -41,13 +41,17 @@ class LogicModule(
     }
 
     val dateTimeProvider by lazy {
-        DateTimeProvider(configProvider = dateTimeConfigProvider)
+        DateTimeProvider(
+            configProvider = dateTimeConfigProvider,
+            coroutineDispatchers = DefaultCoroutineDispatchers
+        )
     }
 
     val habitAbstinenceProvider by lazy {
         HabitAbstinenceProvider(
             habitTrackProvider = habitTrackProvider,
-            dateTimeProvider = dateTimeProvider
+            dateTimeProvider = dateTimeProvider,
+            coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }
 
@@ -56,7 +60,8 @@ class LogicModule(
             appDatabase = appDatabase,
             idGenerator = idGenerator,
             dateTimeConfigProvider = dateTimeConfigProvider,
-            dateTimeProvider = dateTimeProvider
+            dateTimeProvider = dateTimeProvider,
+            coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }
 
@@ -67,7 +72,8 @@ class LogicModule(
     val habitNewNameValidator by lazy {
         HabitNewNameValidator(
             appDatabase = appDatabase,
-            configProvider = habitsConfigProvider
+            configProvider = habitsConfigProvider,
+            coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }
 
@@ -80,7 +86,10 @@ class LogicModule(
     }
 
     val habitDeleter by lazy {
-        HabitDeleter(appDatabase = appDatabase)
+        HabitDeleter(
+            appDatabase = appDatabase,
+            coroutineDispatchers = DefaultCoroutineDispatchers
+        )
     }
 
     val habitIconProvider by lazy {
@@ -88,22 +97,31 @@ class LogicModule(
     }
 
     val habitProvider by lazy {
-        HabitProvider(appDatabase = appDatabase)
+        HabitProvider(
+            appDatabase = appDatabase,
+            coroutineDispatchers = DefaultCoroutineDispatchers
+        )
     }
 
     val habitUpdater by lazy {
-        HabitUpdater(appDatabase = appDatabase)
+        HabitUpdater(
+            appDatabase = appDatabase,
+            coroutineDispatchers = DefaultCoroutineDispatchers
+        )
     }
 
     val habitTrackUpdater by lazy {
         HabitTrackUpdater(
             appDatabase = appDatabase,
-            dateTimeConfigProvider = dateTimeConfigProvider
+            coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }
 
     val habitTrackDeleter by lazy {
-        HabitTrackDeleter(appDatabase = appDatabase)
+        HabitTrackDeleter(
+            appDatabase = appDatabase,
+            coroutineDispatchers = DefaultCoroutineDispatchers
+        )
     }
 
     val habitStatisticsProvider by lazy {
@@ -111,7 +129,8 @@ class LogicModule(
             habitTrackProvider = habitTrackProvider,
             habitAbstinenceProvider = habitAbstinenceProvider,
             dateTimeProvider = dateTimeProvider,
-            dateTimeConfigProvider = dateTimeConfigProvider
+            dateTimeConfigProvider = dateTimeConfigProvider,
+            coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }
     val habitTrackCreator by lazy {
@@ -119,14 +138,16 @@ class LogicModule(
             appDatabase = appDatabase,
             idGenerator = idGenerator,
             dateTimeConfigProvider = dateTimeConfigProvider,
-            dateTimeProvider = dateTimeProvider
+            dateTimeProvider = dateTimeProvider,
+            coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }
 
     val habitTrackProvider by lazy {
         HabitTrackProvider(
             appDatabase = appDatabase,
-            dateTimeConfigProvider = dateTimeConfigProvider
+            dateTimeConfigProvider = dateTimeConfigProvider,
+            coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }
 }

@@ -5,6 +5,7 @@ import breakbadhabits.app.entity.HabitStatistics
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.averageDuration
 import breakbadhabits.foundation.datetime.countDays
@@ -25,7 +26,8 @@ class HabitStatisticsProvider(
     private val habitTrackProvider: HabitTrackProvider,
     private val habitAbstinenceProvider: HabitAbstinenceProvider,
     private val dateTimeProvider: DateTimeProvider,
-    private val dateTimeConfigProvider: DateTimeConfigProvider
+    private val dateTimeConfigProvider: DateTimeConfigProvider,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) {
     fun statisticsFlow(habitId: Habit.Id) = combine(
         habitAbstinenceFlow(habitId),
@@ -37,7 +39,7 @@ class HabitStatisticsProvider(
             abstinence,
             eventCount
         )
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(coroutineDispatchers.default)
 
     private fun habitAbstinenceFlow(
         habitId: Habit.Id

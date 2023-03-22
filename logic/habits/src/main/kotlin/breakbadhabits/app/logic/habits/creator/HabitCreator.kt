@@ -8,7 +8,7 @@ import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
-import kotlinx.coroutines.Dispatchers
+import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 
 class HabitCreator(
@@ -16,13 +16,14 @@ class HabitCreator(
     private val idGenerator: IdGenerator,
     private val dateTimeConfigProvider: DateTimeConfigProvider,
     private val dateTimeProvider: DateTimeProvider,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) {
     suspend fun createHabit(
         name: CorrectHabitNewName,
         icon: Habit.Icon,
         trackEventCount: CorrectHabitTrackEventCount,
         trackTime: CorrectHabitTrackTime
-    ) = withContext(Dispatchers.IO) {
+    ) = withContext(coroutineDispatchers.io) {
         appDatabase.transaction {
             val appTimeZone = dateTimeConfigProvider.getConfig().appTimeZone
             val habitId = idGenerator.nextId()

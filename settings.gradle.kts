@@ -21,4 +21,5 @@ include(
     ":foundation:datetime",
     ":foundation:uikit",
     ":foundation:viewmodel",
+    ":foundation:math",
 )
