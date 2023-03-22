@@ -23,12 +23,12 @@ class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
     override fun Content() {
         val presentationModule = BreakBadHabitsApp.instance.presentationModule
         val appWidgetId = remember {
-            intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID).toLong()
+            intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
         }
 
         val viewModel = viewModel {
             presentationModule.createHabitAppWidgetCreationViewModel(
-                HabitAppWidgetConfig.AppWidgetId(appWidgetId)
+                HabitAppWidgetConfig.AppWidgetId(appWidgetId.toLong())
             )
         }
 

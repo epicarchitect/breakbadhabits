@@ -19,16 +19,17 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:textStyle="bold"
+        android:text="asd"
         tools:text="Title" />
 
-    <FrameLayout
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:alpha="0.5"
-        android:background="?attr/colorControlNormal" />
+<!--    <FrameLayout-->
+<!--        android:id="@+id/divider"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0.5dp"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:alpha="0.5"-->
+<!--        android:background="?attr/colorControlNormal" /> эта хрень ломает виджет на апи 28 будь ты проклят фрейм леаут -->
 
     <ListView
         android:id="@+id/habits_listView"

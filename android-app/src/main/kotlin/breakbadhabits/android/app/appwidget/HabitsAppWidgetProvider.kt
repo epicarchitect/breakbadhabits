@@ -64,12 +64,11 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
                 appWidgetId,
                 RemoteViews(
                     context.packageName,
-                    if (isDarkModeEnabled) R.layout.habits_app_widget_dark
-                    else R.layout.habits_app_widget_light
+                    R.layout.habits_app_widget_light
                 ).apply {
                     setTextViewText(R.id.title_textView, "Not found")
                     setViewVisibility(R.id.title_textView, View.VISIBLE)
-                    setViewVisibility(R.id.divider, View.GONE)
+//                    setViewVisibility(R.id.divider, View.GONE)
                 }
             )
             manager.notifyAppWidgetViewDataChanged(
@@ -87,7 +86,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
                 R.layout.habits_app_widget_light
         ).apply {
             setTextViewText(R.id.title_textView, config.title.value)
-            setViewVisibility(R.id.divider, if (config.title.value.isEmpty()) View.GONE else View.VISIBLE)
+//            setViewVisibility(R.id.divider, if (config.title.value.isEmpty()) View.GONE else View.VISIBLE)
             setViewVisibility(
                 R.id.title_textView,
                 if (config.title.value.isEmpty()) View.GONE else View.VISIBLE
