@@ -4,9 +4,10 @@ fun <T : Comparable<T>> ClosedRange<T>.ascended() = if (isAscended) this else en
 
 val <T : Comparable<T>> ClosedRange<T>.isAscended get() = start <= endInclusive
 
-fun <T : Comparable<T>> ClosedRange<T>.valuesAreEquals(
-    range: ClosedRange<T>
-) = start == range.start && endInclusive == range.endInclusive
+fun <T : Comparable<T>> valuesAreEqual(
+    range1: ClosedRange<T>,
+    range2: ClosedRange<T>
+) = range1.start == range2.start && range1.endInclusive == range2.endInclusive
 
 operator fun <T : Comparable<T>> ClosedRange<T>.contains(
     range: ClosedRange<T>

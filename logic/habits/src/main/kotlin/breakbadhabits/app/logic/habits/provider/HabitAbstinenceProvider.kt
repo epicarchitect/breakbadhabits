@@ -4,7 +4,7 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAbstinence
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
-import breakbadhabits.foundation.math.ranges.normalized
+import breakbadhabits.foundation.math.ranges.combineIntersections
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -32,19 +32,18 @@ class HabitAbstinenceProvider(
         habitTrackProvider.habitTracksFlow(habitId),
         dateTimeProvider.currentTimeFlow(),
     ) { tracks, currentTime ->
-        tracks.map { it.time }.normalized().let { sortedList ->
-            List(sortedList.size) { index ->
-                HabitAbstinence(
-                    habitId = habitId,
-                    range = HabitAbstinence.Range(
-                        if (index == sortedList.lastIndex) {
-                            sortedList[index].endInclusive..currentTime
-                        } else {
-                            sortedList[index].endInclusive..sortedList[index + 1].start
-                        }
-                    )
+        val ranges = tracks.map { it.time }.combineIntersections()
+        List(ranges.size) { index ->
+            HabitAbstinence(
+                habitId = habitId,
+                range = HabitAbstinence.Range(
+                    if (index == ranges.lastIndex) {
+                        ranges[index].endInclusive..currentTime
+                    } else {
+                        ranges[index].endInclusive..ranges[index + 1].start
+                    }
                 )
-            }
+            )
         }
     }.flowOn(coroutineDispatchers.default)
 }

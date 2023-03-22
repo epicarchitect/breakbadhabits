@@ -1,54 +1,60 @@
 package breakbadhabits.foundation.math.ranges
 
-fun <T : Comparable<T>> List<ClosedRange<T>>.normalized(): List<ClosedRange<T>> {
-    if (size < 2) return this
-
+/**
+ * [1..3, 3..6, 8..10, 7..9] -> [1..6, 7..10]
+ * */
+fun <T : Comparable<T>> Iterable<ClosedRange<T>>.combineIntersections(): List<ClosedRange<T>> {
     val mutableList = toSet().sortedBy(ClosedRange<T>::start).toMutableList()
 
-    var checkingItemIndex = 0
+    if (mutableList.size < 2) return mutableList.toList()
+
+    var currentItem1Index = 0
     var isNormalized = false
+
     while (isNormalized.not()) {
         isNormalized = true
-        val checkingItem = mutableList[checkingItemIndex]
-        var checkingItem2Index = 0
+        val currentItem1 = mutableList[currentItem1Index]
+        var currentItem2Index = 0
+
         while (
-            checkingItem2Index < mutableList.size && mutableList.find {
-                it.valuesAreEquals(checkingItem)
+            currentItem2Index < mutableList.size && mutableList.find {
+                valuesAreEqual(it, currentItem1)
             } != null
         ) {
-            if (checkingItemIndex == checkingItem2Index) {
-                checkingItem2Index++
+            if (currentItem1Index == currentItem2Index) {
+                currentItem2Index++
                 continue
             }
 
-            val checkingItem2 = mutableList[checkingItem2Index]
+            val currentItem2 = mutableList[currentItem2Index]
 
-            if (checkingItem.valuesAreEquals(checkingItem2)) {
-                mutableList.removeAll { it.valuesAreEquals(checkingItem2) }
-                mutableList.add(checkingItemIndex, checkingItem2)
+            if (valuesAreEqual(currentItem1, currentItem2)) {
+                mutableList.removeAll { valuesAreEqual(it, currentItem2) }
+                mutableList.add(currentItem1Index, currentItem2)
                 isNormalized = false
                 break
             }
 
-            val result = combineOrNull(checkingItem, checkingItem2)
+            val result = combineOrNull(currentItem1, currentItem2)
 
             if (result != null) {
-                mutableList.removeAll { it.valuesAreEquals(checkingItem) }
-                mutableList.removeAll { it.valuesAreEquals(checkingItem2) }
+                mutableList.removeAll { valuesAreEqual(it, currentItem1) }
+                mutableList.removeAll { valuesAreEqual(it, currentItem2) }
                 mutableList.add(0, result)
-                checkingItem2Index = 0
+                currentItem2Index = 0
                 isNormalized = false
             } else {
-                checkingItem2Index++
+                currentItem2Index++
             }
         }
+
         if (isNormalized) {
-            if (checkingItemIndex < mutableList.size - 1) {
+            if (currentItem1Index < mutableList.size - 1) {
                 isNormalized = false
             }
-            checkingItemIndex++
+            currentItem1Index++
         } else {
-            checkingItemIndex = 0
+            currentItem1Index = 0
         }
     }
 
