@@ -29,6 +29,7 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackTime
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackTime
@@ -48,6 +49,7 @@ import breakbadhabits.foundation.uikit.calendar.rememberRangeSelectionEpicCalend
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.regex.Regexps
+import breakbadhabits.foundation.uikit.text.ErrorText
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
 import breakbadhabits.foundation.uikit.text.Title
@@ -198,6 +200,15 @@ fun HabitCreationScreen(
                 "Первое событие: $start, последнее событие: $end"
             }
         )
+
+        (firstTrackRangeState.validationResult as? IncorrectHabitTrackTime)?.let {
+            Spacer(Modifier.height(8.dp))
+            when (it.reason) {
+                IncorrectHabitTrackTime.Reason.BiggestThenCurrentTime -> {
+                    ErrorText(text = "Нельзя выбрать время больше чем текущее")
+                }
+            }
+        }
 
         Spacer(Modifier.height(24.dp))
 
