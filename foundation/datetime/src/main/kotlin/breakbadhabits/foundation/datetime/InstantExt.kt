@@ -30,7 +30,7 @@ fun ClosedRange<LocalDateTime>.toInstantRange(timeZone: TimeZone) =
 fun ClosedRange<Long>.secondsToInstantRange() =
     start.secondsToInstant()..endInclusive.secondsToInstant()
 
-fun ClosedRange<Instant>.toDuration() = ascended().let { it.endInclusive - it.start }
+fun ClosedRange<Instant>.toDuration() = endInclusive - start
 
 fun ClosedRange<Instant>.countDays(timeZone: TimeZone) =
     start.daysUntil(endInclusive, timeZone) + 1

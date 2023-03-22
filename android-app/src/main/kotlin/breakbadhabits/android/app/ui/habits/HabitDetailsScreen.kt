@@ -223,7 +223,7 @@ fun HabitDetailsScreen(
                             valueFormatter = {
                                 durationFormatter.format(
                                     duration = it.toLong().seconds,
-                                    accuracy = DurationFormatter.Accuracy.HOURS
+                                    accuracy = DurationFormatter.Accuracy.DAYS
                                 )
                             },
                             startPadding = 16.dp,
