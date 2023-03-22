@@ -24,12 +24,12 @@ fun <DATA> LoadingBox(
                 loaded(state.data)
             }
             is LoadingController.State.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ProgressIndicator()
-                }
+//                Box(
+//                    modifier = Modifier.fillMaxSize(),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    ProgressIndicator()
+//                }
             }
         }
     }

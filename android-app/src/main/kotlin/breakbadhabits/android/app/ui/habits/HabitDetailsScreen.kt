@@ -266,13 +266,6 @@ fun HabitDetailsScreen(
                     }
                 }
             }
-
-            Text(
-                modifier = Modifier.padding(24.dp),
-                text = "Привычка создана:\n${
-                    dateTimeFormatter.formatDate(habit.creationTime.time)
-                }"
-            )
         }
 
         IconButton(
