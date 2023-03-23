@@ -1,4 +1,4 @@
-package breakbadhabits.foundation.uikit.activity
+package breakbadhabits.android.app.base.activity
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate

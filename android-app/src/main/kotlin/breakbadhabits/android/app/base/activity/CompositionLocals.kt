@@ -1,4 +1,4 @@
-package breakbadhabits.foundation.uikit.activity
+package breakbadhabits.android.app.base.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.compositionLocalOf

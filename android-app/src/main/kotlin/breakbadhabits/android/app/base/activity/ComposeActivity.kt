@@ -1,13 +1,11 @@
-package breakbadhabits.foundation.uikit.activity
+package breakbadhabits.android.app.base.activity
 
 import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import breakbadhabits.foundation.uikit.AppTheme
 
 abstract class ComposeActivity : AppCompatActivity() {
 
@@ -30,15 +28,7 @@ abstract class ComposeActivity : AppCompatActivity() {
                 LocalActivity provides this,
                 LocalDarkModeManager provides darkModeManager
             ) {
-                AppTheme(
-                    isDarkTheme = when (darkModeManager.mode.value) {
-                        DarkMode.ENABLED -> true
-                        DarkMode.DISABLED -> false
-                        DarkMode.BY_SYSTEM -> isSystemInDarkTheme()
-                    }
-                ) {
-                    Content()
-                }
+                Content()
             }
         }
     }

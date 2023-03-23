@@ -7,11 +7,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
-import breakbadhabits.android.app.ui.app.LocalPresentationModule
 import breakbadhabits.android.app.ui.habits.HabitsAppWidgetConfigCreationScreen
 import breakbadhabits.app.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.controller.RequestController
-import breakbadhabits.foundation.uikit.activity.ComposeActivity
+import breakbadhabits.android.app.base.activity.ComposeActivity
 import breakbadhabits.foundation.uikit.ext.collectState
 
 

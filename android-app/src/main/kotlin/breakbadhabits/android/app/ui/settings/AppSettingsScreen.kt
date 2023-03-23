@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.foundation.uikit.activity.DarkMode
-import breakbadhabits.foundation.uikit.activity.LocalDarkModeManager
+import breakbadhabits.android.app.base.activity.DarkMode
+import breakbadhabits.android.app.base.activity.LocalDarkModeManager
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RadioButton
 import breakbadhabits.foundation.uikit.text.Text
