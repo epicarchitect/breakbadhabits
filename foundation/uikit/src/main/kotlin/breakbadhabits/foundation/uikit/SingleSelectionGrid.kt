@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.uikit.ext.collectState
+import breakbadhabits.foundation.uikit.theme.AppTheme
 import kotlin.math.ceil
 
 @Composable
@@ -42,9 +43,9 @@ fun <T> SingleSelectionGrid(
                     if (item != null) {
                         CompositionLocalProvider(
                             LocalContentColor provides if (item == state.selectedItem) {
-                                MaterialTheme.colorScheme.primary
+                                AppTheme.colorScheme.primary
                             } else {
-                                MaterialTheme.colorScheme.onSurface
+                                AppTheme.colorScheme.onSurface
                             }
                         ) {
                             Box(

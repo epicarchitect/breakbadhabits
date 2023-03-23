@@ -16,7 +16,9 @@ object AppColorsSchemes {
         onError = Color(0xFFF1F1F1),
         error = Color(0xFFE48801),
         background = Color.Black,
-        onBackground = Color(0xFFF1F1F1)
+        onBackground = Color(0xFFF1F1F1),
+        surface = Color.Black,
+        onSurface = Color(0xFFF1F1F1)
     )
 
     private val light = AppColorScheme(
@@ -28,7 +30,9 @@ object AppColorsSchemes {
         onError = Color(0xFFF1F1F1),
         error = Color(0xFFff9800),
         background = Color.White,
-        onBackground = Color(0xFF2C2C2C)
+        onBackground = Color(0xFF2C2C2C),
+        surface = Color.White,
+        onSurface = Color(0xFF2C2C2C)
     )
 
     @Composable

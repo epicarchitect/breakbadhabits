@@ -41,7 +41,6 @@ import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
-import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.Title
@@ -101,7 +100,7 @@ fun DashboardScreen(
             Button(
                 onClick = onHabitCreationClick,
                 text = stringResource(R.string.habits_newHabit),
-                interactionType = InteractionType.MAIN
+                type = Button.Type.Main
             )
         }
     }

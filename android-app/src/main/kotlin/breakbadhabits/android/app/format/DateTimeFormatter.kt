@@ -16,7 +16,7 @@ import java.time.format.FormatStyle as JavaFormatStyle
 
 class DateTimeFormatter(
     private val dateTimeConfigProvider: DateTimeConfigProvider,
-    private val context: Context
+    context: Context
 ) {
     private val appTimeZone get() = dateTimeConfigProvider.getConfig().appTimeZone
     private val dateFormatter = JavaDateTimeFormatter.ofLocalizedDate(dateFormatStyle)

@@ -16,7 +16,7 @@ import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.ui.dashboard.DashboardScreen
 import breakbadhabits.android.app.ui.habits.HabitAppWidgetUpdatingScreen
 import breakbadhabits.android.app.ui.habits.HabitAppWidgetsScreen
-import breakbadhabits.android.app.ui.habits.HabitCreationScreen
+import breakbadhabits.android.app.ui.habits.ui.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
 import breakbadhabits.android.app.ui.habits.HabitEditingScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackCreationScreen

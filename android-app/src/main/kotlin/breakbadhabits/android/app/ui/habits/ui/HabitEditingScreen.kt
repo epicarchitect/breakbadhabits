@@ -25,7 +25,7 @@ import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.SingleSelectionGrid
-import breakbadhabits.foundation.uikit.button.InteractionType
+import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.text.Text
@@ -127,7 +127,7 @@ fun HabitEditingScreen(
         RequestButton(
             requestController = deletionController,
             text = stringResource(R.string.habitEditing_deletion_button),
-            interactionType = InteractionType.DANGEROUS
+            type = Button.Type.Dangerous
         )
 
         Spacer(modifier = Modifier.weight(1.0f))
@@ -138,7 +138,7 @@ fun HabitEditingScreen(
             modifier = Modifier.align(Alignment.End),
             requestController = updatingController,
             text = stringResource(R.string.habitEditing_finish),
-            interactionType = InteractionType.MAIN
+            type = Button.Type.Main
         )
     }
 }

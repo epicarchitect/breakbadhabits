@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import breakbadhabits.foundation.uikit.text.Text
+import breakbadhabits.foundation.uikit.theme.AppTheme
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -62,8 +63,8 @@ fun EpicCalendar(
     state: EpicCalendarState,
     onDayClick: ((EpicCalendarState.Day) -> Unit)? = null,
     horizontalInnerPadding: Dp = 0.dp,
-    rangeColor: Color = MaterialTheme.colorScheme.primary,
-    rangeContentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    rangeColor: Color = AppTheme.colorScheme.primary,
+    rangeContentColor: Color = AppTheme.colorScheme.onPrimary,
     dayBadgeText: (EpicCalendarState.Day) -> String? = { null },
 ) {
     var cellWidth by remember { mutableStateOf(Dp.Unspecified) }
@@ -173,10 +174,10 @@ fun EpicCalendar(
                                         .padding(top = 2.dp, end = 8.dp)
                                         .defaultMinSize(minHeight = 12.dp, minWidth = 12.dp)
                                         .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.background.copy(alpha = 0.1f))
+                                        .background(AppTheme.colorScheme.background.copy(alpha = 0.1f))
                                         .padding(horizontal = 2.dp),
                                     text = badgeText,
-                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    color = AppTheme.colorScheme.onPrimary,
                                     fontSize = 8.sp,
                                 )
                             }

@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
-import breakbadhabits.android.app.ui.app.LocalDateTimeFormatter
 import breakbadhabits.android.app.ui.app.LocalDurationFormatter
 import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
@@ -41,7 +40,6 @@ import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.StatisticData
 import breakbadhabits.foundation.uikit.Statistics
 import breakbadhabits.foundation.uikit.button.Button
-import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
@@ -69,7 +67,6 @@ fun HabitDetailsScreen(
     val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
     val dateTimeConfig = dateTimeConfigState.value ?: return
 
-    val dateTimeFormatter = LocalDateTimeFormatter.current
     val habitIconResources = LocalHabitIconResourceProvider.current
     val durationFormatter = LocalDurationFormatter.current
     val context = LocalContext.current
@@ -119,7 +116,7 @@ fun HabitDetailsScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = onAddTrackClick,
                 text = stringResource(R.string.habit_resetTime),
-                interactionType = InteractionType.MAIN
+                type = Button.Type.Main
             )
 
             Spacer(modifier = Modifier.height(24.dp))

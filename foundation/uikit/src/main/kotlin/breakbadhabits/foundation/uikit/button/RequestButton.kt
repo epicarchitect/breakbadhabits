@@ -1,12 +1,8 @@
 package breakbadhabits.foundation.uikit.button
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.uikit.ext.collectState
 
@@ -15,9 +11,7 @@ fun RequestButton(
     requestController: RequestController,
     text: String,
     modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.small,
-    interactionType: InteractionType = InteractionType.REGULAR,
-    elevation: Dp = 1.dp,
+    type: Button.Type = Button.Type.Default,
     icon: (@Composable () -> Unit)? = null
 ) {
     val state by requestController.collectState()
@@ -26,10 +20,8 @@ fun RequestButton(
         onClick = requestController::request,
         text = text,
         modifier = modifier,
-        shape = shape,
         enabled = state.isRequestAllowed,
-        interactionType = interactionType,
-        elevation = elevation,
+        type = type,
         icon = icon
     )
 }

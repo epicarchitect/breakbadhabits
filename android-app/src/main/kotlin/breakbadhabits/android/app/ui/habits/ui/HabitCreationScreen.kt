@@ -1,4 +1,4 @@
-package breakbadhabits.android.app.ui.habits
+package breakbadhabits.android.app.ui.habits.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +42,6 @@ import breakbadhabits.foundation.datetime.toKotlinRange
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.SingleSelectionGrid
 import breakbadhabits.foundation.uikit.button.Button
-import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.calendar.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.calendar.rememberRangeSelectionEpicCalendarState
@@ -253,7 +252,7 @@ fun HabitCreationScreen(
             modifier = Modifier.align(Alignment.End),
             requestController = creationController,
             text = stringResource(R.string.habitCreation_finish),
-            interactionType = InteractionType.MAIN
+            type = Button.Type.Main
         )
     }
 }

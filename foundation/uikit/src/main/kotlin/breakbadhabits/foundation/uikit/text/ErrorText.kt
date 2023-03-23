@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import breakbadhabits.foundation.uikit.theme.AppTheme
 
 @Composable
 fun ErrorText(
@@ -13,9 +14,9 @@ fun ErrorText(
 ) {
     Text(
         modifier = modifier,
-        color = MaterialTheme.colorScheme.error,
+        color = AppTheme.colorScheme.error,
         text = text,
         imageVector = Icons.Default.Error,
-        iconTint = MaterialTheme.colorScheme.error
+        iconTint = AppTheme.colorScheme.error
     )
 }

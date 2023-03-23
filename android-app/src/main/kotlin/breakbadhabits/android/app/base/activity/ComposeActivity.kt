@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import breakbadhabits.android.app.ui.theme.AppColorsSchemes
+import breakbadhabits.foundation.uikit.theme.AppTheme
 
 abstract class ComposeActivity : AppCompatActivity() {
 
@@ -28,7 +31,12 @@ abstract class ComposeActivity : AppCompatActivity() {
                 LocalActivity provides this,
                 LocalDarkModeManager provides darkModeManager
             ) {
-                Content()
+                val darkMode by LocalDarkModeManager.current.mode
+                AppTheme(
+                    colorScheme = AppColorsSchemes.of(darkMode)
+                ) {
+                    Content()
+                }
             }
         }
     }

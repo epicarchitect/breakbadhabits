@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import breakbadhabits.foundation.uikit.theme.AppTheme
 import androidx.compose.material3.RadioButton as MaterialRadioButton
 
 @Composable
@@ -16,10 +17,7 @@ fun RadioButton(
     text: String,
     selected: Boolean,
     onSelect: () -> Unit,
-    modifier: Modifier = Modifier,
-    textStyle: TextStyle = TextStyle.Default.copy(
-        color = MaterialTheme.colorScheme.onBackground
-    )
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier,
@@ -27,10 +25,8 @@ fun RadioButton(
     ) {
         MaterialRadioButton(
             selected = selected,
-            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary),
-            onClick = {
-                onSelect()
-            }
+            colors = RadioButtonDefaults.colors(selectedColor = AppTheme.colorScheme.primary),
+            onClick = onSelect
         )
 
         ClickableText(
@@ -38,7 +34,9 @@ fun RadioButton(
             onClick = {
                 onSelect()
             },
-            style = textStyle,
+            style = TextStyle.Default.copy(
+                color = AppTheme.colorScheme.onBackground
+            ),
         )
     }
 }

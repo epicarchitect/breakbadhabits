@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -36,12 +35,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import breakbadhabits.foundation.uikit.Card
@@ -49,8 +46,8 @@ import breakbadhabits.foundation.uikit.Dialog
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
-import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.text.Text
+import breakbadhabits.foundation.uikit.theme.AppTheme
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -180,9 +177,9 @@ fun IntervalSelectionEpicCalendar(
                                 Card(
                                     modifier = Modifier.padding(4.dp),
                                     backgroundColor = if (isSelected) {
-                                        MaterialTheme.colorScheme.primary
+                                        AppTheme.colorScheme.primary
                                     } else {
-                                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+                                        AppTheme.colorScheme.onBackground.copy(alpha = 0.1f)
                                     },
                                     elevation = 0.dp
                                 ) {
@@ -222,9 +219,9 @@ fun IntervalSelectionEpicCalendar(
                                 Card(
                                     modifier = Modifier.padding(4.dp),
                                     backgroundColor = if (isSelected) {
-                                        MaterialTheme.colorScheme.primary
+                                        AppTheme.colorScheme.primary
                                     } else {
-                                        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+                                        AppTheme.colorScheme.onBackground.copy(alpha = 0.1f)
                                     },
                                     elevation = 0.dp,
                                 ) {
@@ -291,9 +288,9 @@ fun IntervalSelectionEpicCalendar(
                         Card(
                             modifier = Modifier.padding(4.dp),
                             backgroundColor = if (isSelected) {
-                                MaterialTheme.colorScheme.primary
+                                AppTheme.colorScheme.primary
                             } else {
-                                MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+                                AppTheme.colorScheme.onBackground.copy(alpha = 0.1f)
                             },
                             elevation = 0.dp,
                         ) {
@@ -403,8 +400,7 @@ fun IntervalSelectionEpicCalendar(
                 ) {
                     Button(
                         onClick = onCancel,
-                        text = "Cancel",
-                        elevation = 0.dp
+                        text = "Cancel"
                     )
                     Spacer(Modifier.padding(4.dp))
                     Button(
@@ -429,8 +425,7 @@ fun IntervalSelectionEpicCalendar(
                         },
                         text = if (state.selectedTab == 0 && state.selectedEndDate == null || state.selectedTab == 1 && state.selectedStartDate == null) "Next" else "Apply",
                         enabled = state.selectedTab == 0 && state.selectedStartDate != null || state.selectedTab == 1 && state.selectedEndDate != null,
-                        interactionType = InteractionType.MAIN,
-                        elevation = 0.dp
+                        type = Button.Type.Main
                     )
                 }
             }

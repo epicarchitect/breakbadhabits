@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import breakbadhabits.foundation.uikit.theme.AppTheme
 
 @Composable
 fun Histogram(
@@ -36,11 +37,11 @@ fun Histogram(
     barPadding: Dp = 12.dp,
     startPadding: Dp = 12.dp,
     endPadding: Dp = 12.dp,
-    barColor: Color = MaterialTheme.colorScheme.onSurface,
+    barColor: Color = AppTheme.colorScheme.onSurface,
     maxVisibleBarCount: Int = 5,
     valueTextSize: TextUnit = 10.sp,
     valueTextPadding: Dp = 8.dp,
-    valueTextColor: Color = MaterialTheme.colorScheme.onSurface
+    valueTextColor: Color = AppTheme.colorScheme.onSurface
 ) {
     var boxSize by remember { mutableStateOf(IntSize.Zero) }
     val barPaddingPx = with(LocalDensity.current) { barPadding.toPx() }

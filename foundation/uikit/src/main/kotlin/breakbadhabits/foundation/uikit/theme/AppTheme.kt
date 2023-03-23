@@ -23,7 +23,9 @@ private fun AppColorScheme.toMaterial() = if (isDark) {
         error = error,
         onError = onError,
         background = background,
-        onBackground = onBackground
+        onBackground = onBackground,
+        surface = surface,
+        onSurface = onSurface
     )
 } else {
     lightColorScheme(
@@ -32,7 +34,9 @@ private fun AppColorScheme.toMaterial() = if (isDark) {
         error = error,
         onError = onError,
         background = background,
-        onBackground = onBackground
+        onBackground = onBackground,
+        surface = surface,
+        onSurface = onSurface
     )
 }
 

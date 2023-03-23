@@ -36,7 +36,6 @@ import breakbadhabits.foundation.datetime.toJavaLocalDateTimeRange
 import breakbadhabits.foundation.datetime.toKotlinRange
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
-import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.calendar.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.calendar.rememberRangeSelectionEpicCalendarState
@@ -210,7 +209,7 @@ fun HabitTrackCreationScreen(
             modifier = Modifier.align(Alignment.End),
             requestController = creationController,
             text = stringResource(R.string.habitEventCreation_finish),
-            interactionType = InteractionType.MAIN
+            type = Button.Type.Main
         )
     }
 }

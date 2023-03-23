@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import breakbadhabits.foundation.uikit.theme.AppTheme
 import androidx.compose.material3.Card as MaterialCard
 
 @Composable
@@ -18,7 +19,7 @@ fun Card(
     modifier: Modifier = Modifier,
     border: BorderStroke? = null,
     elevation: Dp = 1.dp,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    backgroundColor: Color = AppTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(backgroundColor),
     content: @Composable BoxScope.() -> Unit
 ) {

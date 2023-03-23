@@ -12,7 +12,7 @@ import breakbadhabits.android.app.R
 import breakbadhabits.app.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.controller.RequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.uikit.button.InteractionType
+import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.text.Text
@@ -54,7 +54,7 @@ fun HabitsAppWidgetConfigCreationScreen(
             modifier = Modifier.align(Alignment.End),
             requestController = creationController,
             text = stringResource(R.string.habitsAppWidgetConfigCreation_finish),
-            interactionType = InteractionType.MAIN
+            type = Button.Type.Main
         )
     }
 }

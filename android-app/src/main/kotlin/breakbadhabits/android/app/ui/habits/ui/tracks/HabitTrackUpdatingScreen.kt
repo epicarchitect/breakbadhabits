@@ -36,7 +36,6 @@ import breakbadhabits.foundation.datetime.toJavaLocalDateTimeRange
 import breakbadhabits.foundation.datetime.toKotlinRange
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
-import breakbadhabits.foundation.uikit.button.InteractionType
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.calendar.IntervalSelectionEpicCalendarDialog
 import breakbadhabits.foundation.uikit.calendar.rememberRangeSelectionEpicCalendarState
@@ -207,7 +206,7 @@ fun HabitTrackUpdatingScreen(
         RequestButton(
             requestController = deletionController,
             text = stringResource(R.string.habitEventEditing_deletion_button),
-            interactionType = InteractionType.DANGEROUS
+            type = Button.Type.Dangerous
         )
 
         Spacer(modifier = Modifier.weight(1.0f))
@@ -218,7 +217,7 @@ fun HabitTrackUpdatingScreen(
             modifier = Modifier.align(Alignment.End),
             requestController = updatingController,
             text = stringResource(R.string.habitEventEditing_finish),
-            interactionType = InteractionType.MAIN
+            type = Button.Type.Main
         )
     }
 }
