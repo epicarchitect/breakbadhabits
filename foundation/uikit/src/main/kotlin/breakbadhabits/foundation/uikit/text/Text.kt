@@ -36,7 +36,7 @@ fun Text(
         style = when (type) {
             Text.Type.Headline -> TextStyle(
                 fontSize = 22.sp,
-                fontWeight = FontWeight.ExtraBold,
+                fontWeight = FontWeight.Black,
                 lineHeight = 22.sp
             )
             Text.Type.Title -> TextStyle(
@@ -45,9 +45,9 @@ fun Text(
                 lineHeight = 18.sp
             )
             Text.Type.Label -> TextStyle(
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                lineHeight = 12.sp
+                lineHeight = 14.sp
             )
             Text.Type.Regular -> TextStyle(
                 fontSize = 14.sp,

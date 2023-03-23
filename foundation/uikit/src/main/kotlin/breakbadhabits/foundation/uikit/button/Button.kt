@@ -43,10 +43,10 @@ fun Button(
         shape = MaterialTheme.shapes.small,
         elevation = when (type) {
             Button.Type.Main -> ButtonDefaults.buttonElevation(
-                defaultElevation = 2.dp,
-                pressedElevation = 4.dp,
-                focusedElevation = 2.dp,
-                hoveredElevation = 2.dp,
+                defaultElevation = 3.dp,
+                pressedElevation = 1.dp,
+                focusedElevation = 1.dp,
+                hoveredElevation = 1.dp,
             )
             else -> ButtonDefaults.buttonElevation(1.dp)
         },

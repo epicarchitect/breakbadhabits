@@ -29,7 +29,6 @@ fun ErrorText(
         Spacer(modifier = Modifier.width(8.dp))
 
         androidx.compose.material3.Text(
-            modifier = modifier,
             text = text,
             color = AppTheme.colorScheme.error
         )

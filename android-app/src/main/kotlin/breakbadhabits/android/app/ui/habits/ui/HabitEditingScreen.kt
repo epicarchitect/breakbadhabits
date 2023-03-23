@@ -106,11 +106,9 @@ fun HabitEditingScreen(
 
         SingleSelectionGrid(
             controller = habitIconSelectionController,
-            ceil = { icon ->
+            cell = { icon ->
                 LocalResourceIcon(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(24.dp),
+                    modifier = Modifier.size(24.dp),
                     resourceId = habitIconResources[icon].resourceId
                 )
             }

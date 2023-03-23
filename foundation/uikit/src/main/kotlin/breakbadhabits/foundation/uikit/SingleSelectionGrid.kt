@@ -1,38 +1,46 @@
 package breakbadhabits.foundation.uikit
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.LocalContentColor
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.theme.AppTheme
 import kotlin.math.ceil
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> SingleSelectionGrid(
     modifier: Modifier = Modifier,
     controller: SingleSelectionController<T>,
-    ceil: @Composable BoxScope.(T) -> Unit,
+    cell: @Composable BoxScope.(T) -> Unit,
     countInRow: Int = 7
 ) {
     val state by controller.collectState()
 
     val countRows = ceil((state.items.size / countInRow.toFloat())).toInt()
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         repeat(countRows) { rowIndex ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -41,22 +49,28 @@ fun <T> SingleSelectionGrid(
                 repeat(countInRow) { itemIndex ->
                     val item = state.items.getOrNull(rowIndex * 7 + itemIndex)
                     if (item != null) {
-                        CompositionLocalProvider(
-                            LocalContentColor provides if (item == state.selectedItem) {
-                                AppTheme.colorScheme.primary
-                            } else {
-                                AppTheme.colorScheme.onSurface
-                            }
+                        val isSelected = item == state.selectedItem
+
+                        androidx.compose.material3.Card(
+                            modifier = Modifier.size(44.dp),
+                            border = if (!isSelected) null else BorderStroke(
+                                width = 1.dp,
+                                color = AppTheme.colorScheme.primary
+                            ),
+                            shape = MaterialTheme.shapes.small,
+                            onClick = {
+                                controller.select(item)
+                            },
+                            colors = CardDefaults.cardColors(
+                                containerColor = AppTheme.colorScheme.surface
+                            ),
+                            elevation = CardDefaults.cardElevation(1.dp)
                         ) {
                             Box(
-                                modifier = Modifier
-                                    .size(44.dp)
-                                    .clip(MaterialTheme.shapes.small)
-                                    .clickable {
-                                        controller.select(item)
-                                    }
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
                             ) {
-                                ceil(item)
+                                cell(item)
                             }
                         }
                     }
