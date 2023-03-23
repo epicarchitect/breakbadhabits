@@ -35,8 +35,7 @@ fun Statistics(
                     modifier = Modifier
                         .padding(end = 16.dp)
                         .weight(1f),
-                    text = item.name,
-                    horizontalArrangement = Arrangement.Start
+                    text = item.name
                 )
                 Text(text = item.value)
             }

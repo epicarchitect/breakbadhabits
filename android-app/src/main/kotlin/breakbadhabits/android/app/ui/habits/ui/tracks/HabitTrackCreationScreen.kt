@@ -45,7 +45,6 @@ import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.text.ErrorText
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
-import breakbadhabits.foundation.uikit.text.Title
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 import java.time.YearMonth
 
@@ -100,7 +99,10 @@ fun HabitTrackCreationScreen(
     ) {
         Spacer(Modifier.height(24.dp))
 
-        Title(stringResource(R.string.habitEventCreation_title))
+        Text(
+            text = stringResource(R.string.habitEventCreation_title),
+            type = Text.Type.Headline
+        )
 
         Spacer(Modifier.height(8.dp))
 

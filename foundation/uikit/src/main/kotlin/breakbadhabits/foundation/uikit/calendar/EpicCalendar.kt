@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -37,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.theme.AppTheme
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -142,7 +142,7 @@ fun EpicCalendar(
                                 .width(cellWidth)
                                 .height(cellHeight)
                         ) {
-                            Text(
+                            Box(
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .height(cellHeight)
@@ -160,12 +160,16 @@ fun EpicCalendar(
                                     .alpha(if (day.inCurrentMonth) 1.0f else 0.5f)
                                     .clickable(enabled = onDayClick != null) {
                                         onDayClick?.invoke(day)
-                                    },
-                                text = day.date.dayOfMonth.toString(),
-                                textAlign = TextAlign.Center,
-                                color = if (ranges.isNotEmpty()) rangeContentColor else Color.Unspecified,
-                                fontSize = 14.sp
-                            )
+                                    }
+                            ) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    text = day.date.dayOfMonth.toString(),
+                                    textAlign = TextAlign.Center,
+                                    color = if (ranges.isNotEmpty()) rangeContentColor else Color.Unspecified,
+                                    fontSize = 14.sp
+                                )
+                            }
 
                             if (badgeText != null) {
                                 Text(

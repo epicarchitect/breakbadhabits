@@ -17,7 +17,6 @@ import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
-import breakbadhabits.foundation.uikit.text.Title
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 
 @Composable
@@ -28,8 +27,9 @@ fun HabitsAppWidgetConfigCreationScreen(
     ClearFocusWhenKeyboardHiddenEffect()
 
     Column {
-        Title(
-            text = stringResource(R.string.habitsAppWidgetConfigCreation_title)
+        Text(
+            text = stringResource(R.string.habitsAppWidgetConfigCreation_title),
+            type = Text.Type.Headline
         )
 
         Text(

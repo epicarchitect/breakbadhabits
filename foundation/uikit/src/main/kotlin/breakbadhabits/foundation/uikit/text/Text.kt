@@ -1,62 +1,61 @@
 package breakbadhabits.foundation.uikit.text
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import breakbadhabits.foundation.uikit.LocalResourceIcon
+import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text as MaterialText
 
-@OptIn(ExperimentalAnimationApi::class)
+object Text {
+    enum class Type {
+        Headline,
+        Title,
+        Label,
+        Regular;
+
+        companion object {
+            val Default = Regular
+        }
+    }
+}
+
 @Composable
 fun Text(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = Color.Unspecified,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    style: TextStyle = LocalTextStyle.current,
-    fontWeight: FontWeight? = null,
-    iconModifier: Modifier = Modifier.padding(end = 8.dp),
-    imageVector: ImageVector? = null,
+    type: Text.Type = Text.Type.Default,
     textAlign: TextAlign? = null,
-    iconTint: Color = LocalContentColor.current,
-    overflow: TextOverflow = TextOverflow.Clip,
-    horizontalArrangement: Arrangement.Horizontal = Arrangement.Center,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
 ) {
-    Row(
+    MaterialText(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = horizontalArrangement
-    ) {
-        if (imageVector != null) {
-            LocalResourceIcon(
-                modifier = iconModifier,
-                imageVector = imageVector,
-                tint = iconTint
+        text = text,
+        style = when (type) {
+            Text.Type.Headline -> TextStyle(
+                fontSize = 22.sp,
+                fontWeight = FontWeight.ExtraBold,
+                lineHeight = 22.sp
             )
-        }
-
-        MaterialText(
-            text = text,
-            style = style,
-            color = color,
-            fontWeight = fontWeight,
-            fontSize = fontSize,
-            textAlign = textAlign,
-            overflow = overflow
-        )
-    }
+            Text.Type.Title -> TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                lineHeight = 18.sp
+            )
+            Text.Type.Label -> TextStyle(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                lineHeight = 12.sp
+            )
+            Text.Type.Regular -> TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal,
+                lineHeight = 14.sp
+            )
+        },
+        textAlign = textAlign,
+        overflow = overflow
+    )
 }

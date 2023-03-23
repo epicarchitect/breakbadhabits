@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
@@ -46,7 +47,6 @@ import breakbadhabits.foundation.uikit.Dialog
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
-import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.theme.AppTheme
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -119,7 +119,7 @@ fun IntervalSelectionEpicCalendar(
                                 LocalResourceIcon(Icons.Default.ArrowLeft)
                             },
                         )
-                        Text(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(48.dp)
@@ -129,9 +129,13 @@ fun IntervalSelectionEpicCalendar(
                                 .clickable {
                                     state.showYearMonthSelection = !state.showYearMonthSelection
                                 },
-                            text = state.monthTitles[state.yearMonth.monthValue - 1] + " " + state.yearMonth.year,
-                            textAlign = TextAlign.Center
-                        )
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = state.monthTitles[state.yearMonth.monthValue - 1] + " " + state.yearMonth.year,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                         IconButton(
                             onClick = {
                                 state.yearMonth = state.yearMonth.plusMonths(1)
@@ -196,7 +200,12 @@ fun IntervalSelectionEpicCalendar(
                                         text = monthTitle,
                                         textAlign = TextAlign.Center,
                                         overflow = TextOverflow.Ellipsis,
-                                        fontSize = 14.sp
+                                        fontSize = 14.sp,
+                                        color = if (isSelected) {
+                                            AppTheme.colorScheme.onPrimary
+                                        } else {
+                                            Color.Unspecified
+                                        }
                                     )
                                 }
                             }
@@ -238,7 +247,12 @@ fun IntervalSelectionEpicCalendar(
                                         text = yearTitle,
                                         textAlign = TextAlign.Center,
                                         overflow = TextOverflow.Ellipsis,
-                                        fontSize = 14.sp
+                                        fontSize = 14.sp,
+                                        color = if (isSelected) {
+                                            AppTheme.colorScheme.onPrimary
+                                        } else {
+                                            Color.Unspecified
+                                        }
                                     )
                                 }
                             }
@@ -310,7 +324,12 @@ fun IntervalSelectionEpicCalendar(
                                 text = timeFormatter.format(itemTime),
                                 textAlign = TextAlign.Center,
                                 overflow = TextOverflow.Ellipsis,
-                                fontSize = 14.sp
+                                fontSize = 14.sp,
+                                color = if (isSelected) {
+                                    AppTheme.colorScheme.onPrimary
+                                } else {
+                                    Color.Unspecified
+                                }
                             )
                         }
                     }

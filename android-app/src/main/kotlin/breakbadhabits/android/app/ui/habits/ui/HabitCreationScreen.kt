@@ -28,9 +28,9 @@ import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.habits.IncorrectHabitNewName
+import breakbadhabits.app.logic.habits.ValidatedHabitNewName
 import breakbadhabits.app.logic.habits.tracks.IncorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.tracks.IncorrectHabitTrackTime
-import breakbadhabits.app.logic.habits.ValidatedHabitNewName
 import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackEventCount
 import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.RequestController
@@ -51,7 +51,6 @@ import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.text.ErrorText
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
-import breakbadhabits.foundation.uikit.text.Title
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 import kotlinx.datetime.toJavaZoneId
 import java.time.YearMonth
@@ -114,8 +113,9 @@ fun HabitCreationScreen(
     ) {
         Spacer(Modifier.height(24.dp))
 
-        Title(
-            text = stringResource(R.string.habitCreation_title)
+        Text(
+            text = stringResource(R.string.habitCreation_title),
+            type = Text.Type.Headline
         )
 
         Spacer(Modifier.height(24.dp))

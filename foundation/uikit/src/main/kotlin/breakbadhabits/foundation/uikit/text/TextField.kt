@@ -42,7 +42,10 @@ fun TextField(
         },
         label = if (label == null) null else {
             {
-                Text(text = label)
+                Text(
+                    text = label,
+                    type = Text.Type.Regular
+                )
             }
         },
         visualTransformation = visualTransformation,

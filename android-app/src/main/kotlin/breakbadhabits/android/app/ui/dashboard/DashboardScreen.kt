@@ -43,7 +43,6 @@ import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.text.Text
-import breakbadhabits.foundation.uikit.text.Title
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -65,8 +64,10 @@ fun DashboardScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Title(
-                    text = stringResource(R.string.app_name)
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(R.string.app_name),
+                    type = Text.Type.Headline
                 )
 
                 IconButton(
@@ -182,9 +183,10 @@ private fun LazyItemScope.HabitItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     LocalResourceIcon(habitIconResources[item.habit.icon].resourceId)
-                    Title(
+                    Text(
                         modifier = Modifier.padding(start = 12.dp),
-                        text = item.habit.name.value
+                        text = item.habit.name.value,
+                        type = Text.Type.Title
                     )
                 }
                 Row(

@@ -19,7 +19,6 @@ import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.text.Text
-import breakbadhabits.foundation.uikit.text.Title
 
 @Composable
 fun HabitAppWidgetsScreen(
@@ -30,11 +29,12 @@ fun HabitAppWidgetsScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Title(
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                text = stringResource(R.string.main_widgets)
+                text = stringResource(R.string.main_widgets),
+                type = Text.Type.Headline
             )
 
             LazyColumn(
@@ -72,13 +72,14 @@ fun WidgetConfigItem(
                     onClick()
                 }
         ) {
-            Title(
+            Text(
                 modifier = Modifier.padding(
                     start = 16.dp,
                     top = 16.dp,
                     end = 54.dp
                 ),
-                text = config.title.value.ifEmpty { "#${config.id.value}" }
+                text = config.title.value.ifEmpty { "#${config.id.value}" },
+                type = Text.Type.Title
             )
 
             Text(

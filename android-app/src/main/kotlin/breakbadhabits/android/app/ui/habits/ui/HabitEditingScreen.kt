@@ -30,7 +30,6 @@ import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
-import breakbadhabits.foundation.uikit.text.Title
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 
 @Composable
@@ -53,8 +52,9 @@ fun HabitEditingScreen(
     ) {
         Spacer(Modifier.height(24.dp))
 
-        Title(
-            text = stringResource(R.string.habitEditing_title)
+        Text(
+            text = stringResource(R.string.habitEditing_title),
+            type = Text.Type.Headline
         )
 
         Spacer(Modifier.height(24.dp))

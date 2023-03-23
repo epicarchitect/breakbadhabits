@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
@@ -41,7 +40,6 @@ import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
-import breakbadhabits.foundation.uikit.text.Title
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
@@ -142,7 +140,10 @@ fun HabitTracksScreen(
                     text = "minus"
                 )
 
-                Title(text = title)
+                Text(
+                    text = title,
+                    type = Text.Type.Title
+                )
 
                 Button(
                     onClick = {
@@ -210,7 +211,7 @@ fun HabitTracksScreen(
                                         "$start - $end"
                                     }
                                 },
-                                fontWeight = FontWeight.Bold
+                                type = Text.Type.Title
                             )
 
                             Text(

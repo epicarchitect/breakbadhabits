@@ -16,7 +16,6 @@ import breakbadhabits.android.app.base.activity.LocalDarkModeManager
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RadioButton
 import breakbadhabits.foundation.uikit.text.Text
-import breakbadhabits.foundation.uikit.text.Title
 
 @Composable
 fun AppSettingsScreen(
@@ -30,10 +29,11 @@ fun AppSettingsScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Title(
+        Text(
             modifier = Modifier
                 .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.main_settings)
+            text = stringResource(R.string.main_settings),
+            type = Text.Type.Headline
         )
 
         Text(

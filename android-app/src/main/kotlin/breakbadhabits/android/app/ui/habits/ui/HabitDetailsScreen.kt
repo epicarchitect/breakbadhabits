@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.format.DurationFormatter
@@ -43,7 +42,6 @@ import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
-import breakbadhabits.foundation.uikit.text.Title
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
@@ -92,9 +90,10 @@ fun HabitDetailsScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Title(
+            Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = habit.name.value
+                text = habit.name.value,
+                type = Text.Type.Headline
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -148,9 +147,10 @@ fun HabitDetailsScreen(
                             } ${yearMonth.year}"
                         }
 
-                        Title(
+                        Text(
                             modifier = Modifier.padding(16.dp),
-                            text = title
+                            text = title,
+                            type = Text.Type.Title
                         )
 
                         EpicCalendar(
@@ -185,7 +185,6 @@ fun HabitDetailsScreen(
                         ) {
                             Text(
                                 modifier = Modifier.align(Alignment.Center),
-                                fontWeight = FontWeight.Medium,
                                 text = stringResource(R.string.habit_showAllEvents)
                             )
                         }
@@ -201,9 +200,10 @@ fun HabitDetailsScreen(
                         .fillMaxWidth()
                 ) {
                     Column {
-                        Title(
+                        Text(
                             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                            text = stringResource(R.string.habitAnalyze_abstinenceChart_title)
+                            text = stringResource(R.string.habitAnalyze_abstinenceChart_title),
+                            type = Text.Type.Title
                         )
 
                         val abstinenceTimes = remember(abstinenceList) {
@@ -247,7 +247,10 @@ fun HabitDetailsScreen(
                             )
                             .fillMaxWidth()
                     ) {
-                        Title(stringResource(R.string.habitAnalyze_statistics_title))
+                        Text(
+                            text = stringResource(R.string.habitAnalyze_statistics_title),
+                            type = Text.Type.Title
+                        )
 
                         Spacer(modifier = Modifier.height(8.dp))
 
