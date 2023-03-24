@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
@@ -204,7 +204,7 @@ fun IntervalSelectionEpicCalendar(
                                         color = if (isSelected) {
                                             AppTheme.colorScheme.onPrimary
                                         } else {
-                                            Color.Unspecified
+                                            AppTheme.colorScheme.onBackground
                                         }
                                     )
                                 }
@@ -251,7 +251,7 @@ fun IntervalSelectionEpicCalendar(
                                         color = if (isSelected) {
                                             AppTheme.colorScheme.onPrimary
                                         } else {
-                                            Color.Unspecified
+                                            AppTheme.colorScheme.onBackground
                                         }
                                     )
                                 }
@@ -328,7 +328,7 @@ fun IntervalSelectionEpicCalendar(
                                 color = if (isSelected) {
                                     AppTheme.colorScheme.onPrimary
                                 } else {
-                                    Color.Unspecified
+                                    AppTheme.colorScheme.onBackground
                                 }
                             )
                         }
@@ -357,7 +357,8 @@ fun IntervalSelectionEpicCalendar(
                         ) {
                             Text(
                                 text = "Начало",
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = AppTheme.colorScheme.onSurface
                             )
 
                             Text(
@@ -371,7 +372,8 @@ fun IntervalSelectionEpicCalendar(
                                 style = androidx.compose.ui.text.TextStyle(
                                     lineHeight = 12.sp
                                 ),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = AppTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -392,7 +394,8 @@ fun IntervalSelectionEpicCalendar(
                         ) {
                             Text(
                                 text = "Конец",
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = AppTheme.colorScheme.onSurface
                             )
 
                             Text(
@@ -406,7 +409,8 @@ fun IntervalSelectionEpicCalendar(
                                 style = androidx.compose.ui.text.TextStyle(
                                     lineHeight = 12.sp
                                 ),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = AppTheme.colorScheme.onSurface
                             )
                         }
                     }
