@@ -24,7 +24,7 @@ fun Statistics(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         statistics.forEach { item ->
             Row(
@@ -35,9 +35,15 @@ fun Statistics(
                     modifier = Modifier
                         .padding(end = 16.dp)
                         .weight(1f),
-                    text = item.name
+                    text = item.name,
+                    type = Text.Type.Label,
+                    priority = Text.Priority.Medium
                 )
-                Text(text = item.value)
+                Text(
+                    text = item.value,
+                    type = Text.Type.Label,
+                    priority = Text.Priority.High
+                )
             }
 
             if (item != statistics.last()) {

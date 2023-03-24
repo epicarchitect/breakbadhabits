@@ -33,7 +33,8 @@ fun AppSettingsScreen(
             modifier = Modifier
                 .padding(start = 16.dp, top = 16.dp, end = 16.dp),
             text = stringResource(R.string.main_settings),
-            type = Text.Type.Headline
+            type = Text.Type.Title,
+            priority = Text.Priority.High
         )
 
         Text(

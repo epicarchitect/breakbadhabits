@@ -111,20 +111,21 @@ fun HabitCreationScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Spacer(Modifier.height(24.dp))
-
         Text(
             text = stringResource(R.string.habitCreation_title),
-            type = Text.Type.Headline
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            text = stringResource(R.string.habitCreation_habitName_description)
+            type = Text.Type.Title,
+            priority = Text.Priority.High
         )
 
         Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.habitCreation_habitName_description),
+            type = Text.Type.Description,
+            priority = Text.Priority.Medium
+        )
+
+        Spacer(Modifier.height(12.dp))
 
         ValidatedInputField(
             controller = habitNameController,
@@ -154,16 +155,18 @@ fun HabitCreationScreen(
                     }
                 )
             },
-            label = stringResource(R.string.habitCreation_habitName)
+            label = "Название"//stringResource(R.string.habitCreation_habitName)
         )
 
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = stringResource(R.string.habitCreation_habitIcon_description)
+            text = stringResource(R.string.habitCreation_habitIcon_description),
+            type = Text.Type.Description,
+            priority = Text.Priority.Medium
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
 
         SingleSelectionGrid(
             controller = habitIconSelectionController,
@@ -178,10 +181,12 @@ fun HabitCreationScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Укажите даты первого и последнего события привычки."
+            text = "Укажите даты первого и последнего события привычки.",
+            type = Text.Type.Description,
+            priority = Text.Priority.Medium
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
 
         Button(
             onClick = { rangeSelectionShow = true },
@@ -204,10 +209,12 @@ fun HabitCreationScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Укажите сколько примерно было событий привычки каждый день"
+            text = "Укажите сколько примерно было событий привычки каждый день",
+            type = Text.Type.Description,
+            priority = Text.Priority.Medium
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
 
         ValidatedInputField(
             controller = firstTrackEventCountInputController,
@@ -241,7 +248,9 @@ fun HabitCreationScreen(
 
         Text(
             modifier = Modifier.align(Alignment.End),
-            text = stringResource(R.string.habitCreation_finish_description)
+            text = stringResource(R.string.habitCreation_finish_description),
+            type = Text.Type.Description,
+            priority = Text.Priority.Medium
         )
 
         Spacer(modifier = Modifier.height(24.dp))

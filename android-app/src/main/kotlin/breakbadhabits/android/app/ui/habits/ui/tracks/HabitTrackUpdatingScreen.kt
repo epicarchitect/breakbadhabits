@@ -102,7 +102,8 @@ fun HabitTrackUpdatingScreen(
 
         Text(
             text = stringResource(R.string.habitEventEditing_title),
-            type = Text.Type.Headline
+            type = Text.Type.Title,
+            priority = Text.Priority.High
         )
 
         Spacer(Modifier.height(8.dp))

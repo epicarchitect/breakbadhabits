@@ -34,7 +34,8 @@ fun HabitAppWidgetsScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 text = stringResource(R.string.main_widgets),
-                type = Text.Type.Headline
+                type = Text.Type.Title,
+                priority = Text.Priority.High
             )
 
             LazyColumn(

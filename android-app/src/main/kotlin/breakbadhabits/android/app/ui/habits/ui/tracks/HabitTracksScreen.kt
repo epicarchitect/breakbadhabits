@@ -58,7 +58,6 @@ fun HabitTracksScreen(
     val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
     val dateTimeConfig = dateTimeConfigState.value ?: return
 
-    val context = LocalContext.current
     val habitIconResources = LocalHabitIconResourceProvider.current
     val dateTimeFormatter = LocalDateTimeFormatter.current
 

@@ -97,14 +97,13 @@ fun HabitTrackCreationScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Spacer(Modifier.height(24.dp))
-
         Text(
             text = stringResource(R.string.habitEventCreation_title),
-            type = Text.Type.Headline
+            type = Text.Type.Title,
+            priority = Text.Priority.High
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(4.dp))
 
         LoadingBox(habitController) {
             if (it != null) {
@@ -112,16 +111,18 @@ fun HabitTrackCreationScreen(
                     text = stringResource(
                         R.string.habitEventCreation_habitName,
                         it.name.value
-                    )
+                    ),
+                    type = Text.Type.Description,
+                    priority = Text.Priority.Low
                 )
             }
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
         Text(text = "Укажите сколько примерно было событий привычки каждый день")
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
 
         ValidatedInputField(
             controller = eventCountInputController,
@@ -155,7 +156,7 @@ fun HabitTrackCreationScreen(
             text = "Укажите даты первого и последнего события привычки."
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
 
         Button(
             onClick = { rangeSelectionShow = true },
@@ -182,7 +183,7 @@ fun HabitTrackCreationScreen(
         )
 
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
 
         ValidatedInputField(
             label = stringResource(R.string.habitEventCreation_comment),

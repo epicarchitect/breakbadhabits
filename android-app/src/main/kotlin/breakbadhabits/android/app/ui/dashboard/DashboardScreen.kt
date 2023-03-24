@@ -67,7 +67,8 @@ fun DashboardScreen(
                 Text(
                     modifier = Modifier.weight(1f),
                     text = stringResource(R.string.app_name),
-                    type = Text.Type.Headline
+                    type = Text.Type.Title,
+                    priority = Text.Priority.High
                 )
 
                 IconButton(
@@ -186,7 +187,8 @@ private fun LazyItemScope.HabitItem(
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.habit.name.value,
-                        type = Text.Type.Title
+                        type = Text.Type.Title,
+                        priority = Text.Priority.Medium
                     )
                 }
                 Row(
@@ -199,7 +201,9 @@ private fun LazyItemScope.HabitItem(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.abstinence?.let {
                             durationFormatter.format(it.range.toDuration())
-                        } ?: stringResource(R.string.habits_noEvents)
+                        } ?: stringResource(R.string.habits_noEvents),
+                        type = Text.Type.Description,
+                        priority = Text.Priority.Medium
                     )
                 }
             }

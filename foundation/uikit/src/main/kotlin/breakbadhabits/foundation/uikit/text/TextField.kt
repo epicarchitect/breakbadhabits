@@ -44,7 +44,7 @@ fun TextField(
             {
                 Text(
                     text = label,
-                    type = Text.Type.Label
+                    type = Text.Type.Description
                 )
             }
         },

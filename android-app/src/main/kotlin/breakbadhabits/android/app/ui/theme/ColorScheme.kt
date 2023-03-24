@@ -17,8 +17,8 @@ object AppColorsSchemes {
         error = Color(0xFFE48801),
         background = Color.Black,
         onBackground = Color(0xFFF1F1F1),
-        surface = Color.Black,
-        onSurface = Color(0xFFF1F1F1)
+        surface = Color(0xFF1C1B1F),
+        onSurface = Color(0xFFCACACA)
     )
 
     private val light = AppColorScheme(

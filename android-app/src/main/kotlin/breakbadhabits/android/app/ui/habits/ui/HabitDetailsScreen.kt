@@ -93,7 +93,7 @@ fun HabitDetailsScreen(
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = habit.name.value,
-                type = Text.Type.Headline
+                type = Text.Type.Title
             )
 
             Spacer(modifier = Modifier.height(8.dp))

@@ -29,7 +29,8 @@ fun HabitsAppWidgetConfigCreationScreen(
     Column {
         Text(
             text = stringResource(R.string.habitsAppWidgetConfigCreation_title),
-            type = Text.Type.Headline
+            type = Text.Type.Title,
+            priority = Text.Priority.High
         )
 
         Text(

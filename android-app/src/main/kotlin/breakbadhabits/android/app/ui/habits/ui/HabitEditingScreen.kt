@@ -54,7 +54,8 @@ fun HabitEditingScreen(
 
         Text(
             text = stringResource(R.string.habitEditing_title),
-            type = Text.Type.Headline
+            type = Text.Type.Title,
+            priority = Text.Priority.High
         )
 
         Spacer(Modifier.height(24.dp))
