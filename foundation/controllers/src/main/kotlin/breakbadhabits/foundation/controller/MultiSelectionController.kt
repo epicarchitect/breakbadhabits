@@ -37,14 +37,17 @@ class MultiSelectionController<T>(
     )
 
     fun toggle(item: T) {
-        toggle(listOf(item))
+        selectedMap.value = selectedMap.value.toMutableMap().apply {
+            val currentValue = get(item) ?: false
+            put(item, currentValue.not())
+
+        }.toMap()
     }
 
-    fun toggle(list: List<T>) {
+    fun checkList(list: List<T>) {
         selectedMap.value = selectedMap.value.toMutableMap().apply {
             list.forEach { item ->
-                val currentValue = get(item) ?: false
-                put(item, currentValue.not())
+                put(item, true)
             }
         }.toMap()
     }

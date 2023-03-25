@@ -76,7 +76,9 @@ class HabitAppWidgetUpdatingViewModel(
             val habits = habitProvider.habitsFlow().first()
             initialConfig.value = config
             titleInputController.changeInput(config.title)
-            habitsSelectionController.toggle(habits.filter { config.habitIds.contains(it.id) })
+            habitsSelectionController.checkList(
+                habits.filter { config.habitIds.contains(it.id) }
+            )
         }
     }
 }
