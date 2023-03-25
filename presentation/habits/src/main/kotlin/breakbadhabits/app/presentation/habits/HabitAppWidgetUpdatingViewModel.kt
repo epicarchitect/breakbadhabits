@@ -39,11 +39,12 @@ class HabitAppWidgetUpdatingViewModel(
     val updatingController = RequestController(
         coroutineScope = viewModelScope,
         request = {
-            val habitIds = habitsSelectionController.state.value.items.keys.map { it.id }
             habitAppWidgetConfigUpdater.updateAppWidget(
                 id = id,
                 title = titleInputController.state.value.input,
-                habitIds = habitIds
+                habitIds = habitsSelectionController.state.value.items.filter {
+                    it.value
+                }.map { it.key.id }
             )
         },
         isAllowedFlow = combine(
