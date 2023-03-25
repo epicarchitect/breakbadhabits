@@ -53,11 +53,10 @@ class HabitAppWidgetUpdatingViewModel(
         ) { initial, title, habitsSelection ->
             val habitIdsInput = habitsSelection.items.filter {
                 it.value
-            }.keys.map { it.id }
+            }.keys.map { it.id }.sortedBy { it.value }
 
-            val isChanged = initial?.title != title.input || initial.habitIds.any {
-                !habitIdsInput.contains(it)
-            }
+            val isChanged = initial?.title != title.input
+                    || initial.habitIds.sortedBy { it.value } != habitIdsInput
 
             isChanged && habitIdsInput.isNotEmpty()
         }
