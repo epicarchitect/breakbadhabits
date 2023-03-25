@@ -1,4 +1,4 @@
-package breakbadhabits.android.app.ui.habits
+package breakbadhabits.android.app.ui.habits.ui.widgets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.app.entity.HabitAppWidgetConfig
+import breakbadhabits.app.presentation.habits.HabitAppWidgetsViewModel
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.LoadingBox
@@ -22,10 +23,10 @@ import breakbadhabits.foundation.uikit.text.Text
 
 @Composable
 fun HabitAppWidgetsScreen(
-    widgetsLoadingController: LoadingController<List<HabitAppWidgetConfig>>,
+    itemsController: LoadingController<List<HabitAppWidgetsViewModel.Item>>,
     onWidgetClick: (HabitAppWidgetConfig.Id) -> Unit
 ) {
-    LoadingBox(widgetsLoadingController) { widgets ->
+    LoadingBox(itemsController) { widgets ->
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -47,10 +48,10 @@ fun HabitAppWidgetsScreen(
                 ),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(widgets, key = { it.id.value }) {
+                items(widgets, key = { it.config.id.value }) {
                     WidgetConfigItem(
-                        config = it,
-                        onClick = { onWidgetClick(it.id) }
+                        item = it,
+                        onClick = { onWidgetClick(it.config.id) }
                     )
                 }
             }
@@ -60,7 +61,7 @@ fun HabitAppWidgetsScreen(
 
 @Composable
 fun WidgetConfigItem(
-    config: HabitAppWidgetConfig,
+    item: HabitAppWidgetsViewModel.Item,
     onClick: () -> Unit
 ) {
     Card(
@@ -79,7 +80,7 @@ fun WidgetConfigItem(
                     top = 16.dp,
                     end = 54.dp
                 ),
-                text = config.title.value.ifEmpty { "#${config.id.value}" },
+                text = item.config.title.value.ifEmpty { "#${item.config.id.value}" },
                 type = Text.Type.Title
             )
 
@@ -90,9 +91,9 @@ fun WidgetConfigItem(
                     end = 16.dp
                 ),
                 text = buildString {
-                    config.habitIds.forEachIndexed { index, habitId ->
-                        append(habitId.value)
-                        if (index != config.habitIds.lastIndex) {
+                    item.habits.forEachIndexed { index, habit ->
+                        append(habit.name.value)
+                        if (index != item.habits.lastIndex) {
                             appendLine()
                         }
                     }

@@ -42,11 +42,9 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) = runBlocking {
         super.onDeleted(context, appWidgetIds)
-        appWidgetIds.forEach {
-            logicModule.habitAppWidgetConfigDeleter.deleteByAppWidgetId(
-                HabitAppWidgetConfig.AppWidgetId(it.toLong())
-            )
-        }
+        logicModule.habitAppWidgetConfigDeleter.deleteByAppWidgetIds(
+            appWidgetIds.map { HabitAppWidgetConfig.AppWidgetId(it.toLong()) }
+        )
     }
 
     private fun updateAppWidget(
@@ -68,7 +66,6 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
                 ).apply {
                     setTextViewText(R.id.title_textView, "Not found")
                     setViewVisibility(R.id.title_textView, View.VISIBLE)
-//                    setViewVisibility(R.id.divider, View.GONE)
                 }
             )
             manager.notifyAppWidgetViewDataChanged(
@@ -86,7 +83,6 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
                 R.layout.habits_app_widget_light
         ).apply {
             setTextViewText(R.id.title_textView, config.title.value)
-//            setViewVisibility(R.id.divider, if (config.title.value.isEmpty()) View.GONE else View.VISIBLE)
             setViewVisibility(
                 R.id.title_textView,
                 if (config.title.value.isEmpty()) View.GONE else View.VISIBLE

@@ -14,11 +14,11 @@ import androidx.navigation.navArgument
 import breakbadhabits.android.app.format.DateTimeFormatter
 import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.ui.dashboard.DashboardScreen
-import breakbadhabits.android.app.ui.habits.HabitAppWidgetUpdatingScreen
-import breakbadhabits.android.app.ui.habits.HabitAppWidgetsScreen
+import breakbadhabits.android.app.ui.habits.ui.widgets.HabitAppWidgetUpdatingScreen
+import breakbadhabits.android.app.ui.habits.ui.widgets.HabitAppWidgetsScreen
 import breakbadhabits.android.app.ui.habits.ui.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
-import breakbadhabits.android.app.ui.habits.HabitEditingScreen
+import breakbadhabits.android.app.ui.habits.ui.HabitEditingScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackUpdatingScreen
 import breakbadhabits.android.app.ui.habits.HabitTracksScreen
@@ -258,7 +258,27 @@ private fun AppScreenContent() {
             val viewModel = viewModel {
                 presentationModule.createHabitAppWidgetUpdatingViewModel(id)
             }
-            HabitAppWidgetUpdatingScreen()
+            val updatingState by viewModel.updatingController.collectState()
+            val deletionState by viewModel.deletionController.collectState()
+
+            LaunchedEffect(deletionState.requestState) {
+                if (deletionState.requestState is RequestController.RequestState.Executed) {
+                    navController.popBackStack()
+                }
+            }
+
+            LaunchedEffect(updatingState.requestState) {
+                if (updatingState.requestState is RequestController.RequestState.Executed) {
+                    navController.popBackStack()
+                }
+            }
+
+            HabitAppWidgetUpdatingScreen(
+                titleInputController = viewModel.titleInputController,
+                habitsSelectionController = viewModel.habitsSelectionController,
+                updatingController = viewModel.updatingController,
+                deletionController = viewModel.deletionController
+            )
         }
 
         composable(route = Screens.HabitAppWidgets.route) {
@@ -268,7 +288,7 @@ private fun AppScreenContent() {
             }
 
             HabitAppWidgetsScreen(
-                widgetsLoadingController = viewModel.widgetsLoadingController,
+                itemsController = viewModel.itemsController,
                 onWidgetClick = {
                     navController.navigate(Screens.HabitAppWidgetUpdating.buildRoute(it))
                 }

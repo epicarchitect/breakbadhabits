@@ -90,6 +90,7 @@ class PresentationModule(val logicModule: LogicModule) {
 
     fun createHabitAppWidgetsViewModel() = with(logicModule) {
         HabitAppWidgetsViewModel(
+            habitProvider = habitProvider,
             habitAppWidgetConfigProvider = habitAppWidgetConfigProvider
         )
     }
@@ -99,7 +100,9 @@ class PresentationModule(val logicModule: LogicModule) {
     ) = with(logicModule) {
         HabitAppWidgetUpdatingViewModel(
             habitProvider = habitProvider,
+            habitAppWidgetConfigProvider = habitAppWidgetConfigProvider,
             habitAppWidgetConfigUpdater = habitAppWidgetConfigUpdater,
+            habitAppWidgetConfigDeleter = habitAppWidgetConfigDeleter,
             id = id
         )
     }

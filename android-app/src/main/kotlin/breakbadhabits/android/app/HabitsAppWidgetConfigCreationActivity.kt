@@ -7,10 +7,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
-import breakbadhabits.android.app.ui.habits.HabitsAppWidgetConfigCreationScreen
+import breakbadhabits.android.app.base.activity.ComposeActivity
+import breakbadhabits.android.app.ui.habits.ui.widgets.HabitsAppWidgetConfigCreationScreen
 import breakbadhabits.app.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.controller.RequestController
-import breakbadhabits.android.app.base.activity.ComposeActivity
 import breakbadhabits.foundation.uikit.ext.collectState
 
 
@@ -46,6 +46,7 @@ class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
         HabitsAppWidgetConfigCreationScreen(
             titleInputController = viewModel.titleInputController,
             creationController = viewModel.creationController,
+            habitsSelectionController = viewModel.habitsSelectionController
         )
     }
 }

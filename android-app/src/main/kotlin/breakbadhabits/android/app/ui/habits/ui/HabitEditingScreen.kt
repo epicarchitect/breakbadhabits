@@ -1,4 +1,4 @@
-package breakbadhabits.android.app.ui.habits
+package breakbadhabits.android.app.ui.habits.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

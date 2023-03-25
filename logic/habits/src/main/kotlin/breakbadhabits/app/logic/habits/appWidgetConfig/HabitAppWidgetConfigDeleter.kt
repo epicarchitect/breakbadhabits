@@ -21,4 +21,12 @@ class HabitAppWidgetConfigDeleter(
     ) = withContext(coroutineDispatchers.io) {
         appDatabase.habitAppWidgetConfigQueries.deleteByWidgetId(appWidgetId.value)
     }
+
+    suspend fun deleteByAppWidgetIds(
+        appWidgetIds: List<HabitAppWidgetConfig.AppWidgetId>
+    ) = withContext(coroutineDispatchers.io) {
+        appWidgetIds.forEach {
+            appDatabase.habitAppWidgetConfigQueries.deleteByWidgetId(it.value)
+        }
+    }
 }
