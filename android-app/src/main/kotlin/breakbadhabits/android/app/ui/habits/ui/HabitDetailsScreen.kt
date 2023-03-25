@@ -148,7 +148,12 @@ fun HabitDetailsScreen(
                         }
 
                         Text(
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier.padding(
+                                start = 16.dp,
+                                end = 16.dp,
+                                bottom = 12.dp,
+                                top = 16.dp
+                            ),
                             text = title,
                             type = Text.Type.Title
                         )
@@ -252,7 +257,7 @@ fun HabitDetailsScreen(
                             type = Text.Type.Title
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         Statistics(
                             modifier = Modifier.fillMaxWidth(),

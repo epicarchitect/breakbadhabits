@@ -181,6 +181,7 @@ fun EpicCalendar(
                                     text = badgeText,
                                     color = AppTheme.colorScheme.onPrimary,
                                     fontSize = 8.sp,
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }

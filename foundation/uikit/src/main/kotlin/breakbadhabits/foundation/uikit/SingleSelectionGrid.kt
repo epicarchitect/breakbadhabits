@@ -1,17 +1,13 @@
 package breakbadhabits.foundation.uikit
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -53,18 +49,18 @@ fun <T> SingleSelectionGrid(
 
                         androidx.compose.material3.Card(
                             modifier = Modifier.size(44.dp),
-                            border = if (!isSelected) null else BorderStroke(
-                                width = 1.dp,
-                                color = AppTheme.colorScheme.primary
-                            ),
                             shape = MaterialTheme.shapes.small,
                             onClick = {
                                 controller.select(item)
                             },
                             colors = CardDefaults.cardColors(
-                                containerColor = AppTheme.colorScheme.surface
+                                containerColor = if (isSelected) {
+                                    AppTheme.colorScheme.primary
+                                } else {
+                                    AppTheme.colorScheme.surface
+                                }
                             ),
-                            elevation = CardDefaults.cardElevation(1.dp)
+                            elevation = CardDefaults.cardElevation(0.5f.dp)
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),

@@ -36,7 +36,7 @@ fun Statistics(
                         .padding(end = 16.dp)
                         .weight(1f),
                     text = item.name,
-                    type = Text.Type.Label,
+                    type = Text.Type.Description,
                     priority = Text.Priority.Medium
                 )
                 Text(
