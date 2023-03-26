@@ -24,8 +24,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
-import breakbadhabits.android.app.di.LocalUiModule
-import breakbadhabits.android.app.icons.impl
 import breakbadhabits.android.app.icons.resourceId
 import breakbadhabits.app.logic.habits.IncorrectHabitNewName
 import breakbadhabits.app.logic.habits.ValidatedHabitNewName

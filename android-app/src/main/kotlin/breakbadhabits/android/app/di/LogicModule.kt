@@ -1,10 +1,10 @@
 package breakbadhabits.android.app.di
 
 import android.content.Context
+import breakbadhabits.android.app.coroutines.DefaultCoroutineDispatchers
 import breakbadhabits.android.app.icons.LocalIconProviderImpl
 import breakbadhabits.app.database.AppDatabaseFactory
 import breakbadhabits.app.database.IdGenerator
-import breakbadhabits.android.app.coroutines.DefaultCoroutineDispatchers
 import breakbadhabits.app.logic.datetime.DateTimeProviderImpl
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.habits.HabitAbstinenceProvider

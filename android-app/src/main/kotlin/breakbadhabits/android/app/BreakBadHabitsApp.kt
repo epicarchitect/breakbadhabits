@@ -3,10 +3,9 @@ package breakbadhabits.android.app
 import android.app.Application
 import breakbadhabits.android.app.appwidget.HabitsAppWidgetProvider
 import breakbadhabits.android.app.di.LogicModule
-import breakbadhabits.android.app.di.UiModule
 import breakbadhabits.android.app.di.PresentationModule
+import breakbadhabits.android.app.di.UiModule
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 

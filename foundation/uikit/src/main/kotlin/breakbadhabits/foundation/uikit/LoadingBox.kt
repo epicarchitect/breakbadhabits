@@ -2,10 +2,8 @@ package breakbadhabits.foundation.uikit
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.uikit.ext.collectState

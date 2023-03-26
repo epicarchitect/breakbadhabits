@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
-import breakbadhabits.android.app.icons.impl
 import breakbadhabits.android.app.icons.resourceId
 import breakbadhabits.app.logic.habits.IncorrectHabitNewName
 import breakbadhabits.app.logic.habits.ValidatedHabitNewName

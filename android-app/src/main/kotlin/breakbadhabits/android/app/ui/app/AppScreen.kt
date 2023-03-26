@@ -18,10 +18,10 @@ import breakbadhabits.android.app.di.UiModule
 import breakbadhabits.android.app.ui.dashboard.DashboardScreen
 import breakbadhabits.android.app.ui.habits.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
+import breakbadhabits.android.app.ui.habits.HabitEditingScreen
 import breakbadhabits.android.app.ui.habits.tracks.HabitTrackCreationScreen
 import breakbadhabits.android.app.ui.habits.tracks.HabitTrackUpdatingScreen
 import breakbadhabits.android.app.ui.habits.tracks.HabitTracksScreen
-import breakbadhabits.android.app.ui.habits.HabitEditingScreen
 import breakbadhabits.android.app.ui.habits.widgets.HabitAppWidgetUpdatingScreen
 import breakbadhabits.android.app.ui.habits.widgets.HabitAppWidgetsScreen
 import breakbadhabits.android.app.ui.settings.AppSettingsScreen

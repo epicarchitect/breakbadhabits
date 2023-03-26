@@ -1,6 +1,5 @@
 package breakbadhabits.foundation.uikit.button
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box

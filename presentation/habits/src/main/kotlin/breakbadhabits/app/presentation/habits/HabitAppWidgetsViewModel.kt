@@ -1,10 +1,10 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigProvider
+import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.combine

@@ -1,7 +1,7 @@
 package breakbadhabits.app.logic.habits.tracks
 
-import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.DateTimeProvider
+import breakbadhabits.app.logic.habits.entity.HabitTrack
 
 class HabitTrackTimeValidator(
     private val dateTimeProvider: DateTimeProvider
