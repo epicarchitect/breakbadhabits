@@ -38,24 +38,7 @@ fun Card(
         content = {
             Box {
                 if (AppTheme.colorScheme.isDark) {
-                    var brushBoxSize by remember { mutableStateOf(IntSize.Zero) }
-                    val brushEndOffset = remember(brushBoxSize) {
-                        Offset(brushBoxSize.width / 2f, brushBoxSize.width / 2f)
-                    }
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .onSizeChanged { brushBoxSize = it }
-                            .background(
-                                Brush.linearGradient(
-                                    listOf(
-                                        AppTheme.colorScheme.primary.copy(alpha = 0.2f),
-                                        backgroundColor,
-                                    ),
-                                    end = brushEndOffset
-                                ),
-                            )
-                    )
+                    Backlight()
                 }
                 Box(
                     content = content
@@ -66,5 +49,27 @@ fun Card(
             containerColor = backgroundColor,
             contentColor = contentColor
         ),
+    )
+}
+
+@Composable
+fun BoxScope.Backlight() {
+    var brushBoxSize by remember { mutableStateOf(IntSize.Zero) }
+    val brushEndOffset = remember(brushBoxSize) {
+        Offset(brushBoxSize.width / 2f, brushBoxSize.width / 2f)
+    }
+    Box(
+        modifier = Modifier
+            .matchParentSize()
+            .onSizeChanged { brushBoxSize = it }
+            .background(
+                Brush.linearGradient(
+                    listOf(
+                        AppTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        Color.Transparent,
+                    ),
+                    end = brushEndOffset
+                ),
+            )
     )
 }

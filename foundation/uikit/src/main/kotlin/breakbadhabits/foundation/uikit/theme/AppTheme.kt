@@ -43,7 +43,7 @@ private fun AppColorScheme.toMaterial() = if (isDark) {
     )
 }
 
-internal object AppTheme {
+object AppTheme {
     val colorScheme: AppColorScheme
         @Composable
         @ReadOnlyComposable
