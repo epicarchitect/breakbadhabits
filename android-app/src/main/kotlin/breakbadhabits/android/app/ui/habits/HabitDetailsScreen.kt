@@ -121,7 +121,9 @@ fun HabitDetailsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Card(modifier = Modifier.fillMaxWidth()) {
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 LoadingBox(habitTracksController) { tracks ->
                     Column(modifier = Modifier.fillMaxWidth()) {
                         val yearMonth = remember { YearMonth.now() }

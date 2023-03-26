@@ -1,7 +1,6 @@
 package breakbadhabits.android.app.ui.app
 
 import android.os.Bundle
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -30,10 +29,7 @@ import breakbadhabits.app.logic.habits.entity.Habit
 import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.foundation.controller.SingleRequestController
-import breakbadhabits.foundation.uikit.Backlight
-import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.ext.collectState
-import breakbadhabits.foundation.uikit.theme.AppTheme
 
 
 private object Screens {
@@ -105,13 +101,7 @@ fun AppScreen(uiModule: UiModule) {
         LocalPresentationModule provides uiModule.presentationModule,
         LocalLogicModule provides uiModule.presentationModule.logicModule
     ) {
-        Box {
-            if (AppTheme.colorScheme.isDark) {
-                Backlight()
-            }
-
-            AppScreenContent()
-        }
+        AppScreenContent()
     }
 }
 

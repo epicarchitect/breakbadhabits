@@ -1,8 +1,5 @@
 package breakbadhabits.foundation.uikit.calendar
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -74,6 +70,7 @@ fun EpicCalendar(
         cellWidth =
             Dp(((it.width / 7f) - cellSpacersWidth + 1f) / density.density) // +1f to fix right padding
     }) {
+
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
@@ -197,15 +194,6 @@ fun EpicCalendar(
                     }
                 }
             }
-        }
-
-        AnimatedVisibility(
-            modifier = Modifier.matchParentSize(),
-            visible = cellWidth == Dp.Unspecified,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Surface {}
         }
     }
 }

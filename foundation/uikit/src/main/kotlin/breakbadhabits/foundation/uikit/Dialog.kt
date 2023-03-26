@@ -19,11 +19,11 @@ fun Dialog(
     onDismiss: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    var show by remember { mutableStateOf(false) }
+    var shown by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
         delay(50)
-        show = true
+        shown = true
     }
 
     androidx.compose.ui.window.Dialog(
@@ -35,7 +35,7 @@ fun Dialog(
 
                 AnimatedVisibility(
                     modifier = Modifier.matchParentSize(),
-                    visible = !show,
+                    visible = !shown,
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
