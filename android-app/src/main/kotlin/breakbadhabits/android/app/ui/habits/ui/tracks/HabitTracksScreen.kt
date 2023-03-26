@@ -1,4 +1,4 @@
-package breakbadhabits.android.app.ui.habits
+package breakbadhabits.android.app.ui.habits.ui.tracks
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,8 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.ui.app.LocalDateTimeConfigProvider
@@ -34,9 +35,11 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.MonthOfYear
+import breakbadhabits.foundation.datetime.next
+import breakbadhabits.foundation.datetime.previous
+import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.LocalResourceIcon
-import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
@@ -90,31 +93,6 @@ fun HabitTracksScreen(
         Column(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            LoadingBox(habitController) { habit ->
-                habit ?: return@LoadingBox
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    LocalResourceIcon(
-                        modifier = Modifier.size(22.dp),
-                        resourceId = habitIconResources[habit.icon].resourceId
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        text = habit.name.value
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -122,6 +100,31 @@ fun HabitTracksScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                LoadingBox(
+                    modifier = Modifier.weight(1f),
+                    controller = habitController
+                ) { habit ->
+                    habit ?: return@LoadingBox
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        LocalResourceIcon(
+                            modifier = Modifier.size(28.dp),
+                            resourceId = habitIconResources[habit.icon].resourceId
+                        )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Text(
+                            text = habit.name.value,
+                            type = Text.Type.Title
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                }
+
                 val title = remember(jtYearMonth) {
                     "${
                         jtYearMonth.month.getDisplayName(
@@ -131,26 +134,29 @@ fun HabitTracksScreen(
                     } ${jtYearMonth.year}"
                 }
 
-                Button(
+                IconButton(
                     onClick = {
-                        val r = YearMonth.of(currentMonth.year, currentMonth.month).minusMonths(1)
-                        currentMonth = MonthOfYear(r.year, r.month)
-                    },
-                    text = "minus"
-                )
+                        currentMonth = currentMonth.previous()
+                    }
+                ) {
+                    LocalResourceIcon(resourceId = R.drawable.ic_arrow_left)
+                }
 
                 Text(
+                    modifier = Modifier.defaultMinSize(minWidth = 110.dp),
                     text = title,
-                    type = Text.Type.Title
+                    type = Text.Type.Title,
+                    textAlign = TextAlign.Center,
+                    priority = Text.Priority.Low
                 )
 
-                Button(
+                IconButton(
                     onClick = {
-                        val r = YearMonth.of(currentMonth.year, currentMonth.month).plusMonths(1)
-                        currentMonth = MonthOfYear(r.year, r.month)
-                    },
-                    text = "plus"
-                )
+                        currentMonth = currentMonth.next()
+                    }
+                ) {
+                    LocalResourceIcon(resourceId = R.drawable.ic_arrow_right)
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))

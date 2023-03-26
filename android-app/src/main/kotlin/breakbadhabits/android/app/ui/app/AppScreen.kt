@@ -21,7 +21,7 @@ import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
 import breakbadhabits.android.app.ui.habits.ui.HabitEditingScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitTrackUpdatingScreen
-import breakbadhabits.android.app.ui.habits.HabitTracksScreen
+import breakbadhabits.android.app.ui.habits.ui.tracks.HabitTracksScreen
 import breakbadhabits.android.app.ui.habits.resources.HabitIconResourceProvider
 import breakbadhabits.android.app.ui.settings.AppSettingsScreen
 import breakbadhabits.app.di.PresentationModule
