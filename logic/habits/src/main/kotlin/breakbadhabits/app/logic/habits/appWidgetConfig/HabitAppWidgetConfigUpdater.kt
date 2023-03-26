@@ -1,8 +1,8 @@
 package breakbadhabits.app.logic.habits.appWidgetConfig
 
 import breakbadhabits.app.database.AppDatabase
-import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 

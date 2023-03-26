@@ -11,24 +11,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import breakbadhabits.android.app.format.DateTimeFormatter
-import breakbadhabits.android.app.format.DurationFormatter
+import breakbadhabits.android.app.di.LocalLogicModule
+import breakbadhabits.android.app.di.LocalPresentationModule
+import breakbadhabits.android.app.di.LocalUiModule
+import breakbadhabits.android.app.di.UiModule
 import breakbadhabits.android.app.ui.dashboard.DashboardScreen
-import breakbadhabits.android.app.ui.habits.ui.widgets.HabitAppWidgetUpdatingScreen
-import breakbadhabits.android.app.ui.habits.ui.widgets.HabitAppWidgetsScreen
-import breakbadhabits.android.app.ui.habits.ui.HabitCreationScreen
+import breakbadhabits.android.app.ui.habits.HabitCreationScreen
 import breakbadhabits.android.app.ui.habits.HabitDetailsScreen
-import breakbadhabits.android.app.ui.habits.ui.HabitEditingScreen
-import breakbadhabits.android.app.ui.habits.HabitTrackCreationScreen
-import breakbadhabits.android.app.ui.habits.HabitTrackUpdatingScreen
-import breakbadhabits.android.app.ui.habits.ui.tracks.HabitTracksScreen
-import breakbadhabits.android.app.ui.habits.resources.HabitIconResourceProvider
+import breakbadhabits.android.app.ui.habits.tracks.HabitTrackCreationScreen
+import breakbadhabits.android.app.ui.habits.tracks.HabitTrackUpdatingScreen
+import breakbadhabits.android.app.ui.habits.tracks.HabitTracksScreen
+import breakbadhabits.android.app.ui.habits.HabitEditingScreen
+import breakbadhabits.android.app.ui.habits.widgets.HabitAppWidgetUpdatingScreen
+import breakbadhabits.android.app.ui.habits.widgets.HabitAppWidgetsScreen
 import breakbadhabits.android.app.ui.settings.AppSettingsScreen
-import breakbadhabits.app.di.PresentationModule
-import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitAppWidgetConfig
-import breakbadhabits.app.entity.HabitTrack
-import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
+import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.uikit.ext.collectState
 
@@ -96,19 +95,11 @@ private object Screens {
 }
 
 @Composable
-fun AppScreen(
-    presentationModule: PresentationModule,
-    habitIconResourceProvider: HabitIconResourceProvider,
-    dateTimeFormatter: DateTimeFormatter,
-    durationFormatter: DurationFormatter
-) {
+fun AppScreen(uiModule: UiModule) {
     CompositionLocalProvider(
-        LocalPresentationModule provides presentationModule,
-        LocalHabitIconResourceProvider provides habitIconResourceProvider,
-        LocalDateTimeFormatter provides dateTimeFormatter,
-        LocalDurationFormatter provides durationFormatter,
-        LocalDateTimeConfigProvider provides presentationModule.logicModule.dateTimeConfigProvider,
-        LocalDateTimeProvider provides presentationModule.logicModule.dateTimeProvider
+        LocalUiModule provides uiModule,
+        LocalPresentationModule provides uiModule.presentationModule,
+        LocalLogicModule provides uiModule.presentationModule.logicModule
     ) {
         AppScreenContent()
     }

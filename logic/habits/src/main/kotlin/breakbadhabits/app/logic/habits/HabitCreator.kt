@@ -2,7 +2,7 @@ package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.database.IdGenerator
-import breakbadhabits.app.entity.Habit
+import breakbadhabits.app.logic.habits.entity.Habit
 import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackTime
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
@@ -26,7 +26,7 @@ class HabitCreator(
             appDatabase.habitQueries.insert(
                 id = habitId,
                 name = name.data.value,
-                iconId = icon.iconId
+                iconId = icon.id.value
             )
 
             appDatabase.habitTrackQueries.insert(

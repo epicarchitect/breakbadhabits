@@ -8,7 +8,7 @@ android {
 
 dependencies {
     api(projects.foundation.coroutines)
-    api(projects.entities)
     api(projects.logic.datetime)
+    api(projects.logic.icons)
     implementation(projects.database)
 }

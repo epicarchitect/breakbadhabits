@@ -4,7 +4,6 @@ import android.content.Context
 import breakbadhabits.app.database.AppDatabaseFactory
 import breakbadhabits.app.database.IdGenerator
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
-import breakbadhabits.app.logic.datetime.DateTimeProvider
 import breakbadhabits.app.logic.datetime.DateTimeProviderImpl
 import breakbadhabits.app.logic.habits.config.HabitsConfigProvider
 import breakbadhabits.app.logic.habits.HabitCreator
@@ -12,7 +11,6 @@ import breakbadhabits.app.logic.habits.tracks.HabitTrackCreator
 import breakbadhabits.app.logic.habits.HabitDeleter
 import breakbadhabits.app.logic.habits.tracks.HabitTrackDeleter
 import breakbadhabits.app.logic.habits.HabitAbstinenceProvider
-import breakbadhabits.app.logic.habits.HabitIconProvider
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.HabitStatisticsProvider
 import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider

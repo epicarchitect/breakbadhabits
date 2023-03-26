@@ -12,7 +12,7 @@ import android.view.View
 import android.widget.RemoteViews
 import breakbadhabits.android.app.BreakBadHabitsApp
 import breakbadhabits.android.app.R
-import breakbadhabits.app.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 

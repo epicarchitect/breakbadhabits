@@ -1,7 +1,7 @@
 package breakbadhabits.app.logic.habits
 
-import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitAbstinence
+import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.entity.HabitAbstinence
 import breakbadhabits.app.logic.datetime.DateTimeProvider
 import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers

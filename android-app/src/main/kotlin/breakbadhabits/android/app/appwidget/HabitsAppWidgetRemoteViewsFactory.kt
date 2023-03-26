@@ -6,9 +6,9 @@ import android.widget.RemoteViewsService
 import breakbadhabits.android.app.BreakBadHabitsApp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.format.DurationFormatter
-import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitAbstinence
-import breakbadhabits.app.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.entity.HabitAbstinence
+import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.datetime.toDuration
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

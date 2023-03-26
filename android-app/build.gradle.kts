@@ -48,5 +48,7 @@ android {
 
 dependencies {
     implementation(projects.foundation.uikit)
-    implementation(projects.di)
+    implementation(projects.presentation.dashboard)
+    implementation(projects.presentation.habits)
+    implementation(projects.database)
 }

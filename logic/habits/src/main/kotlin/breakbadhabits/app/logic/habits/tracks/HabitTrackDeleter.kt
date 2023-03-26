@@ -1,7 +1,7 @@
 package breakbadhabits.app.logic.habits.tracks
 
 import breakbadhabits.app.database.AppDatabase
-import breakbadhabits.app.entity.HabitTrack
+import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 

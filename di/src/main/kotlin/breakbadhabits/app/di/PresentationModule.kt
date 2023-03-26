@@ -1,8 +1,8 @@
 package breakbadhabits.app.di
 
-import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitAppWidgetConfig
-import breakbadhabits.app.entity.HabitTrack
+import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.app.presentation.habits.HabitAppWidgetCreationViewModel
 import breakbadhabits.app.presentation.habits.HabitAppWidgetUpdatingViewModel

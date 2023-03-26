@@ -1,8 +1,8 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitTrack
+import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.datetime.DateTimeProvider
 import breakbadhabits.app.logic.habits.tracks.HabitTrackCreator

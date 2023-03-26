@@ -6,12 +6,11 @@ includeBuild("build-logic")
 
 include(
     ":android-app",
-    ":di",
     ":database",
-    ":entities",
 
     ":logic:habits",
     ":logic:datetime",
+    ":logic:icons",
 
     ":presentation:dashboard",
     ":presentation:habits",

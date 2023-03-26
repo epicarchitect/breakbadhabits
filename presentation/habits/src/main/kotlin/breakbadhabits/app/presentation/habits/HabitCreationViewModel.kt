@@ -1,18 +1,19 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.entity.Habit
-import breakbadhabits.app.entity.HabitTrack
+import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.datetime.DateTimeProvider
 import breakbadhabits.app.logic.habits.HabitCreator
-import breakbadhabits.app.logic.habits.HabitIconProvider
 import breakbadhabits.app.logic.habits.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackTime
 import breakbadhabits.app.logic.habits.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.tracks.HabitTrackEventCountValidator
 import breakbadhabits.app.logic.habits.tracks.HabitTrackTimeValidator
+import breakbadhabits.app.logic.icons.LocalIcon
+import breakbadhabits.app.logic.icons.LocalIconProvider
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -30,12 +31,12 @@ class HabitCreationViewModel(
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
     dateTimeConfigProvider: DateTimeConfigProvider,
-    habitIconProvider: HabitIconProvider
+    localIconProvider: LocalIconProvider
 ) : ViewModel() {
 
     val habitIconSelectionController = SingleSelectionController(
         coroutineScope = viewModelScope,
-        items = habitIconProvider.provide(),
+        items = localIconProvider.getIcons().map(Habit::Icon),
         default = List<Habit.Icon>::first
     )
 

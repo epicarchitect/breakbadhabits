@@ -8,8 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.android.app.base.activity.ComposeActivity
-import breakbadhabits.android.app.ui.habits.ui.widgets.HabitsAppWidgetConfigCreationScreen
-import breakbadhabits.app.entity.HabitAppWidgetConfig
+import breakbadhabits.android.app.ui.habits.widgets.HabitsAppWidgetConfigCreationScreen
+import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.uikit.ext.collectState
 

@@ -2,8 +2,9 @@ package breakbadhabits.android.app
 
 import android.app.Application
 import breakbadhabits.android.app.appwidget.HabitsAppWidgetProvider
-import breakbadhabits.app.di.LogicModule
-import breakbadhabits.app.di.PresentationModule
+import breakbadhabits.android.app.di.LogicModule
+import breakbadhabits.android.app.di.UiModule
+import breakbadhabits.android.app.di.PresentationModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -18,7 +19,15 @@ class BreakBadHabitsApp : Application() {
         )
     }
     val presentationModule by lazy {
-        PresentationModule(logicModule)
+        PresentationModule(
+            logicModule = logicModule
+        )
+    }
+    val uiModule by lazy {
+        UiModule(
+            context = this, // TODO check resources working
+            presentationModule = presentationModule
+        )
     }
 
     override fun onCreate() {
@@ -34,7 +43,7 @@ class BreakBadHabitsApp : Application() {
             logicModule.habitAppWidgetConfigProvider.provideAllFlow()
         ) { _, _, _ ->
             HabitsAppWidgetProvider.sendUpdateIntent(this@BreakBadHabitsApp)
-        }.launchIn(CoroutineScope(Dispatchers.IO))
+        }.launchIn(CoroutineScope(logicModule.coroutineDispatchers.default))
     }
 
     companion object {

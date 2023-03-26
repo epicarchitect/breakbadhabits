@@ -3,7 +3,7 @@ package breakbadhabits.android.app.appwidget
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.widget.RemoteViewsService
-import breakbadhabits.app.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 
 class HabitsAppWidgetRemoteViewsService : RemoteViewsService() {
 

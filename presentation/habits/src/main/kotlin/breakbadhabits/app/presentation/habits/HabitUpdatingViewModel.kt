@@ -1,13 +1,13 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.entity.Habit
+import breakbadhabits.app.logic.habits.entity.Habit
 import breakbadhabits.app.logic.habits.HabitDeleter
-import breakbadhabits.app.logic.habits.HabitIconProvider
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.HabitUpdater
 import breakbadhabits.app.logic.habits.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.HabitNewNameValidator
+import breakbadhabits.app.logic.icons.LocalIconProvider
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -22,7 +22,7 @@ class HabitUpdatingViewModel(
     habitUpdater: HabitUpdater,
     habitDeleter: HabitDeleter,
     habitNewNameValidator: HabitNewNameValidator,
-    habitIconProvider: HabitIconProvider,
+    localIconProvider: LocalIconProvider,
     habitId: Habit.Id,
 ) : ViewModel() {
 
@@ -30,7 +30,7 @@ class HabitUpdatingViewModel(
 
     val habitIconSelectionController = SingleSelectionController(
         coroutineScope = viewModelScope,
-        items = habitIconProvider.provide(),
+        items = localIconProvider.getIcons().map(Habit::Icon),
         default = List<Habit.Icon>::first
     )
 
