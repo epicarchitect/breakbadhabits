@@ -26,7 +26,7 @@ class HabitCreator(
             appDatabase.habitQueries.insert(
                 id = habitId,
                 name = name.data.value,
-                iconId = icon.id.value
+                iconId = icon.value.id.value
             )
 
             appDatabase.habitTrackQueries.insert(

@@ -14,7 +14,7 @@ class HabitTrackTimeValidator(
     private fun HabitTrack.Time.incorrectReason() = when {
         dateTimeProvider.currentTime.value.let {
             it < start || it < endInclusive
-        }  -> IncorrectHabitTrackTime.Reason.BiggestThenCurrentTime
+        } -> IncorrectHabitTrackTime.Reason.BiggestThenCurrentTime
         else -> null
     }
 }

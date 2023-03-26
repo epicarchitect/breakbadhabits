@@ -17,7 +17,7 @@ class HabitUpdater(
         appDatabase.habitQueries.update(
             id = habitId.value,
             name = habitName.data.value,
-            iconId = icon.id.value
+            iconId = icon.value.id.value
         )
     }
 }

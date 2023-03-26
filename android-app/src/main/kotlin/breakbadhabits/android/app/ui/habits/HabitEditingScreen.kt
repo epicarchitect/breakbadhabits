@@ -110,7 +110,7 @@ fun HabitEditingScreen(
             cell = { icon ->
                 LocalResourceIcon(
                     modifier = Modifier.size(24.dp),
-                    resourceId = icon.resourceId
+                    resourceId = icon.value.resourceId
                 )
             }
         )

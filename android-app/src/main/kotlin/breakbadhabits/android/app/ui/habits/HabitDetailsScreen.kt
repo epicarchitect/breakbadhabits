@@ -24,7 +24,6 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.di.LocalUiModule
 import breakbadhabits.android.app.format.DurationFormatter
-import breakbadhabits.android.app.icons.impl
 import breakbadhabits.android.app.icons.resourceId
 import breakbadhabits.app.logic.habits.entity.Habit
 import breakbadhabits.app.logic.habits.entity.HabitAbstinence
@@ -87,7 +86,7 @@ fun HabitDetailsScreen(
                 modifier = Modifier
                     .size(44.dp)
                     .align(Alignment.CenterHorizontally),
-                resourceId = habit.icon.resourceId
+                resourceId = habit.icon.value.resourceId
             )
 
             Spacer(modifier = Modifier.height(8.dp))

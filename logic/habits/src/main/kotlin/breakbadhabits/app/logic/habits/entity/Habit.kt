@@ -11,5 +11,5 @@ data class Habit(
 
     data class Name(val value: String)
 
-    data class Icon(val value: LocalIcon): LocalIcon by value
+    data class Icon(val value: LocalIcon)
 }

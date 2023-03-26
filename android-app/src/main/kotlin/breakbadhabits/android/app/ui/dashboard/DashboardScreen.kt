@@ -180,7 +180,7 @@ private fun LazyItemScope.HabitItem(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    LocalResourceIcon(item.habit.icon.resourceId)
+                    LocalResourceIcon(item.habit.icon.value.resourceId)
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.habit.name.value,

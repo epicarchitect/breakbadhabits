@@ -112,7 +112,7 @@ fun HabitTracksScreen(
                     ) {
                         LocalResourceIcon(
                             modifier = Modifier.size(28.dp),
-                            resourceId = habit.icon.resourceId
+                            resourceId = habit.icon.value.resourceId
                         )
 
                         Spacer(modifier = Modifier.width(16.dp))
