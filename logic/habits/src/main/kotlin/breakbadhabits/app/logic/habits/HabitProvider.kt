@@ -1,14 +1,14 @@
 package breakbadhabits.app.logic.habits
 
 import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
-import breakbadhabits.foundation.datetime.secondsToInstant
+import breakbadhabits.foundation.coroutines.flow.mapItems
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
-import kotlinx.datetime.TimeZone
 
 class HabitProvider(
     private val appDatabase: AppDatabase,
@@ -18,33 +18,22 @@ class HabitProvider(
     fun habitFlow(id: Habit.Id) = appDatabase.habitQueries
         .selectById(id.value)
         .asFlow()
+        .mapToOneOrNull(coroutineDispatchers.io)
         .map {
-            it.executeAsOneOrNull()?.toEntity()
+            it?.toEntity()
         }.flowOn(coroutineDispatchers.io)
-
-    suspend fun getHabit(id: Habit.Id) = withContext(coroutineDispatchers.io) {
-        appDatabase.habitQueries
-            .selectById(id.value)
-            .executeAsOneOrNull()
-            ?.toEntity()
-    }
 
     fun habitsFlow() = appDatabase.habitQueries
         .selectAll()
         .asFlow()
-        .map {
-            it.executeAsList().map {
-                it.toEntity()
-            }
-        }.flowOn(coroutineDispatchers.io)
+        .mapToList(coroutineDispatchers.io)
+        .mapItems {
+            it.toEntity()
+        }.flowOn(coroutineDispatchers.default)
 
     private fun breakbadhabits.app.database.Habit.toEntity() = Habit(
         id = Habit.Id(id),
         name = Habit.Name(name),
-        icon = Habit.Icon(iconId),
-        creationTime = Habit.CreationTime(
-            time = createdAtTimeInSecondsUtc.secondsToInstant(),
-            timeZone = TimeZone.of(createdInTimeZone)
-        )
+        icon = Habit.Icon(iconId)
     )
 }

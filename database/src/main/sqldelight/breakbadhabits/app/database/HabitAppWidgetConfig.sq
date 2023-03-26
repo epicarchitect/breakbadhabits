@@ -2,10 +2,10 @@ import kotlin.Long;
 import kotlin.collections.List;
 
 CREATE TABLE IF NOT EXISTS HabitAppWidgetConfig (
-  id           INTEGER            NOT NULL PRIMARY KEY,
-  title        TEXT               NOT NULL,
-  appWidgetId  INTEGER            NOT NULL,
-  habitIds TEXT AS List<Long> NOT NULL
+  id          INTEGER NOT NULL PRIMARY KEY,
+  title       TEXT NOT NULL,
+  appWidgetId INTEGER NOT NULL,
+  habitIds    TEXT AS List<Long> NOT NULL
 );
 
 insert:

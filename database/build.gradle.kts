@@ -13,6 +13,7 @@ dependencies {
     api("app.cash.sqldelight:android-driver:2.0.0-alpha05")
     api("app.cash.sqldelight:primitive-adapters:2.0.0-alpha05")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation(projects.foundation.datetime)
 }
 
 sqldelight {

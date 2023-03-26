@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -143,9 +142,7 @@ private fun NotExistsHabits() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
             text = stringResource(R.string.habits_empty)
         )

@@ -1,20 +1,20 @@
+import kotlinx.datetime.Instant;
+
 CREATE TABLE IF NOT EXISTS HabitTrack (
-  id                        INTEGER NOT NULL PRIMARY KEY,
-  habitId                   INTEGER NOT NULL,
-  startTimeInSecondsUtc     INTEGER NOT NULL,
-  endTimeInSecondsUtc       INTEGER NOT NULL,
-  createdInTimeZone         TEXT    NOT NULL,
-  createdAtTimeInSecondsUtc INTEGER NOT NULL,
-  dailyCount                INTEGER NOT NULL,
-  comment                   TEXT
+  id         INTEGER NOT NULL PRIMARY KEY,
+  habitId    INTEGER NOT NULL,
+  startTime  INTEGER AS Instant NOT NULL,
+  endTime    INTEGER AS Instant NOT NULL,
+  dailyCount INTEGER NOT NULL,
+  comment    TEXT
 );
 
 insert:
 INSERT INTO HabitTrack
-VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+VALUES (?, ?, ?, ?, ?, ?);
 
 update:
-UPDATE HabitTrack SET startTimeInSecondsUtc = ?, endTimeInSecondsUtc = ?, dailyCount = ?, comment = ?
+UPDATE HabitTrack SET startTime = ?, endTime = ?, dailyCount = ?, comment = ?
 WHERE id = ?;
 
 deleteById:
@@ -32,5 +32,5 @@ SELECT * FROM HabitTrack WHERE id = ?;
 selectByHabitId:
 SELECT * FROM HabitTrack WHERE habitId = ?;
 
-selectByHabitIdAndMaxRangeEnd:
-SELECT * FROM HabitTrack WHERE habitId = :habitId AND endTimeInSecondsUtc = (SELECT max(endTimeInSecondsUtc) FROM HabitTrack WHERE habitId = :habitId) LIMIT 1;
+selectByHabitIdAndMaxEndTime:
+SELECT * FROM HabitTrack WHERE habitId = :habitId AND endTime = (SELECT max(endTime) FROM HabitTrack WHERE habitId = :habitId) LIMIT 1;

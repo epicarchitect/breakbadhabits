@@ -1,14 +1,12 @@
 CREATE TABLE IF NOT EXISTS Habit (
-  id                        INTEGER NOT NULL PRIMARY KEY,
-  name                      TEXT    NOT NULL,
-  iconId                    INTEGER NOT NULL,
-  createdInTimeZone         TEXT    NOT NULL,
-  createdAtTimeInSecondsUtc INTEGER NOT NULL
+  id                INTEGER NOT NULL PRIMARY KEY,
+  name              TEXT NOT NULL,
+  iconId            INTEGER NOT NULL
 );
 
 insert:
 INSERT INTO Habit
-VALUES (?, ?, ?, ?, ?);
+VALUES (?, ?, ?);
 
 update:
 UPDATE Habit SET name = ?, iconId = ?

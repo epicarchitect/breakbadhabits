@@ -8,8 +8,7 @@ data class HabitTrack(
     val habitId: Habit.Id,
     val time: Time,
     val eventCount: EventCount,
-    val comment: Comment?,
-    val creationTime: CreationTime
+    val comment: Comment?
 ) {
     data class Id(val value: Long)
 
@@ -37,6 +36,4 @@ data class HabitTrack(
     data class EventCount(val dailyCount: Int)
 
     data class Comment(val value: String)
-
-    data class CreationTime(val time: Instant, val timeZone: TimeZone)
 }

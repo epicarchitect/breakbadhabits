@@ -8,13 +8,17 @@ object AppDatabaseFactory {
         context: Context,
         name: String
     ) = AppDatabase(
-        AndroidSqliteDriver(
+        driver = AndroidSqliteDriver(
             schema = AppDatabase.Schema,
             context = context,
             name = name
         ),
-        HabitAppWidgetConfig.Adapter(
+        HabitAppWidgetConfigAdapter = HabitAppWidgetConfig.Adapter(
             habitIdsAdapter = ListOfLongsAdapter
+        ),
+        HabitTrackAdapter = HabitTrack.Adapter(
+            startTimeAdapter = InstantAdapter,
+            endTimeAdapter = InstantAdapter
         )
     )
 }

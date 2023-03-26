@@ -63,8 +63,6 @@ class LogicModule(
         HabitCreator(
             appDatabase = appDatabase,
             idGenerator = idGenerator,
-            dateTimeConfigProvider = dateTimeConfigProvider,
-            dateTimeProvider = dateTimeProvider,
             coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }
@@ -141,8 +139,6 @@ class LogicModule(
         HabitTrackCreator(
             appDatabase = appDatabase,
             idGenerator = idGenerator,
-            dateTimeConfigProvider = dateTimeConfigProvider,
-            dateTimeProvider = dateTimeProvider,
             coroutineDispatchers = DefaultCoroutineDispatchers
         )
     }

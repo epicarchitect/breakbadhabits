@@ -1,21 +1,21 @@
 package breakbadhabits.app.logic.habits.tracks
 
 import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
+import breakbadhabits.foundation.coroutines.flow.mapItems
 import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.monthOfYear
 import breakbadhabits.foundation.datetime.mountsBetween
-import breakbadhabits.foundation.datetime.secondsToInstant
-import breakbadhabits.foundation.datetime.secondsToInstantRange
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.TimeZone
 import breakbadhabits.app.database.HabitTrack as DatabaseHabitTrack
 
 class HabitTrackProvider(
@@ -27,27 +27,26 @@ class HabitTrackProvider(
     fun habitTracksFlow() = appDatabase.habitTrackQueries
         .selectAll()
         .asFlow()
-        .map {
-            it.executeAsList().map {
-                it.toEntity()
-            }
-        }.flowOn(coroutineDispatchers.io)
+        .mapToList(coroutineDispatchers.io)
+        .mapItems {
+            it.toEntity()
+        }.flowOn(coroutineDispatchers.default)
 
     fun habitTracksFlow(id: Habit.Id) = appDatabase.habitTrackQueries
         .selectByHabitId(id.value)
         .asFlow()
-        .map {
-            it.executeAsList().map {
-                it.toEntity()
-            }
-        }.flowOn(coroutineDispatchers.io)
+        .mapToList(coroutineDispatchers.io)
+        .mapItems {
+            it.toEntity()
+        }.flowOn(coroutineDispatchers.default)
 
     fun habitTrackFlowByMaxEnd(id: Habit.Id) = appDatabase.habitTrackQueries
-        .selectByHabitIdAndMaxRangeEnd(id.value)
+        .selectByHabitIdAndMaxEndTime(id.value)
         .asFlow()
+        .mapToOneOrNull(coroutineDispatchers.io)
         .map {
-            it.executeAsOneOrNull()?.toEntity()
-        }.flowOn(coroutineDispatchers.io)
+            it?.toEntity()
+        }.flowOn(coroutineDispatchers.default)
 
     fun monthsToHabitTracksFlow(id: Habit.Id) = combine(
         habitTracksFlow(id),
@@ -75,12 +74,8 @@ class HabitTrackProvider(
     private fun DatabaseHabitTrack.toEntity() = HabitTrack(
         id = HabitTrack.Id(id),
         habitId = Habit.Id(habitId),
-        time = HabitTrack.Time.of((startTimeInSecondsUtc..endTimeInSecondsUtc).secondsToInstantRange()),
+        time = HabitTrack.Time.of((startTime..endTime)),
         eventCount = HabitTrack.EventCount(dailyCount.toInt()),
-        comment = comment?.let(HabitTrack::Comment),
-        creationTime = HabitTrack.CreationTime(
-            time = createdAtTimeInSecondsUtc.secondsToInstant(),
-            timeZone = TimeZone.of(createdInTimeZone)
-        )
+        comment = comment?.let(HabitTrack::Comment)
     )
 }

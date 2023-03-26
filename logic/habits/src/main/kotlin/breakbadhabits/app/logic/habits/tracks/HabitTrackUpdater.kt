@@ -17,8 +17,8 @@ class HabitTrackUpdater(
     ) = withContext(coroutineDispatchers.io) {
         appDatabase.habitTrackQueries.update(
             id = id.value,
-            startTimeInSecondsUtc = time.data.start.epochSeconds,
-            endTimeInSecondsUtc = time.data.endInclusive.epochSeconds,
+            startTime = time.data.start,
+            endTime = time.data.endInclusive,
             dailyCount = eventCount.data.dailyCount.toLong(),
             comment = comment?.value
         )

@@ -14,6 +14,7 @@ import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class HabitUpdatingViewModel(
@@ -80,7 +81,7 @@ class HabitUpdatingViewModel(
 
     init {
         viewModelScope.launch {
-            val habit = checkNotNull(habitProvider.getHabit(habitId))
+            val habit = checkNotNull(habitProvider.habitFlow(habitId).first())
             initialHabit.value = habit
             habitNameController.changeInput(habit.name)
             habitIconSelectionController.select(habit.icon)
