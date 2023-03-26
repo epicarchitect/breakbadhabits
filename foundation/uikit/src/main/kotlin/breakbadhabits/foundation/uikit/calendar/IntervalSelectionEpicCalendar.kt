@@ -467,6 +467,7 @@ fun IntervalSelectionEpicCalendarDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
         ) {
             IntervalSelectionEpicCalendar(
                 state = state,
