@@ -49,8 +49,6 @@ fun HabitEditingScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Spacer(Modifier.height(24.dp))
-
         Text(
             text = stringResource(R.string.habitEditing_title),
             type = Text.Type.Title,

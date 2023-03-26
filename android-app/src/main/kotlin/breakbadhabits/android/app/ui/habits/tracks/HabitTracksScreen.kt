@@ -106,24 +106,12 @@ fun HabitTracksScreen(
                     controller = habitController
                 ) { habit ->
                     habit ?: return@LoadingBox
-                    Row(
+                    Text(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        LocalResourceIcon(
-                            modifier = Modifier.size(28.dp),
-                            resourceId = habit.icon.value.resourceId
-                        )
-
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Text(
-                            text = habit.name.value,
-                            type = Text.Type.Title
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
+                        text = habit.name.value,
+                        type = Text.Type.Title,
+                        maxLines = 1
+                    )
                 }
 
                 val title = remember(jtYearMonth) {
@@ -159,8 +147,6 @@ fun HabitTracksScreen(
                     LocalResourceIcon(resourceId = R.drawable.ic_arrow_right)
                 }
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             EpicCalendar(
                 state = epicCalendarState,

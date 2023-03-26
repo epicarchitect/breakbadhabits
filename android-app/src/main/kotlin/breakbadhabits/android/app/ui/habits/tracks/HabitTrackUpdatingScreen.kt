@@ -100,8 +100,6 @@ fun HabitTrackUpdatingScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Spacer(Modifier.height(24.dp))
-
         Text(
             text = stringResource(R.string.habitEventEditing_title),
             type = Text.Type.Title,

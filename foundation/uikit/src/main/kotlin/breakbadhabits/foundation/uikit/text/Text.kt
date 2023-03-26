@@ -37,6 +37,7 @@ fun Text(
     priority: Text.Priority = Text.Priority.Default,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Ellipsis,
+    maxLines: Int = Int.MAX_VALUE
 ) {
     MaterialText(
         modifier = modifier,
@@ -59,6 +60,7 @@ fun Text(
             }
         },
         textAlign = textAlign,
-        overflow = overflow
+        overflow = overflow,
+        maxLines = maxLines
     )
 }
