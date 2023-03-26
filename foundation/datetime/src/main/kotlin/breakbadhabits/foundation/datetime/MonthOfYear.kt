@@ -92,3 +92,5 @@ fun ClosedRange<MonthOfYear>.mountsBetween(): List<MonthOfYear> {
 val LocalDate.monthOfYear get() = MonthOfYear(year, month)
 
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
+
+fun ClosedRange<Instant>.monthOfYearRange(timeZone: TimeZone) = start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)

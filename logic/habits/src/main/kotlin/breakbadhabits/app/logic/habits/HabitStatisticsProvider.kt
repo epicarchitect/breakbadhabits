@@ -14,6 +14,8 @@ import breakbadhabits.foundation.datetime.countDaysInMonth
 import breakbadhabits.foundation.datetime.maxDuration
 import breakbadhabits.foundation.datetime.minDuration
 import breakbadhabits.foundation.datetime.monthOfYear
+import breakbadhabits.foundation.datetime.monthOfYearRange
+import breakbadhabits.foundation.datetime.previous
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.datetime.Clock
@@ -76,7 +78,7 @@ class HabitStatisticsProvider(
                 timeZone = timeZone
             ),
             previousMonthCount = tracks.countEventsInMonth(
-                monthOfYear = previousMonthDate.monthOfYear,
+                monthOfYear = currentDate.monthOfYear.previous(),
                 timeZone = timeZone
             ),
             totalCount = tracks.countEvents(timeZone)
@@ -100,10 +102,4 @@ private fun List<HabitTrack>.countEvents(
 private fun List<HabitTrack>.filterByMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
-) = filter { track ->
-    track.time.endInclusive.toLocalDateTime(timeZone).let {
-        it.month == monthOfYear.month && it.year == monthOfYear.year
-    } || track.time.start.toLocalDateTime(timeZone).let {
-        it.month == monthOfYear.month && it.year == monthOfYear.year
-    }
-}
+) = filter { monthOfYear in it.time.monthOfYearRange(timeZone) }
