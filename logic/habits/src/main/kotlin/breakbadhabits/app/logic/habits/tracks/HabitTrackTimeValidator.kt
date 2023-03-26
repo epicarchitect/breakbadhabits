@@ -12,7 +12,7 @@ class HabitTrackTimeValidator(
     } ?: CorrectHabitTrackTime(data)
 
     private fun HabitTrack.Time.incorrectReason() = when {
-        dateTimeProvider.getCurrentTime().let {
+        dateTimeProvider.currentTime.value.let {
             it < start || it < endInclusive
         }  -> IncorrectHabitTrackTime.Reason.BiggestThenCurrentTime
         else -> null

@@ -14,4 +14,18 @@
     <string name="habitCreation_lastEventTime_date">Дата события: %s</string>
     <string name="habitCreation_lastEventTime_time">Время события: %s</string>
     <string name="habitCreation_lastEventTimeValidation_biggestThenCurrentTime">Дата и время события не могут быть больше текущего времени.</string>
+
+    <string name="habitCreation_habitTime_month_1">1 месяц</string>
+    <string name="habitCreation_habitTime_month_3">3 месяца</string>
+    <string name="habitCreation_habitTime_month_6">6 месяцов</string>
+    <string name="habitCreation_habitTime_year_1">1 год</string>
+    <string name="habitCreation_habitTime_year_2">2 года</string>
+    <string name="habitCreation_habitTime_year_3">3 года</string>
+    <string name="habitCreation_habitTime_year_4">4 года</string>
+    <string name="habitCreation_habitTime_year_5">5 лет</string>
+    <string name="habitCreation_habitTime_year_6">6 лет</string>
+    <string name="habitCreation_habitTime_year_7">7 лет</string>
+    <string name="habitCreation_habitTime_year_8">8 лет</string>
+    <string name="habitCreation_habitTime_year_9">9 лет</string>
+    <string name="habitCreation_habitTime_year_10">10 лет</string>
 </resources>

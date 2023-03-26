@@ -14,4 +14,18 @@
     <string name="habitCreation_lastEventTime_date">Event date: %s</string>
     <string name="habitCreation_lastEventTime_time">Event time: %s</string>
     <string name="habitCreation_lastEventTimeValidation_biggestThenCurrentTime">The date and time of the event cannot be greater than the current time.</string>
+
+    <string name="habitCreation_habitTime_month_1">1 month</string>
+    <string name="habitCreation_habitTime_month_3">3 month</string>
+    <string name="habitCreation_habitTime_month_6">6 month</string>
+    <string name="habitCreation_habitTime_year_1">1 year</string>
+    <string name="habitCreation_habitTime_year_2">2 year</string>
+    <string name="habitCreation_habitTime_year_3">3 year</string>
+    <string name="habitCreation_habitTime_year_4">4 year</string>
+    <string name="habitCreation_habitTime_year_5">5 year</string>
+    <string name="habitCreation_habitTime_year_6">6 year</string>
+    <string name="habitCreation_habitTime_year_7">7 year</string>
+    <string name="habitCreation_habitTime_year_8">8 year</string>
+    <string name="habitCreation_habitTime_year_9">9 year</string>
+    <string name="habitCreation_habitTime_year_10">10 year</string>
 </resources>

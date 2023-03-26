@@ -13,7 +13,7 @@ import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackTime
 import breakbadhabits.app.logic.habits.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.tracks.HabitTrackEventCountValidator
 import breakbadhabits.app.logic.habits.tracks.HabitTrackTimeValidator
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.datetime.toInstantRange
@@ -53,7 +53,7 @@ class HabitCreationViewModel(
 
     val firstTrackTimeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.Time.of(dateTimeProvider.getCurrentTime()),
+        initialInput = HabitTrack.Time.of(dateTimeProvider.currentTime.value),
         validation = trackTimeValidator::validate,
         decorateInput = {
             val timeZone = dateTimeConfigProvider.getConfig().appTimeZone
@@ -65,7 +65,7 @@ class HabitCreationViewModel(
         }
     )
 
-    val creationController = RequestController(
+    val creationController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
             val habitIcon = habitIconSelectionController.state.value.selectedItem

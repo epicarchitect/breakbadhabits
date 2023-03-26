@@ -29,7 +29,7 @@ import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAppWidgetConfig
 import breakbadhabits.app.entity.HabitTrack
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.uikit.ext.collectState
 
 
@@ -100,15 +100,15 @@ fun AppScreen(
     presentationModule: PresentationModule,
     habitIconResourceProvider: HabitIconResourceProvider,
     dateTimeFormatter: DateTimeFormatter,
-    durationFormatter: DurationFormatter,
-    dateTimeConfigProvider: DateTimeConfigProvider
+    durationFormatter: DurationFormatter
 ) {
     CompositionLocalProvider(
         LocalPresentationModule provides presentationModule,
         LocalHabitIconResourceProvider provides habitIconResourceProvider,
         LocalDateTimeFormatter provides dateTimeFormatter,
         LocalDurationFormatter provides durationFormatter,
-        LocalDateTimeConfigProvider provides dateTimeConfigProvider
+        LocalDateTimeConfigProvider provides presentationModule.logicModule.dateTimeConfigProvider,
+        LocalDateTimeProvider provides presentationModule.logicModule.dateTimeProvider
     ) {
         AppScreenContent()
     }
@@ -138,7 +138,7 @@ private fun AppScreenContent() {
             val creationState by viewModel.creationController.collectState()
 
             LaunchedEffect(creationState) {
-                if (creationState.requestState is RequestController.RequestState.Executed) {
+                if (creationState.requestState is SingleRequestController.RequestState.Executed) {
                     navController.popBackStack()
                 }
             }
@@ -166,7 +166,7 @@ private fun AppScreenContent() {
             val deletionState by viewModel.deletionController.collectState()
 
             LaunchedEffect(deletionState.requestState) {
-                if (deletionState.requestState is RequestController.RequestState.Executed) {
+                if (deletionState.requestState is SingleRequestController.RequestState.Executed) {
                     navController.popBackStack(
                         route = Screens.Dashboard.route,
                         inclusive = false
@@ -175,7 +175,7 @@ private fun AppScreenContent() {
             }
 
             LaunchedEffect(updatingState.requestState) {
-                if (updatingState.requestState is RequestController.RequestState.Executed) {
+                if (updatingState.requestState is SingleRequestController.RequestState.Executed) {
                     navController.popBackStack()
                 }
             }
@@ -200,7 +200,7 @@ private fun AppScreenContent() {
             val creationState by viewModel.creationController.collectState()
 
             LaunchedEffect(creationState) {
-                if (creationState.requestState is RequestController.RequestState.Executed) {
+                if (creationState.requestState is SingleRequestController.RequestState.Executed) {
                     navController.popBackStack()
                 }
             }
@@ -228,13 +228,13 @@ private fun AppScreenContent() {
             val deletionState by viewModel.deletionController.collectState()
 
             LaunchedEffect(deletionState.requestState) {
-                if (deletionState.requestState is RequestController.RequestState.Executed) {
+                if (deletionState.requestState is SingleRequestController.RequestState.Executed) {
                     navController.popBackStack()
                 }
             }
 
             LaunchedEffect(updatingState.requestState) {
-                if (updatingState.requestState is RequestController.RequestState.Executed) {
+                if (updatingState.requestState is SingleRequestController.RequestState.Executed) {
                     navController.popBackStack()
                 }
             }
@@ -262,13 +262,13 @@ private fun AppScreenContent() {
             val deletionState by viewModel.deletionController.collectState()
 
             LaunchedEffect(deletionState.requestState) {
-                if (deletionState.requestState is RequestController.RequestState.Executed) {
+                if (deletionState.requestState is SingleRequestController.RequestState.Executed) {
                     navController.popBackStack()
                 }
             }
 
             LaunchedEffect(updatingState.requestState) {
-                if (updatingState.requestState is RequestController.RequestState.Executed) {
+                if (updatingState.requestState is SingleRequestController.RequestState.Executed) {
                     navController.popBackStack()
                 }
             }

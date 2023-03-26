@@ -1,12 +1,11 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAppWidgetConfig
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigCreator
 import breakbadhabits.foundation.controller.MultiSelectionController
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.map
@@ -28,7 +27,7 @@ class HabitAppWidgetCreationViewModel(
         itemsFlow = habitProvider.habitsFlow()
     )
 
-    val creationController = RequestController(
+    val creationController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
             habitAppWidgetConfigCreator.createAppWidget(

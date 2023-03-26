@@ -29,7 +29,7 @@ import breakbadhabits.app.logic.habits.tracks.IncorrectHabitTrackTime
 import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackEventCount
 import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.LoadingController
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.datetime.toInstantRange
 import breakbadhabits.foundation.datetime.toJavaLocalDateTimeRange
@@ -52,8 +52,8 @@ import java.time.YearMonth
 fun HabitTrackUpdatingScreen(
     eventCountInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackEventCount>,
     timeInputController: ValidatedInputController<HabitTrack.Time, ValidatedHabitTrackTime>,
-    updatingController: RequestController,
-    deletionController: RequestController,
+    updatingController: SingleRequestController,
+    deletionController: SingleRequestController,
     habitController: LoadingController<Habit?>,
     commentInputController: ValidatedInputController<HabitTrack.Comment?, Nothing>
 ) {
@@ -148,7 +148,7 @@ fun HabitTrackUpdatingScreen(
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
-            regex = Regexps.integersOrEmpty
+            regex = Regexps.integersOrEmpty(maxCharCount = 4)
         )
 
         Spacer(Modifier.height(24.dp))

@@ -3,12 +3,12 @@ package breakbadhabits.foundation.uikit.button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.uikit.ext.collectState
 
 @Composable
 fun RequestButton(
-    requestController: RequestController,
+    requestController: SingleRequestController,
     text: String,
     modifier: Modifier = Modifier,
     type: Button.Type = Button.Type.Default,

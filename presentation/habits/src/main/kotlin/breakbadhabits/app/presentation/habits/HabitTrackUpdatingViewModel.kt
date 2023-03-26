@@ -12,7 +12,7 @@ import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackTime
 import breakbadhabits.app.logic.habits.tracks.HabitTrackEventCountValidator
 import breakbadhabits.app.logic.habits.tracks.HabitTrackTimeValidator
 import breakbadhabits.foundation.controller.LoadingController
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.datetime.toInstantRange
 import breakbadhabits.foundation.viewmodel.ViewModel
@@ -72,7 +72,7 @@ class HabitTrackUpdatingViewModel(
         validation = { null }
     )
 
-    val updatingController = RequestController(
+    val updatingController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
             val eventCount = eventCountInputController.validateAndAwait()
@@ -107,7 +107,7 @@ class HabitTrackUpdatingViewModel(
         }
     )
 
-    val deletionController = RequestController(
+    val deletionController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
             habitTrackDeleter.deleteHabitTrack(habitTrackId)

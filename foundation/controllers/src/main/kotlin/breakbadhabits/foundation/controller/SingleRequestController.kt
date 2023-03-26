@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class RequestController(
+class SingleRequestController(
     private val coroutineScope: CoroutineScope,
     request: suspend () -> Unit,
     isAllowedFlow: Flow<Boolean> = flowOf(true),
-) : StateController<RequestController.State> {
+) : StateController<SingleRequestController.State> {
     private val internalRequest = request
 
     private val requestState = MutableStateFlow<RequestState>(RequestState.NotExecuted())

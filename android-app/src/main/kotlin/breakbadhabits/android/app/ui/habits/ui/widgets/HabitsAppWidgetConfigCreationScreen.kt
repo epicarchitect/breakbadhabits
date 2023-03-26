@@ -24,7 +24,7 @@ import breakbadhabits.android.app.R
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.controller.MultiSelectionController
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.Checkbox
@@ -39,7 +39,7 @@ import breakbadhabits.foundation.uikit.text.ValidatedInputField
 @Composable
 fun HabitsAppWidgetConfigCreationScreen(
     titleInputController: ValidatedInputController<HabitAppWidgetConfig.Title, Nothing>,
-    creationController: RequestController,
+    creationController: SingleRequestController,
     habitsSelectionController: MultiSelectionController<Habit>
 ) {
     ClearFocusWhenKeyboardHiddenEffect()

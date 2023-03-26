@@ -20,7 +20,7 @@ import breakbadhabits.android.app.ui.app.LocalHabitIconResourceProvider
 import breakbadhabits.app.entity.Habit
 import breakbadhabits.app.logic.habits.IncorrectHabitNewName
 import breakbadhabits.app.logic.habits.ValidatedHabitNewName
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.LocalResourceIcon
@@ -36,8 +36,8 @@ import breakbadhabits.foundation.uikit.text.ValidatedInputField
 fun HabitEditingScreen(
     habitNameController: ValidatedInputController<Habit.Name, ValidatedHabitNewName>,
     habitIconSelectionController: SingleSelectionController<Habit.Icon>,
-    updatingController: RequestController,
-    deletionController: RequestController,
+    updatingController: SingleRequestController,
+    deletionController: SingleRequestController,
 ) {
     val context = LocalContext.current
     val habitIconResources = LocalHabitIconResourceProvider.current

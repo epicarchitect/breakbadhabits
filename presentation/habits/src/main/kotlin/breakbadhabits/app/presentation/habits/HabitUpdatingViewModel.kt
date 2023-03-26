@@ -8,7 +8,7 @@ import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.HabitUpdater
 import breakbadhabits.app.logic.habits.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.HabitNewNameValidator
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.viewmodel.ViewModel
@@ -45,7 +45,7 @@ class HabitUpdatingViewModel(
         }
     )
 
-    val updatingController = RequestController(
+    val updatingController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
             val habitIcon = habitIconSelectionController.state.value.selectedItem
@@ -72,7 +72,7 @@ class HabitUpdatingViewModel(
         }
     )
 
-    val deletionController = RequestController(
+    val deletionController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
             habitDeleter.deleteHabit(habitId)

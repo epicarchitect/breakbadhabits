@@ -1,5 +1,8 @@
 package breakbadhabits.foundation.uikit.regex
 
 object Regexps {
-    val integersOrEmpty = "^\$|^[1-9][0-9]{0,9}$".toRegex()
+    fun integersOrEmpty(maxCharCount: Int): Regex {
+        val count = maxCharCount - 1
+        return "^\$|^[1-9][0-9]{0,$count}$".toRegex()
+    }
 }

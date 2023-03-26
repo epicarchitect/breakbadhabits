@@ -10,7 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.android.app.base.activity.ComposeActivity
 import breakbadhabits.android.app.ui.habits.ui.widgets.HabitsAppWidgetConfigCreationScreen
 import breakbadhabits.app.entity.HabitAppWidgetConfig
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.uikit.ext.collectState
 
 
@@ -34,7 +34,7 @@ class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
         val creationState by viewModel.creationController.collectState()
 
         LaunchedEffect(creationState) {
-            if (creationState.requestState is RequestController.RequestState.Executed) {
+            if (creationState.requestState is SingleRequestController.RequestState.Executed) {
                 setResult(
                     RESULT_OK,
                     Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)

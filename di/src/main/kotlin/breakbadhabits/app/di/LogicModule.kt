@@ -5,6 +5,7 @@ import breakbadhabits.app.database.AppDatabaseFactory
 import breakbadhabits.app.database.IdGenerator
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.datetime.DateTimeProvider
+import breakbadhabits.app.logic.datetime.DateTimeProviderImpl
 import breakbadhabits.app.logic.habits.config.HabitsConfigProvider
 import breakbadhabits.app.logic.habits.HabitCreator
 import breakbadhabits.app.logic.habits.tracks.HabitTrackCreator
@@ -45,7 +46,7 @@ class LogicModule(
     }
 
     val dateTimeProvider by lazy {
-        DateTimeProvider(
+        DateTimeProviderImpl(
             configProvider = dateTimeConfigProvider,
             coroutineDispatchers = DefaultCoroutineDispatchers
         )

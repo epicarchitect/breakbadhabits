@@ -46,7 +46,7 @@ class HabitStatisticsProvider(
     ) = combine(
         habitAbstinenceProvider.abstinenceListFlow(habitId),
         habitTrackProvider.habitTracksFlow(habitId),
-        dateTimeProvider.currentTimeFlow()
+        dateTimeProvider.currentTime
     ) { abstinenceList, tracks, currentTime ->
         if (tracks.isEmpty() || abstinenceList.isEmpty()) return@combine null
 

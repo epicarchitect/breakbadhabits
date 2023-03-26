@@ -7,7 +7,7 @@ import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigDelet
 import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigProvider
 import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigUpdater
 import breakbadhabits.foundation.controller.MultiSelectionController
-import breakbadhabits.foundation.controller.RequestController
+import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +36,7 @@ class HabitAppWidgetUpdatingViewModel(
         itemsFlow = habitProvider.habitsFlow()
     )
 
-    val updatingController = RequestController(
+    val updatingController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
             habitAppWidgetConfigUpdater.updateAppWidget(
@@ -63,7 +63,7 @@ class HabitAppWidgetUpdatingViewModel(
         }
     )
 
-    val deletionController = RequestController(
+    val deletionController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
             habitAppWidgetConfigDeleter.deleteById(id)

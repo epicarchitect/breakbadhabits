@@ -26,8 +26,7 @@ class MainActivity : ComposeActivity() {
             durationFormatter = DurationFormatter(
                 resources = resources,
                 defaultAccuracy = DurationFormatter.Accuracy.SECONDS
-            ),
-            dateTimeConfigProvider = presentationModule.logicModule.dateTimeConfigProvider
+            )
         )
     }
 }
