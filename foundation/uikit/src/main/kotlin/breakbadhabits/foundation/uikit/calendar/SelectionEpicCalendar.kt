@@ -67,12 +67,8 @@ import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.util.*
 
-class IntervalSelectionEpicCalendarState(
-    timeZone: TimeZone,
-    availableRange: ClosedRange<Instant>,
-    currentMonth: MonthOfYear
-) {
-    var timeZone by mutableStateOf(timeZone)
+class IntervalSelectionEpicCalendarState {
+    var timeZone by mutableStateOf(TimeZone.currentSystemDefault())
     val monthTitles = Month.values().map {
         it.getDisplayName(
             TextStyle.FULL_STANDALONE,
@@ -80,14 +76,14 @@ class IntervalSelectionEpicCalendarState(
         ).replaceFirstChar(Char::uppercase)
     }
 
-    var availableRange by mutableStateOf(availableRange)
+    var availableRange: ClosedRange<Instant> by mutableStateOf(defaultAvailableRange(timeZone))
     val minMonthOfYear by derivedStateOf { availableRange.start.monthOfYear(timeZone) }
     val maxMonthOfYear by derivedStateOf { availableRange.endInclusive.monthOfYear(timeZone) }
 
     var selectedTab by mutableStateOf(0)
     var selectedStartDate by mutableStateOf<LocalDate?>(null)
     var selectedEndDate by mutableStateOf<LocalDate?>(null)
-    var currentMonth by mutableStateOf(currentMonth)
+    var currentMonth by mutableStateOf(MonthOfYear.now(timeZone))
     var showYearMonthSelection by mutableStateOf(false)
     val selectedRange by derivedStateOf {
         val start = selectedStartDate?.let {
@@ -487,11 +483,10 @@ fun rememberSelectionEpicCalendarState(
     currentMonth: MonthOfYear = MonthOfYear.now(timeZone),
     initialRange: ClosedRange<Instant>? = null,
 ) = remember(currentMonth, availableRange, initialRange) {
-    IntervalSelectionEpicCalendarState(
-        timeZone,
-        availableRange,
-        currentMonth
-    ).also {
+    IntervalSelectionEpicCalendarState().also {
+        it.timeZone = timeZone
+        it.availableRange = availableRange
+        it.currentMonth = currentMonth
         if (initialRange != null) it.selectRange(initialRange)
     }
 }

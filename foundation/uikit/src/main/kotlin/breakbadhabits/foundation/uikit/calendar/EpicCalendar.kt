@@ -224,21 +224,17 @@ fun rememberEpicCalendarState(
     monthOfYear: MonthOfYear = MonthOfYear.now(timeZone),
     ranges: List<ClosedRange<Instant>> = emptyList()
 ) = remember(monthOfYear, timeZone, ranges) {
-    EpicCalendarState(
-        timeZone = timeZone,
-        monthOfYear = monthOfYear,
-        ranges = ranges
-    )
+    EpicCalendarState().also {
+        it.timeZone = timeZone
+        it.monthOfYear = monthOfYear
+        it.ranges = ranges
+    }
 }
 
-class EpicCalendarState(
-    timeZone: TimeZone,
-    monthOfYear: MonthOfYear,
-    ranges: List<ClosedRange<Instant>>
-) {
-    var timeZone by mutableStateOf(timeZone)
-    var monthOfYear by mutableStateOf(monthOfYear)
-    var ranges: List<ClosedRange<Instant>> by mutableStateOf(ranges)
+class EpicCalendarState {
+    var timeZone by mutableStateOf(TimeZone.currentSystemDefault())
+    var monthOfYear by mutableStateOf(MonthOfYear.now(timeZone))
+    var ranges: List<ClosedRange<Instant>> by mutableStateOf(emptyList())
 
     val firstDayOfWeek: DayOfWeek by mutableStateOf(calculateFirstDayOfWeek())
     val weekDays: List<WeekDay> by derivedStateOf { calculateWeekDays(firstDayOfWeek) }

@@ -74,6 +74,7 @@ fun HabitTracksScreen(
 
         val epicCalendarState = rememberEpicCalendarState(
             timeZone = dateTimeConfig.appTimeZone,
+            monthOfYear = currentMonth,
             ranges = ranges
         )
 
