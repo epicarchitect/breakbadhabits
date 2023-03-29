@@ -74,20 +74,12 @@ fun HabitTracksScreen(
         val currentTracks = remember(currentMonth) { tracks[currentMonth] ?: emptyList() }
         val ranges = remember(tracks) {
             tracks.values.flatten().map {
-                it.time.start
-                    .toLocalDateTime(dateTimeConfig.appTimeZone)
-                    .toJavaLocalDateTime()
-                    .toLocalDate()..it.time.endInclusive
-                    .toLocalDateTime(dateTimeConfig.appTimeZone)
-                    .toJavaLocalDateTime()
-                    .toLocalDate()
+                it.time
             }
         }
-        val jtYearMonth = remember(currentMonth) {
-            YearMonth.of(currentMonth.year, currentMonth.month)
-        }
+
         val epicCalendarState = rememberEpicCalendarState(
-            yearMonth = jtYearMonth,
+            timeZone = dateTimeConfig.appTimeZone,
             ranges = ranges
         )
 
@@ -114,13 +106,13 @@ fun HabitTracksScreen(
                     )
                 }
 
-                val title = remember(jtYearMonth) {
+                val title = remember(currentMonth) {
                     "${
-                        jtYearMonth.month.getDisplayName(
+                        currentMonth.month.getDisplayName(
                             TextStyle.FULL_STANDALONE,
                             Locale.getDefault()
                         ).replaceFirstChar { it.titlecase(Locale.getDefault()) }
-                    } ${jtYearMonth.year}"
+                    } ${currentMonth.year}"
                 }
 
                 IconButton(
@@ -152,7 +144,7 @@ fun HabitTracksScreen(
                 state = epicCalendarState,
                 horizontalInnerPadding = 8.dp,
                 dayBadgeText = { day ->
-                    val date = day.date.toKotlinLocalDate()
+                    val date = day.date
                     val count = allTracks.fold(0) { count, track ->
                         val inTrack = date in track.time.start.toLocalDateTime(
                             dateTimeConfig.appTimeZone

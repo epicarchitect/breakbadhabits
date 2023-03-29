@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,24 +36,19 @@ import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.datetime.toInstantRange
-import breakbadhabits.foundation.datetime.toJavaLocalDateTimeRange
-import breakbadhabits.foundation.datetime.toKotlinRange
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.SingleSelectionChipRow
 import breakbadhabits.foundation.uikit.SingleSelectionGrid
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
-import breakbadhabits.foundation.uikit.calendar.IntervalSelectionEpicCalendarDialog
-import breakbadhabits.foundation.uikit.calendar.rememberRangeSelectionEpicCalendarState
+import breakbadhabits.foundation.uikit.calendar.SelectionEpicCalendarDialog
+import breakbadhabits.foundation.uikit.calendar.rememberSelectionEpicCalendarState
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
-import kotlinx.datetime.toJavaZoneId
-import java.time.YearMonth
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -92,9 +88,6 @@ fun HabitCreationScreen(
     val dateTimeProvider = logicModule.dateTimeProvider
     val currentTime by dateTimeProvider.currentTime.collectAsState()
     var rangeSelectionShow by remember { mutableStateOf(false) }
-    val nowYearMonth = remember(dateTimeConfig) {
-        YearMonth.now(dateTimeConfig.appTimeZone.toJavaZoneId())
-    }
 
     val firstTrackEventCountState by firstTrackEventCountInputController.collectState()
     val firstTrackRangeState by firstTrackTimeInputController.collectState()
@@ -102,22 +95,16 @@ fun HabitCreationScreen(
     ClearFocusWhenKeyboardHiddenEffect()
 
     if (rangeSelectionShow) {
-        val epicCalendarState = rememberRangeSelectionEpicCalendarState(
-            currentMonth = nowYearMonth,
-            maxMonth = nowYearMonth,
-            minMonth = nowYearMonth.minusYears(10),
-            initialRange = firstTrackRangeState.input.toJavaLocalDateTimeRange(dateTimeConfig.appTimeZone)
+        val epicCalendarState = rememberSelectionEpicCalendarState(
+            timeZone = dateTimeConfig.appTimeZone,
+            initialRange = firstTrackRangeState.input
         )
 
-        IntervalSelectionEpicCalendarDialog(
+        SelectionEpicCalendarDialog(
             state = epicCalendarState,
             onSelected = {
                 rangeSelectionShow = false
-                firstTrackTimeInputController.changeInput(
-                    HabitTrack.Time.of(
-                        it.toKotlinRange().toInstantRange(dateTimeConfig.appTimeZone)
-                    )
-                )
+                firstTrackTimeInputController.changeInput(HabitTrack.Time.of(it))
             },
             onCancel = {
                 rangeSelectionShow = false
@@ -219,18 +206,21 @@ fun HabitCreationScreen(
             mutableStateOf(0)
         }
 
+        LaunchedEffect(selectedHabitTimeIndex) {
+            val item = HabitTime.values()[selectedHabitTimeIndex]
+            firstTrackTimeInputController.changeInput(
+                HabitTrack.Time.of(
+                    (currentTime - item.offset)..currentTime
+                )
+            )
+        }
+
         SingleSelectionChipRow(
             items = HabitTime.values().map {
                 context.getString(it.titleRes)
             },
             onClick = {
                 selectedHabitTimeIndex = it
-                val item = HabitTime.values()[it]
-                firstTrackTimeInputController.changeInput(
-                    HabitTrack.Time.of(
-                        (currentTime - item.offset)..currentTime
-                    )
-                )
             },
             selectedIndex = selectedHabitTimeIndex,
             edgePadding = 16.dp

@@ -36,10 +36,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import breakbadhabits.foundation.datetime.MonthOfYear
+import breakbadhabits.foundation.datetime.atDay
+import breakbadhabits.foundation.datetime.lastDayOfWeek
+import breakbadhabits.foundation.datetime.length
+import breakbadhabits.foundation.datetime.next
+import breakbadhabits.foundation.datetime.previous
+import breakbadhabits.foundation.datetime.toLocalDateRanges
 import breakbadhabits.foundation.uikit.theme.AppTheme
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
 import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.YearMonth
 import java.time.format.TextStyle
 import java.time.temporal.WeekFields
 import java.util.*
@@ -64,9 +72,9 @@ fun EpicCalendar(
     rangeColor: Color = AppTheme.colorScheme.primary,
     rangeContentColor: Color = AppTheme.colorScheme.onPrimary,
     dayBadgeText: (EpicCalendarState.Day) -> String? = { null },
+    cellHeight: Dp = 38.dp
 ) {
     var cellWidth by remember { mutableStateOf(Dp.Unspecified) }
-    val cellHeight = remember { 38.dp }
     val density = LocalDensity.current
 
     Box(modifier.onSizeChanged {
@@ -74,7 +82,6 @@ fun EpicCalendar(
         cellWidth =
             Dp(((it.width / 7f) - cellSpacersWidth + 1f) / density.density) // +1f to fix right padding
     }) {
-
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
@@ -105,8 +112,8 @@ fun EpicCalendar(
             state.days.chunked(7).forEach {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     it.forEachIndexed { index, day ->
-                        val ranges = remember(state.visibleRanges, day) {
-                            state.visibleRanges.filter { day.date in it }
+                        val ranges = remember(state.visibleDateRanges, day) {
+                            state.visibleDateRanges.filter { day.date in it }
                         }
                         val isDayAtStartOfRange = remember(ranges, day) {
                             ranges.all { it.start == day.date }
@@ -213,23 +220,32 @@ fun EpicCalendar(
 
 @Composable
 fun rememberEpicCalendarState(
-    yearMonth: YearMonth,
-    ranges: List<ClosedRange<LocalDate>> = emptyList()
-) = remember(yearMonth, ranges) {
-    EpicCalendarState().also {
-        it.yearMonth = yearMonth
-        it.ranges = ranges
-    }
+    timeZone: TimeZone,
+    monthOfYear: MonthOfYear = MonthOfYear.now(timeZone),
+    ranges: List<ClosedRange<Instant>> = emptyList()
+) = remember(monthOfYear, timeZone, ranges) {
+    EpicCalendarState(
+        timeZone = timeZone,
+        monthOfYear = monthOfYear,
+        ranges = ranges
+    )
 }
 
-class EpicCalendarState {
-    var yearMonth: YearMonth by mutableStateOf(YearMonth.now())
+class EpicCalendarState(
+    timeZone: TimeZone,
+    monthOfYear: MonthOfYear,
+    ranges: List<ClosedRange<Instant>>
+) {
+    var timeZone by mutableStateOf(timeZone)
+    var monthOfYear by mutableStateOf(monthOfYear)
+    var ranges: List<ClosedRange<Instant>> by mutableStateOf(ranges)
+
     val firstDayOfWeek: DayOfWeek by mutableStateOf(calculateFirstDayOfWeek())
     val weekDays: List<WeekDay> by derivedStateOf { calculateWeekDays(firstDayOfWeek) }
-    val days: List<Day> by derivedStateOf { calculateDays(yearMonth) }
-    var ranges: List<ClosedRange<LocalDate>> by mutableStateOf(emptyList())
-    val visibleRanges: List<ClosedRange<LocalDate>> by derivedStateOf {
-        ranges.filter { range ->
+    val days: List<Day> by derivedStateOf { calculateDays(monthOfYear) }
+    val dateRanges by derivedStateOf { ranges.toLocalDateRanges(timeZone) }
+    val visibleDateRanges by derivedStateOf {
+        dateRanges.filter { range ->
             days.any { day ->
                 day.date in range
             }
@@ -245,31 +261,20 @@ class EpicCalendarState {
         WeekDay(it.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
     }
 
-    private fun calculateDays(currentYearMonth: YearMonth): List<Day> {
-        val previousYearMonth = currentYearMonth.minusMonths(1)
-        val nextYearMonth = currentYearMonth.plusMonths(1)
-        val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
-
-        val previousMonthLastDayOfWeek = previousYearMonth.atDay(
-            previousYearMonth.lengthOfMonth()
-        ).dayOfWeek
+    private fun calculateDays(currentYearMonth: MonthOfYear): List<Day> {
+        val previousYearMonth = currentYearMonth.previous()
+        val nextYearMonth = currentYearMonth.next()
+        val previousMonthLastDayOfWeek = previousYearMonth.lastDayOfWeek()
 
         val countLastDaysInPreviousMonth = when (firstDayOfWeek) {
-            DayOfWeek.MONDAY -> {
-                previousMonthLastDayOfWeek.value
-            }
-
+            DayOfWeek.MONDAY -> previousMonthLastDayOfWeek.value
             DayOfWeek.SUNDAY -> {
-                if (previousMonthLastDayOfWeek == DayOfWeek.SATURDAY) {
-                    0
-                } else {
-                    previousMonthLastDayOfWeek.value + 1
-                }
+                if (previousMonthLastDayOfWeek == DayOfWeek.SATURDAY) 0
+                else previousMonthLastDayOfWeek.value + 1
             }
-
             else -> error("Unexpected firstDayOfWeek: $firstDayOfWeek")
         }
-        val countDaysInCurrentMonth = currentYearMonth.lengthOfMonth()
+        val countDaysInCurrentMonth = currentYearMonth.length()
         val countFirstDaysInNextMonth =
             VISIBLE_DAYS_COUNT - countLastDaysInPreviousMonth - countDaysInCurrentMonth
 
@@ -277,7 +282,7 @@ class EpicCalendarState {
 
         repeat(countLastDaysInPreviousMonth) {
             val date = previousYearMonth.atDay(
-                previousYearMonth.lengthOfMonth() + it + 1 - countLastDaysInPreviousMonth
+                previousYearMonth.length() + it + 1 - countLastDaysInPreviousMonth
             )
 
             days.add(

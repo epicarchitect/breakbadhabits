@@ -9,7 +9,5 @@
 
     <style name="Base.Activity" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>

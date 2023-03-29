@@ -30,6 +30,7 @@ import breakbadhabits.app.logic.habits.entity.HabitAbstinence
 import breakbadhabits.app.logic.habits.entity.HabitStatistics
 import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
+import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.toDuration
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.Histogram
@@ -126,21 +127,16 @@ fun HabitDetailsScreen(
             ) {
                 LoadingBox(habitTracksController) { tracks ->
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        val yearMonth = remember { YearMonth.now() }
+                        val yearMonth = remember { MonthOfYear.now(dateTimeConfig.appTimeZone) }
+
                         val epicCalendarState = rememberEpicCalendarState(
-                            yearMonth = yearMonth,
+                            timeZone = dateTimeConfig.appTimeZone,
+                            monthOfYear = yearMonth,
                             ranges = remember(tracks) {
-                                tracks.map {
-                                    it.time.start
-                                        .toLocalDateTime(dateTimeConfig.appTimeZone)
-                                        .toJavaLocalDateTime()
-                                        .toLocalDate()..it.time.endInclusive
-                                        .toLocalDateTime(dateTimeConfig.appTimeZone)
-                                        .toJavaLocalDateTime()
-                                        .toLocalDate()
-                                }
+                                tracks.map { it.time }
                             }
                         )
+
                         val title = remember(yearMonth) {
                             "${
                                 yearMonth.month.getDisplayName(
@@ -165,7 +161,7 @@ fun HabitDetailsScreen(
                             state = epicCalendarState,
                             horizontalInnerPadding = 8.dp,
                             dayBadgeText = { day ->
-                                val date = day.date.toKotlinLocalDate()
+                                val date = day.date
                                 val count = tracks.fold(0) { count, track ->
                                     val inTrack = date in track.time.start.toLocalDateTime(
                                         dateTimeConfig.appTimeZone

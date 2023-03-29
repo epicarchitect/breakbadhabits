@@ -31,14 +31,11 @@ import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.datetime.toInstantRange
-import breakbadhabits.foundation.datetime.toJavaLocalDateTimeRange
-import breakbadhabits.foundation.datetime.toKotlinRange
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
-import breakbadhabits.foundation.uikit.calendar.IntervalSelectionEpicCalendarDialog
-import breakbadhabits.foundation.uikit.calendar.rememberRangeSelectionEpicCalendarState
+import breakbadhabits.foundation.uikit.calendar.SelectionEpicCalendarDialog
+import breakbadhabits.foundation.uikit.calendar.rememberSelectionEpicCalendarState
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.regex.Regexps
@@ -46,7 +43,6 @@ import breakbadhabits.foundation.uikit.text.ErrorText
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
-import java.time.YearMonth
 
 @Composable
 fun HabitTrackCreationScreen(
@@ -70,22 +66,16 @@ fun HabitTrackCreationScreen(
     ClearFocusWhenKeyboardHiddenEffect()
 
     if (rangeSelectionShow) {
-        val epicCalendarState = rememberRangeSelectionEpicCalendarState(
-            currentMonth = YearMonth.now(),
-            maxMonth = YearMonth.now(),
-            minMonth = YearMonth.now().minusYears(10),
-            initialRange = rangeState.input.toJavaLocalDateTimeRange(dateTimeConfig.appTimeZone)
+        val epicCalendarState = rememberSelectionEpicCalendarState(
+            timeZone = dateTimeConfig.appTimeZone,
+            initialRange = rangeState.input
         )
 
-        IntervalSelectionEpicCalendarDialog(
+        SelectionEpicCalendarDialog(
             state = epicCalendarState,
             onSelected = {
                 rangeSelectionShow = false
-                timeInputController.changeInput(
-                    HabitTrack.Time.of(
-                        it.toKotlinRange().toInstantRange(dateTimeConfig.appTimeZone)
-                    )
-                )
+                timeInputController.changeInput(HabitTrack.Time.of(it))
             },
             onCancel = {
                 rangeSelectionShow = false

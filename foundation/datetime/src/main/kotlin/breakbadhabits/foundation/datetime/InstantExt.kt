@@ -82,3 +82,8 @@ fun List<ClosedRange<Instant>>.averageDuration() = map {
 fun List<ClosedRange<Instant>>.maxDuration() = maxOf { it.toDuration() }
 
 fun List<ClosedRange<Instant>>.minDuration() = minOf { it.toDuration() }
+
+
+fun List<ClosedRange<Instant>>.toLocalDateRanges(timeZone: TimeZone) = map {
+    it.start.toLocalDateTime(timeZone).date..it.endInclusive.toLocalDateTime(timeZone).date
+}

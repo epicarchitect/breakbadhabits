@@ -31,6 +31,8 @@ data class MonthOfYear(
     }
 }
 
+fun MonthOfYear.length() = month.length(isLeapYear(year.toLong()))
+
 fun MonthOfYear.previous() = when {
     month.value - 1 == 0 -> {
         copy(
@@ -57,6 +59,15 @@ fun MonthOfYear.next() = when {
             month = month.plus(1),
         )
     }
+}
+
+fun MonthOfYear.addMonths(monthsToAdd: Int): MonthOfYear {
+    if (monthsToAdd == 0) return this
+    val monthCount = year * 12 + (month.value - 1)
+    val calcMonths = monthCount + monthsToAdd
+    val newYear = Math.floorDiv(calcMonths, 12)
+    val newMonth = Math.floorMod(calcMonths, 12) + 1
+    return MonthOfYear(newYear, Month(newMonth))
 }
 
 fun ClosedRange<MonthOfYear>.countMountsBetween(): Int {
@@ -93,4 +104,9 @@ val LocalDate.monthOfYear get() = MonthOfYear(year, month)
 
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
 
-fun ClosedRange<Instant>.monthOfYearRange(timeZone: TimeZone) = start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
+fun ClosedRange<Instant>.monthOfYearRange(timeZone: TimeZone) =
+    start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
+
+fun MonthOfYear.atDay(dayOfMonth: Int) = LocalDate(year, month, dayOfMonth)
+
+fun MonthOfYear.lastDayOfWeek() = atDay(length()).dayOfWeek
