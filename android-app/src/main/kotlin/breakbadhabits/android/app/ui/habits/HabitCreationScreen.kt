@@ -36,6 +36,7 @@ import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.datetime.withZeroSeconds
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.SingleSelectionChipRow
 import breakbadhabits.foundation.uikit.SingleSelectionGrid
@@ -49,6 +50,12 @@ import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -208,10 +215,9 @@ fun HabitCreationScreen(
 
         LaunchedEffect(selectedHabitTimeIndex) {
             val item = HabitTime.values()[selectedHabitTimeIndex]
+            val range = (currentTime - item.offset)..currentTime
             firstTrackTimeInputController.changeInput(
-                HabitTrack.Time.of(
-                    (currentTime - item.offset)..currentTime
-                )
+                HabitTrack.Time.of(range.withZeroSeconds(dateTimeConfig.appTimeZone))
             )
         }
 

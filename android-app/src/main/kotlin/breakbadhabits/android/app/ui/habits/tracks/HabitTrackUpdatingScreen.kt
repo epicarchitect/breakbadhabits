@@ -31,6 +31,7 @@ import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.datetime.withZeroSeconds
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
@@ -76,7 +77,11 @@ fun HabitTrackUpdatingScreen(
             state = epicCalendarState,
             onSelected = {
                 rangeSelectionShow = false
-                timeInputController.changeInput(HabitTrack.Time.of(it))
+                timeInputController.changeInput(
+                    HabitTrack.Time.of(
+                        it.withZeroSeconds(dateTimeConfig.appTimeZone)
+                    )
+                )
             },
             onCancel = {
                 rangeSelectionShow = false

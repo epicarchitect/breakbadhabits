@@ -2,6 +2,7 @@ package breakbadhabits.foundation.datetime
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toInstant
@@ -86,4 +87,21 @@ fun List<ClosedRange<Instant>>.minDuration() = minOf { it.toDuration() }
 
 fun List<ClosedRange<Instant>>.toLocalDateRanges(timeZone: TimeZone) = map {
     it.start.toLocalDateTime(timeZone).date..it.endInclusive.toLocalDateTime(timeZone).date
+}
+
+fun ClosedRange<Instant>.withZeroSeconds(timeZone: TimeZone) =
+    start.withZeroSeconds(timeZone)..endInclusive.withZeroSeconds(timeZone)
+
+fun Instant.withZeroSeconds(timeZone: TimeZone): Instant {
+    val initial = toLocalDateTime(timeZone)
+    val fixed = LocalDateTime(
+        date = initial.date,
+        time = LocalTime(
+            hour = initial.hour,
+            minute = initial.minute,
+            second = 0,
+            nanosecond = 0
+        )
+    )
+    return fixed.toInstant(timeZone)
 }

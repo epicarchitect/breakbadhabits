@@ -32,6 +32,7 @@ import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.datetime.withZeroSeconds
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.SingleSelectionChipRow
 import breakbadhabits.foundation.uikit.button.Button
@@ -79,7 +80,11 @@ fun HabitTrackCreationScreen(
             state = epicCalendarState,
             onSelected = {
                 rangeSelectionShow = false
-                timeInputController.changeInput(HabitTrack.Time.of(it))
+                timeInputController.changeInput(
+                    HabitTrack.Time.of(
+                        it.withZeroSeconds(dateTimeConfig.appTimeZone)
+                    )
+                )
             },
             onCancel = {
                 rangeSelectionShow = false
@@ -160,7 +165,7 @@ fun HabitTrackCreationScreen(
             if (selectedIndex == 0) {
                 timeInputController.changeInput(
                     HabitTrack.Time.of(
-                        dateTimeProvider.currentTime.value
+                        dateTimeProvider.currentTime.value.withZeroSeconds(dateTimeConfig.appTimeZone)
                     )
                 )
             }
@@ -169,6 +174,7 @@ fun HabitTrackCreationScreen(
                 timeInputController.changeInput(
                     HabitTrack.Time.of(
                         dateTimeProvider.currentTime.value.minus(1.days)
+                            .withZeroSeconds(dateTimeConfig.appTimeZone)
                     )
                 )
             }
