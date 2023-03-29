@@ -189,7 +189,7 @@ fun HabitTrackCreationScreen(
         }
 
         SingleSelectionChipRow(
-            items = listOf("Сейчас", "Вчера", "Указать свой интервал"),
+            items = listOf("Сейчас", "Вчера", "Свой интервал"),
             onClick = {
                 if (it == 2) {
                     rangeSelectionShow = true
