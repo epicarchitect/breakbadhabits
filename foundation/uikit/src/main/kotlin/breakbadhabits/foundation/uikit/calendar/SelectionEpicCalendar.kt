@@ -398,7 +398,8 @@ fun IntervalSelectionEpicCalendar(
                             Text(
                                 text = state.selectedStartDate?.let {
                                     val date = dateFormatter.format(it.toJavaLocalDate())
-                                    val time = timeFormatter.format(selectedTime.toJavaLocalTime())
+                                    val time =
+                                        timeFormatter.format(state.selectedStartTime.toJavaLocalTime())
                                     "$date\n$time"
                                 } ?: "не выбрано",
                                 fontWeight = FontWeight.Light,
@@ -433,7 +434,8 @@ fun IntervalSelectionEpicCalendar(
                             Text(
                                 text = state.selectedEndDate?.let {
                                     val date = dateFormatter.format(it.toJavaLocalDate())
-                                    val time = timeFormatter.format(selectedTime.toJavaLocalTime())
+                                    val time =
+                                        timeFormatter.format(state.selectedEndTime.toJavaLocalTime())
                                     "$date\n$time"
                                 } ?: "не выбрано",
                                 fontWeight = FontWeight.Light,
