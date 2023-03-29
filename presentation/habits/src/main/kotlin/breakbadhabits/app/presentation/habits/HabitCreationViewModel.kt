@@ -29,7 +29,6 @@ class HabitCreationViewModel(
     trackTimeValidator: HabitTrackTimeValidator,
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
-    dateTimeConfigProvider: DateTimeConfigProvider,
     localIconProvider: LocalIconProvider
 ) : ViewModel() {
 
@@ -54,15 +53,7 @@ class HabitCreationViewModel(
     val firstTrackTimeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
         initialInput = HabitTrack.Time.of(dateTimeProvider.currentTime.value),
-        validation = trackTimeValidator::validate,
-        decorateInput = {
-            val timeZone = dateTimeConfigProvider.getConfig().appTimeZone
-            val start = it.start.toLocalDateTime(timeZone)
-            val end = it.endInclusive.toLocalDateTime(timeZone)
-            val fixedStart = LocalDateTime(start.date, LocalTime(start.hour, 0, 0))
-            val fixedEnd = LocalDateTime(end.date, LocalTime(end.hour, 0, 0))
-            HabitTrack.Time.of((fixedStart..fixedEnd).toInstantRange(timeZone))
-        }
+        validation = trackTimeValidator::validate
     )
 
     val creationController = SingleRequestController(

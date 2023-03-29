@@ -29,7 +29,6 @@ class PresentationModule(val logicModule: LogicModule) {
             trackTimeValidator = habitTrackTimeValidator,
             trackEventCountValidator = habitTrackEventCountValidator,
             dateTimeProvider = dateTimeProvider,
-            dateTimeConfigProvider = dateTimeConfigProvider,
             localIconProvider = localIconProvider
         )
     }
@@ -62,7 +61,6 @@ class PresentationModule(val logicModule: LogicModule) {
             trackRangeValidator = habitTrackTimeValidator,
             trackEventCountValidator = habitTrackEventCountValidator,
             dateTimeProvider = dateTimeProvider,
-            dateTimeConfigProvider = dateTimeConfigProvider,
             habitId = habitId
         )
     }
@@ -83,7 +81,7 @@ class PresentationModule(val logicModule: LogicModule) {
             habitTrackDeleter = habitTrackDeleter,
             trackRangeValidator = habitTrackTimeValidator,
             trackEventCountValidator = habitTrackEventCountValidator,
-            dateTimeConfigProvider = dateTimeConfigProvider,
+            dateTimeProvider = dateTimeProvider,
             habitTrackId = id
         )
     }

@@ -1,6 +1,7 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
+import breakbadhabits.app.logic.datetime.DateTimeProvider
 import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.entity.HabitTrack
@@ -33,7 +34,7 @@ class HabitTrackUpdatingViewModel(
     habitTrackDeleter: HabitTrackDeleter,
     trackRangeValidator: HabitTrackTimeValidator,
     trackEventCountValidator: HabitTrackEventCountValidator,
-    dateTimeConfigProvider: DateTimeConfigProvider,
+    dateTimeProvider: DateTimeProvider,
     habitTrackId: HabitTrack.Id
 ) : ViewModel() {
 
@@ -54,16 +55,8 @@ class HabitTrackUpdatingViewModel(
 
     val timeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.Time.of(Clock.System.now()),
+        initialInput = HabitTrack.Time.of(dateTimeProvider.currentTime.value),
         validation = trackRangeValidator::validate,
-        decorateInput = {
-            val timeZone = dateTimeConfigProvider.getConfig().appTimeZone
-            val start = it.start.toLocalDateTime(timeZone)
-            val end = it.endInclusive.toLocalDateTime(timeZone)
-            val fixedStart = LocalDateTime(start.date, LocalTime(start.hour, 0, 0))
-            val fixedEnd = LocalDateTime(end.date, LocalTime(end.hour, 0, 0))
-            HabitTrack.Time.of((fixedStart..fixedEnd).toInstantRange(timeZone))
-        }
     )
 
     val commentInputController = ValidatedInputController<HabitTrack.Comment?, Nothing>(

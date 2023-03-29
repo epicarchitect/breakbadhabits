@@ -27,7 +27,6 @@ class HabitTrackCreationViewModel(
     trackRangeValidator: HabitTrackTimeValidator,
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
-    dateTimeConfigProvider: DateTimeConfigProvider,
     habitId: Habit.Id
 ) : ViewModel() {
 
@@ -45,15 +44,7 @@ class HabitTrackCreationViewModel(
     val timeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
         initialInput = HabitTrack.Time.of(dateTimeProvider.currentTime.value),
-        validation = trackRangeValidator::validate,
-        decorateInput = {
-            val timeZone = dateTimeConfigProvider.getConfig().appTimeZone
-            val start = it.start.toLocalDateTime(timeZone)
-            val end = it.endInclusive.toLocalDateTime(timeZone)
-            val fixedStart = LocalDateTime(start.date, LocalTime(start.hour, 0, 0))
-            val fixedEnd = LocalDateTime(end.date, LocalTime(end.hour, 0, 0))
-            HabitTrack.Time.of((fixedStart..fixedEnd).toInstantRange(timeZone))
-        }
+        validation = trackRangeValidator::validate
     )
 
     val commentInputController = ValidatedInputController<HabitTrack.Comment?, Nothing>(
