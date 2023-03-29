@@ -152,9 +152,17 @@ fun HabitTrackUpdatingScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = rangeState.input.let {
-                val start = dateTimeFormatter.formatDateTime(it.start)
-                val end = dateTimeFormatter.formatDateTime(it.endInclusive)
-                "Первое событие: $start, последнее событие: $end"
+                when (it) {
+                    is HabitTrack.Time.Date -> {
+                        val start = dateTimeFormatter.formatDateTime(it.start)
+                        "Дата и время: $start"
+                    }
+                    is HabitTrack.Time.Range -> {
+                        val start = dateTimeFormatter.formatDateTime(it.start)
+                        val end = dateTimeFormatter.formatDateTime(it.endInclusive)
+                        "Первое событие: $start, последнее событие: $end"
+                    }
+                }
             }
         )
 

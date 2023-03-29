@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,7 @@ import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.LoadingBox
+import breakbadhabits.foundation.uikit.SingleSelectionChipRow
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.calendar.SelectionEpicCalendarDialog
@@ -43,6 +45,7 @@ import breakbadhabits.foundation.uikit.text.ErrorText
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
+import kotlin.time.Duration.Companion.days
 
 @Composable
 fun HabitTrackCreationScreen(
@@ -58,6 +61,7 @@ fun HabitTrackCreationScreen(
     val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
     val dateTimeConfig = dateTimeConfigState.value ?: return
 
+    val dateTimeProvider = logicModule.dateTimeProvider
     val dateTimeFormatter = uiModule.dateTimeFormatter
     var rangeSelectionShow by remember { mutableStateOf(false) }
     val eventCountState by eventCountInputController.collectState()
@@ -145,7 +149,40 @@ fun HabitTrackCreationScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Укажите даты первого и последнего события привычки."
+            text = "Укажите когда произошло событие:"
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        var selectedIndex by remember { mutableStateOf(0) }
+
+        LaunchedEffect(selectedIndex) {
+            if (selectedIndex == 0) {
+                timeInputController.changeInput(
+                    HabitTrack.Time.of(
+                        dateTimeProvider.currentTime.value
+                    )
+                )
+            }
+
+            if (selectedIndex == 1) {
+                timeInputController.changeInput(
+                    HabitTrack.Time.of(
+                        dateTimeProvider.currentTime.value.minus(1.days)
+                    )
+                )
+            }
+        }
+
+        SingleSelectionChipRow(
+            items = listOf("Сейчас", "Вчера", "Указать свой интервал"),
+            onClick = {
+                if (it == 2) {
+                    rangeSelectionShow = true
+                }
+                selectedIndex = it
+            },
+            selectedIndex = selectedIndex
         )
 
         Spacer(Modifier.height(12.dp))
@@ -153,10 +190,19 @@ fun HabitTrackCreationScreen(
         Button(
             onClick = { rangeSelectionShow = true },
             text = rangeState.input.let {
-                val start = dateTimeFormatter.formatDateTime(it.start)
-                val end = dateTimeFormatter.formatDateTime(it.endInclusive)
-                "Первое событие: $start, последнее событие: $end"
-            }
+                when (it) {
+                    is HabitTrack.Time.Date -> {
+                        val start = dateTimeFormatter.formatDateTime(it.start)
+                        "Дата и время: $start"
+                    }
+                    is HabitTrack.Time.Range -> {
+                        val start = dateTimeFormatter.formatDateTime(it.start)
+                        val end = dateTimeFormatter.formatDateTime(it.endInclusive)
+                        "Первое событие: $start, последнее событие: $end"
+                    }
+                }
+            },
+            enabled = selectedIndex == 2
         )
 
         (rangeState.validationResult as? IncorrectHabitTrackTime)?.let {

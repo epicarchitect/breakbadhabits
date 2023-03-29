@@ -12,12 +12,14 @@ data class HabitTrack(
     data class Id(val value: Long)
 
     sealed interface Time : ClosedRange<Instant> {
-        data class Date(val value: Instant) : Time {
+        data class Date internal constructor(val value: Instant) : Time {
             override val endInclusive = value
             override val start = value
         }
 
-        data class Range(val value: ClosedRange<Instant>) : Time, ClosedRange<Instant> by value
+        data class Range internal constructor(
+            val value: ClosedRange<Instant>
+        ) : Time, ClosedRange<Instant> by value
 
         companion object {
             fun of(
