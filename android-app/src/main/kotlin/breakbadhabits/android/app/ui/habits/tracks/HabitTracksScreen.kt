@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -30,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.di.LocalUiModule
-import breakbadhabits.android.app.icons.resourceId
 import breakbadhabits.app.logic.habits.entity.Habit
 import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
@@ -43,10 +40,7 @@ import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
-import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.*
 

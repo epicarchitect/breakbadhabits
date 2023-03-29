@@ -43,10 +43,7 @@ import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
-import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
