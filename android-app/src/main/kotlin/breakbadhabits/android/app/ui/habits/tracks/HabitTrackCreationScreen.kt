@@ -67,6 +67,7 @@ fun HabitTrackCreationScreen(
     var rangeSelectionShow by remember { mutableStateOf(false) }
     val eventCountState by eventCountInputController.collectState()
     val rangeState by timeInputController.collectState()
+    var selectedTimeSelectionIndex by remember { mutableStateOf(0) }
 
     ClearFocusWhenKeyboardHiddenEffect()
 
@@ -80,6 +81,7 @@ fun HabitTrackCreationScreen(
             state = epicCalendarState,
             onSelected = {
                 rangeSelectionShow = false
+                selectedTimeSelectionIndex = 2
                 timeInputController.changeInput(
                     HabitTrack.Time.of(
                         it.withZeroSeconds(dateTimeConfig.appTimeZone)
@@ -96,9 +98,11 @@ fun HabitTrackCreationScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
     ) {
+        Spacer(Modifier.height(16.dp))
+
         Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = stringResource(R.string.habitEventCreation_title),
             type = Text.Type.Title,
             priority = Text.Priority.High
@@ -109,6 +113,7 @@ fun HabitTrackCreationScreen(
         LoadingBox(habitController) {
             if (it != null) {
                 Text(
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(
                         R.string.habitEventCreation_habitName,
                         it.name.value
@@ -121,11 +126,15 @@ fun HabitTrackCreationScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        Text(text = "Укажите сколько примерно было событий привычки каждый день")
+        Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = "Укажите сколько примерно было событий привычки каждый день"
+        )
 
         Spacer(Modifier.height(12.dp))
 
         ValidatedInputField(
+            modifier = Modifier.padding(horizontal = 16.dp),
             controller = eventCountInputController,
             adapter = remember {
                 TextFieldAdapter(
@@ -154,15 +163,14 @@ fun HabitTrackCreationScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = "Укажите когда произошло событие:"
         )
 
         Spacer(Modifier.height(12.dp))
 
-        var selectedIndex by remember { mutableStateOf(0) }
-
-        LaunchedEffect(selectedIndex) {
-            if (selectedIndex == 0) {
+        LaunchedEffect(selectedTimeSelectionIndex) {
+            if (selectedTimeSelectionIndex == 0) {
                 timeInputController.changeInput(
                     HabitTrack.Time.of(
                         dateTimeProvider.currentTime.value.withZeroSeconds(dateTimeConfig.appTimeZone)
@@ -170,7 +178,7 @@ fun HabitTrackCreationScreen(
                 )
             }
 
-            if (selectedIndex == 1) {
+            if (selectedTimeSelectionIndex == 1) {
                 timeInputController.changeInput(
                     HabitTrack.Time.of(
                         dateTimeProvider.currentTime.value.minus(1.days)
@@ -186,15 +194,18 @@ fun HabitTrackCreationScreen(
                 if (it == 2) {
                     rangeSelectionShow = true
                 }
-                selectedIndex = it
+                selectedTimeSelectionIndex = it
             },
-            selectedIndex = selectedIndex
+            selectedIndex = selectedTimeSelectionIndex
         )
 
         Spacer(Modifier.height(12.dp))
 
         Button(
-            onClick = { rangeSelectionShow = true },
+            modifier = Modifier.padding(horizontal = 16.dp),
+            onClick = {
+                rangeSelectionShow = true
+            },
             text = rangeState.input.let {
                 when (it) {
                     is HabitTrack.Time.Date -> {
@@ -207,15 +218,17 @@ fun HabitTrackCreationScreen(
                         "Первое событие: $start, последнее событие: $end"
                     }
                 }
-            },
-            enabled = selectedIndex == 2
+            }
         )
 
         (rangeState.validationResult as? IncorrectHabitTrackTime)?.let {
             Spacer(Modifier.height(8.dp))
             when (it.reason) {
                 IncorrectHabitTrackTime.Reason.BiggestThenCurrentTime -> {
-                    ErrorText(text = "Нельзя выбрать время больше чем текущее")
+                    ErrorText(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = "Нельзя выбрать время больше чем текущее"
+                    )
                 }
             }
         }
@@ -223,6 +236,7 @@ fun HabitTrackCreationScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = stringResource(R.string.habitEventCreation_comment_description)
         )
 
@@ -230,6 +244,7 @@ fun HabitTrackCreationScreen(
         Spacer(Modifier.height(12.dp))
 
         ValidatedInputField(
+            modifier = Modifier.padding(horizontal = 16.dp),
             label = stringResource(R.string.habitEventCreation_comment),
             controller = commentInputController,
             adapter = remember {
@@ -246,17 +261,23 @@ fun HabitTrackCreationScreen(
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            modifier = Modifier.align(Alignment.End),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .align(Alignment.End),
             text = stringResource(R.string.habitEventCreation_finish_description)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         RequestButton(
-            modifier = Modifier.align(Alignment.End),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .align(Alignment.End),
             requestController = creationController,
             text = stringResource(R.string.habitEventCreation_finish),
             type = Button.Type.Main
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
