@@ -186,7 +186,7 @@ fun HabitDetailsScreen(
                         ) {
                             Text(
                                 modifier = Modifier.align(Alignment.Center),
-                                text = stringResource(R.string.habit_showAllEvents)
+                                text = "Перейти к событиям"//stringResource(R.string.habit_showAllEvents)
                             )
                         }
                     }
