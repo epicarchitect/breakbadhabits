@@ -329,6 +329,9 @@ private fun AppScreenContent() {
                 habitTracksController = viewModel.habitTracksController,
                 onTrackClick = {
                     navController.navigate(Screens.HabitTrackUpdating.buildRoute(it))
+                },
+                onAddClick = {
+                    navController.navigate(Screens.HabitTrackCreation.buildRoute(habitId))
                 }
             )
         }

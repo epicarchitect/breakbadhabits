@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -37,6 +38,7 @@ import breakbadhabits.foundation.datetime.previous
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.LocalResourceIcon
+import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
@@ -49,7 +51,8 @@ import java.util.*
 fun HabitTracksScreen(
     habitController: LoadingController<Habit?>,
     habitTracksController: LoadingController<Map<MonthOfYear, List<HabitTrack>>>,
-    onTrackClick: (HabitTrack.Id) -> Unit
+    onTrackClick: (HabitTrack.Id) -> Unit,
+    onAddClick: () -> Unit
 ) {
     val logicModule = LocalLogicModule.current
     val uiModule = LocalUiModule.current
@@ -80,11 +83,10 @@ fun HabitTracksScreen(
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(start = 16.dp, end = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -160,7 +162,8 @@ fun HabitTracksScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 160.dp)
             ) {
                 items(currentTracks, key = { it.id.value }) { track ->
                     Box(
@@ -208,5 +211,14 @@ fun HabitTracksScreen(
                 }
             }
         }
+
+        Button(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(24.dp),
+            onClick = onAddClick,
+            text = "Add new events",
+            type = Button.Type.Main
+        )
     }
 }
