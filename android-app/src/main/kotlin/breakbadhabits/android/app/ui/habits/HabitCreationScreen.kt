@@ -285,7 +285,10 @@ fun HabitCreationScreen(
                 .align(Alignment.End),
             controller = creationController,
             text = stringResource(R.string.habitCreation_finish),
-            type = Button.Type.Main
+            type = Button.Type.Main,
+            icon = {
+                LocalResourceIcon(resourceId = R.drawable.ic_done)
+            }
         )
 
         Spacer(Modifier.height(16.dp))

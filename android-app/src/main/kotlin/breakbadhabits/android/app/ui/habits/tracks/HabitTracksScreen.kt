@@ -218,7 +218,10 @@ fun HabitTracksScreen(
                 .padding(16.dp),
             onClick = onAddClick,
             text = "Add new events",
-            type = Button.Type.Main
+            type = Button.Type.Main,
+            icon = {
+                LocalResourceIcon(resourceId = R.drawable.ic_add)
+            }
         )
     }
 }

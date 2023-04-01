@@ -29,6 +29,7 @@ import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.Checkbox
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
@@ -107,7 +108,10 @@ fun HabitsAppWidgetConfigCreationScreen(
             modifier = Modifier.align(Alignment.End),
             controller = creationController,
             text = stringResource(R.string.habitsAppWidgetConfigCreation_finish),
-            type = Button.Type.Main
+            type = Button.Type.Main,
+            icon = {
+                LocalResourceIcon(resourceId = R.drawable.ic_done)
+            }
         )
     }
 }

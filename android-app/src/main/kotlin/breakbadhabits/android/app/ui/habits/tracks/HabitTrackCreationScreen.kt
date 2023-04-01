@@ -34,6 +34,7 @@ import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.datetime.withZeroSeconds
 import breakbadhabits.foundation.uikit.LoadingBox
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.SingleSelectionChipRow
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
@@ -275,7 +276,10 @@ fun HabitTrackCreationScreen(
                 .align(Alignment.End),
             controller = creationController,
             text = stringResource(R.string.habitEventCreation_finish),
-            type = Button.Type.Main
+            type = Button.Type.Main,
+            icon = {
+                LocalResourceIcon(resourceId = R.drawable.ic_done)
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

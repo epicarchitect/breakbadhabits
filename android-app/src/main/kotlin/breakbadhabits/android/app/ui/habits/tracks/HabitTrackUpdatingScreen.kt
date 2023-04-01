@@ -36,6 +36,7 @@ import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.datetime.withZeroSeconds
 import breakbadhabits.foundation.uikit.Dialog
 import breakbadhabits.foundation.uikit.LoadingBox
+import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.calendar.SelectionEpicCalendarDialog
@@ -264,7 +265,10 @@ fun HabitTrackUpdatingScreen(
             modifier = Modifier.align(Alignment.End),
             controller = updatingController,
             text = stringResource(R.string.habitEventEditing_finish),
-            type = Button.Type.Main
+            type = Button.Type.Main,
+            icon = {
+                LocalResourceIcon(resourceId = R.drawable.ic_done)
+            }
         )
     }
 }

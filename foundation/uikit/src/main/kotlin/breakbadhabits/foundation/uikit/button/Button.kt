@@ -1,9 +1,11 @@
 package breakbadhabits.foundation.uikit.button
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -40,7 +42,7 @@ fun Button(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = MaterialTheme.shapes.small,
+        shape = CircleShape,
         elevation = when (type) {
             Button.Type.Main -> ButtonDefaults.buttonElevation(
                 defaultElevation = 3.dp,
@@ -66,12 +68,18 @@ fun Button(
                 containerColor = AppTheme.colorScheme.primary,
                 contentColor = AppTheme.colorScheme.onPrimary
             )
-        }
+        },
+        contentPadding = PaddingValues(
+            top = 8.dp,
+            bottom = 8.dp,
+            start = if (icon != null) 16.dp else 24.dp,
+            end = 24.dp
+        )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (icon != null) {
                 icon()
-                Spacer(modifier = Modifier.padding(4.dp))
+                Spacer(modifier = Modifier.padding(2.dp))
             }
 
             MaterialText(

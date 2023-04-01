@@ -101,7 +101,10 @@ fun DashboardScreen(
             Button(
                 onClick = onHabitCreationClick,
                 text = stringResource(R.string.habits_newHabit),
-                type = Button.Type.Main
+                type = Button.Type.Main,
+                icon = {
+                    LocalResourceIcon(resourceId = R.drawable.ic_add)
+                }
             )
         }
     }

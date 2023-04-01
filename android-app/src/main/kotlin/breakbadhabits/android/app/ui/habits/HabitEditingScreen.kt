@@ -178,7 +178,10 @@ fun HabitEditingScreen(
             modifier = Modifier.align(Alignment.End),
             controller = updatingController,
             text = stringResource(R.string.habitEditing_finish),
-            type = Button.Type.Main
+            type = Button.Type.Main,
+            icon = {
+                LocalResourceIcon(resourceId = R.drawable.ic_done)
+            }
         )
     }
 }
