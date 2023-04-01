@@ -92,8 +92,8 @@ fun DashboardScreen(
 
         AnimatedVisibility(
             modifier = Modifier
-                .padding(24.dp)
-                .align(Alignment.BottomCenter),
+                .padding(16.dp)
+                .align(Alignment.BottomEnd),
             visible = itemsState !is LoadingController.State.Loading,
             enter = scaleIn() + fadeIn(),
             exit = scaleOut() + fadeOut()

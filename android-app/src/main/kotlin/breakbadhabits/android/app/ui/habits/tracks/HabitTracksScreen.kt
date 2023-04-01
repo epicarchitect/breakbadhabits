@@ -215,7 +215,7 @@ fun HabitTracksScreen(
         Button(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(24.dp),
+                .padding(16.dp),
             onClick = onAddClick,
             text = "Add new events",
             type = Button.Type.Main
