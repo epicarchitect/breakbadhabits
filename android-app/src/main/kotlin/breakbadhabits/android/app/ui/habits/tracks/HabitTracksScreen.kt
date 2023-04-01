@@ -163,7 +163,7 @@ fun HabitTracksScreen(
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 160.dp)
+                contentPadding = PaddingValues(bottom = 100.dp)
             ) {
                 items(currentTracks, key = { it.id.value }) { track ->
                     Box(
