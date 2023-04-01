@@ -8,16 +8,16 @@ import breakbadhabits.foundation.uikit.ext.collectState
 
 @Composable
 fun RequestButton(
-    requestController: SingleRequestController,
+    controller: SingleRequestController,
     text: String,
     modifier: Modifier = Modifier,
     type: Button.Type = Button.Type.Default,
     icon: (@Composable () -> Unit)? = null
 ) {
-    val state by requestController.collectState()
+    val state by controller.collectState()
 
     Button(
-        onClick = requestController::request,
+        onClick = controller::request,
         text = text,
         modifier = modifier,
         enabled = state.isRequestAllowed,

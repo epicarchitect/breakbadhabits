@@ -103,7 +103,7 @@ fun HabitsAppWidgetConfigCreationScreen(
 
         RequestButton(
             modifier = Modifier.align(Alignment.End),
-            requestController = creationController,
+            controller = creationController,
             text = stringResource(R.string.habitsAppWidgetConfigCreation_finish),
             type = Button.Type.Main
         )

@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,6 +32,7 @@ import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.Checkbox
+import breakbadhabits.foundation.uikit.Dialog
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
@@ -46,6 +51,42 @@ fun HabitAppWidgetUpdatingScreen(
     ClearFocusWhenKeyboardHiddenEffect()
 
     val habitsSelection by habitsSelectionController.collectState()
+
+    var deletionShow by remember { mutableStateOf(false) }
+    if (deletionShow) {
+        Dialog(onDismiss = { deletionShow = false }) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.habitsAppWidgets_deleteConfirmation),
+                    type = Text.Type.Description,
+                    priority = Text.Priority.High
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(
+                        text = stringResource(R.string.cancel),
+                        onClick = {
+                            deletionShow = false
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    RequestButton(
+                        controller = deletionController,
+                        text = stringResource(R.string.yes),
+                        type = Button.Type.Main
+                    )
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -108,17 +149,19 @@ fun HabitAppWidgetUpdatingScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        RequestButton(
-            requestController = deletionController,
+        Button(
             text = stringResource(R.string.habitsAppWidgetConfigEditing_deletion_button),
-            type = Button.Type.Dangerous
+            type = Button.Type.Dangerous,
+            onClick = {
+                deletionShow = true
+            }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         RequestButton(
             modifier = Modifier.align(Alignment.End),
-            requestController = updatingController,
+            controller = updatingController,
             text = stringResource(R.string.habitsAppWidgetConfigEditing_finish),
             type = Button.Type.Main
         )

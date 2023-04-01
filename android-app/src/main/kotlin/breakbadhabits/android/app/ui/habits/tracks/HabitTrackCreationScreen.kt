@@ -273,7 +273,7 @@ fun HabitTrackCreationScreen(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
-            requestController = creationController,
+            controller = creationController,
             text = stringResource(R.string.habitEventCreation_finish),
             type = Button.Type.Main
         )

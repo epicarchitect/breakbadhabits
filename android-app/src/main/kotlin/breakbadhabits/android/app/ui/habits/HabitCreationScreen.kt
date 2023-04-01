@@ -50,12 +50,6 @@ import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -289,7 +283,7 @@ fun HabitCreationScreen(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
-            requestController = creationController,
+            controller = creationController,
             text = stringResource(R.string.habitCreation_finish),
             type = Button.Type.Main
         )
