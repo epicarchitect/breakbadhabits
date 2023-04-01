@@ -7,12 +7,12 @@ plugins {
 android {
     namespace = "breakbadhabits.android.app"
 
-    base.archivesName.set("breakbadhabits")
 
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         versionCode = 70
         versionName = "4.0.0"
+        base.archivesName.set("breakbadhabits-$versionName")
     }
 
     signingConfigs {
