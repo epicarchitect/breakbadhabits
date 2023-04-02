@@ -57,7 +57,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.plus
+import kotlinx.datetime.minus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalTime
@@ -491,5 +491,6 @@ fun rememberSelectionEpicCalendarState(
     }
 }
 
-private fun defaultAvailableRange(timeZone: TimeZone) =
-    Clock.System.now()..Clock.System.now().plus(10, DateTimeUnit.YEAR, timeZone)
+private fun defaultAvailableRange(timeZone: TimeZone) = Clock.System.now().let {
+    it.minus(10, DateTimeUnit.YEAR, timeZone)..it
+}
