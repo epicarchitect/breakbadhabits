@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.logic.habits.HabitAbstinenceProvider
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.HabitStatisticsProvider
-import breakbadhabits.app.logic.habits.model.Habit
 import breakbadhabits.app.logic.habits.HabitTrackProvider
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.viewmodel.ViewModel

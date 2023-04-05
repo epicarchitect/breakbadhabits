@@ -5,26 +5,26 @@ import breakbadhabits.android.app.coroutines.DefaultCoroutineDispatchers
 import breakbadhabits.android.app.icons.HabitLocalIconProvider
 import breakbadhabits.app.database.AppDatabaseFactory
 import breakbadhabits.app.database.IdGenerator
-import breakbadhabits.app.logic.datetime.provider.DateTimeProviderImpl
 import breakbadhabits.app.logic.datetime.provider.DateTimeConfigProvider
+import breakbadhabits.app.logic.datetime.provider.DateTimeProviderImpl
 import breakbadhabits.app.logic.habits.HabitAbstinenceProvider
 import breakbadhabits.app.logic.habits.HabitCreator
 import breakbadhabits.app.logic.habits.HabitDeleter
 import breakbadhabits.app.logic.habits.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.HabitStatisticsProvider
-import breakbadhabits.app.logic.habits.HabitUpdater
-import breakbadhabits.app.logic.habits.HabitWidgetCreator
-import breakbadhabits.app.logic.habits.HabitWidgetDeleter
-import breakbadhabits.app.logic.habits.HabitWidgetProvider
-import breakbadhabits.app.logic.habits.HabitWidgetUpdater
-import breakbadhabits.app.logic.habits.HabitsConfigProvider
 import breakbadhabits.app.logic.habits.HabitTrackCreator
 import breakbadhabits.app.logic.habits.HabitTrackDeleter
 import breakbadhabits.app.logic.habits.HabitTrackEventCountValidator
 import breakbadhabits.app.logic.habits.HabitTrackProvider
 import breakbadhabits.app.logic.habits.HabitTrackTimeValidator
 import breakbadhabits.app.logic.habits.HabitTrackUpdater
+import breakbadhabits.app.logic.habits.HabitUpdater
+import breakbadhabits.app.logic.habits.HabitWidgetCreator
+import breakbadhabits.app.logic.habits.HabitWidgetDeleter
+import breakbadhabits.app.logic.habits.HabitWidgetProvider
+import breakbadhabits.app.logic.habits.HabitWidgetUpdater
+import breakbadhabits.app.logic.habits.HabitsConfigProvider
 
 class LogicModule(
     private val context: Context,
