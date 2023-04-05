@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalUiModule
 import breakbadhabits.android.app.icons.resourceId
-import breakbadhabits.app.logic.habits.entity.Habit
 import breakbadhabits.app.presentation.dashboard.DashboardHabitItem
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.toDuration
@@ -47,8 +46,8 @@ import breakbadhabits.foundation.uikit.text.Text
 @Composable
 fun DashboardScreen(
     habitItemsController: LoadingController<List<DashboardHabitItem>>,
-    onHabitClick: (Habit.Id) -> Unit,
-    onAddTrackClick: (Habit.Id) -> Unit,
+    onHabitClick: (Int) -> Unit,
+    onAddTrackClick: (Int) -> Unit,
     onHabitCreationClick: () -> Unit,
     onAppSettingsClick: () -> Unit
 ) {
@@ -113,8 +112,8 @@ fun DashboardScreen(
 @Composable
 private fun LoadedHabits(
     items: List<DashboardHabitItem>,
-    onResetClick: (Habit.Id) -> Unit,
-    onItemClick: (Habit.Id) -> Unit
+    onResetClick: (Int) -> Unit,
+    onItemClick: (Int) -> Unit
 ) {
     LazyColumn(
         contentPadding = PaddingValues(
@@ -127,7 +126,7 @@ private fun LoadedHabits(
     ) {
         items(
             items = items,
-            key = { it.habit.id.value }
+            key = { it.habit.id }
         ) { item ->
             HabitItem(
                 item = item,
@@ -183,10 +182,10 @@ private fun LazyItemScope.HabitItem(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    LocalResourceIcon(item.habit.icon.value.resourceId)
+                    LocalResourceIcon(item.habit.icon.resourceId)
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
-                        text = item.habit.name.value,
+                        text = item.habit.name,
                         type = Text.Type.Title,
                         priority = Text.Priority.Medium
                     )
@@ -200,7 +199,7 @@ private fun LazyItemScope.HabitItem(
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.abstinence?.let {
-                            durationFormatter.format(it.range.toDuration())
+                            durationFormatter.format(it.instantRange.toDuration())
                         } ?: stringResource(R.string.habits_noEvents),
                         type = Text.Type.Description,
                         priority = Text.Priority.Medium

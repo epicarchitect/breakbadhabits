@@ -9,10 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import breakbadhabits.android.app.base.activity.ComposeActivity
 import breakbadhabits.android.app.ui.habits.widgets.HabitsAppWidgetConfigCreationScreen
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.uikit.ext.collectState
-
 
 class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
 
@@ -21,14 +19,12 @@ class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
     @Composable
     override fun Content() {
         val presentationModule = BreakBadHabitsApp.instance.presentationModule
-        val appWidgetId = remember {
+        val widgetSystemId = remember {
             intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
         }
 
         val viewModel = viewModel {
-            presentationModule.createHabitAppWidgetCreationViewModel(
-                HabitAppWidgetConfig.AppWidgetId(appWidgetId.toLong())
-            )
+            presentationModule.createHabitWidgetCreationViewModel(widgetSystemId)
         }
 
         val creationState by viewModel.creationController.collectState()
@@ -37,7 +33,7 @@ class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
             if (creationState.requestState is SingleRequestController.RequestState.Executed) {
                 setResult(
                     RESULT_OK,
-                    Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                    Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetSystemId)
                 )
                 finish()
             }

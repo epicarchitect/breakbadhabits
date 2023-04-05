@@ -1,25 +1,19 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.logic.datetime.DateTimeProvider
-import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
+import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.app.logic.habits.CorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.CorrectHabitTrackTime
 import breakbadhabits.app.logic.habits.HabitProvider
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitTrack
-import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackTime
-import breakbadhabits.app.logic.habits.tracks.HabitTrackCreator
-import breakbadhabits.app.logic.habits.tracks.HabitTrackEventCountValidator
-import breakbadhabits.app.logic.habits.tracks.HabitTrackTimeValidator
+import breakbadhabits.app.logic.habits.HabitTrackCreator
+import breakbadhabits.app.logic.habits.HabitTrackEventCountValidator
+import breakbadhabits.app.logic.habits.HabitTrackTimeValidator
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.datetime.toInstantRange
+import breakbadhabits.foundation.math.ranges.asRangeOfOne
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.combine
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
-import kotlinx.datetime.toLocalDateTime
 
 class HabitTrackCreationViewModel(
     habitProvider: HabitProvider,
@@ -27,7 +21,7 @@ class HabitTrackCreationViewModel(
     trackRangeValidator: HabitTrackTimeValidator,
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
-    habitId: Habit.Id
+    habitId: Int
 ) : ViewModel() {
 
     val habitController = LoadingController(
@@ -37,19 +31,19 @@ class HabitTrackCreationViewModel(
 
     val eventCountInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.EventCount(dailyCount = 1),
+        initialInput = 1,
         validation = trackEventCountValidator::validate
     )
 
     val timeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.Time.of(dateTimeProvider.currentTime.value),
+        initialInput = dateTimeProvider.currentTime.value.asRangeOfOne(),
         validation = trackRangeValidator::validate
     )
 
-    val commentInputController = ValidatedInputController<HabitTrack.Comment?, Nothing>(
+    val commentInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = null,
+        initialInput = "",
         validation = { null }
     )
 

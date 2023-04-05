@@ -1,0 +1,31 @@
+import kotlin.Int;
+import kotlin.collections.List;
+
+CREATE TABLE IF NOT EXISTS HabitWidget (
+  id       INTEGER AS Int NOT NULL PRIMARY KEY,
+  title    TEXT NOT NULL,
+  systemId INTEGER AS Int NOT NULL,
+  habitIds TEXT AS List<Int> NOT NULL
+);
+
+insert:
+INSERT INTO HabitWidget
+VALUES (?, ?, ?, ?);
+
+update:
+UPDATE HabitWidget SET title = ?, habitIds = ? WHERE id = ?;
+
+deleteById:
+DELETE FROM HabitWidget WHERE id = ?;
+
+deleteBySystemId:
+DELETE FROM HabitWidget WHERE systemId = ?;
+
+selectById:
+SELECT * FROM HabitWidget WHERE id = ?;
+
+selectBySystemId:
+SELECT * FROM HabitWidget WHERE systemId = ?;
+
+selectAll:
+SELECT * FROM HabitWidget;

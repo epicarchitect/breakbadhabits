@@ -27,12 +27,11 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.icons.resourceId
 import breakbadhabits.app.logic.habits.IncorrectHabitNewName
+import breakbadhabits.app.logic.habits.IncorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.ValidatedHabitNewName
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitTrack
-import breakbadhabits.app.logic.habits.tracks.IncorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackEventCount
-import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
+import breakbadhabits.app.logic.habits.ValidatedHabitTrackEventCount
+import breakbadhabits.app.logic.habits.ValidatedHabitTrackTime
+import breakbadhabits.app.logic.icons.LocalIcon
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -48,8 +47,11 @@ import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.text.Text
-import breakbadhabits.foundation.uikit.text.TextFieldAdapter
+import breakbadhabits.foundation.uikit.text.TextFieldInputAdapter
+import breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
+import breakbadhabits.foundation.uikit.text.ValidatedTextField
+import kotlinx.datetime.Instant
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -74,10 +76,10 @@ private enum class HabitTime(
 
 @Composable
 fun HabitCreationScreen(
-    habitIconSelectionController: SingleSelectionController<Habit.Icon>,
-    habitNameController: ValidatedInputController<Habit.Name, ValidatedHabitNewName>,
-    firstTrackEventCountInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackEventCount>,
-    firstTrackTimeInputController: ValidatedInputController<HabitTrack.Time, ValidatedHabitTrackTime>,
+    habitIconSelectionController: SingleSelectionController<LocalIcon>,
+    habitNameController: ValidatedInputController<String, ValidatedHabitNewName>,
+    firstTrackEventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
+    firstTrackTimeInputController: ValidatedInputController<ClosedRange<Instant>, ValidatedHabitTrackTime>,
     creationController: SingleRequestController
 ) {
     val logicModule = LocalLogicModule.current
@@ -105,7 +107,7 @@ fun HabitCreationScreen(
             state = epicCalendarState,
             onSelected = {
                 rangeSelectionShow = false
-                firstTrackTimeInputController.changeInput(HabitTrack.Time.of(it))
+                firstTrackTimeInputController.changeInput(it)
             },
             onCancel = {
                 rangeSelectionShow = false
@@ -138,34 +140,29 @@ fun HabitCreationScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        ValidatedInputField(
+        ValidatedTextField(
             modifier = Modifier.padding(horizontal = 16.dp),
             controller = habitNameController,
-            adapter = remember {
-                TextFieldAdapter(
-                    decodeInput = Habit.Name::value,
-                    encodeInput = Habit::Name,
-                    extractErrorMessage = {
-                        val incorrect = (it as? IncorrectHabitNewName)
-                            ?: return@TextFieldAdapter null
-                        when (incorrect.reason) {
-                            is IncorrectHabitNewName.Reason.AlreadyUsed -> {
-                                context.getString(R.string.habitCreation_habitNameValidation_used)
-                            }
+            validationAdapter = remember {
+                TextFieldValidationAdapter {
+                    if (it !is IncorrectHabitNewName) null
+                    else when (val reason = it.reason) {
+                        is IncorrectHabitNewName.Reason.AlreadyUsed -> {
+                            context.getString(R.string.habitCreation_habitNameValidation_used)
+                        }
 
-                            is IncorrectHabitNewName.Reason.Empty -> {
-                                context.getString(R.string.habitCreation_habitNameValidation_empty)
-                            }
+                        is IncorrectHabitNewName.Reason.Empty -> {
+                            context.getString(R.string.habitCreation_habitNameValidation_empty)
+                        }
 
-                            is IncorrectHabitNewName.Reason.TooLong -> {
-                                context.getString(
-                                    R.string.habitCreation_habitNameValidation_tooLong,
-                                    (incorrect.reason as IncorrectHabitNewName.Reason.TooLong).maxLength
-                                )
-                            }
+                        is IncorrectHabitNewName.Reason.TooLong -> {
+                            context.getString(
+                                R.string.habitCreation_habitNameValidation_tooLong,
+                                reason.maxLength
+                            )
                         }
                     }
-                )
+                }
             },
             label = "Название"//stringResource(R.string.habitCreation_habitName)
         )
@@ -187,7 +184,7 @@ fun HabitCreationScreen(
             cell = { icon ->
                 LocalResourceIcon(
                     modifier = Modifier.size(24.dp),
-                    resourceId = icon.value.resourceId
+                    resourceId = icon.resourceId
                 )
             }
         )
@@ -211,7 +208,7 @@ fun HabitCreationScreen(
             val item = HabitTime.values()[selectedHabitTimeIndex]
             val range = (currentTime - item.offset)..currentTime
             firstTrackTimeInputController.changeInput(
-                HabitTrack.Time.of(range.withZeroSeconds(dateTimeConfig.appTimeZone))
+                range.withZeroSeconds(dateTimeConfig.appTimeZone)
             )
         }
 
@@ -240,24 +237,23 @@ fun HabitCreationScreen(
         ValidatedInputField(
             modifier = Modifier.padding(horizontal = 16.dp),
             controller = firstTrackEventCountInputController,
-            adapter = remember {
-                TextFieldAdapter(
-                    decodeInput = { it.dailyCount.toString() },
-                    encodeInput = {
-                        firstTrackEventCountState.input.copy(
-                            dailyCount = it.toIntOrNull() ?: 0
-                        )
-                    },
-                    extractErrorMessage = {
-                        val incorrect = (it as? IncorrectHabitTrackEventCount)
-                            ?: return@TextFieldAdapter null
-                        when (incorrect.reason) {
-                            is IncorrectHabitTrackEventCount.Reason.Empty -> "Поле не может быть пустым"
-                        }
-                    }
+            inputAdapter = remember {
+                TextFieldInputAdapter(
+                    decodeInput = { it.toString() },
+                    encodeInput = { it.toIntOrNull() ?: 0 }
                 )
             },
-            label = "Число событий в день",
+            validationAdapter = remember {
+                TextFieldValidationAdapter {
+                    if (it !is IncorrectHabitTrackEventCount) null
+                    else when (it.reason) {
+                        is IncorrectHabitTrackEventCount.Reason.Empty -> {
+                            "Поле не может быть пустым"
+                        }
+                    }
+                }
+            },
+            label = "Число событий",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),

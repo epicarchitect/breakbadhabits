@@ -1,6 +1,7 @@
 package breakbadhabits.app.database
 
 import android.content.Context
+import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 
 object AppDatabaseFactory {
@@ -13,12 +14,21 @@ object AppDatabaseFactory {
             context = context,
             name = name
         ),
-        HabitAppWidgetConfigAdapter = HabitAppWidgetConfig.Adapter(
-            habitIdsAdapter = ListOfLongsAdapter
+        HabitAdapter = Habit.Adapter(
+            idAdapter = IntColumnAdapter,
+            iconIdAdapter = IntColumnAdapter
+        ),
+        HabitWidgetAdapter = HabitWidget.Adapter(
+            idAdapter = IntColumnAdapter,
+            systemIdAdapter = IntColumnAdapter,
+            habitIdsAdapter = ListOfIntAdapter
         ),
         HabitTrackAdapter = HabitTrack.Adapter(
+            idAdapter = IntColumnAdapter,
+            habitIdAdapter = IntColumnAdapter,
             startTimeAdapter = InstantAdapter,
-            endTimeAdapter = InstantAdapter
+            endTimeAdapter = InstantAdapter,
+            eventCountAdapter = IntColumnAdapter
         )
     )
 }

@@ -6,7 +6,8 @@ import breakbadhabits.app.logic.habits.HabitDeleter
 import breakbadhabits.app.logic.habits.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.HabitUpdater
-import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.habits.model.Habit
+import breakbadhabits.app.logic.icons.LocalIcon
 import breakbadhabits.app.logic.icons.LocalIconProvider
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
@@ -23,20 +24,20 @@ class HabitUpdatingViewModel(
     habitDeleter: HabitDeleter,
     habitNewNameValidator: HabitNewNameValidator,
     localIconProvider: LocalIconProvider,
-    habitId: Habit.Id,
+    habitId: Int
 ) : ViewModel() {
 
     private val initialHabit = MutableStateFlow<Habit?>(null)
 
     val habitIconSelectionController = SingleSelectionController(
         coroutineScope = viewModelScope,
-        items = localIconProvider.getIcons().map(Habit::Icon),
-        default = List<Habit.Icon>::first
+        items = localIconProvider.getIcons(),
+        default = List<LocalIcon>::first
     )
 
     val habitNameController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = Habit.Name(""),
+        initialInput = "",
         validation = {
             habitNewNameValidator.validate(
                 data = this,

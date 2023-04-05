@@ -2,10 +2,10 @@ package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.logic.habits.HabitProvider
-import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigDeleter
-import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigProvider
-import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigUpdater
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.HabitWidgetDeleter
+import breakbadhabits.app.logic.habits.HabitWidgetProvider
+import breakbadhabits.app.logic.habits.HabitWidgetUpdater
+import breakbadhabits.app.logic.habits.model.HabitWidget
 import breakbadhabits.foundation.controller.MultiSelectionController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -17,17 +17,17 @@ import kotlinx.coroutines.launch
 
 class HabitAppWidgetUpdatingViewModel(
     habitProvider: HabitProvider,
-    habitAppWidgetConfigProvider: HabitAppWidgetConfigProvider,
-    habitAppWidgetConfigUpdater: HabitAppWidgetConfigUpdater,
-    habitAppWidgetConfigDeleter: HabitAppWidgetConfigDeleter,
-    id: HabitAppWidgetConfig.Id
+    habitWidgetProvider: HabitWidgetProvider,
+    habitWidgetUpdater: HabitWidgetUpdater,
+    habitWidgetDeleter: HabitWidgetDeleter,
+    habitWidgetId: Int
 ) : ViewModel() {
 
-    private val initialConfig = MutableStateFlow<HabitAppWidgetConfig?>(null)
+    private val initialConfig = MutableStateFlow<HabitWidget?>(null)
 
     val titleInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitAppWidgetConfig.Title(""),
+        initialInput = "",
         validation = { null }
     )
 
@@ -39,8 +39,8 @@ class HabitAppWidgetUpdatingViewModel(
     val updatingController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
-            habitAppWidgetConfigUpdater.updateAppWidget(
-                id = id,
+            habitWidgetUpdater.updateAppWidget(
+                id = habitWidgetId,
                 title = titleInputController.state.value.input,
                 habitIds = habitsSelectionController.state.value.items.filter {
                     it.value
@@ -54,10 +54,10 @@ class HabitAppWidgetUpdatingViewModel(
         ) { initial, title, habitsSelection ->
             val habitIdsInput = habitsSelection.items.filter {
                 it.value
-            }.keys.map { it.id }.sortedBy { it.value }
+            }.keys.map { it.id }.sortedBy { it }
 
             val isChanged = initial?.title != title.input
-                    || initial.habitIds.sortedBy { it.value } != habitIdsInput
+                    || initial.habitIds.sortedBy { it } != habitIdsInput
 
             isChanged && habitIdsInput.isNotEmpty()
         }
@@ -66,13 +66,13 @@ class HabitAppWidgetUpdatingViewModel(
     val deletionController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
-            habitAppWidgetConfigDeleter.deleteById(id)
+            habitWidgetDeleter.deleteById(habitWidgetId)
         }
     )
 
     init {
         viewModelScope.launch {
-            val config = checkNotNull(habitAppWidgetConfigProvider.provideFlowById(id).first())
+            val config = checkNotNull(habitWidgetProvider.provideFlowById(habitWidgetId).first())
             val habits = habitProvider.habitsFlow().first()
             initialConfig.value = config
             titleInputController.changeInput(config.title)

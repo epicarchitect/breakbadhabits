@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.logic.habits.HabitAbstinenceProvider
 import breakbadhabits.app.logic.habits.HabitProvider
 import breakbadhabits.app.logic.habits.HabitStatisticsProvider
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider
+import breakbadhabits.app.logic.habits.model.Habit
+import breakbadhabits.app.logic.habits.HabitTrackProvider
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.viewmodel.ViewModel
 
@@ -14,7 +14,7 @@ class HabitDetailsViewModel(
     habitTrackProvider: HabitTrackProvider,
     habitAbstinenceProvider: HabitAbstinenceProvider,
     habitStatisticsProvider: HabitStatisticsProvider,
-    habitId: Habit.Id
+    habitId: Int
 ) : ViewModel() {
 
     val habitController = LoadingController(

@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.RemoteViews
 import breakbadhabits.android.app.BreakBadHabitsApp
 import breakbadhabits.android.app.R
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -23,43 +22,40 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         BreakBadHabitsApp.instance.logicModule
     }
 
-    override fun onUpdate(context: Context, manager: AppWidgetManager, appWidgetIds: IntArray) {
-        super.onUpdate(context, manager, appWidgetIds)
-        appWidgetIds.forEach { appWidgetId ->
-            updateAppWidget(context, manager, appWidgetId)
+    override fun onUpdate(context: Context, manager: AppWidgetManager, widgetSystemIds: IntArray) {
+        super.onUpdate(context, manager, widgetSystemIds)
+        widgetSystemIds.forEach { widgetSystemId ->
+            updateAppWidget(context, manager, widgetSystemId)
         }
     }
 
     override fun onAppWidgetOptionsChanged(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetId: Int,
+        widgetSystemId: Int,
         newOptions: Bundle
     ) {
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, widgetSystemId, newOptions)
         sendUpdateIntent(context)
     }
 
-    override fun onDeleted(context: Context, appWidgetIds: IntArray) = runBlocking {
-        super.onDeleted(context, appWidgetIds)
-        logicModule.habitAppWidgetConfigDeleter.deleteByAppWidgetIds(
-            appWidgetIds.map { HabitAppWidgetConfig.AppWidgetId(it.toLong()) }
-        )
+    override fun onDeleted(context: Context, widgetSystemIds: IntArray) = runBlocking {
+        super.onDeleted(context, widgetSystemIds)
+        logicModule.habitWidgetDeleter.deleteBySystemIds(widgetSystemIds.toList())
     }
 
     private fun updateAppWidget(
         context: Context,
         manager: AppWidgetManager,
-        appWidgetId: Int
+        widgetSystemId: Int
     ) = runBlocking {
         val isDarkModeEnabled =
             context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
-        val config = logicModule.habitAppWidgetConfigProvider.provideFlowByAppWidgetId(
-            HabitAppWidgetConfig.AppWidgetId(appWidgetId.toLong())
-        ).first() ?: let {
+        val widget = logicModule.habitWidgetProvider.provideFlowBySystemId(widgetSystemId).first()
+        if (widget == null) {
             manager.updateAppWidget(
-                appWidgetId,
+                widgetSystemId,
                 RemoteViews(
                     context.packageName,
                     R.layout.habits_app_widget_light
@@ -69,11 +65,12 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
                 }
             )
             manager.notifyAppWidgetViewDataChanged(
-                appWidgetId,
+                widgetSystemId,
                 R.id.habits_listView
             )
             return@runBlocking
         }
+
 
         val views = RemoteViews(
             context.packageName,
@@ -82,22 +79,22 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
             else
                 R.layout.habits_app_widget_light
         ).apply {
-            setTextViewText(R.id.title_textView, config.title.value)
+            setTextViewText(R.id.title_textView, widget.title)
             setViewVisibility(
                 R.id.title_textView,
-                if (config.title.value.isEmpty()) View.GONE else View.VISIBLE
+                if (widget.title.isEmpty()) View.GONE else View.VISIBLE
             )
             setRemoteAdapter(
                 R.id.habits_listView,
                 Intent(context, HabitsAppWidgetRemoteViewsService::class.java).apply {
-                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetSystemId)
                     data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
                 }
             )
         }
 
-        manager.updateAppWidget(appWidgetId, views)
-        manager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.habits_listView)
+        manager.updateAppWidget(widgetSystemId, views)
+        manager.notifyAppWidgetViewDataChanged(widgetSystemId, R.id.habits_listView)
     }
 
     companion object {

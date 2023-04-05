@@ -25,10 +25,10 @@ import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.di.LocalUiModule
 import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.icons.resourceId
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitAbstinence
-import breakbadhabits.app.logic.habits.entity.HabitStatistics
-import breakbadhabits.app.logic.habits.entity.HabitTrack
+import breakbadhabits.app.logic.habits.model.Habit
+import breakbadhabits.app.logic.habits.model.HabitAbstinence
+import breakbadhabits.app.logic.habits.model.HabitStatistics
+import breakbadhabits.app.logic.habits.model.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.toDuration
@@ -84,14 +84,14 @@ fun HabitDetailsScreen(
                 modifier = Modifier
                     .size(44.dp)
                     .align(Alignment.CenterHorizontally),
-                resourceId = habit.icon.value.resourceId
+                resourceId = habit.icon.resourceId
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = habit.name.value,
+                text = habit.name,
                 type = Text.Type.Title
             )
 
@@ -103,7 +103,7 @@ fun HabitDetailsScreen(
             ) { abstinence ->
                 Text(
                     text = abstinence?.let {
-                        durationFormatter.format(it.range.toDuration())
+                        durationFormatter.format(it.instantRange.toDuration())
                     } ?: stringResource(R.string.habits_noEvents)
                 )
             }
@@ -130,7 +130,7 @@ fun HabitDetailsScreen(
                             timeZone = dateTimeConfig.appTimeZone,
                             monthOfYear = yearMonth,
                             ranges = remember(tracks) {
-                                tracks.map { it.time }
+                                tracks.map { it.instantRange }
                             }
                         )
 
@@ -160,13 +160,13 @@ fun HabitDetailsScreen(
                             dayBadgeText = { day ->
                                 val date = day.date
                                 val count = tracks.fold(0) { count, track ->
-                                    val inTrack = date in track.time.start.toLocalDateTime(
+                                    val inTrack = date in track.instantRange.start.toLocalDateTime(
                                         dateTimeConfig.appTimeZone
-                                    ).date..track.time.endInclusive.toLocalDateTime(
+                                    ).date..track.instantRange.endInclusive.toLocalDateTime(
                                         dateTimeConfig.appTimeZone
                                     ).date
 
-                                    if (inTrack) count + track.eventCount.dailyCount
+                                    if (inTrack) count + track.eventCount
                                     else count
                                 }
 
@@ -209,7 +209,7 @@ fun HabitDetailsScreen(
 
                         val abstinenceTimes = remember(abstinenceList) {
                             abstinenceList.map {
-                                it.range.toDuration().inWholeSeconds.toFloat()
+                                it.instantRange.toDuration().inWholeSeconds.toFloat()
                             }
                         }
 
@@ -285,28 +285,28 @@ private fun HabitStatistics.toStatisticsData(
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_averageAbstinenceTime),
         value = durationFormatter.format(
-            duration = abstinence.averageTime,
+            duration = abstinence.averageDuration,
             accuracy = DurationFormatter.Accuracy.HOURS
         )
     ),
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_maxAbstinenceTime),
         value = durationFormatter.format(
-            duration = abstinence.maxTime,
+            duration = abstinence.maxDuration,
             accuracy = DurationFormatter.Accuracy.HOURS
         )
     ),
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_minAbstinenceTime),
         value = durationFormatter.format(
-            duration = abstinence.minTime,
+            duration = abstinence.minDuration,
             accuracy = DurationFormatter.Accuracy.HOURS
         )
     ),
     StatisticData(
         name = context.getString(R.string.habitAnalyze_statistics_timeFromFirstEvent),
         value = durationFormatter.format(
-            duration = abstinence.timeSinceFirstTrack,
+            duration = abstinence.durationSinceFirstTrack,
             accuracy = DurationFormatter.Accuracy.HOURS
         )
     ),

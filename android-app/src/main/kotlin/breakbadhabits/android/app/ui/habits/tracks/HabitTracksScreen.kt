@@ -29,12 +29,13 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.di.LocalUiModule
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitTrack
+import breakbadhabits.app.logic.habits.model.Habit
+import breakbadhabits.app.logic.habits.model.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.next
 import breakbadhabits.foundation.datetime.previous
+import breakbadhabits.foundation.math.ranges.isStartSameAsEnd
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.LocalResourceIcon
@@ -51,7 +52,7 @@ import java.util.*
 fun HabitTracksScreen(
     habitController: LoadingController<Habit?>,
     habitTracksController: LoadingController<Map<MonthOfYear, List<HabitTrack>>>,
-    onTrackClick: (HabitTrack.Id) -> Unit,
+    onTrackClick: (trackId: Int) -> Unit,
     onAddClick: () -> Unit
 ) {
     val logicModule = LocalLogicModule.current
@@ -71,7 +72,7 @@ fun HabitTracksScreen(
         val currentTracks = remember(currentMonth) { tracks[currentMonth] ?: emptyList() }
         val ranges = remember(tracks) {
             tracks.values.flatten().map {
-                it.time
+                it.instantRange
             }
         }
 
@@ -97,7 +98,7 @@ fun HabitTracksScreen(
                     habit ?: return@LoadingBox
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = habit.name.value,
+                        text = habit.name,
                         type = Text.Type.Title,
                         maxLines = 1
                     )
@@ -143,13 +144,13 @@ fun HabitTracksScreen(
                 dayBadgeText = { day ->
                     val date = day.date
                     val count = allTracks.fold(0) { count, track ->
-                        val inTrack = date in track.time.start.toLocalDateTime(
+                        val inTrack = date in track.instantRange.start.toLocalDateTime(
                             dateTimeConfig.appTimeZone
-                        ).date..track.time.endInclusive.toLocalDateTime(
+                        ).date..track.instantRange.endInclusive.toLocalDateTime(
                             dateTimeConfig.appTimeZone
                         ).date
 
-                        if (inTrack) count + track.eventCount.dailyCount
+                        if (inTrack) count + track.eventCount
                         else count
                     }
 
@@ -165,7 +166,7 @@ fun HabitTracksScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
-                items(currentTracks, key = { it.id.value }) { track ->
+                items(currentTracks, key = { it.id }) { track ->
                     Box(
                         modifier = Modifier
                             .animateItemPlacement()
@@ -184,27 +185,30 @@ fun HabitTracksScreen(
                         ) {
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = when (val time = track.time) {
-                                    is HabitTrack.Time.Date -> dateTimeFormatter.formatDateTime(time.value)
-                                    is HabitTrack.Time.Range -> {
-                                        val start = dateTimeFormatter.formatDateTime(time.start)
-                                        val end =
-                                            dateTimeFormatter.formatDateTime(time.endInclusive)
-                                        "$start - $end"
-                                    }
+                                text = if (track.instantRange.isStartSameAsEnd) {
+                                    dateTimeFormatter.formatDateTime(track.instantRange.start)
+                                } else {
+                                    val start = dateTimeFormatter.formatDateTime(
+                                        track.instantRange.start
+                                    )
+                                    val end = dateTimeFormatter.formatDateTime(
+                                        track.instantRange.endInclusive
+                                    )
+                                    "$start - $end"
                                 },
                                 type = Text.Type.Title
                             )
 
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = "dailyCount: " + track.eventCount.dailyCount
+                                text = "dailyCount: " + track.eventCount
                             )
 
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = track.comment?.value
-                                    ?: stringResource(R.string.habitEvents_noComment)
+                                text = track.comment.ifBlank {
+                                    stringResource(R.string.habitEvents_noComment)
+                                }
                             )
                         }
                     }

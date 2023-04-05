@@ -4,8 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import breakbadhabits.app.database.AppDatabase
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.icons.LocalIcon
+import breakbadhabits.app.logic.habits.model.Habit
 import breakbadhabits.app.logic.icons.LocalIconProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import breakbadhabits.foundation.coroutines.flow.mapItems
@@ -18,8 +17,8 @@ class HabitProvider(
     private val localIconProvider: LocalIconProvider
 ) {
 
-    fun habitFlow(id: Habit.Id) = appDatabase.habitQueries
-        .selectById(id.value)
+    fun habitFlow(id: Int) = appDatabase.habitQueries
+        .selectById(id)
         .asFlow()
         .mapToOneOrNull(coroutineDispatchers.io)
         .map {
@@ -35,8 +34,8 @@ class HabitProvider(
         }.flowOn(coroutineDispatchers.default)
 
     private fun breakbadhabits.app.database.Habit.toEntity() = Habit(
-        id = Habit.Id(id),
-        name = Habit.Name(name),
-        icon = Habit.Icon(localIconProvider.getIcon(LocalIcon.Id(iconId)))
+        id = id,
+        name = name,
+        icon = localIconProvider.getIcon(iconId)
     )
 }

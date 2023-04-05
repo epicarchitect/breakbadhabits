@@ -1,8 +1,6 @@
 package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.database.AppDatabase
-import breakbadhabits.app.logic.habits.config.HabitsConfigProvider
-import breakbadhabits.app.logic.habits.entity.Habit
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,17 +13,17 @@ class HabitNewNameValidator(
     private val maxLength get() = configProvider.getConfig().maxHabitNameLength
 
     suspend fun validate(
-        data: Habit.Name,
-        initial: Habit.Name? = null
+        data: String,
+        initial: String? = null
     ) = data.incorrectReason(initial)?.let {
         IncorrectHabitNewName(data, it)
     } ?: CorrectHabitNewName(data)
 
-    private suspend fun Habit.Name.incorrectReason(initial: Habit.Name? = null) = when {
+    private suspend fun String.incorrectReason(initial: String? = null) = when {
         initial == this -> null
-        value.isEmpty() -> IncorrectHabitNewName.Reason.Empty
-        value.length > maxLength -> IncorrectHabitNewName.Reason.TooLong(maxLength)
-        value.isAlreadyUsed() -> IncorrectHabitNewName.Reason.AlreadyUsed
+        isEmpty() -> IncorrectHabitNewName.Reason.Empty
+        length > maxLength -> IncorrectHabitNewName.Reason.TooLong(maxLength)
+        isAlreadyUsed() -> IncorrectHabitNewName.Reason.AlreadyUsed
         else -> null
     }
 
@@ -35,15 +33,15 @@ class HabitNewNameValidator(
 }
 
 sealed class ValidatedHabitNewName {
-    abstract val data: Habit.Name
+    abstract val data: String
 }
 
 data class CorrectHabitNewName internal constructor(
-    override val data: Habit.Name
+    override val data: String
 ) : ValidatedHabitNewName()
 
 data class IncorrectHabitNewName internal constructor(
-    override val data: Habit.Name,
+    override val data: String,
     val reason: Reason
 ) : ValidatedHabitNewName() {
     sealed class Reason {

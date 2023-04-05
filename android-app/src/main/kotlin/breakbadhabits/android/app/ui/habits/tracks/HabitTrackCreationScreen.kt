@@ -23,16 +23,17 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.di.LocalUiModule
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitTrack
-import breakbadhabits.app.logic.habits.tracks.IncorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.tracks.IncorrectHabitTrackTime
-import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackEventCount
-import breakbadhabits.app.logic.habits.tracks.ValidatedHabitTrackTime
+import breakbadhabits.app.logic.habits.IncorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.IncorrectHabitTrackTime
+import breakbadhabits.app.logic.habits.ValidatedHabitTrackEventCount
+import breakbadhabits.app.logic.habits.ValidatedHabitTrackTime
+import breakbadhabits.app.logic.habits.model.Habit
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.datetime.withZeroSeconds
+import breakbadhabits.foundation.math.ranges.asRangeOfOne
+import breakbadhabits.foundation.math.ranges.isStartSameAsEnd
 import breakbadhabits.foundation.uikit.LoadingBox
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.SingleSelectionChipRow
@@ -45,17 +46,20 @@ import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.text.ErrorText
 import breakbadhabits.foundation.uikit.text.Text
-import breakbadhabits.foundation.uikit.text.TextFieldAdapter
+import breakbadhabits.foundation.uikit.text.TextFieldInputAdapter
+import breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
+import breakbadhabits.foundation.uikit.text.ValidatedTextField
+import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.days
 
 @Composable
 fun HabitTrackCreationScreen(
-    eventCountInputController: ValidatedInputController<HabitTrack.EventCount, ValidatedHabitTrackEventCount>,
-    timeInputController: ValidatedInputController<HabitTrack.Time, ValidatedHabitTrackTime>,
+    eventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
+    timeInputController: ValidatedInputController<ClosedRange<Instant>, ValidatedHabitTrackTime>,
     creationController: SingleRequestController,
     habitController: LoadingController<Habit?>,
-    commentInputController: ValidatedInputController<HabitTrack.Comment?, Nothing>
+    commentInputController: ValidatedInputController<String, Nothing>
 ) {
     val logicModule = LocalLogicModule.current
     val uiModule = LocalUiModule.current
@@ -84,9 +88,7 @@ fun HabitTrackCreationScreen(
                 rangeSelectionShow = false
                 selectedTimeSelectionIndex = 2
                 timeInputController.changeInput(
-                    HabitTrack.Time.of(
-                        it.withZeroSeconds(dateTimeConfig.appTimeZone)
-                    )
+                    it.withZeroSeconds(dateTimeConfig.appTimeZone)
                 )
             },
             onCancel = {
@@ -117,7 +119,7 @@ fun HabitTrackCreationScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = stringResource(
                         R.string.habitEventCreation_habitName,
-                        it.name.value
+                        it.name
                     ),
                     type = Text.Type.Description,
                     priority = Text.Priority.Low
@@ -137,22 +139,23 @@ fun HabitTrackCreationScreen(
         ValidatedInputField(
             modifier = Modifier.padding(horizontal = 16.dp),
             controller = eventCountInputController,
-            adapter = remember {
-                TextFieldAdapter(
-                    decodeInput = { it.dailyCount.toString() },
+            inputAdapter = remember {
+                TextFieldInputAdapter(
+                    decodeInput = { it.toString() },
                     encodeInput = {
-                        eventCountState.input.copy(
-                            dailyCount = it.toIntOrNull() ?: 0
-                        )
-                    },
-                    extractErrorMessage = {
-                        val incorrect = (it as? IncorrectHabitTrackEventCount)
-                            ?: return@TextFieldAdapter null
-                        when (incorrect.reason) {
-                            is IncorrectHabitTrackEventCount.Reason.Empty -> "Поле не может быть пустым"
-                        }
+                        it.toIntOrNull() ?: 0
                     }
                 )
+            },
+            validationAdapter = remember {
+                TextFieldValidationAdapter {
+                    if (it !is IncorrectHabitTrackEventCount) null
+                    else when (it.reason) {
+                        is IncorrectHabitTrackEventCount.Reason.Empty -> {
+                            "Поле не может быть пустым"
+                        }
+                    }
+                }
             },
             label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
@@ -173,18 +176,17 @@ fun HabitTrackCreationScreen(
         LaunchedEffect(selectedTimeSelectionIndex) {
             if (selectedTimeSelectionIndex == 0) {
                 timeInputController.changeInput(
-                    HabitTrack.Time.of(
-                        dateTimeProvider.currentTime.value.withZeroSeconds(dateTimeConfig.appTimeZone)
-                    )
+                    dateTimeProvider.currentTime.value
+                        .withZeroSeconds(dateTimeConfig.appTimeZone)
+                        .asRangeOfOne()
                 )
             }
 
             if (selectedTimeSelectionIndex == 1) {
                 timeInputController.changeInput(
-                    HabitTrack.Time.of(
-                        dateTimeProvider.currentTime.value.minus(1.days)
-                            .withZeroSeconds(dateTimeConfig.appTimeZone)
-                    )
+                    dateTimeProvider.currentTime.value.minus(1.days)
+                        .withZeroSeconds(dateTimeConfig.appTimeZone)
+                        .asRangeOfOne()
                 )
             }
         }
@@ -208,16 +210,13 @@ fun HabitTrackCreationScreen(
                 rangeSelectionShow = true
             },
             text = rangeState.input.let {
-                when (it) {
-                    is HabitTrack.Time.Date -> {
-                        val start = dateTimeFormatter.formatDateTime(it.start)
-                        "Дата и время: $start"
-                    }
-                    is HabitTrack.Time.Range -> {
-                        val start = dateTimeFormatter.formatDateTime(it.start)
-                        val end = dateTimeFormatter.formatDateTime(it.endInclusive)
-                        "Первое событие: $start, последнее событие: $end"
-                    }
+                if (it.isStartSameAsEnd) {
+                    val start = dateTimeFormatter.formatDateTime(it.start)
+                    "Дата и время: $start"
+                } else {
+                    val start = dateTimeFormatter.formatDateTime(it.start)
+                    val end = dateTimeFormatter.formatDateTime(it.endInclusive)
+                    "Первое событие: $start, последнее событие: $end"
                 }
             }
         )
@@ -244,16 +243,14 @@ fun HabitTrackCreationScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        ValidatedInputField(
+        ValidatedTextField(
             modifier = Modifier.padding(horizontal = 16.dp),
             label = stringResource(R.string.habitEventCreation_comment),
             controller = commentInputController,
-            adapter = remember {
-                TextFieldAdapter(
-                    decodeInput = { it?.value ?: "" },
-                    encodeInput = { if (it.isEmpty()) null else HabitTrack.Comment(it) },
-                    extractErrorMessage = { null }
-                )
+            validationAdapter = remember {
+                TextFieldValidationAdapter {
+                    null
+                }
             }
         )
 

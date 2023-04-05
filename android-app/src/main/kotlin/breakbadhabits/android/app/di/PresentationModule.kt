@@ -1,8 +1,5 @@
 package breakbadhabits.android.app.di
 
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
-import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.app.presentation.dashboard.DashboardViewModel
 import breakbadhabits.app.presentation.habits.HabitAppWidgetCreationViewModel
 import breakbadhabits.app.presentation.habits.HabitAppWidgetUpdatingViewModel
@@ -33,7 +30,7 @@ class PresentationModule(val logicModule: LogicModule) {
         )
     }
 
-    fun createHabitUpdatingViewModel(habitId: Habit.Id) = with(logicModule) {
+    fun createHabitUpdatingViewModel(habitId: Int) = with(logicModule) {
         HabitUpdatingViewModel(
             habitProvider = habitProvider,
             habitUpdater = habitUpdater,
@@ -44,7 +41,7 @@ class PresentationModule(val logicModule: LogicModule) {
         )
     }
 
-    fun createHabitDetailsViewModel(habitId: Habit.Id) = with(logicModule) {
+    fun createHabitDetailsViewModel(habitId: Int) = with(logicModule) {
         HabitDetailsViewModel(
             habitProvider = habitProvider,
             habitTrackProvider = habitTrackProvider,
@@ -54,7 +51,7 @@ class PresentationModule(val logicModule: LogicModule) {
         )
     }
 
-    fun createHabitTrackCreationViewModel(habitId: Habit.Id) = with(logicModule) {
+    fun createHabitTrackCreationViewModel(habitId: Int) = with(logicModule) {
         HabitTrackCreationViewModel(
             habitProvider = habitProvider,
             habitTrackCreator = habitTrackCreator,
@@ -65,7 +62,7 @@ class PresentationModule(val logicModule: LogicModule) {
         )
     }
 
-    fun createHabitTracksViewModel(habitId: Habit.Id) = with(logicModule) {
+    fun createHabitTracksViewModel(habitId: Int) = with(logicModule) {
         HabitTracksViewModel(
             habitProvider = habitProvider,
             habitTrackProvider = habitTrackProvider,
@@ -73,7 +70,7 @@ class PresentationModule(val logicModule: LogicModule) {
         )
     }
 
-    fun createHabitTrackUpdatingViewModel(id: HabitTrack.Id) = with(logicModule) {
+    fun createHabitTrackUpdatingViewModel(habitTrackId: Int) = with(logicModule) {
         HabitTrackUpdatingViewModel(
             habitProvider = habitProvider,
             habitTrackProvider = habitTrackProvider,
@@ -82,36 +79,36 @@ class PresentationModule(val logicModule: LogicModule) {
             trackRangeValidator = habitTrackTimeValidator,
             trackEventCountValidator = habitTrackEventCountValidator,
             dateTimeProvider = dateTimeProvider,
-            habitTrackId = id
+            habitTrackId = habitTrackId
         )
     }
 
     fun createHabitAppWidgetsViewModel() = with(logicModule) {
         HabitAppWidgetsViewModel(
             habitProvider = habitProvider,
-            habitAppWidgetConfigProvider = habitAppWidgetConfigProvider
+            habitWidgetProvider = habitWidgetProvider
         )
     }
 
-    fun createHabitAppWidgetUpdatingViewModel(
-        id: HabitAppWidgetConfig.Id
+    fun createHabitWidgetUpdatingViewModel(
+        habitWidgetId: Int
     ) = with(logicModule) {
         HabitAppWidgetUpdatingViewModel(
             habitProvider = habitProvider,
-            habitAppWidgetConfigProvider = habitAppWidgetConfigProvider,
-            habitAppWidgetConfigUpdater = habitAppWidgetConfigUpdater,
-            habitAppWidgetConfigDeleter = habitAppWidgetConfigDeleter,
-            id = id
+            habitWidgetProvider = habitWidgetProvider,
+            habitWidgetUpdater = habitWidgetUpdater,
+            habitWidgetDeleter = habitWidgetDeleter,
+            habitWidgetId = habitWidgetId
         )
     }
 
-    fun createHabitAppWidgetCreationViewModel(
-        appWidgetId: HabitAppWidgetConfig.AppWidgetId
+    fun createHabitWidgetCreationViewModel(
+        widgetSystemId: Int
     ) = with(logicModule) {
         HabitAppWidgetCreationViewModel(
             habitProvider = habitProvider,
-            habitAppWidgetConfigCreator = habitAppWidgetConfigCreator,
-            appWidgetId = appWidgetId
+            habitWidgetCreator = habitWidgetCreator,
+            widgetSystemId = widgetSystemId
         )
     }
 }

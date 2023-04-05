@@ -1,7 +1,7 @@
 package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.database.AppDatabase
-import breakbadhabits.app.logic.habits.entity.Habit
+import breakbadhabits.app.logic.icons.LocalIcon
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 
@@ -10,14 +10,14 @@ class HabitUpdater(
     private val coroutineDispatchers: CoroutineDispatchers
 ) {
     suspend fun updateHabit(
-        habitId: Habit.Id,
+        habitId: Int,
         habitName: CorrectHabitNewName,
-        icon: Habit.Icon
+        icon: LocalIcon
     ) = withContext(coroutineDispatchers.io) {
         appDatabase.habitQueries.update(
-            id = habitId.value,
-            name = habitName.data.value,
-            iconId = icon.value.id.value
+            id = habitId,
+            name = habitName.data,
+            iconId = icon.id
         )
     }
 }

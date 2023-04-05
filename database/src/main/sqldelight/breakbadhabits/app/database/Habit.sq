@@ -1,7 +1,9 @@
+import kotlin.Int;
+
 CREATE TABLE IF NOT EXISTS Habit (
-  id                INTEGER NOT NULL PRIMARY KEY,
-  name              TEXT NOT NULL,
-  iconId            INTEGER NOT NULL
+  id     INTEGER AS Int NOT NULL PRIMARY KEY,
+  name   TEXT NOT NULL,
+  iconId INTEGER AS Int NOT NULL
 );
 
 insert:

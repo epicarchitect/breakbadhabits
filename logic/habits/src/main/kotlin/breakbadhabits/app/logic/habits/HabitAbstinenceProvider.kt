@@ -1,9 +1,7 @@
 package breakbadhabits.app.logic.habits
 
-import breakbadhabits.app.logic.datetime.DateTimeProvider
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitAbstinence
-import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider
+import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.app.logic.habits.model.HabitAbstinence
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import breakbadhabits.foundation.math.ranges.combineIntersections
 import kotlinx.coroutines.flow.combine
@@ -18,32 +16,30 @@ class HabitAbstinenceProvider(
     private val coroutineDispatchers: CoroutineDispatchers
 ) {
     fun currentAbstinenceFlow(
-        habitId: Habit.Id
+        habitId: Int
     ) = habitTrackProvider.habitTrackFlowByMaxEnd(habitId).flatMapLatest { lastTrack ->
         if (lastTrack == null) flowOf(null)
         else dateTimeProvider.currentTime.map { currentTime ->
             HabitAbstinence(
                 habitId = habitId,
-                range = HabitAbstinence.Range(lastTrack.time.endInclusive..currentTime)
+                instantRange = lastTrack.instantRange.endInclusive..currentTime
             )
         }
     }.flowOn(coroutineDispatchers.default)
 
-    fun abstinenceListFlow(habitId: Habit.Id) = combine(
+    fun abstinenceListFlow(habitId: Int) = combine(
         habitTrackProvider.habitTracksFlow(habitId),
         dateTimeProvider.currentTime,
     ) { tracks, currentTime ->
-        val ranges = tracks.map { it.time }.combineIntersections()
+        val ranges = tracks.map { it.instantRange }.combineIntersections()
         List(ranges.size) { index ->
             HabitAbstinence(
                 habitId = habitId,
-                range = HabitAbstinence.Range(
-                    if (index == ranges.lastIndex) {
-                        ranges[index].endInclusive..currentTime
-                    } else {
-                        ranges[index].endInclusive..ranges[index + 1].start
-                    }
-                )
+                instantRange = if (index == ranges.lastIndex) {
+                    ranges[index].endInclusive..currentTime
+                } else {
+                    ranges[index].endInclusive..ranges[index + 1].start
+                }
             )
         }
     }.flowOn(coroutineDispatchers.default)

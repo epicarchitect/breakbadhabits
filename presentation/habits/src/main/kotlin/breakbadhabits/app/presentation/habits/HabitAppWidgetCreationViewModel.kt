@@ -2,8 +2,7 @@ package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.logic.habits.HabitProvider
-import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigCreator
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.HabitWidgetCreator
 import breakbadhabits.foundation.controller.MultiSelectionController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
@@ -12,13 +11,13 @@ import kotlinx.coroutines.flow.map
 
 class HabitAppWidgetCreationViewModel(
     habitProvider: HabitProvider,
-    habitAppWidgetConfigCreator: HabitAppWidgetConfigCreator,
-    appWidgetId: HabitAppWidgetConfig.AppWidgetId
+    habitWidgetCreator: HabitWidgetCreator,
+    widgetSystemId: Int
 ) : ViewModel() {
 
     val titleInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitAppWidgetConfig.Title(""),
+        initialInput = "",
         validation = { null }
     )
 
@@ -30,9 +29,9 @@ class HabitAppWidgetCreationViewModel(
     val creationController = SingleRequestController(
         coroutineScope = viewModelScope,
         request = {
-            habitAppWidgetConfigCreator.createAppWidget(
+            habitWidgetCreator.createAppWidget(
                 title = titleInputController.state.value.input,
-                appWidgetId = appWidgetId,
+                systemId = widgetSystemId,
                 habitIds = habitsSelectionController.state.value
                     .items.filter { it.value }
                     .keys.map { it.id }

@@ -1,31 +1,26 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.logic.datetime.DateTimeProvider
-import breakbadhabits.app.logic.datetime.config.DateTimeConfigProvider
+import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.HabitProvider
-import breakbadhabits.app.logic.habits.entity.HabitTrack
-import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackTime
-import breakbadhabits.app.logic.habits.tracks.HabitTrackDeleter
-import breakbadhabits.app.logic.habits.tracks.HabitTrackEventCountValidator
-import breakbadhabits.app.logic.habits.tracks.HabitTrackProvider
-import breakbadhabits.app.logic.habits.tracks.HabitTrackTimeValidator
-import breakbadhabits.app.logic.habits.tracks.HabitTrackUpdater
+import breakbadhabits.app.logic.habits.model.HabitTrack
+import breakbadhabits.app.logic.habits.CorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.CorrectHabitTrackTime
+import breakbadhabits.app.logic.habits.HabitTrackDeleter
+import breakbadhabits.app.logic.habits.HabitTrackEventCountValidator
+import breakbadhabits.app.logic.habits.HabitTrackProvider
+import breakbadhabits.app.logic.habits.HabitTrackTimeValidator
+import breakbadhabits.app.logic.habits.HabitTrackUpdater
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
-import breakbadhabits.foundation.datetime.toInstantRange
+import breakbadhabits.foundation.math.ranges.asRangeOfOne
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
-import kotlinx.datetime.toLocalDateTime
 
 class HabitTrackUpdatingViewModel(
     habitProvider: HabitProvider,
@@ -35,7 +30,7 @@ class HabitTrackUpdatingViewModel(
     trackRangeValidator: HabitTrackTimeValidator,
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
-    habitTrackId: HabitTrack.Id
+    habitTrackId: Int
 ) : ViewModel() {
 
     private val initialHabitTrack = MutableStateFlow<HabitTrack?>(null)
@@ -49,19 +44,19 @@ class HabitTrackUpdatingViewModel(
 
     val eventCountInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.EventCount(dailyCount = 1),
+        initialInput = 1,
         validation = trackEventCountValidator::validate
     )
 
     val timeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = HabitTrack.Time.of(dateTimeProvider.currentTime.value),
+        initialInput = dateTimeProvider.currentTime.value.asRangeOfOne(),
         validation = trackRangeValidator::validate,
     )
 
-    val commentInputController = ValidatedInputController<HabitTrack.Comment?, Nothing>(
+    val commentInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = null,
+        initialInput = "",
         validation = { null }
     )
 
@@ -88,7 +83,7 @@ class HabitTrackUpdatingViewModel(
             commentInputController.state,
             initialHabitTrack
         ) { eventCount, trackRange, comment, initialTrack ->
-            val isChanged = initialTrack?.time != trackRange.input
+            val isChanged = initialTrack?.instantRange != trackRange.input
                     || initialTrack.eventCount != eventCount.input
                     || initialTrack.comment != comment.input
 
@@ -111,7 +106,7 @@ class HabitTrackUpdatingViewModel(
         viewModelScope.launch {
             val habitTrack = checkNotNull(habitTrackProvider.getHabitTrack(habitTrackId))
             initialHabitTrack.value = habitTrack
-            timeInputController.changeInput(habitTrack.time)
+            timeInputController.changeInput(habitTrack.instantRange)
             eventCountInputController.changeInput(habitTrack.eventCount)
             commentInputController.changeInput(habitTrack.comment)
         }

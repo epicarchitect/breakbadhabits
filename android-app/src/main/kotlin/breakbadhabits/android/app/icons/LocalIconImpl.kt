@@ -3,7 +3,7 @@ package breakbadhabits.android.app.icons
 import breakbadhabits.app.logic.icons.LocalIcon
 
 data class LocalIconImpl(
-    override val id: LocalIcon.Id,
+    override val id: Int,
     val resourceId: Int
 ) : LocalIcon
 

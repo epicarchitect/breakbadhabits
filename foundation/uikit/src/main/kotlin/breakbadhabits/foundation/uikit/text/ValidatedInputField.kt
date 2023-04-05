@@ -20,29 +20,75 @@ import breakbadhabits.foundation.controller.ValidatedInputController
 import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.ext.onFocusLost
 
-interface TextFieldAdapter<INPUT, VALIDATION_RESULT> {
+interface TextFieldInputAdapter<INPUT> {
     fun decodeInput(input: INPUT): String?
     fun encodeInput(input: String): INPUT
+}
+
+interface TextFieldValidationAdapter<VALIDATION_RESULT> {
     fun extractErrorMessage(result: VALIDATION_RESULT?): String?
 }
 
-fun <INPUT, VALIDATION_RESULT> TextFieldAdapter(
+fun <INPUT> TextFieldInputAdapter(
     decodeInput: (input: INPUT) -> String?,
-    encodeInput: (input: String) -> INPUT,
-    extractErrorMessage: (result: VALIDATION_RESULT?) -> String?
-) = object : TextFieldAdapter<INPUT, VALIDATION_RESULT> {
+    encodeInput: (input: String) -> INPUT
+) = object : TextFieldInputAdapter<INPUT> {
     override fun decodeInput(input: INPUT) = decodeInput(input)
 
     override fun encodeInput(input: String) = encodeInput(input)
+}
 
+fun <VALIDATION_RESULT> TextFieldValidationAdapter(
+    extractErrorMessage: (result: VALIDATION_RESULT?) -> String?
+) = object : TextFieldValidationAdapter<VALIDATION_RESULT> {
     override fun extractErrorMessage(result: VALIDATION_RESULT?) = extractErrorMessage(result)
+}
+
+private object TextInputAdapter : TextFieldInputAdapter<String> {
+    override fun decodeInput(input: String) = input
+    override fun encodeInput(input: String) = input
+}
+
+@Composable
+fun <VALIDATION_RESULT> ValidatedTextField(
+    controller: ValidatedInputController<String, VALIDATION_RESULT>,
+    validationAdapter: TextFieldValidationAdapter<VALIDATION_RESULT>,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    multiline: Boolean = false,
+    maxLines: Int = Int.MAX_VALUE,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions? = null,
+    keyboardActions: KeyboardActions? = null,
+    readOnly: Boolean = false,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    regex: Regex? = null,
+) {
+    ValidatedInputField(
+        modifier = modifier,
+        controller = controller,
+        inputAdapter = TextInputAdapter,
+        validationAdapter = validationAdapter,
+        label = label,
+        multiline = multiline,
+        maxLines = maxLines,
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        readOnly = readOnly,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        regex = regex
+    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
     controller: ValidatedInputController<INPUT, VALIDATION_RESULT>,
-    adapter: TextFieldAdapter<INPUT, VALIDATION_RESULT>,
+    inputAdapter: TextFieldInputAdapter<INPUT>,
+    validationAdapter: TextFieldValidationAdapter<VALIDATION_RESULT>,
     modifier: Modifier = Modifier,
     label: String? = null,
     multiline: Boolean = false,
@@ -56,7 +102,7 @@ fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
     regex: Regex? = null,
 ) {
     val state by controller.collectState()
-    val error = adapter.extractErrorMessage(state.validationResult)
+    val error = validationAdapter.extractErrorMessage(state.validationResult)
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LocalDensity
@@ -76,9 +122,9 @@ fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusLost(controller::validate),
-            value = adapter.decodeInput(state.input) ?: "",
+            value = inputAdapter.decodeInput(state.input) ?: "",
             onValueChange = {
-                controller.changeInput(adapter.encodeInput(it))
+                controller.changeInput(inputAdapter.encodeInput(it))
             },
             label = label,
             multiline = multiline,

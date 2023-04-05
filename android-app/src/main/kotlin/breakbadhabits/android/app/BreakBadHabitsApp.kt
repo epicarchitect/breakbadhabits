@@ -39,7 +39,7 @@ class BreakBadHabitsApp : Application() {
         combine(
             logicModule.habitProvider.habitsFlow(),
             logicModule.habitTrackProvider.habitTracksFlow(),
-            logicModule.habitAppWidgetConfigProvider.provideAllFlow()
+            logicModule.habitWidgetProvider.provideAllFlow()
         ) { _, _, _ ->
             HabitsAppWidgetProvider.sendUpdateIntent(this@BreakBadHabitsApp)
         }.launchIn(CoroutineScope(logicModule.coroutineDispatchers.default))

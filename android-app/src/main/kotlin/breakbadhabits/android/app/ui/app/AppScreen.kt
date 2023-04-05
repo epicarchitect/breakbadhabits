@@ -25,9 +25,6 @@ import breakbadhabits.android.app.ui.habits.tracks.HabitTracksScreen
 import breakbadhabits.android.app.ui.habits.widgets.HabitAppWidgetUpdatingScreen
 import breakbadhabits.android.app.ui.habits.widgets.HabitAppWidgetsScreen
 import breakbadhabits.android.app.ui.settings.AppSettingsScreen
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
-import breakbadhabits.app.logic.habits.entity.HabitTrack
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.uikit.ext.collectState
 
@@ -47,37 +44,37 @@ private object Screens {
 
     object HabitDetails {
         const val route = "habit?id={id}"
-        val arguments = listOf(navArgument("id") { type = NavType.LongType })
-        fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
-        fun buildRoute(id: Habit.Id) = "habit?id=${id.value}"
+        val arguments = listOf(navArgument("id") { type = NavType.IntType })
+        fun getHabitId(arguments: Bundle?) = arguments!!.getInt("id")
+        fun buildRoute(habitId: Int) = "habit?id=$habitId"
     }
 
     object HabitUpdating {
         const val route = "habitUpdating?id={id}"
-        val arguments = listOf(navArgument("id") { type = NavType.LongType })
-        fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
-        fun buildRoute(id: Habit.Id) = "habitUpdating?id=${id.value}"
+        val arguments = listOf(navArgument("id") { type = NavType.IntType })
+        fun getHabitId(arguments: Bundle?) = arguments!!.getInt("id")
+        fun buildRoute(habitId: Int) = "habitUpdating?id=$habitId"
     }
 
     object HabitTrackCreation {
         const val route = "habitTrackCreation?id={id}"
-        val arguments = listOf(navArgument("id") { type = NavType.LongType })
-        fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
-        fun buildRoute(id: Habit.Id) = "habitTrackCreation?id=${id.value}"
+        val arguments = listOf(navArgument("id") { type = NavType.IntType })
+        fun getHabitId(arguments: Bundle?) = arguments!!.getInt("id")
+        fun buildRoute(habitId: Int) = "habitTrackCreation?id=$habitId"
     }
 
     object HabitTracks {
         const val route = "habitTracks?id={id}"
-        val arguments = listOf(navArgument("id") { type = NavType.LongType })
-        fun getHabitId(arguments: Bundle?) = Habit.Id(arguments!!.getLong("id"))
-        fun buildRoute(id: Habit.Id) = "habitTracks?id=${id.value}"
+        val arguments = listOf(navArgument("id") { type = NavType.IntType })
+        fun getHabitId(arguments: Bundle?) = arguments!!.getInt("id")
+        fun buildRoute(habitId: Int) = "habitTracks?id=$habitId"
     }
 
     object HabitTrackUpdating {
         const val route = "habitTrackUpdating?id={id}"
-        val arguments = listOf(navArgument("id") { type = NavType.LongType })
-        fun getHabitTrackId(arguments: Bundle?) = HabitTrack.Id(arguments!!.getLong("id"))
-        fun buildRoute(id: HabitTrack.Id) = "habitTrackUpdating?id=${id.value}"
+        val arguments = listOf(navArgument("id") { type = NavType.IntType })
+        fun getHabitTrackId(arguments: Bundle?) = arguments!!.getInt("id")
+        fun buildRoute(habitTrackId: Int) = "habitTrackUpdating?id=$habitTrackId"
     }
 
     object HabitAppWidgets {
@@ -86,11 +83,9 @@ private object Screens {
 
     object HabitAppWidgetUpdating {
         const val route = "habitAppWidgetUpdating?id={id}"
-        val arguments = listOf(navArgument("id") { type = NavType.LongType })
-        fun getHabitAppWidgetId(arguments: Bundle?) =
-            HabitAppWidgetConfig.Id(arguments!!.getLong("id"))
-
-        fun buildRoute(id: HabitAppWidgetConfig.Id) = "habitAppWidgetUpdating?id=${id.value}"
+        val arguments = listOf(navArgument("id") { type = NavType.IntType })
+        fun getHabitAppWidgetId(arguments: Bundle?) = arguments!!.getInt("id")
+        fun buildRoute(habitWidgetId: Int) = "habitAppWidgetUpdating?id=$habitWidgetId"
     }
 }
 
@@ -247,7 +242,7 @@ private fun AppScreenContent() {
             val presentationModule = LocalPresentationModule.current
             val id = Screens.HabitAppWidgetUpdating.getHabitAppWidgetId(it.arguments)
             val viewModel = viewModel {
-                presentationModule.createHabitAppWidgetUpdatingViewModel(id)
+                presentationModule.createHabitWidgetUpdatingViewModel(id)
             }
             val updatingState by viewModel.updatingController.collectState()
             val deletionState by viewModel.deletionController.collectState()

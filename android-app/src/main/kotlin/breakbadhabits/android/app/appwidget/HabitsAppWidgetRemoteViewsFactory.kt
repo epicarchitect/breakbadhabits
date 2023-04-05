@@ -6,9 +6,8 @@ import android.widget.RemoteViewsService
 import breakbadhabits.android.app.BreakBadHabitsApp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.format.DurationFormatter
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitAbstinence
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.model.Habit
+import breakbadhabits.app.logic.habits.model.HabitAbstinence
 import breakbadhabits.foundation.datetime.toDuration
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -16,22 +15,22 @@ import kotlinx.coroutines.runBlocking
 
 class HabitsAppWidgetRemoteViewsFactory(
     private val context: Context,
-    private val appWidgetId: HabitAppWidgetConfig.AppWidgetId
+    private val widgetSystemId: Int
 ) : RemoteViewsService.RemoteViewsFactory {
     private val logicModule = BreakBadHabitsApp.instance.logicModule
     private val habitProvider = logicModule.habitProvider
     private val habitAbstinenceProvider = logicModule.habitAbstinenceProvider
-    private val habitAppWidgetProvider = logicModule.habitAppWidgetConfigProvider
+    private val habitAppWidgetProvider = logicModule.habitWidgetProvider
     private val durationFormatter = DurationFormatter(
         resources = context.resources,
         defaultAccuracy = DurationFormatter.Accuracy.HOURS
     )
 
     private fun loadItems() = runBlocking {
-        val config = habitAppWidgetProvider.provideFlowByAppWidgetId(appWidgetId).first()
-            ?: return@runBlocking emptyList()
+        val config = habitAppWidgetProvider.provideFlowBySystemId(widgetSystemId).first()
 
-        habitProvider.habitsFlow().first().filter {
+        if (config == null) emptyList()
+        else habitProvider.habitsFlow().first().filter {
             config.habitIds.contains(it.id)
         }.map {
             Item(
@@ -60,13 +59,13 @@ class HabitsAppWidgetRemoteViewsFactory(
         R.layout.habits_app_widget_item
     ).apply {
         val item = items[position]
-        setTextViewText(R.id.habitName_textView, item.habit.name.value)
+        setTextViewText(R.id.habitName_textView, item.habit.name)
         setTextViewText(
             R.id.abstinenceTime_textView,
             if (item.abstinence == null) {
                 context.getString(R.string.habitsAppWidget_noAbstinenceTime)
             } else {
-                durationFormatter.format(item.abstinence.range.toDuration())
+                durationFormatter.format(item.abstinence.instantRange.toDuration())
             }
         )
     }
@@ -75,7 +74,7 @@ class HabitsAppWidgetRemoteViewsFactory(
 
     override fun getViewTypeCount() = 1
 
-    override fun getItemId(position: Int) = items[position].habit.id.value
+    override fun getItemId(position: Int) = items[position].habit.id.toLong()
 
     override fun hasStableIds() = true
 

@@ -2,9 +2,7 @@ package breakbadhabits.app.logic.habits
 
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.database.IdGenerator
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.tracks.CorrectHabitTrackTime
+import breakbadhabits.app.logic.icons.LocalIcon
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,7 +13,7 @@ class HabitCreator(
 ) {
     suspend fun createHabit(
         name: CorrectHabitNewName,
-        icon: Habit.Icon,
+        icon: LocalIcon,
         trackEventCount: CorrectHabitTrackEventCount,
         trackTime: CorrectHabitTrackTime
     ) = withContext(coroutineDispatchers.io) {
@@ -25,8 +23,8 @@ class HabitCreator(
 
             appDatabase.habitQueries.insert(
                 id = habitId,
-                name = name.data.value,
-                iconId = icon.value.id.value
+                name = name.data,
+                iconId = icon.id
             )
 
             appDatabase.habitTrackQueries.insert(
@@ -34,8 +32,8 @@ class HabitCreator(
                 habitId = habitId,
                 startTime = trackTime.data.start,
                 endTime = trackTime.data.endInclusive,
-                dailyCount = trackEventCount.data.dailyCount.toLong(),
-                comment = null
+                eventCount = trackEventCount.data,
+                comment = ""
             )
         }
     }

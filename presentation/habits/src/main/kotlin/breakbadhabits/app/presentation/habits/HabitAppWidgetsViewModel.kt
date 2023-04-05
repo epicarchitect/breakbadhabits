@@ -2,29 +2,31 @@ package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.logic.habits.HabitProvider
-import breakbadhabits.app.logic.habits.appWidgetConfig.HabitAppWidgetConfigProvider
-import breakbadhabits.app.logic.habits.entity.Habit
-import breakbadhabits.app.logic.habits.entity.HabitAppWidgetConfig
+import breakbadhabits.app.logic.habits.HabitWidgetProvider
+import breakbadhabits.app.logic.habits.model.Habit
+import breakbadhabits.app.logic.habits.model.HabitWidget
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.viewmodel.ViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
 class HabitAppWidgetsViewModel(
-    habitAppWidgetConfigProvider: HabitAppWidgetConfigProvider,
+    habitWidgetProvider: HabitWidgetProvider,
     habitProvider: HabitProvider
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val itemsController = LoadingController(
         coroutineScope = viewModelScope,
-        flow = habitAppWidgetConfigProvider.provideAllFlow().flatMapLatest { configs ->
+        flow = habitWidgetProvider.provideAllFlow().flatMapLatest { configs ->
             if (configs.isEmpty()) flowOf(emptyList())
             else combine(
                 configs.map { config ->
                     combine(config.habitIds.map(habitProvider::habitFlow)) { habits ->
                         Item(
-                            config = config,
+                            widget = config,
                             habits = habits.filterNotNull()
                         )
                     }
@@ -36,7 +38,7 @@ class HabitAppWidgetsViewModel(
     )
 
     data class Item(
-        val config: HabitAppWidgetConfig,
+        val widget: HabitWidget,
         val habits: List<Habit>
     )
 }
