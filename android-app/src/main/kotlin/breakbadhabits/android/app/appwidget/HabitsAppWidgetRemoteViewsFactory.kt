@@ -8,7 +8,7 @@ import breakbadhabits.android.app.R
 import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.app.logic.habits.model.Habit
 import breakbadhabits.app.logic.habits.model.HabitAbstinence
-import breakbadhabits.foundation.datetime.toDuration
+import breakbadhabits.foundation.datetime.duration
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -65,7 +65,7 @@ class HabitsAppWidgetRemoteViewsFactory(
             if (item.abstinence == null) {
                 context.getString(R.string.habitsAppWidget_noAbstinenceTime)
             } else {
-                durationFormatter.format(item.abstinence.instantRange.toDuration())
+                durationFormatter.format(item.abstinence.instantRange.duration)
             }
         )
     }

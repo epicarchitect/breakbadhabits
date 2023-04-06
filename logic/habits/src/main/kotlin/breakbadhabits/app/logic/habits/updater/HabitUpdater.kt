@@ -1,6 +1,7 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.updater
 
 import breakbadhabits.app.database.AppDatabase
+import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.icons.LocalIcon
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext

@@ -5,8 +5,10 @@ import breakbadhabits.foundation.math.ranges.isAscended
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.abs
 
@@ -70,7 +72,7 @@ fun MonthOfYear.addMonths(monthsToAdd: Int): MonthOfYear {
     return MonthOfYear(newYear, Month(newMonth))
 }
 
-fun ClosedRange<MonthOfYear>.countMountsBetween(): Int {
+fun MonthOfYearRange.countMountsBetween(): Int {
     val range = ascended()
     val start = range.start
     val end = range.endInclusive
@@ -87,7 +89,7 @@ fun ClosedRange<MonthOfYear>.countMountsBetween(): Int {
     return abs(result)
 }
 
-fun ClosedRange<MonthOfYear>.mountsBetween(): List<MonthOfYear> {
+fun MonthOfYearRange.mountsBetween(): List<MonthOfYear> {
     val mountsBetweenCount = countMountsBetween()
     if (mountsBetweenCount == 0) return emptyList()
 
@@ -104,9 +106,39 @@ val LocalDate.monthOfYear get() = MonthOfYear(year, month)
 
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
 
-fun ClosedRange<Instant>.monthOfYearRange(timeZone: TimeZone) =
+fun InstantRange.monthOfYearRange(timeZone: TimeZone): MonthOfYearRange =
     start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
 
 fun MonthOfYear.atDay(dayOfMonth: Int) = LocalDate(year, month, dayOfMonth)
 
 fun MonthOfYear.lastDayOfWeek() = atDay(length()).dayOfWeek
+
+fun MonthOfYear.toInstantRange(timeZone: TimeZone): InstantRange {
+    val start = LocalDateTime(year, month, 1, 0, 0, 0)
+    val end = LocalDateTime(year, month, length(), 23, 59, 59)
+    return start.toInstant(timeZone)..end.toInstant(timeZone)
+}
+
+fun MonthOfYear.toInstant(
+    timeZone: TimeZone,
+    dayOfMonth: Int,
+    hour: Int,
+    minute: Int,
+    second: Int
+) = LocalDateTime(year, month, dayOfMonth, hour, minute, second).toInstant(timeZone)
+
+fun MonthOfYear.toInstantAtStart(timeZone: TimeZone) = toInstant(
+    timeZone = timeZone,
+    dayOfMonth = 1,
+    hour = 0,
+    minute = 0,
+    second = 0
+)
+
+fun MonthOfYear.toInstantAtEnd(timeZone: TimeZone) = toInstant(
+    timeZone = timeZone,
+    dayOfMonth = length(),
+    hour = 23,
+    minute = 59,
+    second = 59
+)

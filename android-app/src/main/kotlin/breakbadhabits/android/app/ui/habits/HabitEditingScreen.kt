@@ -22,8 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.icons.resourceId
-import breakbadhabits.app.logic.habits.IncorrectHabitNewName
-import breakbadhabits.app.logic.habits.ValidatedHabitNewName
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
 import breakbadhabits.app.logic.icons.LocalIcon
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController

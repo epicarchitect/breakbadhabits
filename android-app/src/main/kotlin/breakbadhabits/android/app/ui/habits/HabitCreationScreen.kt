@@ -26,15 +26,16 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.icons.resourceId
-import breakbadhabits.app.logic.habits.IncorrectHabitNewName
-import breakbadhabits.app.logic.habits.IncorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.ValidatedHabitNewName
-import breakbadhabits.app.logic.habits.ValidatedHabitTrackEventCount
-import breakbadhabits.app.logic.habits.ValidatedHabitTrackTime
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitNewName
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackTime
 import breakbadhabits.app.logic.icons.LocalIcon
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.datetime.InstantRange
 import breakbadhabits.foundation.datetime.withZeroSeconds
 import breakbadhabits.foundation.uikit.LocalResourceIcon
 import breakbadhabits.foundation.uikit.SingleSelectionChipRow
@@ -51,7 +52,6 @@ import breakbadhabits.foundation.uikit.text.TextFieldInputAdapter
 import breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 import breakbadhabits.foundation.uikit.text.ValidatedTextField
-import kotlinx.datetime.Instant
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -79,27 +79,22 @@ fun HabitCreationScreen(
     habitIconSelectionController: SingleSelectionController<LocalIcon>,
     habitNameController: ValidatedInputController<String, ValidatedHabitNewName>,
     firstTrackEventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
-    firstTrackTimeInputController: ValidatedInputController<ClosedRange<Instant>, ValidatedHabitTrackTime>,
+    firstTrackTimeInputController: ValidatedInputController<InstantRange, ValidatedHabitTrackTime>,
     creationController: SingleRequestController
 ) {
     val logicModule = LocalLogicModule.current
-    val dateTimeConfigProvider = logicModule.dateTimeConfigProvider
-    val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
-    val dateTimeConfig = dateTimeConfigState.value ?: return
-
     val context = LocalContext.current
-    val dateTimeProvider = logicModule.dateTimeProvider
-    val currentTime by dateTimeProvider.currentTime.collectAsState()
+    val currentTime by logicModule.dateTimeProvider.currentTime.collectAsState()
+    val timeZone by logicModule.dateTimeProvider.timeZone.collectAsState()
     var rangeSelectionShow by remember { mutableStateOf(false) }
 
-    val firstTrackEventCountState by firstTrackEventCountInputController.collectState()
     val firstTrackRangeState by firstTrackTimeInputController.collectState()
 
     ClearFocusWhenKeyboardHiddenEffect()
 
     if (rangeSelectionShow) {
         val epicCalendarState = rememberSelectionEpicCalendarState(
-            timeZone = dateTimeConfig.appTimeZone,
+            timeZone = timeZone,
             initialRange = firstTrackRangeState.input
         )
 
@@ -208,7 +203,7 @@ fun HabitCreationScreen(
             val item = HabitTime.values()[selectedHabitTimeIndex]
             val range = (currentTime - item.offset)..currentTime
             firstTrackTimeInputController.changeInput(
-                range.withZeroSeconds(dateTimeConfig.appTimeZone)
+                range.withZeroSeconds(timeZone)
             )
         }
 

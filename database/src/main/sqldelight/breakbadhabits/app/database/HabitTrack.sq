@@ -35,3 +35,6 @@ SELECT * FROM HabitTrack WHERE habitId = ?;
 
 selectByHabitIdAndMaxEndTime:
 SELECT * FROM HabitTrack WHERE habitId = :habitId AND endTime = (SELECT max(endTime) FROM HabitTrack WHERE habitId = :habitId) LIMIT 1;
+
+selectByRange:
+SELECT * FROM HabitTrack WHERE habitId = :habitId AND ((startTime BETWEEN :startTime AND :endTime) OR (endTime BETWEEN :startTime AND :endTime));

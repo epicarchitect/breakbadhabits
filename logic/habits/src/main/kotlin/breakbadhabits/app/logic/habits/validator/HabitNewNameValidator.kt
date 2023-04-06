@@ -1,6 +1,7 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.validator
 
 import breakbadhabits.app.database.AppDatabase
+import breakbadhabits.app.logic.habits.provider.HabitsConfigProvider
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 

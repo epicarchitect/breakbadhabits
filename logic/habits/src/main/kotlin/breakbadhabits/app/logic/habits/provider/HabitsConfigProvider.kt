@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.provider
 
 import breakbadhabits.app.logic.habits.model.HabitsConfig
 import kotlinx.coroutines.flow.flowOf

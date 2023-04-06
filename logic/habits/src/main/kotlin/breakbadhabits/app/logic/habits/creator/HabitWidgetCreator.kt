@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.creator
 
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.app.database.IdGenerator

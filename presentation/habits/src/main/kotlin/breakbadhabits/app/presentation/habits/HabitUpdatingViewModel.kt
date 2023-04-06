@@ -1,11 +1,11 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.logic.habits.CorrectHabitNewName
-import breakbadhabits.app.logic.habits.HabitDeleter
-import breakbadhabits.app.logic.habits.HabitNewNameValidator
-import breakbadhabits.app.logic.habits.HabitProvider
-import breakbadhabits.app.logic.habits.HabitUpdater
+import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
+import breakbadhabits.app.logic.habits.deleter.HabitDeleter
+import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
+import breakbadhabits.app.logic.habits.provider.HabitProvider
+import breakbadhabits.app.logic.habits.updater.HabitUpdater
 import breakbadhabits.app.logic.habits.model.Habit
 import breakbadhabits.app.logic.icons.LocalIcon
 import breakbadhabits.app.logic.icons.LocalIconProvider

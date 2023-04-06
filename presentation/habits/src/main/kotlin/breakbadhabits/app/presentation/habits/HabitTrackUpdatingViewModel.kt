@@ -2,14 +2,14 @@ package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
-import breakbadhabits.app.logic.habits.CorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.CorrectHabitTrackTime
-import breakbadhabits.app.logic.habits.HabitProvider
-import breakbadhabits.app.logic.habits.HabitTrackDeleter
-import breakbadhabits.app.logic.habits.HabitTrackEventCountValidator
-import breakbadhabits.app.logic.habits.HabitTrackProvider
-import breakbadhabits.app.logic.habits.HabitTrackTimeValidator
-import breakbadhabits.app.logic.habits.HabitTrackUpdater
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
+import breakbadhabits.app.logic.habits.provider.HabitProvider
+import breakbadhabits.app.logic.habits.deleter.HabitTrackDeleter
+import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
+import breakbadhabits.app.logic.habits.provider.HabitTrackProvider
+import breakbadhabits.app.logic.habits.validator.HabitTrackTimeValidator
+import breakbadhabits.app.logic.habits.updater.HabitTrackUpdater
 import breakbadhabits.app.logic.habits.model.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController

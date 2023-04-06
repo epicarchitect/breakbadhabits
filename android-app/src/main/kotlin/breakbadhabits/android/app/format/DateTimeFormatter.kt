@@ -2,7 +2,7 @@ package breakbadhabits.android.app.format
 
 import android.content.Context
 import android.text.format.DateFormat
-import breakbadhabits.app.logic.datetime.provider.DateTimeConfigProvider
+import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime
@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter as JavaDateTimeFormatter
 import java.time.format.FormatStyle as JavaFormatStyle
 
 class DateTimeFormatter(
-    private val dateTimeConfigProvider: DateTimeConfigProvider,
+    private val dateTimeProvider: DateTimeProvider,
     context: Context
 ) {
     private val dateFormatter = JavaDateTimeFormatter.ofLocalizedDate(dateFormatStyle)
@@ -21,7 +21,7 @@ class DateTimeFormatter(
         instant: Instant,
     ) = formatDateTime(
         instant.toLocalDateTime(
-            timeZone = dateTimeConfigProvider.getConfig().appTimeZone
+            timeZone = dateTimeProvider.timeZone.value
         )
     )
 

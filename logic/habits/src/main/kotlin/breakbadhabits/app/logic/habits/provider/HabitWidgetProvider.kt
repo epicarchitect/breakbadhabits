@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.provider
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList

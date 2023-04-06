@@ -1,6 +1,8 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.updater
 
 import breakbadhabits.app.database.AppDatabase
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 

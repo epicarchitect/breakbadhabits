@@ -1,6 +1,5 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.provider
 
-import breakbadhabits.app.logic.datetime.provider.DateTimeConfigProvider
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
 import breakbadhabits.app.logic.habits.model.HabitStatistics
 import breakbadhabits.app.logic.habits.model.HabitTrack
@@ -14,7 +13,6 @@ import breakbadhabits.foundation.datetime.monthOfYearRange
 import breakbadhabits.foundation.datetime.previous
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -22,7 +20,6 @@ class HabitStatisticsProvider(
     private val habitTrackProvider: HabitTrackProvider,
     private val habitAbstinenceProvider: HabitAbstinenceProvider,
     private val dateTimeProvider: DateTimeProvider,
-    private val dateTimeConfigProvider: DateTimeConfigProvider,
     private val coroutineDispatchers: CoroutineDispatchers
 ) {
     fun statisticsFlow(habitId: Int) = combine(
@@ -59,11 +56,11 @@ class HabitStatisticsProvider(
     private fun habitEventCountFlow(
         habitId: Int
     ) = combine(
-        dateTimeConfigProvider.configFlow(),
+        dateTimeProvider.currentTime,
+        dateTimeProvider.timeZone,
         habitTrackProvider.habitTracksFlow(habitId)
-    ) { dateTimeConfig, tracks ->
-        val timeZone = dateTimeConfig.appTimeZone
-        val currentDate = Clock.System.now().toLocalDateTime(timeZone).date
+    ) { currentTime, timeZone, tracks ->
+        val currentDate = currentTime.toLocalDateTime(timeZone).date
 
         HabitStatistics.EventCount(
             currentMonthCount = tracks.countEventsInMonth(
@@ -82,9 +79,7 @@ class HabitStatisticsProvider(
 private fun List<HabitTrack>.countEventsInMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
-) = filterByMonth(monthOfYear, timeZone).fold(0) { total, track ->
-    total + track.eventCount
-}
+) = filterByMonth(monthOfYear, timeZone).countEvents()
 
 private fun List<HabitTrack>.countEvents() = fold(0) { total, track ->
     total + track.eventCount

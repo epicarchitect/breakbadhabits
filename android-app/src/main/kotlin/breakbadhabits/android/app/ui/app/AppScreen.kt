@@ -296,7 +296,7 @@ private fun AppScreenContent() {
                 habitAbstinenceController = viewModel.habitAbstinenceController,
                 abstinenceListController = viewModel.abstinenceListController,
                 statisticsController = viewModel.statisticsController,
-                habitTracksController = viewModel.habitTracksController,
+                currentMonthDailyCountsController = viewModel.currentMonthDailyCountsController,
                 onEditClick = {
                     navController.navigate(Screens.HabitUpdating.buildRoute(habitId))
                 },
@@ -305,7 +305,7 @@ private fun AppScreenContent() {
                 },
                 onAllTracksClick = {
                     navController.navigate(Screens.HabitTracks.buildRoute(habitId))
-                }
+                },
             )
         }
 

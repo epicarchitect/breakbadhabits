@@ -10,7 +10,7 @@ class UiModule(
 ) {
     val dateTimeFormatter by lazy {
         DateTimeFormatter(
-            dateTimeConfigProvider = presentationModule.logicModule.dateTimeConfigProvider,
+            dateTimeProvider = presentationModule.logicModule.dateTimeProvider,
             context = context
         )
     }

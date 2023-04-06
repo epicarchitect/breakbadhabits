@@ -1,10 +1,10 @@
 package breakbadhabits.app.presentation.habits
 
 import androidx.lifecycle.viewModelScope
-import breakbadhabits.app.logic.habits.HabitProvider
-import breakbadhabits.app.logic.habits.HabitWidgetDeleter
-import breakbadhabits.app.logic.habits.HabitWidgetProvider
-import breakbadhabits.app.logic.habits.HabitWidgetUpdater
+import breakbadhabits.app.logic.habits.provider.HabitProvider
+import breakbadhabits.app.logic.habits.deleter.HabitWidgetDeleter
+import breakbadhabits.app.logic.habits.provider.HabitWidgetProvider
+import breakbadhabits.app.logic.habits.updater.HabitWidgetUpdater
 import breakbadhabits.app.logic.habits.model.HabitWidget
 import breakbadhabits.foundation.controller.MultiSelectionController
 import breakbadhabits.foundation.controller.SingleRequestController

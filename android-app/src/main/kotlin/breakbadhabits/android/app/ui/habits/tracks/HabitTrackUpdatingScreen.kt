@@ -24,14 +24,15 @@ import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.di.LocalUiModule
-import breakbadhabits.app.logic.habits.IncorrectHabitTrackEventCount
-import breakbadhabits.app.logic.habits.IncorrectHabitTrackTime
-import breakbadhabits.app.logic.habits.ValidatedHabitTrackEventCount
-import breakbadhabits.app.logic.habits.ValidatedHabitTrackTime
 import breakbadhabits.app.logic.habits.model.Habit
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackTime
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackEventCount
+import breakbadhabits.app.logic.habits.validator.ValidatedHabitTrackTime
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.datetime.InstantRange
 import breakbadhabits.foundation.datetime.withZeroSeconds
 import breakbadhabits.foundation.math.ranges.isStartSameAsEnd
 import breakbadhabits.foundation.uikit.Dialog
@@ -50,12 +51,11 @@ import breakbadhabits.foundation.uikit.text.TextFieldInputAdapter
 import breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import breakbadhabits.foundation.uikit.text.ValidatedInputField
 import breakbadhabits.foundation.uikit.text.ValidatedTextField
-import kotlinx.datetime.Instant
 
 @Composable
 fun HabitTrackUpdatingScreen(
     eventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
-    timeInputController: ValidatedInputController<ClosedRange<Instant>, ValidatedHabitTrackTime>,
+    timeInputController: ValidatedInputController<InstantRange, ValidatedHabitTrackTime>,
     updatingController: SingleRequestController,
     deletionController: SingleRequestController,
     habitController: LoadingController<Habit?>,
@@ -63,13 +63,10 @@ fun HabitTrackUpdatingScreen(
 ) {
     val logicModule = LocalLogicModule.current
     val uiModule = LocalUiModule.current
-    val dateTimeConfigProvider = logicModule.dateTimeConfigProvider
-    val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
-    val dateTimeConfig = dateTimeConfigState.value ?: return
+    val timeZone by logicModule.dateTimeProvider.timeZone.collectAsState()
 
     val dateTimeFormatter = uiModule.dateTimeFormatter
     var rangeSelectionShow by remember { mutableStateOf(false) }
-    val eventCountState by eventCountInputController.collectState()
     val rangeState by timeInputController.collectState()
 
     ClearFocusWhenKeyboardHiddenEffect()
@@ -112,7 +109,7 @@ fun HabitTrackUpdatingScreen(
 
     if (rangeSelectionShow) {
         val epicCalendarState = rememberSelectionEpicCalendarState(
-            timeZone = dateTimeConfig.appTimeZone,
+            timeZone = timeZone,
             initialRange = rangeState.input
         )
 
@@ -121,7 +118,7 @@ fun HabitTrackUpdatingScreen(
             onSelected = {
                 rangeSelectionShow = false
                 timeInputController.changeInput(
-                    it.withZeroSeconds(dateTimeConfig.appTimeZone)
+                    it.withZeroSeconds(timeZone)
                 )
             },
             onCancel = {

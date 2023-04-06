@@ -47,6 +47,7 @@ class PresentationModule(val logicModule: LogicModule) {
             habitTrackProvider = habitTrackProvider,
             habitAbstinenceProvider = habitAbstinenceProvider,
             habitStatisticsProvider = habitStatisticsProvider,
+            dateTimeProvider = dateTimeProvider,
             habitId = habitId
         )
     }

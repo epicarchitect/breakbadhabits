@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.validator
 
 class HabitTrackEventCountValidator {
 

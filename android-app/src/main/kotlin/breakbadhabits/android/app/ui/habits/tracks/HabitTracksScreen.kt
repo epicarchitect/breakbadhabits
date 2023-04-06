@@ -35,6 +35,7 @@ import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.MonthOfYear
 import breakbadhabits.foundation.datetime.next
 import breakbadhabits.foundation.datetime.previous
+import breakbadhabits.foundation.datetime.toLocalDateRange
 import breakbadhabits.foundation.math.ranges.isStartSameAsEnd
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LoadingBox
@@ -57,17 +58,14 @@ fun HabitTracksScreen(
 ) {
     val logicModule = LocalLogicModule.current
     val uiModule = LocalUiModule.current
-    val dateTimeConfigProvider = logicModule.dateTimeConfigProvider
-    val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
-    val dateTimeConfig = dateTimeConfigState.value ?: return
-
+    val timeZone by logicModule.dateTimeProvider.timeZone.collectAsState()
     val dateTimeFormatter = uiModule.dateTimeFormatter
 
     LoadingBox(habitTracksController) { tracks ->
         val allTracks = remember(tracks) { tracks.values.flatten().toSet() }
         val months = remember(tracks) { tracks.keys }
         var currentMonth by remember(months) {
-            mutableStateOf(months.maxOrNull() ?: MonthOfYear.now(dateTimeConfig.appTimeZone))
+            mutableStateOf(months.maxOrNull() ?: MonthOfYear.now(timeZone))
         }
         val currentTracks = remember(currentMonth) { tracks[currentMonth] ?: emptyList() }
         val ranges = remember(tracks) {
@@ -77,7 +75,7 @@ fun HabitTracksScreen(
         }
 
         val epicCalendarState = rememberEpicCalendarState(
-            timeZone = dateTimeConfig.appTimeZone,
+            timeZone = timeZone,
             monthOfYear = currentMonth,
             ranges = ranges
         )
@@ -144,12 +142,7 @@ fun HabitTracksScreen(
                 dayBadgeText = { day ->
                     val date = day.date
                     val count = allTracks.fold(0) { count, track ->
-                        val inTrack = date in track.instantRange.start.toLocalDateTime(
-                            dateTimeConfig.appTimeZone
-                        ).date..track.instantRange.endInclusive.toLocalDateTime(
-                            dateTimeConfig.appTimeZone
-                        ).date
-
+                        val inTrack = date in track.instantRange.toLocalDateRange(timeZone)
                         if (inTrack) count + track.eventCount
                         else count
                     }

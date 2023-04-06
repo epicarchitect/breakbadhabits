@@ -1,4 +1,4 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.updater
 
 import breakbadhabits.app.database.AppDatabase
 import breakbadhabits.foundation.coroutines.CoroutineDispatchers

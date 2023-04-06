@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,13 +26,13 @@ import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.di.LocalUiModule
 import breakbadhabits.android.app.format.DurationFormatter
 import breakbadhabits.android.app.icons.resourceId
+import breakbadhabits.app.logic.habits.model.DailyHabitEventCount
 import breakbadhabits.app.logic.habits.model.Habit
 import breakbadhabits.app.logic.habits.model.HabitAbstinence
 import breakbadhabits.app.logic.habits.model.HabitStatistics
-import breakbadhabits.app.logic.habits.model.HabitTrack
 import breakbadhabits.foundation.controller.LoadingController
 import breakbadhabits.foundation.datetime.MonthOfYear
-import breakbadhabits.foundation.datetime.toDuration
+import breakbadhabits.foundation.datetime.duration
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.Histogram
 import breakbadhabits.foundation.uikit.IconButton
@@ -43,7 +44,6 @@ import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
-import kotlinx.datetime.toLocalDateTime
 import java.time.format.TextStyle
 import java.util.*
 import kotlin.time.Duration.Companion.seconds
@@ -54,16 +54,14 @@ fun HabitDetailsScreen(
     habitAbstinenceController: LoadingController<HabitAbstinence?>,
     abstinenceListController: LoadingController<List<HabitAbstinence>>,
     statisticsController: LoadingController<HabitStatistics?>,
-    habitTracksController: LoadingController<List<HabitTrack>>,
+    currentMonthDailyCountsController: LoadingController<DailyHabitEventCount>,
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
-    onAllTracksClick: () -> Unit
+    onAllTracksClick: () -> Unit,
 ) {
     val logicModule = LocalLogicModule.current
     val uiModule = LocalUiModule.current
-    val dateTimeConfigProvider = logicModule.dateTimeConfigProvider
-    val dateTimeConfigState = dateTimeConfigProvider.configFlow().collectAsState(initial = null)
-    val dateTimeConfig = dateTimeConfigState.value ?: return
+    val timeZone by logicModule.dateTimeProvider.timeZone.collectAsState()
 
     val durationFormatter = uiModule.durationFormatter
     val context = LocalContext.current
@@ -103,7 +101,7 @@ fun HabitDetailsScreen(
             ) { abstinence ->
                 Text(
                     text = abstinence?.let {
-                        durationFormatter.format(it.instantRange.toDuration())
+                        durationFormatter.format(it.instantRange.duration)
                     } ?: stringResource(R.string.habits_noEvents)
                 )
             }
@@ -122,15 +120,15 @@ fun HabitDetailsScreen(
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                LoadingBox(habitTracksController) { tracks ->
+                LoadingBox(currentMonthDailyCountsController) { dailyCounts ->
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        val yearMonth = remember { MonthOfYear.now(dateTimeConfig.appTimeZone) }
+                        val yearMonth = remember { MonthOfYear.now(timeZone) }
 
                         val epicCalendarState = rememberEpicCalendarState(
-                            timeZone = dateTimeConfig.appTimeZone,
+                            timeZone = timeZone,
                             monthOfYear = yearMonth,
-                            ranges = remember(tracks) {
-                                tracks.map { it.instantRange }
+                            ranges = remember(dailyCounts.tracks) {
+                                dailyCounts.tracks.map { it.instantRange }
                             }
                         )
 
@@ -158,18 +156,7 @@ fun HabitDetailsScreen(
                             state = epicCalendarState,
                             horizontalInnerPadding = 8.dp,
                             dayBadgeText = { day ->
-                                val date = day.date
-                                val count = tracks.fold(0) { count, track ->
-                                    val inTrack = date in track.instantRange.start.toLocalDateTime(
-                                        dateTimeConfig.appTimeZone
-                                    ).date..track.instantRange.endInclusive.toLocalDateTime(
-                                        dateTimeConfig.appTimeZone
-                                    ).date
-
-                                    if (inTrack) count + track.eventCount
-                                    else count
-                                }
-
+                                val count = dailyCounts.dateToCount[day.date] ?: 0
                                 if (count == 0) null
                                 else if (count > 100) "99+"
                                 else count.toString()
@@ -209,7 +196,7 @@ fun HabitDetailsScreen(
 
                         val abstinenceTimes = remember(abstinenceList) {
                             abstinenceList.map {
-                                it.instantRange.toDuration().inWholeSeconds.toFloat()
+                                it.instantRange.duration.inWholeSeconds.toFloat()
                             }
                         }
 

@@ -1,17 +1,16 @@
-package breakbadhabits.app.logic.habits
+package breakbadhabits.app.logic.habits.validator
 
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
-import kotlinx.datetime.Instant
+import breakbadhabits.foundation.datetime.InstantRange
 
 class HabitTrackTimeValidator(
     private val dateTimeProvider: DateTimeProvider
 ) {
-
-    fun validate(data: ClosedRange<Instant>) = data.incorrectReason()?.let {
+    fun validate(data: InstantRange) = data.incorrectReason()?.let {
         IncorrectHabitTrackTime(data, it)
     } ?: CorrectHabitTrackTime(data)
 
-    private fun ClosedRange<Instant>.incorrectReason() = when {
+    private fun InstantRange.incorrectReason() = when {
         dateTimeProvider.currentTime.value.let {
             it < start || it < endInclusive
         } -> IncorrectHabitTrackTime.Reason.BiggestThenCurrentTime
@@ -20,15 +19,15 @@ class HabitTrackTimeValidator(
 }
 
 sealed class ValidatedHabitTrackTime {
-    abstract val data: ClosedRange<Instant>
+    abstract val data: InstantRange
 }
 
 data class CorrectHabitTrackTime internal constructor(
-    override val data: ClosedRange<Instant>
+    override val data: InstantRange
 ) : ValidatedHabitTrackTime()
 
 data class IncorrectHabitTrackTime internal constructor(
-    override val data: ClosedRange<Instant>,
+    override val data: InstantRange,
     val reason: Reason
 ) : ValidatedHabitTrackTime() {
     sealed class Reason {

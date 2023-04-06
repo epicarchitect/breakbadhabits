@@ -1,42 +1,42 @@
 package breakbadhabits.foundation.datetime
 
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
+import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toKotlinLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToLong
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-fun Long.secondsToInstant() = Instant.fromEpochSeconds(this)
+val InstantRange.duration get() = endInclusive - start
 
-fun ClosedRange<java.time.LocalDateTime>.toKotlinRange() =
-    start.toKotlinLocalDateTime()..endInclusive.toKotlinLocalDateTime()
+fun InstantRange.toLocalDateList(timeZone: TimeZone): List<LocalDate> {
+    var current = start.toLocalDateTime(timeZone).date
+    return List(countDays(timeZone)) {
+        current.also {
+            current = current.plus(DateTimeUnit.DAY)
+        }
+    }
+}
 
-fun ClosedRange<Instant>.toJavaLocalDateTimeRange(
+fun InstantRange.toLocalDateTimeRange(
     timeZone: TimeZone
-) = start.toLocalDateTime(timeZone)
-    .toJavaLocalDateTime()..endInclusive
-    .toLocalDateTime(timeZone)
-    .toJavaLocalDateTime()
+): LocalDateTimeRange = start.toLocalDateTime(timeZone)..endInclusive.toLocalDateTime(timeZone)
 
-fun ClosedRange<LocalDateTime>.toInstantRange(timeZone: TimeZone) =
-    start.toInstant(timeZone)..endInclusive.toInstant(timeZone)
+fun InstantRange.toLocalDateRange(
+    timeZone: TimeZone
+): LocalDateRange = toLocalDateTimeRange(timeZone).let { it.start.date..it.endInclusive.date }
 
-fun ClosedRange<Long>.secondsToInstantRange() =
-    start.secondsToInstant()..endInclusive.secondsToInstant()
-
-fun ClosedRange<Instant>.toDuration() = endInclusive - start
-
-fun ClosedRange<Instant>.countDays(timeZone: TimeZone) =
+fun InstantRange.countDays(timeZone: TimeZone) =
     start.daysUntil(endInclusive, timeZone) + 1
 
-fun ClosedRange<Instant>.countDaysInMonth(
+fun InstantRange.countDaysInMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ): Int {
@@ -73,23 +73,22 @@ fun isLeapYear(year: Long): Boolean {
     return year and 3L == 0L && (year % 100 != 0L || year % 400 == 0L)
 }
 
-fun List<ClosedRange<Instant>>.averageDuration() = map {
+fun List<InstantRange>.averageDuration() = map {
     it.endInclusive.epochSeconds - it.start.epochSeconds
 }.let {
     if (it.size > 1) it.average().roundToLong()
     else it.first()
 }.toDuration(DurationUnit.SECONDS)
 
-fun List<ClosedRange<Instant>>.maxDuration() = maxOf { it.toDuration() }
+fun List<InstantRange>.maxDuration() = maxOf { it.duration }
 
-fun List<ClosedRange<Instant>>.minDuration() = minOf { it.toDuration() }
+fun List<InstantRange>.minDuration() = minOf { it.duration }
 
-
-fun List<ClosedRange<Instant>>.toLocalDateRanges(timeZone: TimeZone) = map {
+fun List<InstantRange>.toLocalDateRanges(timeZone: TimeZone) = map {
     it.start.toLocalDateTime(timeZone).date..it.endInclusive.toLocalDateTime(timeZone).date
 }
 
-fun ClosedRange<Instant>.withZeroSeconds(timeZone: TimeZone) =
+fun InstantRange.withZeroSeconds(timeZone: TimeZone) =
     start.withZeroSeconds(timeZone)..endInclusive.withZeroSeconds(timeZone)
 
 fun Instant.withZeroSeconds(timeZone: TimeZone): Instant {
