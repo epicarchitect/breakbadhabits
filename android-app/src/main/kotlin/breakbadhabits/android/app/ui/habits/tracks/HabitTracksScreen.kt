@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
+import breakbadhabits.foundation.uikit.R as UikitR
 import breakbadhabits.android.app.di.LocalLogicModule
 import breakbadhabits.android.app.di.LocalUiModule
 import breakbadhabits.app.logic.habits.model.Habit
@@ -115,7 +116,7 @@ fun HabitTracksScreen(
                         currentMonth = currentMonth.previous()
                     }
                 ) {
-                    LocalResourceIcon(resourceId = R.drawable.uikit_arrow_left)
+                    LocalResourceIcon(resourceId = UikitR.drawable.uikit_arrow_left)
                 }
 
                 Text(
@@ -131,7 +132,7 @@ fun HabitTracksScreen(
                         currentMonth = currentMonth.next()
                     }
                 ) {
-                    LocalResourceIcon(resourceId = R.drawable.uikit_arrow_right)
+                    LocalResourceIcon(resourceId = UikitR.drawable.uikit_arrow_right)
                 }
             }
 
