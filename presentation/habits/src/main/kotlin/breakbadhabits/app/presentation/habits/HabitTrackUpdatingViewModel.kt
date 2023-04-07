@@ -19,6 +19,7 @@ import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
@@ -104,7 +105,7 @@ class HabitTrackUpdatingViewModel(
 
     init {
         viewModelScope.launch {
-            val habitTrack = checkNotNull(habitTrackProvider.getHabitTrack(habitTrackId))
+            val habitTrack = checkNotNull(habitTrackProvider.habitTrackFlow(habitTrackId).first())
             initialHabitTrack.value = habitTrack
             timeInputController.changeInput(habitTrack.instantRange)
             eventCountInputController.changeInput(habitTrack.eventCount)
