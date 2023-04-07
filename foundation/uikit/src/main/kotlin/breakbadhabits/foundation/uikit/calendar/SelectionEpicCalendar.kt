@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowLeft
-import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -47,6 +45,7 @@ import breakbadhabits.foundation.datetime.previous
 import breakbadhabits.foundation.uikit.Card
 import breakbadhabits.foundation.uikit.IconButton
 import breakbadhabits.foundation.uikit.LocalResourceIcon
+import breakbadhabits.foundation.uikit.R
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.theme.AppTheme
 import kotlinx.datetime.Clock
@@ -142,7 +141,7 @@ fun IntervalSelectionEpicCalendar(
                                 state.currentMonth = state.currentMonth.previous()
                             },
                             content = {
-                                LocalResourceIcon(Icons.Default.ArrowLeft)
+                                LocalResourceIcon(R.drawable.uikit_arrow_left)
                             },
                         )
                         Box(
@@ -167,7 +166,7 @@ fun IntervalSelectionEpicCalendar(
                                 state.currentMonth = state.currentMonth.next()
                             },
                             content = {
-                                LocalResourceIcon(Icons.Default.ArrowRight)
+                                LocalResourceIcon(R.drawable.uikit_arrow_right)
                             }
                         )
                     }

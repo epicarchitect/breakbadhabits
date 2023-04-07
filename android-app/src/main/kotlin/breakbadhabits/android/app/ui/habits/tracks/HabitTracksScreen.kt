@@ -44,7 +44,6 @@ import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.calendar.EpicCalendar
 import breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import breakbadhabits.foundation.uikit.text.Text
-import kotlinx.datetime.toLocalDateTime
 import java.time.format.TextStyle
 import java.util.*
 
@@ -116,7 +115,7 @@ fun HabitTracksScreen(
                         currentMonth = currentMonth.previous()
                     }
                 ) {
-                    LocalResourceIcon(resourceId = R.drawable.ic_arrow_left)
+                    LocalResourceIcon(resourceId = R.drawable.uikit_arrow_left)
                 }
 
                 Text(
@@ -132,7 +131,7 @@ fun HabitTracksScreen(
                         currentMonth = currentMonth.next()
                     }
                 ) {
-                    LocalResourceIcon(resourceId = R.drawable.ic_arrow_right)
+                    LocalResourceIcon(resourceId = R.drawable.uikit_arrow_right)
                 }
             }
 
