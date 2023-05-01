@@ -132,7 +132,7 @@ private fun AppScreenContent() {
             HabitCreationScreen(
                 habitIconSelectionController = viewModel.habitIconSelectionController,
                 habitNameController = viewModel.habitNameController,
-                firstTrackEventCountInputController = viewModel.firstTrackEventCountInputController,
+                dailyEventCountInputController = viewModel.dailyEventCountInputController,
                 firstTrackTimeInputController = viewModel.firstTrackTimeInputController,
                 creationController = viewModel.creationController
             )

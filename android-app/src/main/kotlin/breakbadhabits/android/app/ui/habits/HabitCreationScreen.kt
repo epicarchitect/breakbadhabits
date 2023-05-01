@@ -1,5 +1,6 @@
 package breakbadhabits.android.app.ui.habits
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import breakbadhabits.android.app.R
 import breakbadhabits.android.app.di.LocalLogicModule
+import breakbadhabits.android.app.di.LocalUiModule
 import breakbadhabits.android.app.icons.resourceId
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.IncorrectHabitTrackEventCount
@@ -42,10 +44,7 @@ import breakbadhabits.foundation.uikit.SingleSelectionChipRow
 import breakbadhabits.foundation.uikit.SingleSelectionGrid
 import breakbadhabits.foundation.uikit.button.Button
 import breakbadhabits.foundation.uikit.button.RequestButton
-import breakbadhabits.foundation.uikit.calendar.SelectionEpicCalendarDialog
-import breakbadhabits.foundation.uikit.calendar.rememberSelectionEpicCalendarState
 import breakbadhabits.foundation.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
-import breakbadhabits.foundation.uikit.ext.collectState
 import breakbadhabits.foundation.uikit.regex.Regexps
 import breakbadhabits.foundation.uikit.text.Text
 import breakbadhabits.foundation.uikit.text.TextFieldInputAdapter
@@ -71,14 +70,15 @@ private enum class HabitTime(
     YEAR_7(R.string.habitCreation_habitTime_year_7, 365.days * 7),
     YEAR_8(R.string.habitCreation_habitTime_year_8, 365.days * 8),
     YEAR_9(R.string.habitCreation_habitTime_year_9, 365.days * 9),
-    YEAR_10(R.string.habitCreation_habitTime_year_10, 365.days * 10),
+    YEAR_10(R.string.habitCreation_habitTime_year_10, 365.days * 10)
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HabitCreationScreen(
     habitIconSelectionController: SingleSelectionController<LocalIcon>,
     habitNameController: ValidatedInputController<String, ValidatedHabitNewName>,
-    firstTrackEventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
+    dailyEventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
     firstTrackTimeInputController: ValidatedInputController<InstantRange, ValidatedHabitTrackTime>,
     creationController: SingleRequestController
 ) {
@@ -86,29 +86,20 @@ fun HabitCreationScreen(
     val context = LocalContext.current
     val currentTime by logicModule.dateTimeProvider.currentTime.collectAsState()
     val timeZone by logicModule.dateTimeProvider.timeZone.collectAsState()
-    var rangeSelectionShow by remember { mutableStateOf(false) }
 
-    val firstTrackRangeState by firstTrackTimeInputController.collectState()
+    var selectedHabitTimeIndex by rememberSaveable {
+        mutableStateOf(0)
+    }
 
-    ClearFocusWhenKeyboardHiddenEffect()
-
-    if (rangeSelectionShow) {
-        val epicCalendarState = rememberSelectionEpicCalendarState(
-            timeZone = timeZone,
-            initialRange = firstTrackRangeState.input
-        )
-
-        SelectionEpicCalendarDialog(
-            state = epicCalendarState,
-            onSelected = {
-                rangeSelectionShow = false
-                firstTrackTimeInputController.changeInput(it)
-            },
-            onCancel = {
-                rangeSelectionShow = false
-            }
+    LaunchedEffect(selectedHabitTimeIndex) {
+        val item = HabitTime.values()[selectedHabitTimeIndex]
+        val range = (currentTime - item.offset)..currentTime
+        firstTrackTimeInputController.changeInput(
+            range.withZeroSeconds(timeZone)
         )
     }
+
+    ClearFocusWhenKeyboardHiddenEffect()
 
     Column(
         modifier = Modifier
@@ -195,18 +186,6 @@ fun HabitCreationScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        var selectedHabitTimeIndex by rememberSaveable {
-            mutableStateOf(0)
-        }
-
-        LaunchedEffect(selectedHabitTimeIndex) {
-            val item = HabitTime.values()[selectedHabitTimeIndex]
-            val range = (currentTime - item.offset)..currentTime
-            firstTrackTimeInputController.changeInput(
-                range.withZeroSeconds(timeZone)
-            )
-        }
-
         SingleSelectionChipRow(
             items = HabitTime.values().map {
                 context.getString(it.titleRes)
@@ -231,7 +210,7 @@ fun HabitCreationScreen(
 
         ValidatedInputField(
             modifier = Modifier.padding(horizontal = 16.dp),
-            controller = firstTrackEventCountInputController,
+            controller = dailyEventCountInputController,
             inputAdapter = remember {
                 TextFieldInputAdapter(
                     decodeInput = { it.toString() },
@@ -248,7 +227,7 @@ fun HabitCreationScreen(
                     }
                 }
             },
-            label = "Число событий",
+            label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
@@ -256,17 +235,6 @@ fun HabitCreationScreen(
         )
 
         Spacer(modifier = Modifier.weight(1.0f))
-
-        Spacer(modifier = Modifier.height(48.dp))
-
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .align(Alignment.End),
-            text = stringResource(R.string.habitCreation_finish_description),
-            type = Text.Type.Description,
-            priority = Text.Priority.Medium
-        )
 
         Spacer(modifier = Modifier.height(24.dp))
 

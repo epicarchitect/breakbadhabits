@@ -67,10 +67,7 @@ class HabitTrackProvider(
         dateTimeProvider.timeZone
     ) { tracks, timeZone ->
         tracks.associateWith {
-            eventCountToDailyCount(
-                it.eventCount,
-                it.instantRange.countDays(timeZone)
-            )
+            it.eventCount.toFloat() / it.instantRange.countDays(timeZone)
         }
     }
 
@@ -96,11 +93,6 @@ class HabitTrackProvider(
     fun habitTrackFlow(id: Int) = appDatabase.habitTrackQueries
         .selectById(id)
         .asFlowOfOneOrNull(coroutineDispatchers, ::asHabitTrack)
-
-    private fun eventCountToDailyCount(
-        eventCount: Int,
-        countDays: Int
-    ) = eventCount.toFloat() / countDays
 
     private fun asHabitTrack(value: DatabaseHabitTrack) = with(value) {
         HabitTrack(

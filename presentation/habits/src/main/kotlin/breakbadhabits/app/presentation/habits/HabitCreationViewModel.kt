@@ -1,11 +1,12 @@
 package breakbadhabits.app.presentation.habits
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import breakbadhabits.app.logic.datetime.provider.DateTimeProvider
+import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.validator.CorrectHabitNewName
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackEventCount
 import breakbadhabits.app.logic.habits.validator.CorrectHabitTrackTime
-import breakbadhabits.app.logic.habits.creator.HabitCreator
 import breakbadhabits.app.logic.habits.validator.HabitNewNameValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackEventCountValidator
 import breakbadhabits.app.logic.habits.validator.HabitTrackTimeValidator
@@ -14,9 +15,11 @@ import breakbadhabits.app.logic.icons.LocalIconProvider
 import breakbadhabits.foundation.controller.SingleRequestController
 import breakbadhabits.foundation.controller.SingleSelectionController
 import breakbadhabits.foundation.controller.ValidatedInputController
+import breakbadhabits.foundation.datetime.duration
 import breakbadhabits.foundation.math.ranges.asRangeOfOne
 import breakbadhabits.foundation.viewmodel.ViewModel
 import kotlinx.coroutines.flow.combine
+import kotlinx.datetime.periodUntil
 
 class HabitCreationViewModel(
     habitCreator: HabitCreator,
@@ -39,7 +42,7 @@ class HabitCreationViewModel(
         validation = habitNewNameValidator::validate
     )
 
-    val firstTrackEventCountInputController = ValidatedInputController(
+    val dailyEventCountInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
         initialInput = 1,
         validation = trackEventCountValidator::validate,
@@ -58,22 +61,24 @@ class HabitCreationViewModel(
             val habitName = habitNameController.validateAndAwait()
             require(habitName is CorrectHabitNewName)
 
-            val firstTrackEventCount = firstTrackEventCountInputController.validateAndAwait()
-            require(firstTrackEventCount is CorrectHabitTrackEventCount)
+            val dailyEventCount = dailyEventCountInputController.validateAndAwait()
+            require(dailyEventCount is CorrectHabitTrackEventCount)
 
             val firstTrackRange = firstTrackTimeInputController.validateAndAwait()
             require(firstTrackRange is CorrectHabitTrackTime)
 
             habitCreator.createHabit(
-                habitName,
-                habitIcon,
-                firstTrackEventCount,
-                firstTrackRange
+                name = habitName,
+                icon = habitIcon,
+                trackEventCount = dailyEventCount.data * firstTrackRange.let {
+                    it.data.duration.inWholeDays.toInt()
+                }, // TODO resolve this
+                trackTime = firstTrackRange
             )
         },
         isAllowedFlow = combine(
             habitNameController.state,
-            firstTrackEventCountInputController.state,
+            dailyEventCountInputController.state,
             firstTrackTimeInputController.state,
         ) { habitName, firstTrackEventCount, firstTrackRange ->
             habitName.validationResult.let {

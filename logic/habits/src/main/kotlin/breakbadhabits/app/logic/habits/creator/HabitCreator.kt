@@ -17,7 +17,7 @@ class HabitCreator(
     suspend fun createHabit(
         name: CorrectHabitNewName,
         icon: LocalIcon,
-        trackEventCount: CorrectHabitTrackEventCount,
+        trackEventCount: Int,
         trackTime: CorrectHabitTrackTime
     ) = withContext(coroutineDispatchers.io) {
         appDatabase.transaction {
@@ -35,7 +35,7 @@ class HabitCreator(
                 habitId = habitId,
                 startTime = trackTime.data.start,
                 endTime = trackTime.data.endInclusive,
-                eventCount = trackEventCount.data,
+                eventCount = trackEventCount,
                 comment = ""
             )
         }

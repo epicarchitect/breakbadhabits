@@ -16,12 +16,7 @@ class ValidatedInputController<INPUT, VALIDATION_RESULT>(
     private val inputState = MutableStateFlow(decorateInput(initialInput))
     private val validationResultState = MutableStateFlow<VALIDATION_RESULT?>(null)
 
-    override val state = combine(
-        inputState,
-        validationResultState
-    ) { input, result ->
-        State(input, result)
-    }.stateIn(
+    override val state = combine(inputState, validationResultState, ::State).stateIn(
         scope = coroutineScope,
         started = SharingStarted.Eagerly,
         initialValue = State(

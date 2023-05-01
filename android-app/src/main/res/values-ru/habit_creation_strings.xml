@@ -28,4 +28,5 @@
     <string name="habitCreation_habitTime_year_8">8 лет</string>
     <string name="habitCreation_habitTime_year_9">9 лет</string>
     <string name="habitCreation_habitTime_year_10">10 лет</string>
+    <string name="habitCreation_habitTime_custom">Свой интервал</string>
 </resources>
