@@ -22,6 +22,13 @@ include(
     ":android-app",
     ":database",
 
+    ":ui:compose",
+    ":ui:format",
+
+    ":di:holder",
+    ":di:declaration-impl",
+    ":di:declaration",
+
     ":logic:habits",
     ":logic:datetime",
 
@@ -35,4 +42,5 @@ include(
     ":foundation:viewmodel",
     ":foundation:math",
     ":foundation:icons",
+    ":foundation:identification",
 )

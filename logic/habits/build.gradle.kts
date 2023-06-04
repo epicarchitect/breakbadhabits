@@ -5,6 +5,7 @@ plugins {
 dependencies {
     commonMainApi(projects.foundation.coroutines)
     commonMainApi(projects.foundation.icons)
+    commonMainApi(projects.foundation.identification)
     commonMainApi(projects.logic.datetime)
     commonMainImplementation(projects.database)
 }

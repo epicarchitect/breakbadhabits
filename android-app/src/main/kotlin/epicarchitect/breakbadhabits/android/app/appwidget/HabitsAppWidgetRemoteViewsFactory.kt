@@ -3,12 +3,13 @@ package epicarchitect.breakbadhabits.android.app.appwidget
 import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import epicarchitect.breakbadhabits.android.app.BreakBadHabitsApp
 import epicarchitect.breakbadhabits.android.app.R
-import epicarchitect.breakbadhabits.android.app.format.DurationFormatter
+import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 import epicarchitect.breakbadhabits.foundation.datetime.duration
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.model.HabitAbstinence
+import epicarchitect.breakbadhabits.ui.format.DurationFormatter
+import epicarchitect.breakbadhabits.ui.format.android.AndroidDurationFormatter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -17,25 +18,23 @@ class HabitsAppWidgetRemoteViewsFactory(
     private val context: Context,
     private val widgetSystemId: Int
 ) : RemoteViewsService.RemoteViewsFactory {
-    private val logicModule = BreakBadHabitsApp.instance.logicModule
-    private val habitProvider = logicModule.habitProvider
-    private val habitAbstinenceProvider = logicModule.habitAbstinenceProvider
-    private val habitAppWidgetProvider = logicModule.habitWidgetProvider
-    private val durationFormatter = DurationFormatter(
+    private val durationFormatter = AndroidDurationFormatter(
         resources = context.resources,
         defaultAccuracy = DurationFormatter.Accuracy.HOURS
     )
 
     private fun loadItems() = runBlocking {
-        val config = habitAppWidgetProvider.provideFlowBySystemId(widgetSystemId).first()
+        val config =
+            AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId).first()
 
         if (config == null) emptyList()
-        else habitProvider.habitsFlow().first().filter {
+        else AppModuleHolder.logic.habits.habitProvider.habitsFlow().first().filter {
             config.habitIds.contains(it.id)
         }.map {
             Item(
                 habit = it,
-                abstinence = habitAbstinenceProvider.currentAbstinenceFlow(it.id).first()
+                abstinence = AppModuleHolder.logic.habits.habitAbstinenceProvider.currentAbstinenceFlow(it.id)
+                    .first()
             )
         }
     }

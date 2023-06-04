@@ -5,10 +5,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
+    id("convention.android.library")
 }
 
 kotlin {
-    jvm()
+    android()
 }
 
 tasks.withType<KotlinCompile>().configureEach {

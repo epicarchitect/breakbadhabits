@@ -47,5 +47,8 @@ dependencies {
     implementation(projects.foundation.uikit)
     implementation(projects.presentation.dashboard)
     implementation(projects.presentation.habits)
+    implementation(projects.ui.compose)
     implementation(projects.database)
+    implementation(projects.di.holder)
+    implementation(projects.di.declarationImpl)
 }

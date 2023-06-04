@@ -9,21 +9,21 @@ import epicarchitect.breakbadhabits.sqldelight.main.HabitWidget as DatabaseHabit
 
 class HabitWidgetProvider(
     private val coroutineDispatchers: CoroutineDispatchers,
-    private val appDatabase: MainDatabase
+    private val mainDatabase: MainDatabase
 ) {
     fun provideFlowById(
         id: Int
-    ) = appDatabase.habitWidgetQueries
+    ) = mainDatabase.habitWidgetQueries
         .selectById(id)
         .asFlowOfOneOrNull(coroutineDispatchers, ::asHabitWidget)
 
     fun provideFlowBySystemId(
         systemId: Int
-    ) = appDatabase.habitWidgetQueries
+    ) = mainDatabase.habitWidgetQueries
         .selectBySystemId(systemId)
         .asFlowOfOneOrNull(coroutineDispatchers, ::asHabitWidget)
 
-    fun provideAllFlow() = appDatabase.habitWidgetQueries
+    fun provideAllFlow() = mainDatabase.habitWidgetQueries
         .selectAll()
         .asFlowOfList(coroutineDispatchers, ::asHabitWidget)
 

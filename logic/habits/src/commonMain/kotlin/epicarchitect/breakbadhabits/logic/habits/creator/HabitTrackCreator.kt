@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.logic.habits.creator
 
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
-import epicarchitect.breakbadhabits.database.IdGenerator
+import epicarchitect.breakbadhabits.foundation.identification.IdGenerator
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackEventCount
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackTime
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase

@@ -2,9 +2,9 @@ package epicarchitect.breakbadhabits.logic.habits.creator
 
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import epicarchitect.breakbadhabits.foundation.icons.Icon
+import epicarchitect.breakbadhabits.foundation.identification.IdGenerator
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitNewName
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackTime
-import epicarchitect.breakbadhabits.database.IdGenerator
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 import kotlinx.coroutines.withContext
 

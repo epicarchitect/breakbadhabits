@@ -1,12 +1,9 @@
 plugins {
     id("convention.multiplatform.library")
     id("convention.multiplatform.compose")
-    id("convention.android.library")
 }
 
 kotlin {
-    android()
-
     sourceSets {
         getByName("androidMain") {
             dependencies {

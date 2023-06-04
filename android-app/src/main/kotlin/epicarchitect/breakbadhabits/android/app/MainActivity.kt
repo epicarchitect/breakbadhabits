@@ -2,7 +2,8 @@ package epicarchitect.breakbadhabits.android.app
 
 import androidx.compose.runtime.Composable
 import epicarchitect.breakbadhabits.android.app.base.activity.ComposeActivity
-import epicarchitect.breakbadhabits.android.app.ui.app.AppScreen
+import epicarchitect.breakbadhabits.ui.app.AppScreen
+import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 
 class MainActivity : ComposeActivity() {
 
@@ -10,6 +11,6 @@ class MainActivity : ComposeActivity() {
 
     @Composable
     override fun Content() {
-        AppScreen(BreakBadHabitsApp.instance.uiModule)
+        AppScreen(AppModuleHolder.current)
     }
 }

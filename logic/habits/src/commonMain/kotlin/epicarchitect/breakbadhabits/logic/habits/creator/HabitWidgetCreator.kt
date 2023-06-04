@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.logic.habits.creator
 
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
-import epicarchitect.breakbadhabits.database.IdGenerator
+import epicarchitect.breakbadhabits.foundation.identification.IdGenerator
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 import kotlinx.coroutines.withContext
 

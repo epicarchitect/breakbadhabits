@@ -3,14 +3,11 @@ package epicarchitect.breakbadhabits.android.app
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import epicarchitect.breakbadhabits.android.app.base.activity.ComposeActivity
-import epicarchitect.breakbadhabits.android.app.base.holderViewModel
-import epicarchitect.breakbadhabits.android.app.ui.habits.widgets.HabitsAppWidgetConfigCreationScreen
-import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
+import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
+import epicarchitect.breakbadhabits.foundation.uikit.effect.LaunchedEffectWhenExecuted
+import epicarchitect.breakbadhabits.ui.habits.widgets.HabitsAppWidgetConfigCreation
 
 class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
 
@@ -18,28 +15,23 @@ class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
 
     @Composable
     override fun Content() {
-        val presentationModule = BreakBadHabitsApp.instance.presentationModule
+        val presentationModule = AppModuleHolder.presentation.habits
         val widgetSystemId = remember {
             intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
         }
 
-        val viewModel = holderViewModel {
+        val viewModel = remember {
             presentationModule.createHabitWidgetCreationViewModel(widgetSystemId)
         }
 
-        val creationState by viewModel.creationController.state.collectAsState()
-
-        LaunchedEffect(creationState) {
-            if (creationState.requestState is SingleRequestController.RequestState.Executed) {
-                setResult(
-                    RESULT_OK,
-                    Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetSystemId)
-                )
-                finish()
-            }
+        LaunchedEffectWhenExecuted(viewModel.creationController) {
+            setResult(
+                RESULT_OK,
+                Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetSystemId)
+            )
         }
 
-        HabitsAppWidgetConfigCreationScreen(
+        HabitsAppWidgetConfigCreation(
             titleInputController = viewModel.titleInputController,
             creationController = viewModel.creationController,
             habitsSelectionController = viewModel.habitsSelectionController

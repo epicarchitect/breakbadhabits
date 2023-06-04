@@ -1,13 +1,10 @@
 plugins {
     id("convention.multiplatform.library")
-    id("convention.android.library")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
     id("app.cash.sqldelight") version "2.0.0-rc01"
 }
 
 kotlin {
-    android()
-
     sourceSets {
         getByName("androidMain") {
             dependencies {

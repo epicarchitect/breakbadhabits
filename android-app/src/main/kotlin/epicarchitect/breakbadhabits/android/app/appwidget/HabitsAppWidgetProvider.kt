@@ -10,17 +10,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
-import epicarchitect.breakbadhabits.android.app.BreakBadHabitsApp
 import epicarchitect.breakbadhabits.android.app.R
+import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 
 class HabitsAppWidgetProvider : AppWidgetProvider() {
-
-    private val logicModule by lazy {
-        BreakBadHabitsApp.instance.logicModule
-    }
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, widgetSystemIds: IntArray) {
         super.onUpdate(context, manager, widgetSystemIds)
@@ -43,7 +39,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context, widgetSystemIds: IntArray) = runBlocking {
         super.onDeleted(context, widgetSystemIds)
-        logicModule.habitWidgetDeleter.deleteBySystemIds(widgetSystemIds.toList())
+        AppModuleHolder.logic.habits.habitWidgetDeleter.deleteBySystemIds(widgetSystemIds.toList())
     }
 
     private fun updateAppWidget(
@@ -54,7 +50,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         val isDarkModeEnabled =
             context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
-        val widget = logicModule.habitWidgetProvider.provideFlowBySystemId(widgetSystemId).first()
+        val widget = AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId).first()
         if (widget == null) {
             manager.updateAppWidget(
                 widgetSystemId,

@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import epicarchitect.breakbadhabits.android.app.ui.theme.AppColorsSchemes
 import epicarchitect.breakbadhabits.foundation.uikit.theme.AppTheme
+import epicarchitect.breakbadhabits.ui.theme.AppColorsSchemes
 
 abstract class ComposeActivity : AppCompatActivity() {
 
@@ -33,7 +33,7 @@ abstract class ComposeActivity : AppCompatActivity() {
             ) {
                 val darkMode by LocalDarkModeManager.current.mode
                 AppTheme(
-                    colorScheme = AppColorsSchemes.of(darkMode)
+                    colorScheme = AppColorsSchemes.light
                 ) {
                     Content()
                 }
