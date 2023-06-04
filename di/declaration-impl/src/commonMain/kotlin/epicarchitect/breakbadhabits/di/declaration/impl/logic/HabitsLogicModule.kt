@@ -143,7 +143,6 @@ class HabitsLogicModuleImpl(
             coroutineDispatchers = coroutinesModule.coroutineDispatchers
         )
     }
-
 }
 
 interface HabitsLogicModuleExternal {

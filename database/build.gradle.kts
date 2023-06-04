@@ -1,23 +1,23 @@
 plugins {
     id("convention.multiplatform.library")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
-    id("app.cash.sqldelight") version "2.0.0-rc01"
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.appcash.sqldelight)
 }
 
 kotlin {
     sourceSets {
         getByName("androidMain") {
             dependencies {
-                implementation("app.cash.sqldelight:android-driver:2.0.0-rc01")
+                implementation(libs.appcash.sqldelight.androidDriver)
             }
         }
     }
 }
 
 dependencies {
-    commonMainApi("app.cash.sqldelight:coroutines-extensions:2.0.0-rc01")
-    commonMainApi("app.cash.sqldelight:primitive-adapters:2.0.0-rc01")
-    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    commonMainApi(libs.appcash.sqldelight.coroutinesExtensions)
+    commonMainApi(libs.appcash.sqldelight.primitiveAdapters)
+    commonMainImplementation(libs.kotlin.serialization.json)
     commonMainImplementation(projects.foundation.coroutines)
     commonMainImplementation(projects.foundation.datetime)
 }

@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.ui.habits.widgets
+package epicarchitect.breakbadhabits.habits.widget.android
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable

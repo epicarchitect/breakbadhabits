@@ -1,6 +1,6 @@
 plugins {
     id("convention.multiplatform.library")
-    id("convention.multiplatform.compose")
+    alias(libs.plugins.compose)
 }
 
 dependencies {

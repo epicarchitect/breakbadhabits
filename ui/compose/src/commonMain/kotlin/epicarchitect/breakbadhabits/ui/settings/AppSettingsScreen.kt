@@ -1,6 +1,14 @@
 package epicarchitect.breakbadhabits.ui.settings
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 
 @Composable
 fun AppSettings(
@@ -9,11 +17,11 @@ fun AppSettings(
 //    val darkModeManager = LocalDarkModeManager.current
 //    val darkMode by darkModeManager.mode
 //
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .verticalScroll(rememberScrollState())
-//    ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
 //        Text(
 //            modifier = Modifier
 //                .padding(start = 16.dp, top = 16.dp, end = 16.dp),
@@ -67,15 +75,15 @@ fun AppSettings(
 //            text = stringResource(R.string.appSettings_widgets_description)
 //        )
 //
-//        Button(
-//            modifier = Modifier.padding(
-//                start = 16.dp,
-//                top = 8.dp,
-//                end = 8.dp,
-//                bottom = 16.dp
-//            ),
-//            onClick = openWidgetSettings,
-//            text = stringResource(R.string.appSettings_widgets_button)
-//        )
-//    }
+        Button(
+            modifier = Modifier.padding(
+                start = 16.dp,
+                top = 8.dp,
+                end = 8.dp,
+                bottom = 16.dp
+            ),
+            onClick = openWidgetSettings,
+            text = "stringResource(R.string.appSettings_widgets_button)"
+        )
+    }
 }

@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.ui.theme
+package epicarchitect.breakbadhabits.foundation.uikit.theme
 
 import androidx.compose.ui.graphics.Color
 import epicarchitect.breakbadhabits.foundation.uikit.theme.AppColorScheme

@@ -1,7 +1,6 @@
 package epicarchitect.breakbadhabits.android.app
 
 import android.app.Application
-import epicarchitect.breakbadhabits.android.app.appwidget.HabitsAppWidgetProvider
 import epicarchitect.breakbadhabits.android.app.icons.HabitIconProvider
 import epicarchitect.breakbadhabits.database.main.MainDatabaseFactory
 import epicarchitect.breakbadhabits.di.declaration.impl.AppModuleImpl
@@ -18,6 +17,7 @@ import epicarchitect.breakbadhabits.di.declaration.impl.ui.UiModuleExternal
 import epicarchitect.breakbadhabits.di.declaration.impl.ui.UiModuleImpl
 import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 import epicarchitect.breakbadhabits.foundation.identification.android.AndroidIdGenerator
+import epicarchitect.breakbadhabits.habits.widget.android.HabitsAppWidgetProvider
 import epicarchitect.breakbadhabits.ui.format.DurationFormatter
 import epicarchitect.breakbadhabits.ui.format.android.AndroidDateTimeFormatter
 import epicarchitect.breakbadhabits.ui.format.android.AndroidDurationFormatter

@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.android.app.appwidget
+package epicarchitect.breakbadhabits.habits.widget.android
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent

@@ -1,7 +1,34 @@
+[versions]
+agp = "8.0.2"
+kotlin = "1.8.20"
+compose = "1.4.0"
+appcash-sqldelight = "2.0.0-rc01"
+kotlin-datetime = "0.4.0"
+kotlin-coroutines = "1.7.1"
+kotlin-serialization-json = "1.5.1"
+android-activityCompose = "1.7.1"
+epicarchitect-calendar-compose = "1.0.4"
+android-coreKtx = "1.10.1"
+
 [libraries]
-android-gradlePlugin = "com.android.tools.build:gradle:8.0.2"
-kotlin-gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20"
-compose-gradlePlugin = "org.jetbrains.compose:compose-gradle-plugin:1.4.0"
-kotlin-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
-kotlin-coroutines-core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
-android-activityCompose = "androidx.activity:activity-compose:1.7.1"
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
+kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
+android-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "android-activityCompose" }
+kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }
+epicarchitect-calendar-compose-datePicker = { module = "io.github.epicarchitect:calendar-compose-datepicker", version.ref = "epicarchitect-calendar-compose" }
+
+android-coreKtx = { module = "androidx.core:core-ktx", version.ref = "android-coreKtx" }
+
+appcash-sqldelight-androidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "appcash-sqldelight" }
+appcash-sqldelight-coroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "appcash-sqldelight" }
+appcash-sqldelight-primitiveAdapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "appcash-sqldelight" }
+
+[plugins]
+appcash-sqldelight = { id = "app.cash.sqldelight", version.ref = "appcash-sqldelight" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

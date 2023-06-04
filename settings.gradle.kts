@@ -2,6 +2,16 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "breakbadhabits"
 
+pluginManagement {
+    includeBuild("build-logic")
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
+}
+
 dependencyResolutionManagement {
     repositories {
         google()
@@ -16,11 +26,10 @@ dependencyResolutionManagement {
     }
 }
 
-includeBuild("build-logic")
-
 include(
     ":android-app",
     ":database",
+    ":habits-widget-android",
 
     ":ui:compose",
     ":ui:format",

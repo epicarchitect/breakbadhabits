@@ -1,9 +1,8 @@
-package epicarchitect.breakbadhabits.android.app.appwidget
+package epicarchitect.breakbadhabits.habits.widget.android
 
 import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import epicarchitect.breakbadhabits.android.app.R
 import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 import epicarchitect.breakbadhabits.foundation.datetime.duration
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
@@ -33,8 +32,8 @@ class HabitsAppWidgetRemoteViewsFactory(
         }.map {
             Item(
                 habit = it,
-                abstinence = AppModuleHolder.logic.habits.habitAbstinenceProvider.currentAbstinenceFlow(it.id)
-                    .first()
+                abstinence = AppModuleHolder.logic.habits.habitAbstinenceProvider
+                    .currentAbstinenceFlow(it.id).first()
             )
         }
     }

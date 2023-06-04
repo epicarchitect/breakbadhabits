@@ -5,7 +5,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
-    id("convention.android.library")
+    id("com.android.library")
+    id("convention.android.base")
 }
 
 kotlin {

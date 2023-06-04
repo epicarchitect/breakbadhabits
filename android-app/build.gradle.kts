@@ -1,8 +1,8 @@
 plugins {
-    id("convention.android.application")
-    id("convention.multiplatform.compose")
-    id("kotlin-android")
-    id("kotlin-kapt")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose)
+    id("convention.android.base")
 }
 
 android {
@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.habitsWidgetAndroid)
     implementation(projects.foundation.uikit)
     implementation(projects.presentation.dashboard)
     implementation(projects.presentation.habits)

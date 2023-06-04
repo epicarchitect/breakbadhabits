@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.android.app.appwidget
+package epicarchitect.breakbadhabits.habits.widget.android
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
-import epicarchitect.breakbadhabits.android.app.R
 import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
