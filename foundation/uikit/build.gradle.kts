@@ -3,10 +3,6 @@ plugins {
     id("convention.android.compose")
 }
 
-android {
-    namespace = "breakbadhabits.foundation.uikit"
-}
-
 dependencies {
     api(projects.foundation.controllers)
     api(projects.foundation.datetime)

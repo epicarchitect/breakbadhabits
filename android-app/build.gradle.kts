@@ -5,26 +5,17 @@ plugins {
 }
 
 android {
-    namespace = "breakbadhabits.android.app"
-
-
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         versionCode = 70
         versionName = "4.0.0"
         base.archivesName.set("breakbadhabits-$versionName")
+        resourceConfigurations.addAll(listOf("en", "ru"))
     }
 
     signingConfigs {
-        create("release") {
+        register("release") {
             storeFile = file("signing/release.jks")
-            storePassword = "epicdebug"
-            keyAlias = "epicdebug"
-            keyPassword = "epicdebug"
-        }
-
-        getByName("debug") {
-            storeFile = file("signing/debug.jks")
             storePassword = "epicdebug"
             keyAlias = "epicdebug"
             keyPassword = "epicdebug"
@@ -40,8 +31,15 @@ android {
         }
 
         debug {
-            signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
+        }
+
+        register("qa") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".qa"
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
 }
