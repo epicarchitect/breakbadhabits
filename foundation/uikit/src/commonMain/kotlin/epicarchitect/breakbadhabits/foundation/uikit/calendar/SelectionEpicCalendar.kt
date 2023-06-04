@@ -16,22 +16,19 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import java.time.format.TextStyle
-import java.util.Locale
 
 class IntervalSelectionEpicCalendarState {
     var timeZone by mutableStateOf(TimeZone.currentSystemDefault())
-    val monthTitles = Month.values().map {
-        it.getDisplayName(
-            TextStyle.FULL_STANDALONE,
-            Locale.getDefault()
-        ).replaceFirstChar(Char::uppercase)
-    }
+//    val monthTitles = Month.values().map {
+//        it.getDisplayName(
+//            TextStyle.FULL_STANDALONE,
+//            Locale.getDefault()
+//        ).replaceFirstChar(Char::uppercase)
+//    }
 
     var availableRange: ClosedRange<Instant> by mutableStateOf(defaultAvailableRange(timeZone))
     val minMonthOfYear by derivedStateOf { availableRange.start.monthOfYear(timeZone) }

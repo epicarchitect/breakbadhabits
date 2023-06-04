@@ -9,6 +9,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.di.declaration.AppModule
 import epicarchitect.breakbadhabits.di.holder.LocalAppModule
 import epicarchitect.breakbadhabits.foundation.uikit.effect.LaunchedEffectWhenExecuted
+import epicarchitect.breakbadhabits.foundation.uikit.theme.AppColorsSchemes
+import epicarchitect.breakbadhabits.foundation.uikit.theme.AppTheme
 import epicarchitect.breakbadhabits.ui.dashboard.Dashboard
 import epicarchitect.breakbadhabits.ui.habits.HabitCreation
 import epicarchitect.breakbadhabits.ui.habits.HabitDetails
@@ -21,13 +23,16 @@ import epicarchitect.breakbadhabits.ui.habits.widgets.HabitAppWidgets
 import epicarchitect.breakbadhabits.ui.settings.AppSettings
 import epicarchitect.breakbadhabits.ui.viewModel
 
-
 @Composable
 fun AppScreen(appModule: AppModule) {
-    CompositionLocalProvider(
-        LocalAppModule provides appModule
+    AppTheme(
+        colorScheme = AppColorsSchemes.light
     ) {
-        Navigator(DashboardScreen())
+        CompositionLocalProvider(
+            LocalAppModule provides appModule
+        ) {
+            Navigator(DashboardScreen())
+        }
     }
 }
 

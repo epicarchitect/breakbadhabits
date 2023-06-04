@@ -45,8 +45,5 @@ android {
 
 dependencies {
     implementation(projects.habitsWidgetAndroid)
-    implementation(projects.ui.compose)
-    implementation(projects.database)
-    implementation(projects.di.holder)
-    implementation(projects.di.declarationImpl)
+    implementation(projects.shared)
 }

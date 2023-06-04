@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,26 +22,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.di.holder.LocalAppModule
 import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.foundation.datetime.next
 import epicarchitect.breakbadhabits.foundation.datetime.previous
-import epicarchitect.breakbadhabits.foundation.datetime.toDateRange
 import epicarchitect.breakbadhabits.foundation.math.ranges.isStartSameAsEnd
 import epicarchitect.breakbadhabits.foundation.uikit.IconButton
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
-import epicarchitect.breakbadhabits.foundation.uikit.calendar.EpicCalendar
-import epicarchitect.breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.model.HabitTrack
 import kotlinx.datetime.TimeZone
-import java.time.format.TextStyle
-import java.util.*
 
 //import epicarchitect.breakbadhabits.foundation.uikit.R as UikitR
 
@@ -73,11 +66,11 @@ fun HabitTracks(
             }
         }
 
-        val epicCalendarState = rememberEpicCalendarState(
-            timeZone = timeZone,
-            monthOfYear = currentMonth,
-            ranges = ranges.map { it.start.instant..it.endInclusive.instant }
-        )
+//        val epicCalendarState = rememberEpicCalendarState(
+//            timeZone = timeZone,
+//            monthOfYear = currentMonth,
+//            ranges = ranges.map { it.start.instant..it.endInclusive.instant }
+//        )
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -101,14 +94,14 @@ fun HabitTracks(
                     )
                 }
 
-                val title = remember(currentMonth) {
-                    "${
-                        currentMonth.month.getDisplayName(
-                            TextStyle.FULL_STANDALONE,
-                            Locale.getDefault()
-                        ).replaceFirstChar { it.titlecase(Locale.getDefault()) }
-                    } ${currentMonth.year}"
-                }
+//                val title = remember(currentMonth) {
+//                    "${
+//                        currentMonth.month.getDisplayName(
+//                            TextStyle.FULL_STANDALONE,
+//                            Locale.getDefault()
+//                        ).replaceFirstChar { it.titlecase(Locale.getDefault()) }
+//                    } ${currentMonth.year}"
+//                }
 
                 IconButton(
                     onClick = {
@@ -118,13 +111,13 @@ fun HabitTracks(
 //                    LocalResourceIcon(resourceId = UikitR.drawable.uikit_arrow_left)
                 }
 
-                Text(
-                    modifier = Modifier.defaultMinSize(minWidth = 110.dp),
-                    text = title,
-                    type = Text.Type.Title,
-                    textAlign = TextAlign.Center,
-                    priority = Text.Priority.Low
-                )
+//                Text(
+//                    modifier = Modifier.defaultMinSize(minWidth = 110.dp),
+//                    text = title,
+//                    type = Text.Type.Title,
+//                    textAlign = TextAlign.Center,
+//                    priority = Text.Priority.Low
+//                )
 
                 IconButton(
                     onClick = {
@@ -135,24 +128,24 @@ fun HabitTracks(
                 }
             }
 
-            EpicCalendar(
-                state = epicCalendarState,
-                horizontalInnerPadding = 8.dp,
-                dayBadgeText = { day ->
-                    val date = day.date
-                    val count = allTracks.fold(0) { count, track ->
-                        val inTrack = date in track.dateTimeRange.toDateRange().let {
-                            it.start.date..it.endInclusive.date
-                        }
-                        if (inTrack) count + track.eventCount
-                        else count
-                    }
-
-                    if (count == 0) null
-                    else if (count > 100) "99+"
-                    else count.toString()
-                }
-            )
+//            EpicCalendar(
+//                state = epicCalendarState,
+//                horizontalInnerPadding = 8.dp,
+//                dayBadgeText = { day ->
+//                    val date = day.date
+//                    val count = allTracks.fold(0) { count, track ->
+//                        val inTrack = date in track.dateTimeRange.toDateRange().let {
+//                            it.start.date..it.endInclusive.date
+//                        }
+//                        if (inTrack) count + track.eventCount
+//                        else count
+//                    }
+//
+//                    if (count == 0) null
+//                    else if (count > 100) "99+"
+//                    else count.toString()
+//                }
+//            )
 
             Spacer(modifier = Modifier.height(8.dp))
 

@@ -28,8 +28,6 @@ import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
 import epicarchitect.breakbadhabits.foundation.uikit.StatisticData
 import epicarchitect.breakbadhabits.foundation.uikit.Statistics
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
-import epicarchitect.breakbadhabits.foundation.uikit.calendar.EpicCalendar
-import epicarchitect.breakbadhabits.foundation.uikit.calendar.rememberEpicCalendarState
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
 import epicarchitect.breakbadhabits.logic.habits.model.DailyHabitEventCount
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
@@ -37,8 +35,6 @@ import epicarchitect.breakbadhabits.logic.habits.model.HabitAbstinence
 import epicarchitect.breakbadhabits.logic.habits.model.HabitStatistics
 import epicarchitect.breakbadhabits.ui.format.DurationFormatter
 import kotlinx.datetime.TimeZone
-import java.time.format.TextStyle
-import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -116,50 +112,50 @@ fun HabitDetails(
                 LoadingBox(currentMonthDailyCountsController) { dailyCounts ->
                     Column(modifier = Modifier.fillMaxWidth()) {
                         val yearMonth = remember { MonthOfYear.now(timeZone) }
+//
+//                        val epicCalendarState = rememberEpicCalendarState(
+//                            timeZone = timeZone,
+//                            monthOfYear = yearMonth,
+//                            ranges = remember(dailyCounts.tracks) {
+//                                dailyCounts.tracks.map {
+//                                    it.dateTimeRange.let {
+//                                        it.start.instant..it.endInclusive.instant
+//                                    }
+//                                }
+//                            }
+//                        )
+//
+//                        val title = remember(yearMonth) {
+//                            "${
+//                                yearMonth.month.getDisplayName(
+//                                    TextStyle.FULL_STANDALONE,
+//                                    Locale.getDefault()
+//                                ).replaceFirstChar { it.titlecase(Locale.getDefault()) }
+//                            } ${yearMonth.year}"
+//                        }
 
-                        val epicCalendarState = rememberEpicCalendarState(
-                            timeZone = timeZone,
-                            monthOfYear = yearMonth,
-                            ranges = remember(dailyCounts.tracks) {
-                                dailyCounts.tracks.map {
-                                    it.dateTimeRange.let {
-                                        it.start.instant..it.endInclusive.instant
-                                    }
-                                }
-                            }
-                        )
-
-                        val title = remember(yearMonth) {
-                            "${
-                                yearMonth.month.getDisplayName(
-                                    TextStyle.FULL_STANDALONE,
-                                    Locale.getDefault()
-                                ).replaceFirstChar { it.titlecase(Locale.getDefault()) }
-                            } ${yearMonth.year}"
-                        }
-
-                        Text(
-                            modifier = Modifier.padding(
-                                start = 16.dp,
-                                end = 16.dp,
-                                bottom = 12.dp,
-                                top = 16.dp
-                            ),
-                            text = title,
-                            type = Text.Type.Title
-                        )
-
-                        EpicCalendar(
-                            state = epicCalendarState,
-                            horizontalInnerPadding = 8.dp,
-                            dayBadgeText = { day ->
-//                                val count = dailyCounts.dateToCount[day.date] ?: 0
-//                                if (count == 0) null
-//                                else if (count > 100) "99+"
-//                                else count.toString()
-                                "n"
-                            }
-                        )
+//                        Text(
+//                            modifier = Modifier.padding(
+//                                start = 16.dp,
+//                                end = 16.dp,
+//                                bottom = 12.dp,
+//                                top = 16.dp
+//                            ),
+//                            text = title,
+//                            type = Text.Type.Title
+//                        )
+//
+//                        EpicCalendar(
+//                            state = epicCalendarState,
+//                            horizontalInnerPadding = 8.dp,
+//                            dayBadgeText = { day ->
+////                                val count = dailyCounts.dateToCount[day.date] ?: 0
+////                                if (count == 0) null
+////                                else if (count > 100) "99+"
+////                                else count.toString()
+//                                "n"
+//                            }
+//                        )
 
                         Spacer(modifier = Modifier.height(8.dp))
 

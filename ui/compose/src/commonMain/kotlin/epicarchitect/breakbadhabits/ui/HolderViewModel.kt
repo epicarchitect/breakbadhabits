@@ -9,7 +9,6 @@ import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
 class HolderViewModel<T : ViewModel>(val viewModel: T) : ScreenModel {
     override fun onDispose() {
         super.onDispose()
-        println("test123 clear!!!")
         viewModel.clear()
     }
 }

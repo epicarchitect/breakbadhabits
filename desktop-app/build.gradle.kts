@@ -7,15 +7,12 @@ plugins {
 
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation(projects.ui.compose)
-    implementation(projects.database)
-    implementation(projects.di.holder)
-    implementation(projects.di.declarationImpl)
+    implementation(projects.shared)
 }
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "epicarchitect.breakbadhabits.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

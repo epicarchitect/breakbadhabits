@@ -16,6 +16,11 @@ kotlin {
                 implementation(libs.appcash.sqldelight.sqliteDriver)
             }
         }
+        getByName("iosMain") {
+            dependencies {
+                implementation(libs.appcash.sqldelight.nativeDriver)
+            }
+        }
     }
 }
 

@@ -8,14 +8,26 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.abs
+import kotlin.math.floor
 
 data class MonthOfYear(
     val year: Int,
     val month: Month
 ) : Comparable<MonthOfYear> {
+    val numberOfDays = length(isLeapYear(year.toLong()))
+
+    private fun length(leapYear: Boolean): Int {
+        return when (month) {
+            Month.FEBRUARY -> if (leapYear) 29 else 28
+            Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
+            else -> 31
+        }
+    }
+
     companion object {
         fun now(timeZone: TimeZone): MonthOfYear {
             val now = Clock.System.now()
@@ -27,50 +39,25 @@ data class MonthOfYear(
     override fun compareTo(other: MonthOfYear): Int {
         var cmp = year - other.year
         if (cmp == 0) {
-            cmp = month.value - other.month.value
+            cmp = month.number - other.month.number
         }
         return cmp
     }
 }
 
-fun MonthOfYear.length() = month.length(isLeapYear(year.toLong()))
 
-fun MonthOfYear.previous() = when {
-    month.value - 1 == 0 -> {
-        copy(
-            month = Month.of(12),
-            year = year - 1
-        )
-    }
+fun MonthOfYear.previous():MonthOfYear = addMonths(-1)
 
-    else -> {
-        copy(
-            month = month.minus(1),
-        )
-    }
-}
+fun MonthOfYear.next(): MonthOfYear = addMonths(1)
 
-fun MonthOfYear.next() = when {
-    month.value + 1 == 13 -> {
-        copy(
-            month = Month.of(1),
-            year = year + 1
-        )
-    }
-
-    else -> {
-        copy(
-            month = month.plus(1),
-        )
-    }
-}
+fun MonthOfYear.length() = numberOfDays
 
 fun MonthOfYear.addMonths(monthsToAdd: Int): MonthOfYear {
     if (monthsToAdd == 0) return this
-    val monthCount = year * 12 + (month.value - 1)
+    val monthCount = year * 12 + (month.number - 1)
     val calcMonths = monthCount + monthsToAdd
-    val newYear = Math.floorDiv(calcMonths, 12)
-    val newMonth = Math.floorMod(calcMonths, 12) + 1
+    val newYear = floor(calcMonths.div(12.0)).toInt()
+    val newMonth = floor(calcMonths.mod(12).toDouble()).toInt() + 1
     return MonthOfYear(newYear, Month(newMonth))
 }
 
@@ -81,12 +68,12 @@ fun MonthOfYearRange.countMountsBetween(): Int {
     val result = when {
         start == end -> 0
         start.year == end.year -> {
-            end.month.value - start.month.value - 1
+            end.month.number - start.month.number - 1
         }
 
         else -> {
             val yearsBetween = end.year - start.year
-            end.month.value - start.month.value - 1 + yearsBetween * 12
+            end.month.number - start.month.number - 1 + yearsBetween * 12
         }
     }
     return abs(result)

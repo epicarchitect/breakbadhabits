@@ -19,6 +19,7 @@ android-coreKtx = { module = "androidx.core:core-ktx", version.ref = "android-co
 kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }
 appcash-sqldelight-androidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "appcash-sqldelight" }
 appcash-sqldelight-sqliteDriver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "appcash-sqldelight" }
+appcash-sqldelight-nativeDriver = { module = "app.cash.sqldelight:native-driver", version.ref = "appcash-sqldelight" }
 appcash-sqldelight-coroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "appcash-sqldelight" }
 appcash-sqldelight-primitiveAdapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "appcash-sqldelight" }
 epicarchitect-calendar-compose-datePicker = { module = "io.github.epicarchitect:calendar-compose-datepicker", version.ref = "epicarchitect-calendar-compose" }

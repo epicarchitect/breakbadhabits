@@ -28,6 +28,7 @@ dependencyResolutionManagement {
 
 include(
     ":android-app",
+    ":shared",
     ":desktop-app",
     ":database",
     ":habits-widget-android",
