@@ -33,6 +33,7 @@ class HabitsAppWidgetConfigCreationActivity : ComponentActivity() {
                         RESULT_OK,
                         Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetSystemId)
                     )
+                    finish()
                 }
 
                 HabitsAppWidgetConfigCreation(
