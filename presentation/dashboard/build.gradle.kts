@@ -1,10 +1,10 @@
 plugins {
-    id("convention.android.library")
+    id("convention.multiplatform.library")
 }
 
 dependencies {
-    api(projects.foundation.controllers)
-    api(projects.foundation.viewmodel)
-    api(projects.logic.habits)
-    api(projects.logic.datetime)
+    commonMainApi(projects.foundation.controllers)
+    commonMainApi(projects.foundation.viewmodel)
+    commonMainApi(projects.logic.habits)
+    commonMainApi(projects.logic.datetime)
 }

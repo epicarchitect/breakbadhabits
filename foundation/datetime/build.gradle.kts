@@ -1,8 +1,8 @@
 plugins {
-    id("convention.android.library")
+    id("convention.multiplatform.library")
 }
 
 dependencies {
-    api(projects.foundation.math)
-    api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    commonMainApi(projects.foundation.math)
+    commonMainApi(libs.kotlin.datetime)
 }

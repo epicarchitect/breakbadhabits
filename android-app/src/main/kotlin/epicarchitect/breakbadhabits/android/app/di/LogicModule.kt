@@ -3,6 +3,7 @@ package epicarchitect.breakbadhabits.android.app.di
 import android.content.Context
 import epicarchitect.breakbadhabits.android.app.coroutines.DefaultCoroutineDispatchers
 import epicarchitect.breakbadhabits.android.app.icons.HabitIconProvider
+import epicarchitect.breakbadhabits.database.AndroidIdGenerator
 import epicarchitect.breakbadhabits.database.IdGenerator
 import epicarchitect.breakbadhabits.database.main.MainDatabaseFactory
 import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
@@ -37,7 +38,7 @@ class LogicModule(
     }
 
     private val idGenerator by lazy {
-        IdGenerator(context = context)
+        AndroidIdGenerator(context = context)
     }
 
     val coroutineDispatchers by lazy {

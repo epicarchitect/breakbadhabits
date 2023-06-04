@@ -1,10 +1,17 @@
 plugins {
     id("convention.android.application")
-    id("convention.android.compose")
+    id("convention.multiplatform.compose")
+    id("kotlin-android")
     id("kotlin-kapt")
 }
 
 android {
+    bundle {
+        storeArchive {
+            enable = true
+        }
+    }
+
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         versionCode = 70
@@ -32,14 +39,6 @@ android {
 
         debug {
             applicationIdSuffix = ".debug"
-        }
-
-        register("qa") {
-            initWith(getByName("debug"))
-            applicationIdSuffix = ".qa"
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
 }

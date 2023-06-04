@@ -47,7 +47,7 @@ import epicarchitect.breakbadhabits.logic.habits.model.HabitTrack
 import kotlinx.datetime.TimeZone
 import java.time.format.TextStyle
 import java.util.*
-import epicarchitect.breakbadhabits.foundation.uikit.R as UikitR
+//import epicarchitect.breakbadhabits.foundation.uikit.R as UikitR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -118,7 +118,7 @@ fun HabitTracksScreen(
                         currentMonth = currentMonth.previous()
                     }
                 ) {
-                    LocalResourceIcon(resourceId = UikitR.drawable.uikit_arrow_left)
+//                    LocalResourceIcon(resourceId = UikitR.drawable.uikit_arrow_left)
                 }
 
                 Text(
@@ -134,7 +134,7 @@ fun HabitTracksScreen(
                         currentMonth = currentMonth.next()
                     }
                 ) {
-                    LocalResourceIcon(resourceId = UikitR.drawable.uikit_arrow_right)
+//                    LocalResourceIcon(resourceId = UikitR.drawable.uikit_arrow_right)
                 }
             }
 

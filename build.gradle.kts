@@ -9,11 +9,3 @@ buildscript {
         classpath(":build-logic")
     }
 }
-
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}

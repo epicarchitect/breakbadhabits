@@ -7,8 +7,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.lifecycle.viewmodel.compose.viewModel
 import epicarchitect.breakbadhabits.android.app.base.activity.ComposeActivity
+import epicarchitect.breakbadhabits.android.app.base.holderViewModel
 import epicarchitect.breakbadhabits.android.app.ui.habits.widgets.HabitsAppWidgetConfigCreationScreen
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 
@@ -23,7 +23,7 @@ class HabitsAppWidgetConfigCreationActivity : ComposeActivity() {
             intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
         }
 
-        val viewModel = viewModel {
+        val viewModel = holderViewModel {
             presentationModule.createHabitWidgetCreationViewModel(widgetSystemId)
         }
 

@@ -1,7 +1,7 @@
 plugins {
-    id("convention.android.library")
+    id("convention.multiplatform.library")
 }
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    commonMainApi(libs.kotlin.coroutines.core)
 }

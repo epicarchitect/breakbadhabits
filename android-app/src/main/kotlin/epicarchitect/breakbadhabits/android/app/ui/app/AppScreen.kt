@@ -13,6 +13,7 @@ import epicarchitect.breakbadhabits.android.app.di.LocalLogicModule
 import epicarchitect.breakbadhabits.android.app.di.LocalPresentationModule
 import epicarchitect.breakbadhabits.android.app.di.LocalUiModule
 import epicarchitect.breakbadhabits.android.app.di.UiModule
+import epicarchitect.breakbadhabits.android.app.base.holderViewModel
 import epicarchitect.breakbadhabits.android.app.ui.dashboard.DashboardScreen
 import epicarchitect.breakbadhabits.android.app.ui.habits.HabitCreationScreen
 import epicarchitect.breakbadhabits.android.app.ui.habits.HabitDetailsScreen
@@ -114,7 +115,7 @@ private fun AppScreenContent() {
 
         composable(route = Screens.HabitCreation.route) {
             val presentationModule = LocalPresentationModule.current
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createHabitCreationViewModel()
             }
 
@@ -135,7 +136,7 @@ private fun AppScreenContent() {
         ) {
             val presentationModule = LocalPresentationModule.current
             val habitId = Screens.HabitUpdating.getHabitId(it.arguments)
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createHabitUpdatingViewModel(habitId)
             }
 
@@ -161,7 +162,7 @@ private fun AppScreenContent() {
         ) {
             val presentationModule = LocalPresentationModule.current
             val habitId = Screens.HabitTrackCreation.getHabitId(it.arguments)
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createHabitTrackCreationViewModel(habitId)
             }
 
@@ -182,7 +183,7 @@ private fun AppScreenContent() {
         ) {
             val trackId = Screens.HabitTrackUpdating.getHabitTrackId(it.arguments)
             val presentationModule = LocalPresentationModule.current
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createHabitTrackUpdatingViewModel(trackId)
             }
 
@@ -205,7 +206,7 @@ private fun AppScreenContent() {
         ) {
             val presentationModule = LocalPresentationModule.current
             val id = Screens.HabitAppWidgetUpdating.getHabitAppWidgetId(it.arguments)
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createHabitWidgetUpdatingViewModel(id)
             }
 
@@ -222,7 +223,7 @@ private fun AppScreenContent() {
 
         composable(route = Screens.HabitAppWidgets.route) {
             val presentationModule = LocalPresentationModule.current
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createHabitAppWidgetsViewModel()
             }
 
@@ -240,7 +241,7 @@ private fun AppScreenContent() {
         ) {
             val habitId = Screens.HabitDetails.getHabitId(it.arguments)
             val presentationModule = LocalPresentationModule.current
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createHabitDetailsViewModel(habitId)
             }
 
@@ -268,7 +269,7 @@ private fun AppScreenContent() {
         ) {
             val presentationModule = LocalPresentationModule.current
             val habitId = Screens.HabitTracks.getHabitId(it.arguments)
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createHabitTracksViewModel(habitId)
             }
 
@@ -286,7 +287,7 @@ private fun AppScreenContent() {
 
         composable(route = Screens.Dashboard.route) {
             val presentationModule = LocalPresentationModule.current
-            val viewModel = viewModel {
+            val viewModel = holderViewModel {
                 presentationModule.createDashboardViewModel()
             }
 
