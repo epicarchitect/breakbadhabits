@@ -8,9 +8,3 @@ interface CoroutineDispatchers {
     val default: CoroutineDispatcher
     val main: CoroutineDispatcher
 }
-
-class DefaultCoroutineDispatchers : CoroutineDispatchers {
-    override val io = Dispatchers.IO
-    override val default = Dispatchers.Default
-    override val main = Dispatchers.Main
-}

@@ -4,7 +4,6 @@ kotlin = "1.8.20"
 compose = "1.4.0"
 appcash-sqldelight = "2.0.0-rc01"
 kotlin-datetime = "0.4.0"
-kotlin-coroutines = "1.7.1"
 kotlin-serialization-json = "1.5.1"
 android-activityCompose = "1.7.1"
 epicarchitect-calendar-compose = "1.0.4"
@@ -15,11 +14,11 @@ voyager = "1.0.0-rc06"
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
-kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 android-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "android-activityCompose" }
 android-coreKtx = { module = "androidx.core:core-ktx", version.ref = "android-coreKtx" }
 kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }
 appcash-sqldelight-androidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "appcash-sqldelight" }
+appcash-sqldelight-sqliteDriver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "appcash-sqldelight" }
 appcash-sqldelight-coroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "appcash-sqldelight" }
 appcash-sqldelight-primitiveAdapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "appcash-sqldelight" }
 epicarchitect-calendar-compose-datePicker = { module = "io.github.epicarchitect:calendar-compose-datepicker", version.ref = "epicarchitect-calendar-compose" }

@@ -5,4 +5,5 @@ plugins {
 dependencies {
     commonMainApi(projects.di.declaration)
     commonMainApi(projects.database)
+    commonMainApi(projects.foundation.coroutines)
 }

@@ -6,7 +6,9 @@ class FoundationModuleImpl(
     external: FoundationModuleExternal
 ) : FoundationModule, FoundationModuleExternal by external {
     override val coroutines by lazy {
-        CoroutinesModuleImpl()
+        CoroutinesModuleImpl(
+            external = coroutinesModuleExternal
+        )
     }
 
     override val identification by lazy {
@@ -18,4 +20,5 @@ class FoundationModuleImpl(
 
 interface FoundationModuleExternal {
     val identificationModuleExternal: IdentificationModuleExternal
+    val coroutinesModuleExternal: CoroutinesModuleExternal
 }

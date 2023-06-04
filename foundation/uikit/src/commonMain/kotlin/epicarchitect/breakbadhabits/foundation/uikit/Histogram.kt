@@ -1,6 +1,5 @@
 package epicarchitect.breakbadhabits.foundation.uikit
 
-import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -17,8 +16,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.inset
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -83,11 +80,11 @@ fun Histogram(
                 top = 0f,
                 bottom = 0f
             ) {
-                val textPaint = Paint().apply {
-                    color = valueTextColor.toArgb()
-                    isAntiAlias = true
-                    textSize = valueTextSizePx
-                }
+//                val textPaint = Paint().apply {
+//                    color = valueTextColor.toArgb()
+//                    isAntiAlias = true
+//                    textSize = valueTextSizePx
+//                }
 
                 val maxY = values.max()
                 val minBarOffsetY =
@@ -106,12 +103,12 @@ fun Histogram(
 
                     val barHeightPx = size.height - barOffset.y
 
-                    drawContext.canvas.nativeCanvas.drawText(
-                        valueFormatter(barValue),
-                        barOffset.x + barWidthPx / 2 - textPaint.textSize,
-                        barOffset.y - valueTextPaddingPx,
-                        textPaint
-                    )
+//                    drawContext.canvas.nativeCanvas.drawText(
+//                        valueFormatter(barValue),
+//                        barOffset.x + barWidthPx / 2 - textPaint.textSize,
+//                        barOffset.y - valueTextPaddingPx,
+//                        textPaint
+//                    )
 
                     drawRect(
                         color = barColor,

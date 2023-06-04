@@ -11,6 +11,11 @@ kotlin {
                 implementation(libs.appcash.sqldelight.androidDriver)
             }
         }
+        getByName("desktopMain") {
+            dependencies {
+                implementation(libs.appcash.sqldelight.sqliteDriver)
+            }
+        }
     }
 }
 

@@ -1,8 +1,5 @@
 package convention.multiplatform
 
-import convention.Constants
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -11,10 +8,5 @@ plugins {
 
 kotlin {
     android()
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = Constants.JVM_TARGET
-    }
+    jvm("desktop")
 }
