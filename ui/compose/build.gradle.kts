@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    commonMainApi("cafe.adriel.voyager:voyager-navigator:1.0.0-rc06")
+    commonMainApi(libs.voyager.navigator)
     commonMainApi(projects.di.holder)
     commonMainApi(projects.foundation.uikit)
     commonMainApi(projects.presentation.dashboard)
