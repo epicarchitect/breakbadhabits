@@ -11,7 +11,7 @@ import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
 object MainDatabaseFactory {
     fun create(): MainDatabase {
-        val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        val driver = JdbcSqliteDriver("jdbc:sqlite:main")
         MainDatabase.Schema.create(driver)
         return MainDatabase(
             driver = driver,
