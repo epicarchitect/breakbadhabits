@@ -1,8 +1,8 @@
 package epicarchitect.breakbadhabits.android.app.icons
 
+import breakbadhabits.foundation.icons.android.AndroidResourceIcon
 import epicarchitect.breakbadhabits.android.app.R
 import epicarchitect.breakbadhabits.foundation.icons.IconProvider
-import breakbadhabits.foundation.icons.android.AndroidResourceIcon
 import kotlinx.coroutines.flow.flowOf
 
 class HabitIconProvider : IconProvider {

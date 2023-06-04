@@ -201,6 +201,7 @@ fun HabitEventEditingScreen(
                         text = stringResource(R.string.habitEventEditing_eventTimeValidation_biggestThenCurrentTime)
                     )
                 }
+
                 else -> {
                     /* no-op */
                 }

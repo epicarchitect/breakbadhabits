@@ -4,8 +4,6 @@ import epicarchitect.breakbadhabits.di.declaration.foundation.FoundationModule
 import epicarchitect.breakbadhabits.di.declaration.impl.database.MainDatabaseModule
 import epicarchitect.breakbadhabits.di.declaration.impl.database.MainDatabaseModuleExternal
 import epicarchitect.breakbadhabits.di.declaration.impl.foundation.DateTimeLogicModuleImpl
-import epicarchitect.breakbadhabits.di.declaration.impl.foundation.FoundationModuleExternal
-import epicarchitect.breakbadhabits.di.declaration.impl.foundation.FoundationModuleImpl
 import epicarchitect.breakbadhabits.di.declaration.logic.LogicModule
 
 class LogicModuleImpl(

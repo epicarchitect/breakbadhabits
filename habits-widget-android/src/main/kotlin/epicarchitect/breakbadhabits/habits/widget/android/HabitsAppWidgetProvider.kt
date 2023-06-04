@@ -49,7 +49,9 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         val isDarkModeEnabled =
             context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
-        val widget = AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId).first()
+        val widget =
+            AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId)
+                .first()
         if (widget == null) {
             manager.updateAppWidget(
                 widgetSystemId,

@@ -1,10 +1,10 @@
 package epicarchitect.breakbadhabits.di.declaration.impl.logic
 
 import epicarchitect.breakbadhabits.di.declaration.foundation.CoroutinesModule
-import epicarchitect.breakbadhabits.di.declaration.logic.DateTimeLogicModule
-import epicarchitect.breakbadhabits.di.declaration.logic.HabitsLogicModule
 import epicarchitect.breakbadhabits.di.declaration.foundation.IdentificationModule
 import epicarchitect.breakbadhabits.di.declaration.impl.database.MainDatabaseModule
+import epicarchitect.breakbadhabits.di.declaration.logic.DateTimeLogicModule
+import epicarchitect.breakbadhabits.di.declaration.logic.HabitsLogicModule
 import epicarchitect.breakbadhabits.foundation.icons.IconProvider
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitCreator
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitTrackCreator

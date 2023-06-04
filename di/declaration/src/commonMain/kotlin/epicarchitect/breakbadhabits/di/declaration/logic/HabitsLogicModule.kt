@@ -1,9 +1,6 @@
 package epicarchitect.breakbadhabits.di.declaration.logic
 
-import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import epicarchitect.breakbadhabits.foundation.icons.IconProvider
-import epicarchitect.breakbadhabits.foundation.identification.IdGenerator
-import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitCreator
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitTrackCreator
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitWidgetCreator

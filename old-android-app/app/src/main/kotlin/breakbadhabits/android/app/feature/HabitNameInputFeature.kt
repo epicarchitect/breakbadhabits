@@ -40,6 +40,7 @@ class HabitNameInputFeature(
                 null -> {
                     mutableValidation.value = ValidationState.NotExecuted()
                 }
+
                 else -> {
                     mutableValidation.value = ValidationState.Executing()
                     mutableValidation.value = ValidationState.Executed(validateHabitName(it))
@@ -59,6 +60,7 @@ class HabitNameInputFeature(
             habitName,
             habitValidator.maxHabitNameLength
         )
+
         !habitValidator.nameNotUsed(habitName) -> ValidationResult.Used(habitName)
         else -> ValidationResult.Valid(habitName)
     }

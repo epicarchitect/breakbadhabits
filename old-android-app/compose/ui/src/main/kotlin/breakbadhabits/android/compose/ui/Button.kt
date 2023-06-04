@@ -38,6 +38,7 @@ fun Button(
                 backgroundColor = MaterialTheme.colors.surface,
                 contentColor = MaterialTheme.colors.onSurface
             )
+
             InteractionType.MAIN -> ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.primary,
                 contentColor = MaterialTheme.colors.onPrimary

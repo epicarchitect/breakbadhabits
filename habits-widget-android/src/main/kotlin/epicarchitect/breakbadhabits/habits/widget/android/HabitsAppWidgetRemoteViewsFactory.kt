@@ -24,7 +24,8 @@ class HabitsAppWidgetRemoteViewsFactory(
 
     private fun loadItems() = runBlocking {
         val config =
-            AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId).first()
+            AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId)
+                .first()
 
         if (config == null) emptyList()
         else AppModuleHolder.logic.habits.habitProvider.habitsFlow().first().filter {

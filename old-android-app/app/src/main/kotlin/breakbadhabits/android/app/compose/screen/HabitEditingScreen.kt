@@ -126,6 +126,7 @@ fun HabitEditingScreen(
                         text = stringResource(R.string.habitEditing_habitNameValidation_empty),
                     )
                 }
+
                 is HabitNameInputFeature.ValidationResult.TooLong -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
@@ -135,12 +136,14 @@ fun HabitEditingScreen(
                         ),
                     )
                 }
+
                 is HabitNameInputFeature.ValidationResult.Used -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitEditing_habitNameValidation_used),
                     )
                 }
+
                 else -> {
                     /* no-op */
                 }

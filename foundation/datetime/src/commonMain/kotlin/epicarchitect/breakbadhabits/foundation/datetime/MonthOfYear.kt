@@ -42,6 +42,7 @@ fun MonthOfYear.previous() = when {
             year = year - 1
         )
     }
+
     else -> {
         copy(
             month = month.minus(1),
@@ -56,6 +57,7 @@ fun MonthOfYear.next() = when {
             year = year + 1
         )
     }
+
     else -> {
         copy(
             month = month.plus(1),
@@ -81,6 +83,7 @@ fun MonthOfYearRange.countMountsBetween(): Int {
         start.year == end.year -> {
             end.month.value - start.month.value - 1
         }
+
         else -> {
             val yearsBetween = end.year - start.year
             end.month.value - start.month.value - 1 + yearsBetween * 12

@@ -1,7 +1,6 @@
 package epicarchitect.breakbadhabits.foundation.uikit.theme
 
 import androidx.compose.ui.graphics.Color
-import epicarchitect.breakbadhabits.foundation.uikit.theme.AppColorScheme
 
 object AppColorsSchemes {
     val dark = AppColorScheme(

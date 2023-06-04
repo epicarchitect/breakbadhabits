@@ -41,6 +41,7 @@ class HabitEventTimeInputFeature(
                 null -> {
                     mutableValidation.value = ValidationState.NotExecuted()
                 }
+
                 else -> {
                     mutableValidation.value = ValidationState.Executing()
                     mutableValidation.value = ValidationState.Executed(validate(it))
@@ -57,6 +58,7 @@ class HabitEventTimeInputFeature(
         !habitEventValidator.timeNotBiggestThenCurrentTime(time) -> {
             ValidationResult.BiggestThenCurrentTime(time)
         }
+
         else -> ValidationResult.Valid(time)
     }
 

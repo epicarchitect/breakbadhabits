@@ -180,6 +180,7 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
                         text = stringResource(R.string.habitCreation_habitNameValidation_empty),
                     )
                 }
+
                 is HabitNameInputFeature.ValidationResult.TooLong -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
@@ -189,12 +190,14 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
                         ),
                     )
                 }
+
                 is HabitNameInputFeature.ValidationResult.Used -> {
                     ErrorText(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                         text = stringResource(R.string.habitCreation_habitNameValidation_used),
                     )
                 }
+
                 else -> {
                     /* no-op */
                 }
@@ -266,6 +269,7 @@ fun HabitCreationScreen(onFinished: () -> Unit) {
                         text = stringResource(R.string.habitCreation_lastEventTimeValidation_biggestThenCurrentTime),
                     )
                 }
+
                 else -> {
                     /* no-op */
                 }

@@ -48,11 +48,13 @@ fun Text(
                 Text.Priority.Medium -> MaterialTheme.typography.titleMedium
                 Text.Priority.Low -> MaterialTheme.typography.titleSmall
             }
+
             Text.Type.Label -> when (priority) {
                 Text.Priority.High -> MaterialTheme.typography.labelLarge
                 Text.Priority.Medium -> MaterialTheme.typography.labelMedium
                 Text.Priority.Low -> MaterialTheme.typography.labelSmall
             }
+
             Text.Type.Description -> when (priority) {
                 Text.Priority.High -> MaterialTheme.typography.bodyLarge
                 Text.Priority.Medium -> MaterialTheme.typography.bodyMedium

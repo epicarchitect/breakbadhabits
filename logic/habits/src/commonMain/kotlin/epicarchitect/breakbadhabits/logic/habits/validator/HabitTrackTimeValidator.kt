@@ -1,8 +1,7 @@
 package epicarchitect.breakbadhabits.logic.habits.validator
 
-import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
-import epicarchitect.breakbadhabits.foundation.datetime.InstantRange
 import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
+import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
 
 class HabitTrackTimeValidator(
     private val dateTimeProvider: DateTimeProvider
@@ -15,6 +14,7 @@ class HabitTrackTimeValidator(
         dateTimeProvider.getCurrentDateTime().let {
             it < start || it < endInclusive
         } -> IncorrectHabitTrackTime.Reason.BiggestThenCurrentTime
+
         else -> null
     }
 }
