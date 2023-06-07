@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,18 @@ import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitNewName
 import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackEventCount
 import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackTime
 
+val LocalHabitCreationResourcesResources = compositionLocalOf<HabitCreationResources> {
+    error("LocalHabitCreationResources not provided")
+}
+
+interface HabitCreationResources {
+    val titleText: String
+    val habitNameDescription: String
+    val habitNameLabel: String
+    val habitIconDescription: String
+    val finishButtonText: String
+    fun habitNameValidationError(reason: IncorrectHabitNewName.Reason): String
+}
 //private enum class HabitTime(
 //    val titleRes: Int,
 //    val offset: Duration
@@ -70,6 +83,7 @@ fun HabitCreation(
     firstTrackTimeInputController: ValidatedInputController<ZonedDateTimeRange, ValidatedHabitTrackTime>,
     creationController: SingleRequestController
 ) {
+    val resources = LocalHabitCreationResourcesResources.current
     val logicModule = LocalAppModule.current.logic
 //    val context = LocalContext.current
     val currentTime by logicModule.dateTime.dateTimeProvider.currentDateTimeFlow()
@@ -96,7 +110,7 @@ fun HabitCreation(
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "stringResource(R.string.habitCreation_title)",
+            text = resources.titleText,
             type = Text.Type.Title,
             priority = Text.Priority.High
         )
@@ -105,7 +119,7 @@ fun HabitCreation(
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "stringResource(R.string.habitCreation_habitName_description)",
+            text = resources.habitNameDescription,
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -118,29 +132,17 @@ fun HabitCreation(
             validationAdapter = remember {
                 TextFieldValidationAdapter {
                     if (it !is IncorrectHabitNewName) null
-                    else when (val reason = it.reason) {
-                        is IncorrectHabitNewName.Reason.AlreadyUsed -> {
-                            " context.getString(R.string.habitCreation_habitNameValidation_used)"
-                        }
-
-                        is IncorrectHabitNewName.Reason.Empty -> {
-                            "  context.getString(R.string.habitCreation_habitNameValidation_empty)"
-                        }
-
-                        is IncorrectHabitNewName.Reason.TooLong -> {
-                            " context.getString(R.string.habitCreation_habitNameValidation_tooLong, reason.maxLength)"
-                        }
-                    }
+                    else resources.habitNameValidationError(it.reason)
                 }
             },
-            label = "Название"//stringResource(R.string.habitCreation_habitName)
+            label = resources.habitNameLabel
         )
 
         Spacer(Modifier.height(24.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "stringResource(R.string.habitCreation_habitIcon_description)",
+            text = resources.habitIconDescription,
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -226,7 +228,7 @@ fun HabitCreation(
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
             controller = creationController,
-            text = "stringResource(R.string.habitCreation_finish)",
+            text = resources.finishButtonText,
             type = Button.Type.Main,
 //            icon = {
 //                LocalResourceIcon(resourceId = R.drawable.ic_done)

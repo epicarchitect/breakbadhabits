@@ -8,7 +8,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.di.declaration.AppModule
 import epicarchitect.breakbadhabits.di.holder.LocalAppModule
 import epicarchitect.breakbadhabits.foundation.uikit.effect.LaunchedEffectWhenExecuted
 import epicarchitect.breakbadhabits.foundation.uikit.theme.AppColorsSchemes
@@ -17,9 +16,11 @@ import epicarchitect.breakbadhabits.ui.appSettingsResourcesOf
 import epicarchitect.breakbadhabits.ui.dashboard.Dashboard
 import epicarchitect.breakbadhabits.ui.dashboard.LocalDashboardResources
 import epicarchitect.breakbadhabits.ui.dashboardResourcesOf
+import epicarchitect.breakbadhabits.ui.habitCreationResourcesOf
 import epicarchitect.breakbadhabits.ui.habits.HabitCreation
 import epicarchitect.breakbadhabits.ui.habits.HabitDetails
 import epicarchitect.breakbadhabits.ui.habits.HabitEditing
+import epicarchitect.breakbadhabits.ui.habits.LocalHabitCreationResourcesResources
 import epicarchitect.breakbadhabits.ui.habits.tracks.HabitTrackCreation
 import epicarchitect.breakbadhabits.ui.habits.tracks.HabitTrackUpdating
 import epicarchitect.breakbadhabits.ui.habits.tracks.HabitTracks
@@ -93,21 +94,25 @@ class AppSettingsScreen : Screen {
 class HabitCreationScreen : Screen {
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
-            presentationModule.habits.createHabitCreationViewModel()
+        CompositionLocalProvider(
+            LocalHabitCreationResourcesResources provides habitCreationResourcesOf(Locale.current)
+        ) {
+            val navigator = LocalNavigator.currentOrThrow
+            val presentationModule = LocalAppModule.current.presentation
+            val viewModel = viewModel {
+                presentationModule.habits.createHabitCreationViewModel()
+            }
+
+            LaunchedEffectWhenExecuted(viewModel.creationController, navigator::pop)
+
+            HabitCreation(
+                habitIconSelectionController = viewModel.habitIconSelectionController,
+                habitNameController = viewModel.habitNameController,
+                dailyEventCountInputController = viewModel.dailyEventCountInputController,
+                firstTrackTimeInputController = viewModel.firstTrackTimeInputController,
+                creationController = viewModel.creationController
+            )
         }
-
-        LaunchedEffectWhenExecuted(viewModel.creationController, navigator::pop)
-
-        HabitCreation(
-            habitIconSelectionController = viewModel.habitIconSelectionController,
-            habitNameController = viewModel.habitNameController,
-            dailyEventCountInputController = viewModel.dailyEventCountInputController,
-            firstTrackTimeInputController = viewModel.firstTrackTimeInputController,
-            creationController = viewModel.creationController
-        )
     }
 }
 

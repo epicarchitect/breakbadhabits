@@ -17,15 +17,15 @@ val LocalAppSettingsResources = compositionLocalOf<AppSettingsResources> {
     error("LocalAppSettingsResources not provided")
 }
 
-data class AppSettingsResources(
-    val titleText: String,
-    val themeSelectionDescription: String,
-    val themeSelectionSystemTheme: String,
-    val themeSelectionDarkTheme: String,
-    val themeSelectionLightTheme: String,
-    val widgetsDescription: String,
-    val widgetsButton: String,
-)
+interface AppSettingsResources {
+    val titleText: String
+    val themeSelectionDescription: String
+    val themeSelectionSystemTheme: String
+    val themeSelectionDarkTheme: String
+    val themeSelectionLightTheme: String
+    val widgetsDescription: String
+    val widgetsButton: String
+}
 
 @Composable
 fun AppSettings(

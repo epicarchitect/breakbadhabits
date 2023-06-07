@@ -42,12 +42,12 @@ val LocalDashboardResources = compositionLocalOf<DashboardResources> {
     error("LocalDashboardResources not provided")
 }
 
-data class DashboardResources(
-    val titleText: String,
-    val newHabitButtonText: String,
-    val emptyHabitsText: String,
+interface DashboardResources {
+    val titleText: String
+    val newHabitButtonText: String
+    val emptyHabitsText: String
     val habitHasNoEvents: String
-)
+}
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
