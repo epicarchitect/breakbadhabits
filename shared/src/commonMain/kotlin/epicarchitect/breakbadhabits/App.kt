@@ -1,10 +1,16 @@
 package epicarchitect.breakbadhabits
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
-import epicarchitect.breakbadhabits.ui.app.AppScreen
+import epicarchitect.breakbadhabits.di.holder.LocalAppModule
+import epicarchitect.breakbadhabits.ui.app.RootScreen
 
 @Composable
 fun App() {
-    AppScreen(AppModuleHolder.current)
+    CompositionLocalProvider(
+        LocalAppModule provides AppModuleHolder.current
+    ) {
+        RootScreen()
+    }
 }

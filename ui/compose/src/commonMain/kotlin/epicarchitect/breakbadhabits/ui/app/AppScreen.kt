@@ -1,7 +1,9 @@
 package epicarchitect.breakbadhabits.ui.app
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.text.intl.Locale
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -11,7 +13,10 @@ import epicarchitect.breakbadhabits.di.holder.LocalAppModule
 import epicarchitect.breakbadhabits.foundation.uikit.effect.LaunchedEffectWhenExecuted
 import epicarchitect.breakbadhabits.foundation.uikit.theme.AppColorsSchemes
 import epicarchitect.breakbadhabits.foundation.uikit.theme.AppTheme
+import epicarchitect.breakbadhabits.ui.appSettingsResourcesOf
 import epicarchitect.breakbadhabits.ui.dashboard.Dashboard
+import epicarchitect.breakbadhabits.ui.dashboard.LocalDashboardResources
+import epicarchitect.breakbadhabits.ui.dashboardResourcesOf
 import epicarchitect.breakbadhabits.ui.habits.HabitCreation
 import epicarchitect.breakbadhabits.ui.habits.HabitDetails
 import epicarchitect.breakbadhabits.ui.habits.HabitEditing
@@ -21,57 +26,67 @@ import epicarchitect.breakbadhabits.ui.habits.tracks.HabitTracks
 import epicarchitect.breakbadhabits.ui.habits.widgets.HabitAppWidgetUpdating
 import epicarchitect.breakbadhabits.ui.habits.widgets.HabitAppWidgets
 import epicarchitect.breakbadhabits.ui.settings.AppSettings
+import epicarchitect.breakbadhabits.ui.settings.LocalAppSettingsResources
 import epicarchitect.breakbadhabits.ui.viewModel
 
 @Composable
-fun AppScreen(appModule: AppModule) {
+fun RootScreen() {
     AppTheme(
-        colorScheme = AppColorsSchemes.light
-    ) {
-        CompositionLocalProvider(
-            LocalAppModule provides appModule
-        ) {
-            Navigator(DashboardScreen())
+        colorScheme = if (isSystemInDarkTheme()) {
+            AppColorsSchemes.dark
+        } else {
+            AppColorsSchemes.light
         }
+    ) {
+        Navigator(DashboardScreen())
     }
 }
 
 class DashboardScreen : Screen {
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
-            presentationModule.dashboard.createDashboardViewModel()
-        }
-
-        Dashboard(
-            habitItemsController = viewModel.itemsLoadingController,
-            onHabitClick = { habitId ->
-                navigator += HabitDetailsScreen(habitId)
-            },
-            onAddTrackClick = { habitId ->
-                navigator += HabitTrackCreationScreen(habitId)
-            },
-            onHabitCreationClick = {
-                navigator += HabitCreationScreen()
-            },
-            onAppSettingsClick = {
-                navigator += AppSettingsScreen()
+        CompositionLocalProvider(
+            LocalDashboardResources provides dashboardResourcesOf(Locale.current)
+        ) {
+            val navigator = LocalNavigator.currentOrThrow
+            val presentationModule = LocalAppModule.current.presentation
+            val viewModel = viewModel {
+                presentationModule.dashboard.createDashboardViewModel()
             }
-        )
+
+            Dashboard(
+                habitItemsController = viewModel.itemsLoadingController,
+                onHabitClick = { habitId ->
+                    navigator += HabitDetailsScreen(habitId)
+                },
+                onAddTrackClick = { habitId ->
+                    navigator += HabitTrackCreationScreen(habitId)
+                },
+                onHabitCreationClick = {
+                    navigator += HabitCreationScreen()
+                },
+                onAppSettingsClick = {
+                    navigator += AppSettingsScreen()
+                }
+            )
+        }
     }
 }
 
 class AppSettingsScreen : Screen {
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        AppSettings(
-            openWidgetSettings = {
-                navigator += HabitAppWidgetsScreen()
-            }
-        )
+        CompositionLocalProvider(
+            LocalAppSettingsResources provides appSettingsResourcesOf(Locale.current)
+        ) {
+            val navigator = LocalNavigator.currentOrThrow
+
+            AppSettings(
+                openWidgetSettings = {
+                    navigator += HabitAppWidgetsScreen()
+                }
+            )
+        }
     }
 }
 

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-
 package epicarchitect.breakbadhabits.ui.dashboard
 
 import androidx.compose.animation.AnimatedVisibility
@@ -23,11 +21,13 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import epicarchitect.breakbadhabits.di.declaration.AppModule
 import epicarchitect.breakbadhabits.di.holder.LocalAppModule
 import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.datetime.duration
@@ -38,6 +38,17 @@ import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
 import epicarchitect.breakbadhabits.presentation.dashboard.DashboardHabitItem
 
+val LocalDashboardResources = compositionLocalOf<DashboardResources> {
+    error("LocalDashboardResources not provided")
+}
+
+data class DashboardResources(
+    val titleText: String,
+    val newHabitButtonText: String,
+    val emptyHabitsText: String,
+    val habitHasNoEvents: String
+)
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Dashboard(
@@ -47,6 +58,7 @@ fun Dashboard(
     onHabitCreationClick: () -> Unit,
     onAppSettingsClick: () -> Unit
 ) {
+    val resources = LocalDashboardResources.current
     val itemsState by habitItemsController.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -60,7 +72,7 @@ fun Dashboard(
             ) {
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = "stringResource(R.string.app_name)",
+                    text = resources.titleText,
                     type = Text.Type.Title,
                     priority = Text.Priority.High
                 )
@@ -95,7 +107,7 @@ fun Dashboard(
         ) {
             Button(
                 onClick = onHabitCreationClick,
-                text = "stringResource(R.string.habits_newHabit)",
+                text = resources.newHabitButtonText,
                 type = Button.Type.Main,
 //                icon = {
 //                    LocalResourceIcon(resourceId = R.drawable.ic_add)
@@ -135,6 +147,7 @@ private fun LoadedHabits(
 
 @Composable
 private fun NotExistsHabits() {
+    val resources = LocalDashboardResources.current
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -142,7 +155,7 @@ private fun NotExistsHabits() {
         Text(
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
-            text = "stringResource(R.string.habits_empty)"
+            text = resources.emptyHabitsText
         )
     }
 }
@@ -154,6 +167,7 @@ private fun LazyItemScope.HabitItem(
     onClick: () -> Unit,
     onResetClick: () -> Unit
 ) {
+    val resources = LocalDashboardResources.current
     val uiModule = LocalAppModule.current.ui
     val durationFormatter = uiModule.format.durationFormatter
 
@@ -196,7 +210,7 @@ private fun LazyItemScope.HabitItem(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.abstinence?.let {
                             durationFormatter.format(it.dateTimeRange.duration)
-                        } ?: "stringResource(R.string.habits_noEvents)",
+                        } ?: resources.habitHasNoEvents,
                         type = Text.Type.Description,
                         priority = Text.Priority.Medium
                     )
