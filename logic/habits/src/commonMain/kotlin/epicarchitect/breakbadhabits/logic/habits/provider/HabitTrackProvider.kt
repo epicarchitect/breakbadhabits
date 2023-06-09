@@ -9,8 +9,7 @@ import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
 import epicarchitect.breakbadhabits.foundation.datetime.countDays
 import epicarchitect.breakbadhabits.foundation.datetime.monthOfYear
 import epicarchitect.breakbadhabits.foundation.datetime.mountsBetween
-import epicarchitect.breakbadhabits.foundation.datetime.toDateList
-import epicarchitect.breakbadhabits.foundation.datetime.toDateRange
+import epicarchitect.breakbadhabits.foundation.datetime.split
 import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
 import epicarchitect.breakbadhabits.logic.habits.model.DailyHabitEventCount
 import epicarchitect.breakbadhabits.logic.habits.model.HabitTrack
@@ -20,6 +19,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.TimeZone
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.days
 import epicarchitect.breakbadhabits.sqldelight.main.HabitTrack as DatabaseHabitTrack
 
 class HabitTrackProvider(
@@ -101,9 +101,9 @@ class HabitTrackProvider(
     ) = provideTracksToDailyCount(habitId, range).map { dailyCountsToTrack ->
         DailyHabitEventCount(
             tracks = dailyCountsToTrack.keys.toList(),
-            dateToCount = range.toDateList().associateWith { date ->
+            rangeToCount = range.split(step = 1.days).associateWith { range ->
                 dailyCountsToTrack.filter {
-                    date in it.key.dateTimeRange.toDateRange()
+                    range in it.key.dateTimeRange
                 }.entries.fold(0f) { total, entry ->
                     total + entry.value
                 }.roundToInt()
@@ -128,7 +128,7 @@ class HabitTrackProvider(
         HabitTrack(
             id = id,
             habitId = habitId,
-            dateTimeRange = ZonedDateTimeRange(
+            dateTimeRange = ZonedDateTimeRange.of(
                 start = startTime,
                 endInclusive = endTime,
                 timeZone = timeZone

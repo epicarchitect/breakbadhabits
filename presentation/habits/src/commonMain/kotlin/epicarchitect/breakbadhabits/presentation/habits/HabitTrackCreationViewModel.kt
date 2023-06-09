@@ -4,7 +4,7 @@ import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.controller.validateAndRequire
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRangeOfOne
+import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
 import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
 import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitTrackCreator
@@ -37,7 +37,7 @@ class HabitTrackCreationViewModel(
 
     val timeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = ZonedDateTimeRangeOfOne(dateTimeProvider.getCurrentDateTime()),
+        initialInput = ZonedDateTimeRange.of(dateTimeProvider.getCurrentDateTime()),
         validation = trackRangeValidator::validate
     )
 

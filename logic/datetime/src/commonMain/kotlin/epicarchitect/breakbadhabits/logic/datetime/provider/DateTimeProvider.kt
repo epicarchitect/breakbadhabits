@@ -1,7 +1,6 @@
 package epicarchitect.breakbadhabits.logic.datetime.provider
 
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDate
 import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTime
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -17,25 +16,18 @@ class DateTimeProvider(
     private val coroutineDispatchers: CoroutineDispatchers
 ) {
 
-    fun currentInstantFlow() = updatingFlow(::getCurrentInstant)
-
     fun currentDateTimeFlow() = updatingFlow(::getCurrentDateTime)
 
     fun currentTimeZoneFlow() = updatingFlow(::getCurrentTimeZone)
-
-    fun getCurrentInstant() = Clock.System.now()
-
-    fun getCurrentTimeZone() = TimeZone.currentSystemDefault()
 
     fun getCurrentDateTime() = ZonedDateTime(
         instant = getCurrentInstant(),
         timeZone = getCurrentTimeZone()
     )
 
-    fun getCurrentDate() = ZonedDate(
-        instant = getCurrentInstant(),
-        timeZone = getCurrentTimeZone()
-    )
+    fun getCurrentInstant() = Clock.System.now()
+
+    fun getCurrentTimeZone() = TimeZone.currentSystemDefault()
 
     private fun <T> updatingFlow(value: () -> T) = flow {
         while (currentCoroutineContext().isActive) {

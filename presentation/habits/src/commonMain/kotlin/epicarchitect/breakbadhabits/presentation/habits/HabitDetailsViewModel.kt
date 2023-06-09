@@ -50,7 +50,7 @@ class HabitDetailsViewModel(
                 val end = nextMonth.toInstantAtEnd(timeZone)
                 habitTrackProvider.provideDailyEventCountByRange(
                     habitId = habitId,
-                    range = ZonedDateTimeRange(start, end, timeZone)
+                    range = ZonedDateTimeRange.of(start, end, timeZone)
                 )
             }
         }

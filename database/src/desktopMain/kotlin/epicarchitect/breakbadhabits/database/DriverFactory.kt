@@ -6,7 +6,7 @@ import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 
 actual class DriverFactory {
-    actual fun createDriver(
+    actual fun create(
         schema: SqlSchema<QueryResult.Value<Unit>>,
         databaseName: String
     ): SqlDriver = JdbcSqliteDriver(

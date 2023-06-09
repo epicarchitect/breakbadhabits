@@ -6,7 +6,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
 
-class HolderViewModel<T : ViewModel>(val viewModel: T) : ScreenModel {
+class HolderScreenModel<T : ViewModel>(val viewModel: T) : ScreenModel {
     override fun onDispose() {
         super.onDispose()
         viewModel.clear()
@@ -14,9 +14,9 @@ class HolderViewModel<T : ViewModel>(val viewModel: T) : ScreenModel {
 }
 
 @Composable
-fun <T : ViewModel> Screen.viewModel(
+fun <T : ViewModel> Screen.hold(
     tag: String? = null,
     factory: () -> T
 ): T = rememberScreenModel(tag) {
-    HolderViewModel(factory())
+    HolderScreenModel(factory())
 }.viewModel

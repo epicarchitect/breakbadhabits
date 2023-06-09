@@ -16,7 +16,8 @@ class AndroidDurationFormatter(
     override fun format(
         duration: Duration,
         accuracy: DurationFormatter.Accuracy
-    ) = buildString {
+    ): String {
+        var result = ""
         val seconds = duration.onlySeconds
         val minutes = duration.onlyMinutes
         val hours = duration.onlyHours
@@ -28,26 +29,28 @@ class AndroidDurationFormatter(
         val appendSeconds = !appendDays && !appendHours && !appendMinutes || accuracy.order > 3
 
         if (appendDays) {
-            append(days)
-            append(resources.getString(R.string.d))
+            result += days
+            result += resources.getString(R.string.d)
         }
 
         if (appendHours) {
-            if (appendDays) append(" ")
-            append(hours)
-            append(resources.getString(R.string.h))
+            if (appendDays) result += " "
+            result += hours
+            result += resources.getString(R.string.h)
         }
 
         if (appendMinutes) {
-            if (appendHours || appendDays) append(" ")
-            append(minutes)
-            append(resources.getString(R.string.m))
+            if (appendHours || appendDays) result += " "
+            result += minutes
+            result += resources.getString(R.string.m)
         }
 
         if (appendSeconds) {
-            if (appendMinutes || appendHours || appendDays) append(" ")
-            append(seconds)
-            append(resources.getString(R.string.s))
+            if (appendMinutes || appendHours || appendDays) result += " "
+            result += seconds
+            result += resources.getString(R.string.s)
         }
+
+        return result
     }
 }

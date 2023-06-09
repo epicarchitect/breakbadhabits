@@ -8,7 +8,7 @@ import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
 object MainDatabaseFactory {
     fun create(driverFactory: DriverFactory) = MainDatabase(
-        driver = driverFactory.createDriver(
+        driver = driverFactory.create(
             schema = MainDatabase.Schema,
             databaseName = "breakbadhabits-main.db"
         ),

@@ -137,12 +137,12 @@ fun MonthOfYear.toInstantAtEnd(timeZone: TimeZone) = toInstant(
 )
 
 
-fun MonthOfYear.toZonedDateTimeAtStart(timeZone: TimeZone) = ZonedDateTime(
-    toInstantAtStart(timeZone),
-    timeZone
+fun MonthOfYear.toZonedInstantAtStart(timeZone: TimeZone) = ZonedDateTime(
+    instant = toInstantAtStart(timeZone),
+    timeZone = timeZone
 )
 
-fun MonthOfYear.toZonedDateTimeAtEnd(timeZone: TimeZone) = ZonedDateTime(
-    toInstantAtStart(timeZone),
-    timeZone
+fun MonthOfYear.toZonedInstantAtEnd(timeZone: TimeZone) = ZonedDateTime(
+    instant = toInstantAtEnd(timeZone),
+    timeZone = timeZone
 )

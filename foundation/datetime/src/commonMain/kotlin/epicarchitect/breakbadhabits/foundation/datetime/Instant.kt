@@ -1,12 +1,10 @@
 package epicarchitect.breakbadhabits.foundation.datetime
 
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
-import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToLong
@@ -16,17 +14,22 @@ import kotlin.time.toDuration
 
 val ZonedDateTimeRange.duration get() = endInclusive.instant - start.instant
 
-operator fun ZonedDateTimeRange.contains(date: ZonedDate) =
-    date.date in start.dateTime.date..endInclusive.dateTime.date
-
-fun ZonedDateTimeRange.toDateList(): List<ZonedDate> {
-    var current = ZonedDate(start.dateTime.date, timeZone)
-
-    return List(countDays()) {
-        current.also {
-            current = current.date.plus(DateTimeUnit.DAY).let {
-                ZonedDate(it, timeZone)
+fun ZonedDateTimeRange.split(step: Duration): List<ZonedDateTimeRange> {
+    var current = start
+    return buildList {
+        while (current < endInclusive) {
+            val newEnd = (current.instant + step).let {
+                if (it < endInclusive.instant) it
+                else endInclusive.instant
             }
+            add(
+                ZonedDateTimeRange(
+                    current,
+                    current.copy(
+                        instant = newEnd
+                    ).also { current = it }
+                )
+            )
         }
     }
 }
@@ -79,8 +82,8 @@ fun isLeapYear(year: Long): Boolean {
 }
 
 operator fun ZonedDateTime.minus(duration: Duration) = ZonedDateTime(
-    instant - duration,
-    timeZone
+    instant = instant - duration,
+    timeZone = timeZone
 )
 
 operator fun ZonedDateTime.minus(other: ZonedDateTime) = instant - other.instant

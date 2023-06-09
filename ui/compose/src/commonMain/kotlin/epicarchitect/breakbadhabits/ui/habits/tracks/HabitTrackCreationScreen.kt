@@ -24,7 +24,6 @@ import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRangeOfOne
 import epicarchitect.breakbadhabits.foundation.datetime.minus
 import epicarchitect.breakbadhabits.foundation.datetime.withZeroSeconds
 import epicarchitect.breakbadhabits.foundation.math.ranges.isStartSameAsEnd
@@ -167,7 +166,7 @@ fun HabitTrackCreation(
         LaunchedEffect(selectedTimeSelectionIndex) {
             if (selectedTimeSelectionIndex == 0) {
                 timeInputController.changeInput(
-                    ZonedDateTimeRangeOfOne(
+                    ZonedDateTimeRange.of(
                         currentTime.withZeroSeconds()
                     )
                 )
@@ -175,7 +174,7 @@ fun HabitTrackCreation(
 
             if (selectedTimeSelectionIndex == 1) {
                 timeInputController.changeInput(
-                    ZonedDateTimeRangeOfOne(
+                    ZonedDateTimeRange.of(
                         currentTime.minus(1.days).withZeroSeconds()
                     )
                 )

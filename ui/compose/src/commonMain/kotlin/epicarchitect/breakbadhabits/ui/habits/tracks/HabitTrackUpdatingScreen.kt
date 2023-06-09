@@ -119,7 +119,7 @@ fun HabitTrackUpdating(
                 rangeSelectionShow = false
                 timeInputController.changeInput(
                     it.withZeroSeconds(timeZone).let {
-                        ZonedDateTimeRange(it.start, it.endInclusive, timeZone)
+                        ZonedDateTimeRange.of(it.start, it.endInclusive, timeZone)
                     }
                 )
             },

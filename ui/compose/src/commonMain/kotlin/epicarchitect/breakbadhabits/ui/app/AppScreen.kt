@@ -28,7 +28,7 @@ import epicarchitect.breakbadhabits.ui.habits.widgets.HabitAppWidgetUpdating
 import epicarchitect.breakbadhabits.ui.habits.widgets.HabitAppWidgets
 import epicarchitect.breakbadhabits.ui.settings.AppSettings
 import epicarchitect.breakbadhabits.ui.settings.LocalAppSettingsResources
-import epicarchitect.breakbadhabits.ui.viewModel
+import epicarchitect.breakbadhabits.ui.hold
 
 @Composable
 fun RootScreen() {
@@ -51,7 +51,7 @@ class DashboardScreen : Screen {
         ) {
             val navigator = LocalNavigator.currentOrThrow
             val presentationModule = LocalAppModule.current.presentation
-            val viewModel = viewModel {
+            val viewModel = hold {
                 presentationModule.dashboard.createDashboardViewModel()
             }
 
@@ -99,7 +99,7 @@ class HabitCreationScreen : Screen {
         ) {
             val navigator = LocalNavigator.currentOrThrow
             val presentationModule = LocalAppModule.current.presentation
-            val viewModel = viewModel {
+            val viewModel = hold {
                 presentationModule.habits.createHabitCreationViewModel()
             }
 
@@ -121,7 +121,7 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
+        val viewModel = hold {
             presentationModule.habits.createHabitDetailsViewModel(habitId)
         }
 
@@ -149,7 +149,7 @@ class HabitUpdatingScreen(private val habitId: Int) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
+        val viewModel = hold {
             presentationModule.habits.createHabitUpdatingViewModel(habitId)
         }
 
@@ -172,7 +172,7 @@ class HabitTrackCreationScreen(private val habitId: Int) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
+        val viewModel = hold {
             presentationModule.habits.createHabitTrackCreationViewModel(habitId)
         }
 
@@ -193,7 +193,7 @@ class HabitTrackUpdatingScreen(private val habitTrackId: Int) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
+        val viewModel = hold {
             presentationModule.habits.createHabitTrackUpdatingViewModel(habitTrackId)
         }
 
@@ -216,7 +216,7 @@ class HabitTracksScreen(private val habitId: Int) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
+        val viewModel = hold {
             presentationModule.habits.createHabitTracksViewModel(habitId)
         }
 
@@ -238,7 +238,7 @@ class HabitAppWidgetsScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
+        val viewModel = hold {
             presentationModule.habits.createHabitAppWidgetsViewModel()
         }
 
@@ -256,7 +256,7 @@ class HabitAppWidgetUpdatingScreen(private val habitWidgetId: Int) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
-        val viewModel = viewModel {
+        val viewModel = hold {
             presentationModule.habits.createHabitWidgetUpdatingViewModel(habitWidgetId)
         }
 
