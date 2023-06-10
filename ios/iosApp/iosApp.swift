@@ -1,30 +1,23 @@
 import UIKit
 import SwiftUI
-import shared
+import MultiplatformApp
 
 @main
 struct iosApp: App {
-    
     init() {
         DiKt.setupAppModuleHolder()
     }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppView().ignoresSafeArea(.keyboard)
         }
     }
 }
 
-struct ContentView: View {
-    var body: some View {
-        ComposeView().ignoresSafeArea(.keyboard)
-    }
-}
-
-struct ComposeView: UIViewControllerRepresentable {
+struct AppView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
-        Main_iosKt.MainViewController()
+        AppKt.AppViewController()
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}

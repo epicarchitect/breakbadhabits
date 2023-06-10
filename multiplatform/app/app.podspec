@@ -6,14 +6,14 @@ Pod::Spec.new do |spec|
     spec.authors                  = ''
     spec.license                  = ''
     spec.summary                  = 'app'
-    spec.vendored_frameworks      = 'build/cocoapods/framework/shared.framework'
+    spec.vendored_frameworks      = 'build/cocoapods/framework/MultiplatformApp.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '14.1'
                 
                 
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':multiplatform:app',
-        'PRODUCT_MODULE_NAME' => 'shared',
+        'PRODUCT_MODULE_NAME' => 'MultiplatformApp',
     }
                 
     spec.script_phases = [

@@ -8,14 +8,14 @@
   "authors": "",
   "license": "",
   "summary": "app",
-  "vendored_frameworks": "build/cocoapods/framework/shared.framework",
+  "vendored_frameworks": "build/cocoapods/framework/MultiplatformApp.framework",
   "libraries": "c++",
   "platforms": {
     "ios": "14.1"
   },
   "pod_target_xcconfig": {
     "KOTLIN_PROJECT_PATH": ":multiplatform:app",
-    "PRODUCT_MODULE_NAME": "shared"
+    "PRODUCT_MODULE_NAME": "MultiplatformApp"
   },
   "script_phases": [
     {

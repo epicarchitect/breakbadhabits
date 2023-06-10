@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../multiplatform/app"
 
 SPEC CHECKSUMS:
-  app: 085d069cc4d4c29a69436c467fb1c940bd8db47f
+  app: 4b66cd6c9fa63a9a6ae38dd4ffd7ba339a089298
 
 PODFILE CHECKSUM: 736d40e9fe86e107a92fef4111fed3e705b44930
 

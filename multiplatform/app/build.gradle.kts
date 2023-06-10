@@ -12,7 +12,7 @@ kotlin {
         ios.deploymentTarget = BuildConstants.IOS_DEPLOYMENT_TARGET
         podfile = project.file("../../ios/Podfile")
         framework {
-            baseName = "shared"
+            baseName = "MultiplatformApp"
             isStatic = true
         }
     }
