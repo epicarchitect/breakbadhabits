@@ -6,10 +6,10 @@ plugins {
 
 kotlin {
     cocoapods {
-        version = "1.0.0"
-        homepage = "epicarchitect"
-        summary = "breakbadhabits"
-        ios.deploymentTarget = "14.1"
+        version = BuildConstants.APP_VERSION_NAME
+        homepage =  BuildConstants.PROJECT_HOMEPAGE
+        summary = project.name
+        ios.deploymentTarget = BuildConstants.IOS_DEPLOYMENT_TARGET
         podfile = project.file("../ios-app/Podfile")
         framework {
             baseName = "shared"
@@ -19,8 +19,8 @@ kotlin {
 }
 
 dependencies {
-    commonMainApi(projects.ui.compose)
+    commonMainApi(projects.ui.screens)
     commonMainApi(projects.database)
     commonMainApi(projects.di.holder)
-    commonMainApi(projects.di.declarationImpl)
+    commonMainApi(projects.di.declarationMain)
 }

@@ -1,13 +1,13 @@
 {
   "name": "shared",
-  "version": "1.0.0",
-  "homepage": "epicarchitect",
+  "version": "4.0.0",
+  "homepage": "https://github.com/epicarchitect/breakbadhabits",
   "source": {
     "http": ""
   },
   "authors": "",
   "license": "",
-  "summary": "breakbadhabits",
+  "summary": "shared",
   "vendored_frameworks": "build/cocoapods/framework/shared.framework",
   "libraries": "c++",
   "platforms": {

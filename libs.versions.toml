@@ -1,6 +1,7 @@
 [versions]
 agp = "8.0.2"
 kotlin = "1.8.20"
+kotlin-coroutines-core = "1.7.1"
 compose = "1.4.0"
 appcash-sqldelight = "2.0.0-rc01"
 kotlin-datetime = "0.4.0"
@@ -8,22 +9,30 @@ kotlin-serialization-json = "1.5.1"
 android-activityCompose = "1.7.1"
 epicarchitect-calendar-compose = "1.0.4"
 android-coreKtx = "1.10.1"
-voyager = "1.0.0-rc06"
+adrielcafe-voyager = "1.0.0-rc06"
+russhwolf-settings = "1.0.0"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
+kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }
+kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines-core" }
+
 android-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "android-activityCompose" }
 android-coreKtx = { module = "androidx.core:core-ktx", version.ref = "android-coreKtx" }
-kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }
+
 appcash-sqldelight-androidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "appcash-sqldelight" }
-appcash-sqldelight-sqliteDriver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "appcash-sqldelight" }
 appcash-sqldelight-nativeDriver = { module = "app.cash.sqldelight:native-driver", version.ref = "appcash-sqldelight" }
 appcash-sqldelight-coroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "appcash-sqldelight" }
 appcash-sqldelight-primitiveAdapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "appcash-sqldelight" }
+
+russhwolf-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "russhwolf-settings" }
+russhwolf-settingsNoArg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "russhwolf-settings" }
+
 epicarchitect-calendar-compose-datePicker = { module = "io.github.epicarchitect:calendar-compose-datepicker", version.ref = "epicarchitect-calendar-compose" }
-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+adrielcafe-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "adrielcafe-voyager" }
 
 [plugins]
 appcash-sqldelight = { id = "app.cash.sqldelight", version.ref = "appcash-sqldelight" }

@@ -14,9 +14,6 @@ android {
 
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
-        versionCode = 70
-        versionName = "4.0.0"
-        base.archivesName.set("breakbadhabits-$versionName")
         resourceConfigurations.addAll(listOf("en", "ru"))
     }
 

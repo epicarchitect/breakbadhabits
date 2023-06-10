@@ -29,15 +29,14 @@ dependencyResolutionManagement {
 include(
     ":android-app",
     ":shared",
-    ":desktop-app",
     ":database",
     ":habits-widget-android",
 
-    ":ui:compose",
+    ":ui:screens",
     ":ui:format",
 
     ":di:holder",
-    ":di:declaration-impl",
+    ":di:declaration-main",
     ":di:declaration",
 
     ":logic:habits",
@@ -54,4 +53,5 @@ include(
     ":foundation:math",
     ":foundation:icons",
     ":foundation:identification",
+    ":foundation:settings",
 )

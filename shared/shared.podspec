@@ -1,11 +1,11 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'shared'
-    spec.version                  = '1.0.0'
-    spec.homepage                 = 'epicarchitect'
+    spec.version                  = '4.0.0'
+    spec.homepage                 = 'https://github.com/epicarchitect/breakbadhabits'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''
-    spec.summary                  = 'breakbadhabits'
+    spec.summary                  = 'shared'
     spec.vendored_frameworks      = 'build/cocoapods/framework/shared.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '14.1'
