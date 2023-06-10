@@ -10,7 +10,7 @@ kotlin {
         homepage = BuildConstants.PROJECT_HOMEPAGE
         summary = project.name
         ios.deploymentTarget = BuildConstants.IOS_DEPLOYMENT_TARGET
-        podfile = project.file("../../ios/Podfile")
+        podfile = rootProject.file("ios/Podfile")
         framework {
             baseName = "MultiplatformApp"
             isStatic = true
