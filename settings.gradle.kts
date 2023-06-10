@@ -27,31 +27,32 @@ dependencyResolutionManagement {
 }
 
 include(
-    ":android-app",
-    ":shared",
-    ":database",
-    ":habits-widget-android",
+    ":android:app",
+    ":android:habits-widget",
 
-    ":ui:screens",
-    ":ui:format",
+    ":multiplatform:app",
+    ":multiplatform:database",
 
-    ":di:holder",
-    ":di:declaration-main",
-    ":di:declaration",
+    ":multiplatform:ui:screens",
+    ":multiplatform:ui:format",
 
-    ":logic:habits",
-    ":logic:datetime",
+    ":multiplatform:di:holder",
+    ":multiplatform:di:declaration-main",
+    ":multiplatform:di:declaration",
 
-    ":presentation:dashboard",
-    ":presentation:habits",
+    ":multiplatform:logic:habits",
+    ":multiplatform:logic:datetime",
 
-    ":foundation:controllers",
-    ":foundation:coroutines",
-    ":foundation:datetime",
-    ":foundation:uikit",
-    ":foundation:viewmodel",
-    ":foundation:math",
-    ":foundation:icons",
-    ":foundation:identification",
-    ":foundation:settings",
+    ":multiplatform:presentation:dashboard",
+    ":multiplatform:presentation:habits",
+
+    ":multiplatform:foundation:controllers",
+    ":multiplatform:foundation:coroutines",
+    ":multiplatform:foundation:datetime",
+    ":multiplatform:foundation:uikit",
+    ":multiplatform:foundation:viewmodel",
+    ":multiplatform:foundation:math",
+    ":multiplatform:foundation:icons",
+    ":multiplatform:foundation:identification",
+    ":multiplatform:foundation:settings",
 )

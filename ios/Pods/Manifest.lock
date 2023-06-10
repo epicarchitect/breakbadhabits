@@ -1,0 +1,16 @@
+PODS:
+  - app (4.0.0)
+
+DEPENDENCIES:
+  - app (from `../multiplatform/app`)
+
+EXTERNAL SOURCES:
+  app:
+    :path: "../multiplatform/app"
+
+SPEC CHECKSUMS:
+  app: 085d069cc4d4c29a69436c467fb1c940bd8db47f
+
+PODFILE CHECKSUM: 736d40e9fe86e107a92fef4111fed3e705b44930
+
+COCOAPODS: 1.12.1
