@@ -46,7 +46,7 @@ data class MonthOfYear(
 }
 
 
-fun MonthOfYear.previous():MonthOfYear = addMonths(-1)
+fun MonthOfYear.previous(): MonthOfYear = addMonths(-1)
 
 fun MonthOfYear.next(): MonthOfYear = addMonths(1)
 

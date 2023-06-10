@@ -7,7 +7,7 @@ plugins {
 kotlin {
     cocoapods {
         version = BuildConstants.APP_VERSION_NAME
-        homepage =  BuildConstants.PROJECT_HOMEPAGE
+        homepage = BuildConstants.PROJECT_HOMEPAGE
         summary = project.name
         ios.deploymentTarget = BuildConstants.IOS_DEPLOYMENT_TARGET
         podfile = project.file("../ios-app/Podfile")

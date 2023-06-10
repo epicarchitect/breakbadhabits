@@ -6,12 +6,12 @@ import epicarchitect.breakbadhabits.di.declaration.main.AppModule
 import epicarchitect.breakbadhabits.di.declaration.main.database.MainDatabaseModuleExternals
 import epicarchitect.breakbadhabits.di.declaration.main.foundation.FoundationModule
 import epicarchitect.breakbadhabits.di.declaration.main.logic.HabitsLogicModuleExternals
-import epicarchitect.breakbadhabits.di.declaration.main.logic.LogicModuleExternals
 import epicarchitect.breakbadhabits.di.declaration.main.logic.LogicModule
+import epicarchitect.breakbadhabits.di.declaration.main.logic.LogicModuleExternals
 import epicarchitect.breakbadhabits.di.declaration.main.presentation.PresentationModule
 import epicarchitect.breakbadhabits.di.declaration.main.ui.FormatModuleExternals
-import epicarchitect.breakbadhabits.di.declaration.main.ui.UiModuleExternals
 import epicarchitect.breakbadhabits.di.declaration.main.ui.UiModule
+import epicarchitect.breakbadhabits.di.declaration.main.ui.UiModuleExternals
 import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 import epicarchitect.breakbadhabits.ui.format.DateTimeFormatter
 import epicarchitect.breakbadhabits.ui.format.DurationFormatter
