@@ -34,8 +34,8 @@ import epicarchitect.breakbadhabits.logic.habits.model.HabitAbstinence
 import epicarchitect.breakbadhabits.logic.habits.model.HabitStatistics
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import epicarchitect.breakbadhabits.ui.format.DurationFormatter
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.datetime.TimeZone
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HabitDetails(

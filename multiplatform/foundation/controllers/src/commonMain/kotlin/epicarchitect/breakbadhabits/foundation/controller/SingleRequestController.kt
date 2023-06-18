@@ -34,6 +34,7 @@ class SingleRequestController(
         )
     )
 
+    @Suppress("TooGenericExceptionCaught", "SwallowedException")
     fun request() {
         coroutineScope.launch {
             try {

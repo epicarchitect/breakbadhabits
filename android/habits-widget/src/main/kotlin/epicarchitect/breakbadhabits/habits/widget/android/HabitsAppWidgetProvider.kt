@@ -15,7 +15,6 @@ import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
-
 class HabitsAppWidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, widgetSystemIds: IntArray) {
@@ -47,8 +46,9 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         manager: AppWidgetManager,
         widgetSystemId: Int
     ) = runBlocking {
-        val isDarkModeEnabled =
-            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        val isDarkModeEnabled = context.resources.configuration.let {
+            it.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        }
 
         val widget =
             AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId)
@@ -71,13 +71,13 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
             return@runBlocking
         }
 
-
         val views = RemoteViews(
             context.packageName,
-            if (isDarkModeEnabled)
+            if (isDarkModeEnabled) {
                 R.layout.habits_app_widget_dark
-            else
+            } else {
                 R.layout.habits_app_widget_light
+            }
         ).apply {
             setTextViewText(R.id.title_textView, widget.title)
             setViewVisibility(

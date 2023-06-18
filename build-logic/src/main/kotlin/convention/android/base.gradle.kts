@@ -6,7 +6,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("convention.ktlint.base")
+//    id("convention.ktlint.base")
+    id("convention.detekt.base")
 }
 
 configure<BaseExtension> {

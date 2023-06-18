@@ -1,11 +1,11 @@
 package epicarchitect.breakbadhabits.foundation.uikit.text
 
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text as MaterialText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.material3.Text as MaterialText
 
 object Text {
     enum class Type {

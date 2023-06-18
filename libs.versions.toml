@@ -11,11 +11,13 @@ epicarchitect-calendar-compose = "1.0.4"
 android-coreKtx = "1.10.1"
 adrielcafe-voyager = "1.0.0-rc06"
 russhwolf-settings = "1.0.0"
+detekt = "1.23.0"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-jlleitschuh-ktlintGradlePlugin = "org.jlleitschuh.gradle:ktlint-gradle:11.4.0"
+arturbosch-detektGradlePlugin = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "detekt" }
+arturbosch-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
 kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }

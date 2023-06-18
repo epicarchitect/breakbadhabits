@@ -2,8 +2,6 @@ package epicarchitect.breakbadhabits.foundation.datetime
 
 import epicarchitect.breakbadhabits.foundation.math.ranges.ascended
 import epicarchitect.breakbadhabits.foundation.math.ranges.isAscended
-import kotlin.math.abs
-import kotlin.math.floor
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -13,6 +11,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.abs
+import kotlin.math.floor
 
 data class MonthOfYear(
     val year: Int,
@@ -95,21 +95,21 @@ val LocalDate.monthOfYear get() = MonthOfYear(year, month)
 
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
 
-fun InstantRange.monthOfYearRange(timeZone: TimeZone): MonthOfYearRange =
-    start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
+// fun InstantRange.monthOfYearRange(timeZone: TimeZone): MonthOfYearRange =
+//    start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
 
 fun ZonedDateTimeRange.monthOfYearRange(): MonthOfYearRange =
     start.dateTime.date.monthOfYear..endInclusive.dateTime.date.monthOfYear
 
-fun MonthOfYear.atDay(dayOfMonth: Int) = LocalDate(year, month, dayOfMonth)
+// fun MonthOfYear.atDay(dayOfMonth: Int) = LocalDate(year, month, dayOfMonth)
 
-fun MonthOfYear.lastDayOfWeek() = atDay(length()).dayOfWeek
+// fun MonthOfYear.lastDayOfWeek() = atDay(length()).dayOfWeek
 
-fun MonthOfYear.toInstantRange(timeZone: TimeZone): InstantRange {
-    val start = LocalDateTime(year, month, 1, 0, 0, 0)
-    val end = LocalDateTime(year, month, length(), 23, 59, 59)
-    return start.toInstant(timeZone)..end.toInstant(timeZone)
-}
+// fun MonthOfYear.toInstantRange(timeZone: TimeZone): InstantRange {
+//    val start = LocalDateTime(year, month, 1, 0, 0, 0)
+//    val end = LocalDateTime(year, month, length(), 23, 59, 59)
+//    return start.toInstant(timeZone)..end.toInstant(timeZone)
+// }
 
 fun MonthOfYear.toInstant(
     timeZone: TimeZone,

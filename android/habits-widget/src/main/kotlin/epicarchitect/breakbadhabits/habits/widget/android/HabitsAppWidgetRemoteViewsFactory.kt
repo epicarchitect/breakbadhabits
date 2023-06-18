@@ -13,7 +13,6 @@ import epicarchitect.breakbadhabits.ui.format.android.AndroidDurationFormatter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
-
 class HabitsAppWidgetRemoteViewsFactory(
     private val context: Context,
     private val widgetSystemId: Int
@@ -28,21 +27,24 @@ class HabitsAppWidgetRemoteViewsFactory(
             AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId)
                 .first()
 
-        if (config == null) emptyList()
-        else AppModuleHolder.logic.habits.habitProvider.habitsFlow().first().filter {
-            config.habitIds.contains(it.id)
-        }.map {
-            Item(
-                habit = it,
-                abstinence = AppModuleHolder.logic.habits.habitAbstinenceProvider
-                    .currentAbstinenceFlow(it.id).first()
-            )
+        if (config == null) {
+            emptyList()
+        } else {
+            AppModuleHolder.logic.habits.habitProvider.habitsFlow().first().filter {
+                config.habitIds.contains(it.id)
+            }.map {
+                Item(
+                    habit = it,
+                    abstinence = AppModuleHolder.logic.habits.habitAbstinenceProvider
+                        .currentAbstinenceFlow(it.id).first()
+                )
+            }
         }
     }
 
     private var items = emptyList<Item>()
 
-    override fun onCreate() {}
+    override fun onCreate() = Unit
 
     override fun onDataSetChanged() {
         items = loadItems()

@@ -2,7 +2,6 @@ package epicarchitect.breakbadhabits.logic.datetime.provider
 
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTime
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
+import kotlin.time.Duration.Companion.seconds
 
 class DateTimeProvider(
     private val coroutineDispatchers: CoroutineDispatchers

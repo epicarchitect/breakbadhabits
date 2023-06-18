@@ -1,8 +1,8 @@
 package epicarchitect.breakbadhabits.foundation.uikit
 
-import androidx.compose.material3.Checkbox as MaterialCheckbox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.Checkbox as MaterialCheckbox
 
 @Composable
 fun Checkbox(
