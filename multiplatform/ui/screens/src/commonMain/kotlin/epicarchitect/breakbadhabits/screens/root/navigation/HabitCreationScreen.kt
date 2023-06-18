@@ -29,7 +29,7 @@ class HabitCreationScreen : Screen {
                 habitIconSelectionController = viewModel.habitIconSelectionController,
                 habitNameController = viewModel.habitNameController,
                 dailyEventCountInputController = viewModel.dailyEventCountInputController,
-                firstTrackTimeInputController = viewModel.firstTrackTimeInputController,
+                trackTimeController = viewModel.firstTrackTimeInputController,
                 creationController = viewModel.creationController
             )
         }

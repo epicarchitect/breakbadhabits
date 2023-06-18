@@ -71,7 +71,7 @@ fun IntervalSelectionEpicCalendar(
     state: IntervalSelectionEpicCalendarState,
     onSelected: (ClosedRange<Instant>) -> Unit,
     onCancel: () -> Unit,
-    intervalsInnerPadding: Dp = 0.dp,
+    intervalsInnerPadding: Dp = 0.dp
 ) {
 //    val context = LocalContext.current
 //    val timeFormatter = DateTimeFormatter.ofPattern(
@@ -435,7 +435,7 @@ fun rememberSelectionEpicCalendarState(
     timeZone: TimeZone,
     availableRange: ClosedRange<Instant> = defaultAvailableRange(timeZone),
     currentMonth: MonthOfYear = MonthOfYear.now(timeZone),
-    initialRange: ClosedRange<Instant>? = null,
+    initialRange: ClosedRange<Instant>? = null
 ) = remember(currentMonth, availableRange, initialRange) {
     IntervalSelectionEpicCalendarState().also {
         it.timeZone = timeZone

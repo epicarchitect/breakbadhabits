@@ -177,12 +177,14 @@ fun HabitTracks(
                                 end = 14.dp,
                                 top = 4.dp,
                                 bottom = 4.dp
-                            ),
+                            )
                         ) {
                             Text(
                                 modifier = Modifier.padding(2.dp),
                                 text = if (track.dateTimeRange.isStartSameAsEnd) {
-                                    dateTimeFormatter.formatDateTime(track.dateTimeRange.start.instant)
+                                    dateTimeFormatter.formatDateTime(
+                                        track.dateTimeRange.start.instant
+                                    )
                                 } else {
                                     val start = dateTimeFormatter.formatDateTime(
                                         track.dateTimeRange.start.instant
@@ -216,7 +218,7 @@ fun HabitTracks(
                 .padding(16.dp),
             onClick = onAddClick,
             text = resources.newEventButton,
-            type = Button.Type.Main,
+            type = Button.Type.Main
 //            icon = {
 //                LocalResourceIcon(resourceId = R.drawable.ic_add)
 //            }

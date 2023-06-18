@@ -5,7 +5,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 
-
 @Composable
 inline fun <reified T : SingleRequestController.RequestState> LaunchedEffectWhenRequest(
     controller: SingleRequestController,

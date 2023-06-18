@@ -51,7 +51,6 @@ object AppTheme {
         get() = LocalAppColorScheme.current
 }
 
-
 @Composable
 fun AppTheme(
     colorScheme: AppColorScheme,
@@ -65,7 +64,7 @@ fun AppTheme(
             shapes = Shapes(
                 small = RoundedCornerShape(12.dp),
                 medium = RoundedCornerShape(24.dp),
-                large = RoundedCornerShape(24.dp),
+                large = RoundedCornerShape(24.dp)
             ),
             typography = Typography(
                 titleLarge = MaterialTheme.typography.titleLarge.copy(

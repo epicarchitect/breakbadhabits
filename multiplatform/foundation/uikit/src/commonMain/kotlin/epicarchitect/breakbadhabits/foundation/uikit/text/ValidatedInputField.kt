@@ -67,7 +67,7 @@ fun <VALIDATION_RESULT> ValidatedTextField(
     readOnly: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    regex: Regex? = null,
+    regex: Regex? = null
 ) {
     ValidatedInputField(
         modifier = modifier,
@@ -102,7 +102,7 @@ fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
     readOnly: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    regex: Regex? = null,
+    regex: Regex? = null
 ) {
     val state by controller.state.collectAsState()
     val error = validationAdapter.extractErrorMessage(state.validationResult)
@@ -128,7 +128,7 @@ fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
         AnimatedVisibility(
             visible = error != null,
             enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically(),
+            exit = fadeOut() + shrinkVertically()
         ) {
             ErrorText(
                 modifier = Modifier.padding(top = 8.dp),
@@ -137,7 +137,6 @@ fun <INPUT, VALIDATION_RESULT> ValidatedInputField(
         }
     }
 }
-
 
 @Composable
 fun TextField(
@@ -153,7 +152,7 @@ fun TextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     regex: Regex? = null,
-    isError: Boolean = false,
+    isError: Boolean = false
 ) {
     InputField(
         modifier = modifier,
@@ -189,7 +188,7 @@ fun <INPUT> InputField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     regex: Regex? = null,
-    isError: Boolean = false,
+    isError: Boolean = false
 ) {
     val state by controller.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current

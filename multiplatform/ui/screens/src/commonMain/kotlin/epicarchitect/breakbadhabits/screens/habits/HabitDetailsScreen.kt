@@ -34,8 +34,8 @@ import epicarchitect.breakbadhabits.logic.habits.model.HabitAbstinence
 import epicarchitect.breakbadhabits.logic.habits.model.HabitStatistics
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import epicarchitect.breakbadhabits.ui.format.DurationFormatter
-import kotlinx.datetime.TimeZone
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.datetime.TimeZone
 
 @Composable
 fun HabitDetails(
@@ -46,7 +46,7 @@ fun HabitDetails(
     currentMonthDailyCountsController: LoadingController<DailyHabitEventCount>,
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
-    onAllTracksClick: () -> Unit,
+    onAllTracksClick: () -> Unit
 ) {
     val logicModule = LocalAppModule.current.logic
     val uiModule = LocalAppModule.current.ui
@@ -149,10 +149,10 @@ fun HabitDetails(
 //                            state = epicCalendarState,
 //                            horizontalInnerPadding = 8.dp,
 //                            dayBadgeText = { day ->
-////                                val count = dailyCounts.dateToCount[day.date] ?: 0
-////                                if (count == 0) null
-////                                else if (count > 100) "99+"
-////                                else count.toString()
+// //                                val count = dailyCounts.dateToCount[day.date] ?: 0
+// //                                if (count == 0) null
+// //                                else if (count > 100) "99+"
+// //                                else count.toString()
 //                                "n"
 //                            }
 //                        )
@@ -167,7 +167,8 @@ fun HabitDetails(
                         ) {
                             Text(
                                 modifier = Modifier.align(Alignment.Center),
-                                text = "Перейти к событиям"//stringResource(R.string.habit_showAllEvents)
+                                text = "Перейти к событиям"
+                                // stringResource(R.string.habit_showAllEvents)
                             )
                         }
                     }
@@ -206,7 +207,7 @@ fun HabitDetails(
                                 )
                             },
                             startPadding = 16.dp,
-                            endPadding = 16.dp,
+                            endPadding = 16.dp
                         )
                     }
                 }
@@ -259,7 +260,7 @@ fun HabitDetails(
 }
 
 private fun HabitStatistics.toStatisticsData(
-    durationFormatter: DurationFormatter,
+    durationFormatter: DurationFormatter
 ) = listOf(
     StatisticData(
         name = "context.getString(R.string.habitAnalyze_statistics_averageAbstinenceTime)",

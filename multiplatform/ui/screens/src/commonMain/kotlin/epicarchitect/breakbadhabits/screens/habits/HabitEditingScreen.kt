@@ -37,16 +37,15 @@ fun HabitEditing(
     habitNameController: ValidatedInputController<String, ValidatedHabitNewName>,
     habitIconSelectionController: SingleSelectionController<Icon>,
     updatingController: SingleRequestController,
-    deletionController: SingleRequestController,
+    deletionController: SingleRequestController
 ) {
-
     ClearFocusWhenKeyboardHiddenEffect()
 
     var deletionShow by remember { mutableStateOf(false) }
     if (deletionShow) {
         Dialog(onDismiss = { deletionShow = false }) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(16.dp)
             ) {
                 Text(
                     text = "stringResource(R.string.habit_deleteConfirmation)",
@@ -101,18 +100,21 @@ fun HabitEditing(
         ValidatedTextField(
             controller = habitNameController,
             validationAdapter = TextFieldValidationAdapter {
-                if (it !is IncorrectHabitNewName) null
-                else when (val reason = it.reason) {
-                    is IncorrectHabitNewName.Reason.AlreadyUsed -> {
-                        "context.getString(R.string.habitEditing_habitNameValidation_used)"
-                    }
+                if (it !is IncorrectHabitNewName) {
+                    null
+                } else {
+                    when (val reason = it.reason) {
+                        is IncorrectHabitNewName.Reason.AlreadyUsed -> {
+                            "context.getString(R.string.habitEditing_habitNameValidation_used)"
+                        }
 
-                    is IncorrectHabitNewName.Reason.Empty -> {
-                        "context.getString(R.string.habitEditing_habitNameValidation_empty)"
-                    }
+                        is IncorrectHabitNewName.Reason.Empty -> {
+                            "context.getString(R.string.habitEditing_habitNameValidation_empty)"
+                        }
 
-                    is IncorrectHabitNewName.Reason.TooLong -> {
-                        "context.getString(R.string.habitEditing_habitNameValidation_tooLong, reason.maxLength)"
+                        is IncorrectHabitNewName.Reason.TooLong -> {
+                            "R.string.habitEditing_habitNameValidation_tooLong, reason.maxLength)"
+                        }
                     }
                 }
             },
@@ -161,7 +163,7 @@ fun HabitEditing(
             modifier = Modifier.align(Alignment.End),
             controller = updatingController,
             text = "stringResource(R.string.habitEditing_finish)",
-            type = Button.Type.Main,
+            type = Button.Type.Main
 //            icon = {
 //                LocalResourceIcon(resourceId = R.drawable.ic_done)
 //            }

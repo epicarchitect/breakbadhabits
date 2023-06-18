@@ -25,12 +25,15 @@ class HabitStatisticsProvider(
         habitAbstinenceFlow(habitId),
         habitEventCountFlow(habitId)
     ) { abstinence, eventCount ->
-        if (abstinence == null) null
-        else HabitStatistics(
-            habitId,
-            abstinence,
-            eventCount
-        )
+        if (abstinence == null) {
+            null
+        } else {
+            HabitStatistics(
+                habitId,
+                abstinence,
+                eventCount
+            )
+        }
     }.flowOn(coroutineDispatchers.default)
 
     private fun habitAbstinenceFlow(

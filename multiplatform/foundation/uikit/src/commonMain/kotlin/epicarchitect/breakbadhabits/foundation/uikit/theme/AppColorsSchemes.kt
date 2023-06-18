@@ -39,6 +39,4 @@ object AppColorsSchemes {
 //    }.let {
 //        if (it) dark else light
 //    }
-
-
 }

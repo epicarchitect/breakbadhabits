@@ -56,12 +56,12 @@ fun AppSettings(
                     end = 8.dp,
                     bottom = 4.dp
                 ),
-            text = resources.themeSelectionDescription,
+            text = resources.themeSelectionDescription
         )
 
         RadioButton(
             text = resources.themeSelectionSystemTheme,
-            selected = true,//darkMode == DarkMode.BY_SYSTEM,
+            selected = true, // darkMode == DarkMode.BY_SYSTEM,
             onSelect = {
 //                darkModeManager.changeMode(DarkMode.BY_SYSTEM)
             }
@@ -69,7 +69,7 @@ fun AppSettings(
 
         RadioButton(
             text = resources.themeSelectionLightTheme,
-            selected = false, //darkMode == DarkMode.DISABLED,
+            selected = false, // darkMode == DarkMode.DISABLED,
             onSelect = {
 //                darkModeManager.changeMode(DarkMode.DISABLED)
             }
@@ -77,7 +77,7 @@ fun AppSettings(
 
         RadioButton(
             text = resources.themeSelectionDarkTheme,
-            selected = false,//darkMode == DarkMode.ENABLED,
+            selected = false, // darkMode == DarkMode.ENABLED,
             onSelect = {
 //                darkModeManager.changeMode(DarkMode.ENABLED)
             }

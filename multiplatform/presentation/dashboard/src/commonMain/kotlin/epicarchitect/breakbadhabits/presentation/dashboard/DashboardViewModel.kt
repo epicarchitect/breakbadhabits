@@ -18,17 +18,20 @@ class DashboardViewModel(
     val itemsLoadingController = LoadingController(
         coroutineScope = viewModelScope,
         flow = habitProvider.habitsFlow().flatMapLatest { habits ->
-            if (habits.isEmpty()) flowOf(emptyList())
-            else combine(
-                habits.map { habit ->
-                    habitAbstinenceProvider.currentAbstinenceFlow(habit.id)
-                }
-            ) { abstinenceList ->
-                habits.mapIndexed { index, habit ->
-                    DashboardHabitItem(
-                        habit,
-                        abstinenceList[index]
-                    )
+            if (habits.isEmpty()) {
+                flowOf(emptyList())
+            } else {
+                combine(
+                    habits.map { habit ->
+                        habitAbstinenceProvider.currentAbstinenceFlow(habit.id)
+                    }
+                ) { abstinenceList ->
+                    habits.mapIndexed { index, habit ->
+                        DashboardHabitItem(
+                            habit,
+                            abstinenceList[index]
+                        )
+                    }
                 }
             }
         }

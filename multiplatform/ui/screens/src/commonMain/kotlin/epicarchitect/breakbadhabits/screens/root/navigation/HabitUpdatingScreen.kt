@@ -9,7 +9,6 @@ import epicarchitect.breakbadhabits.screens.LocalAppModule
 import epicarchitect.breakbadhabits.screens.habits.HabitEditing
 import epicarchitect.breakbadhabits.screens.hold
 
-
 class HabitUpdatingScreen(private val habitId: Int) : Screen {
     @Composable
     override fun Content() {

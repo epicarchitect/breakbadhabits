@@ -59,7 +59,7 @@ class HabitTrackCreationViewModel(
         },
         isAllowedFlow = combine(
             eventCountInputController.state,
-            timeInputController.state,
+            timeInputController.state
         ) { trackValue, trackRange ->
             trackRange.validationResult.let {
                 it == null || it is CorrectHabitTrackTime

@@ -31,7 +31,7 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
             },
             onAllTracksClick = {
                 navigator += HabitTracksScreen(habitId)
-            },
+            }
         )
     }
 }

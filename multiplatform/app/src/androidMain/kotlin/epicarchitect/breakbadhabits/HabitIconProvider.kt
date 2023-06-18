@@ -34,7 +34,7 @@ class HabitIconProvider : IconProvider {
         AndroidResourceIcon(24, R.drawable.habit_icon_24),
         AndroidResourceIcon(25, R.drawable.habit_icon_25),
         AndroidResourceIcon(26, R.drawable.habit_icon_26),
-        AndroidResourceIcon(27, R.drawable.habit_icon_27),
+        AndroidResourceIcon(27, R.drawable.habit_icon_27)
     )
 
     override fun iconsFlow() = flowOf(icons)

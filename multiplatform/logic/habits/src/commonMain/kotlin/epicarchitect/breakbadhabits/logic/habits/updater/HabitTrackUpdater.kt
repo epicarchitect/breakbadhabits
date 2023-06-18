@@ -14,7 +14,7 @@ class HabitTrackUpdater(
         id: Int,
         time: CorrectHabitTrackTime,
         eventCount: CorrectHabitTrackEventCount,
-        comment: String,
+        comment: String
     ) = withContext(coroutineDispatchers.io) {
         mainDatabase.habitTrackQueries.update(
             id = id,

@@ -23,7 +23,10 @@ fun <T : Any, R : Any> Query<T>.asFlowOfOneOrNull(
 ) = asFlow()
     .mapToOneOrNull(coroutineDispatchers.io)
     .map {
-        if (it == null) null
-        else transform(it)
+        if (it == null) {
+            null
+        } else {
+            transform(it)
+        }
     }
     .flowOn(coroutineDispatchers.default)

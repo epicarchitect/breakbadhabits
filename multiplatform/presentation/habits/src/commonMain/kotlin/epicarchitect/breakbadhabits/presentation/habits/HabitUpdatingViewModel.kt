@@ -55,7 +55,6 @@ class HabitUpdatingViewModel(
         coroutineScope = viewModelScope,
         request = {
             viewModelScope.launch {
-
             }.isCancelled
             habitUpdater.updateHabit(
                 habitId = habitId,
@@ -68,12 +67,14 @@ class HabitUpdatingViewModel(
             habitIconSelectionController.state,
             initialHabit
         ) { nameState, iconState, initialHabit ->
-            if (initialHabit == null
-                || iconState !is SingleSelectionController.State.Loaded
-            ) return@combine false
+            if (initialHabit == null ||
+                iconState !is SingleSelectionController.State.Loaded
+            ) {
+                return@combine false
+            }
 
-            val isChanged = initialHabit.name != nameState.input
-                    || initialHabit.icon != iconState.selectedItem
+            val isChanged = initialHabit.name != nameState.input ||
+                initialHabit.icon != iconState.selectedItem
 
             isChanged && nameState.validationResult.let {
                 it == null || it is CorrectHabitNewName
@@ -88,4 +89,3 @@ class HabitUpdatingViewModel(
         }
     )
 }
-

@@ -3,6 +3,7 @@ package epicarchitect.breakbadhabits.foundation.uikit
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.material3.Card as MaterialCard
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -11,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.foundation.uikit.theme.AppTheme
-import androidx.compose.material3.Card as MaterialCard
 
 @Composable
 fun Card(
@@ -20,7 +20,7 @@ fun Card(
     elevation: Dp = 1.dp,
     backgroundColor: Color = AppTheme.colorScheme.surface,
     contentColor: Color = contentColorFor(backgroundColor),
-    content: @Composable BoxScope.() -> Unit,
+    content: @Composable BoxScope.() -> Unit
 ) {
     MaterialCard(
         modifier = modifier,
@@ -34,6 +34,6 @@ fun Card(
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor,
             contentColor = contentColor
-        ),
+        )
     )
 }

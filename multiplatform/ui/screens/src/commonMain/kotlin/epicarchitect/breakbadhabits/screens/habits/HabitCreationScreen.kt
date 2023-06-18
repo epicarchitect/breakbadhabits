@@ -55,10 +55,10 @@ interface HabitCreationResources {
     val finishButtonText: String
     fun habitNameValidationError(reason: IncorrectHabitNewName.Reason): String
 }
-//private enum class HabitTime(
+// private enum class HabitTime(
 //    val titleRes: Int,
 //    val offset: Duration
-//) {
+// ) {
 //    MONTH_1(R.string.habitCreation_habitTime_month_1, 30.days),
 //    MONTH_3(R.string.habitCreation_habitTime_month_3, 90.days),
 //    MONTH_6(R.string.habitCreation_habitTime_month_6, 180.days),
@@ -72,7 +72,7 @@ interface HabitCreationResources {
 //    YEAR_8(R.string.habitCreation_habitTime_year_8, 365.days * 8),
 //    YEAR_9(R.string.habitCreation_habitTime_year_9, 365.days * 9),
 //    YEAR_10(R.string.habitCreation_habitTime_year_10, 365.days * 10)
-//}
+// }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -80,7 +80,7 @@ fun HabitCreation(
     habitIconSelectionController: SingleSelectionController<Icon>,
     habitNameController: ValidatedInputController<String, ValidatedHabitNewName>,
     dailyEventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
-    firstTrackTimeInputController: ValidatedInputController<ZonedDateTimeRange, ValidatedHabitTrackTime>,
+    trackTimeController: ValidatedInputController<ZonedDateTimeRange, ValidatedHabitTrackTime>,
     creationController: SingleRequestController
 ) {
     val resources = LocalHabitCreationResourcesResources.current
@@ -131,8 +131,11 @@ fun HabitCreation(
             controller = habitNameController,
             validationAdapter = remember {
                 TextFieldValidationAdapter {
-                    if (it !is IncorrectHabitNewName) null
-                    else resources.habitNameValidationError(it.reason)
+                    if (it !is IncorrectHabitNewName) {
+                        null
+                    } else {
+                        resources.habitNameValidationError(it.reason)
+                    }
                 }
             },
             label = resources.habitNameLabel
@@ -204,10 +207,13 @@ fun HabitCreation(
             },
             validationAdapter = remember {
                 TextFieldValidationAdapter {
-                    if (it !is IncorrectHabitTrackEventCount) null
-                    else when (it.reason) {
-                        is IncorrectHabitTrackEventCount.Reason.Empty -> {
-                            "Поле не может быть пустым"
+                    if (it !is IncorrectHabitTrackEventCount) {
+                        null
+                    } else {
+                        when (it.reason) {
+                            is IncorrectHabitTrackEventCount.Reason.Empty -> {
+                                "Поле не может быть пустым"
+                            }
                         }
                     }
                 }
@@ -229,7 +235,7 @@ fun HabitCreation(
                 .align(Alignment.End),
             controller = creationController,
             text = resources.finishButtonText,
-            type = Button.Type.Main,
+            type = Button.Type.Main
 //            icon = {
 //                LocalResourceIcon(resourceId = R.drawable.ic_done)
 //            }

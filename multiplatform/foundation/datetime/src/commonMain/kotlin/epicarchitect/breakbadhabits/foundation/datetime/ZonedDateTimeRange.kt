@@ -3,7 +3,6 @@ package epicarchitect.breakbadhabits.foundation.datetime
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
-
 data class ZonedDateTimeRange internal constructor(
     override val start: ZonedDateTime,
     override val endInclusive: ZonedDateTime
@@ -34,4 +33,3 @@ data class ZonedDateTimeRange internal constructor(
 }
 
 operator fun ZonedDateTime.rangeTo(end: ZonedDateTime) = ZonedDateTimeRange(this, end)
-

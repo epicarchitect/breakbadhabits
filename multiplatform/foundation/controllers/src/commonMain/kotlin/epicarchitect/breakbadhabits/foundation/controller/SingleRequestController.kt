@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class SingleRequestController(
     private val coroutineScope: CoroutineScope,
     request: suspend () -> Unit,
-    isAllowedFlow: Flow<Boolean> = flowOf(true),
+    isAllowedFlow: Flow<Boolean> = flowOf(true)
 ) : StateController<SingleRequestController.State> {
     private val internalRequest = request
 

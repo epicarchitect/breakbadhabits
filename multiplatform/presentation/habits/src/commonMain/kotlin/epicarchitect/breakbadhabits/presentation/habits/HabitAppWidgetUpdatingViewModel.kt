@@ -55,8 +55,8 @@ class HabitAppWidgetUpdatingViewModel(
 
             val habitIdsInput = habitsSelection.selectedItems.map(Habit::id).sorted()
 
-            val isChanged = initial?.title != title.input
-                    || initial.habitIds.sorted() != habitIdsInput
+            val isChanged = initial?.title != title.input ||
+                initial.habitIds.sorted() != habitIdsInput
 
             isChanged && habitIdsInput.isNotEmpty()
         }

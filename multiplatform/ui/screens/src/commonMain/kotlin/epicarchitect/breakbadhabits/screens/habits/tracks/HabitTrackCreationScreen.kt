@@ -150,10 +150,13 @@ fun HabitTrackCreation(
             },
             validationAdapter = remember {
                 TextFieldValidationAdapter {
-                    if (it !is IncorrectHabitTrackEventCount) null
-                    else when (it.reason) {
-                        is IncorrectHabitTrackEventCount.Reason.Empty -> {
-                            "Поле не может быть пустым"
+                    if (it !is IncorrectHabitTrackEventCount) {
+                        null
+                    } else {
+                        when (it.reason) {
+                            is IncorrectHabitTrackEventCount.Reason.Empty -> {
+                                "Поле не может быть пустым"
+                            }
                         }
                     }
                 }
@@ -241,7 +244,6 @@ fun HabitTrackCreation(
             text = resources.commentDescription
         )
 
-
         Spacer(Modifier.height(12.dp))
 
         ValidatedTextField(
@@ -274,7 +276,7 @@ fun HabitTrackCreation(
                 .align(Alignment.End),
             controller = creationController,
             text = resources.finishButton,
-            type = Button.Type.Main,
+            type = Button.Type.Main
 //            icon = {
 //                LocalResourceIcon(resourceId = R.drawable.ic_done)
 //            }

@@ -14,8 +14,8 @@ private val EndRangeShape = RoundedCornerShape(
 )
 private val FullRangeShape = CircleShape
 
-//@Composable
-//fun EpicCalendar(
+// @Composable
+// fun EpicCalendar(
 //    modifier: Modifier = Modifier,
 //    state: EpicCalendarState,
 //    onDayClick: ((EpicCalendarState.Day) -> Unit)? = null,
@@ -24,7 +24,7 @@ private val FullRangeShape = CircleShape
 //    rangeContentColor: Color = AppTheme.colorScheme.onPrimary,
 //    dayBadgeText: (EpicCalendarState.Day) -> String? = { null },
 //    cellHeight: Dp = 38.dp
-//) {
+// ) {
 //    var cellWidth by remember { mutableStateOf(Dp.Unspecified) }
 //    val density = LocalDensity.current
 //
@@ -167,22 +167,22 @@ private val FullRangeShape = CircleShape
 //            Surface {}
 //        }
 //    }
-//}
+// }
 //
-//@Composable
-//fun rememberEpicCalendarState(
+// @Composable
+// fun rememberEpicCalendarState(
 //    timeZone: TimeZone,
 //    monthOfYear: MonthOfYear = MonthOfYear.now(timeZone),
 //    ranges: List<ClosedRange<Instant>> = emptyList()
-//) = remember(monthOfYear, timeZone, ranges) {
+// ) = remember(monthOfYear, timeZone, ranges) {
 //    EpicCalendarState().also {
 //        it.timeZone = timeZone
 //        it.monthOfYear = monthOfYear
 //        it.ranges = ranges
 //    }
-//}
+// }
 //
-//class EpicCalendarState {
+// class EpicCalendarState {
 //    var timeZone by mutableStateOf(TimeZone.currentSystemDefault())
 //    var monthOfYear by mutableStateOf(MonthOfYear.now(timeZone))
 //    var ranges: List<ClosedRange<Instant>> by mutableStateOf(emptyList())
@@ -274,4 +274,4 @@ private val FullRangeShape = CircleShape
 //    companion object {
 //        const val VISIBLE_DAYS_COUNT = 42
 //    }
-//}
+// }

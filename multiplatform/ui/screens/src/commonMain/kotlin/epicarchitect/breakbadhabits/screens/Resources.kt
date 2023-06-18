@@ -58,7 +58,9 @@ fun habitCreationResourcesOf(locale: Locale) = when (locale.language) {
         ) = when (reason) {
             IncorrectHabitNewName.Reason.AlreadyUsed -> "Это название уже используется."
             IncorrectHabitNewName.Reason.Empty -> "Название не может быть пустым."
-            is IncorrectHabitNewName.Reason.TooLong -> "Название не может быть длиннее чем ${reason.maxLength} символов."
+            is IncorrectHabitNewName.Reason.TooLong -> {
+                "Название не может быть длиннее чем ${reason.maxLength} символов."
+            }
         }
     }
 
@@ -73,7 +75,9 @@ fun habitCreationResourcesOf(locale: Locale) = when (locale.language) {
         ) = when (reason) {
             IncorrectHabitNewName.Reason.AlreadyUsed -> "This name has already been used."
             IncorrectHabitNewName.Reason.Empty -> "The title cannot be empty."
-            is IncorrectHabitNewName.Reason.TooLong -> "The name cannot be longer than ${reason.maxLength} characters."
+            is IncorrectHabitNewName.Reason.TooLong -> {
+                "The name cannot be longer than ${reason.maxLength} characters."
+            }
         }
     }
 }

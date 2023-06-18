@@ -20,7 +20,7 @@ interface InputController<INPUT> : StateController<InputController.State<INPUT>>
 @Suppress("FunctionName")
 fun <INPUT> InputController(
     coroutineScope: CoroutineScope,
-    initialInput: INPUT,
+    initialInput: INPUT
 ): InputController<INPUT> = InputControllerImpl(
     coroutineScope,
     initialInput
@@ -28,7 +28,7 @@ fun <INPUT> InputController(
 
 private class InputControllerImpl<INPUT>(
     coroutineScope: CoroutineScope,
-    initialInput: INPUT,
+    initialInput: INPUT
 ) : InputController<INPUT> {
     private val inputState = MutableStateFlow(initialInput)
 

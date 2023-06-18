@@ -4,8 +4,8 @@ import epicarchitect.breakbadhabits.database.asFlowOfList
 import epicarchitect.breakbadhabits.database.asFlowOfOneOrNull
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import epicarchitect.breakbadhabits.logic.habits.model.HabitWidget
-import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 import epicarchitect.breakbadhabits.sqldelight.main.HabitWidget as DatabaseHabitWidget
+import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
 class HabitWidgetProvider(
     private val coroutineDispatchers: CoroutineDispatchers,

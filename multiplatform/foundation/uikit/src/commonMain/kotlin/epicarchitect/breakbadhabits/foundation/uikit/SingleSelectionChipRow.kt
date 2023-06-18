@@ -40,7 +40,7 @@ fun SingleSelectionChipRow(
                 } else {
                     AppTheme.colorScheme.onBackground.copy(alpha = 0.1f)
                 },
-                elevation = 0.dp,
+                elevation = 0.dp
             ) {
                 Text(
                     modifier = Modifier

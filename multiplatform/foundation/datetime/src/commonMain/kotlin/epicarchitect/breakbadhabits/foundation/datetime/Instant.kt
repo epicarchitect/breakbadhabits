@@ -1,5 +1,9 @@
 package epicarchitect.breakbadhabits.foundation.datetime
 
+import kotlin.math.roundToLong
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -7,10 +11,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.math.roundToLong
-import kotlin.time.Duration
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 val ZonedDateTimeRange.duration get() = endInclusive.instant - start.instant
 
@@ -19,8 +19,11 @@ fun ZonedDateTimeRange.split(step: Duration): List<ZonedDateTimeRange> {
     return buildList {
         while (current < endInclusive) {
             val newEnd = (current.instant + step).let {
-                if (it < endInclusive.instant) it
-                else endInclusive.instant
+                if (it < endInclusive.instant) {
+                    it
+                } else {
+                    endInclusive.instant
+                }
             }
             add(
                 ZonedDateTimeRange(
@@ -37,13 +40,13 @@ fun ZonedDateTimeRange.split(step: Duration): List<ZonedDateTimeRange> {
 fun ZonedDateTimeRange.countDays() =
     start.instant.daysUntil(endInclusive.instant, timeZone) + 1
 
-//fun InstantRange.countDays(timeZone: TimeZone) =
+// fun InstantRange.countDays(timeZone: TimeZone) =
 //    start.daysUntil(endInclusive, timeZone) + 1
 //
-//fun InstantRange.countDaysInMonth(
+// fun InstantRange.countDaysInMonth(
 //    monthOfYear: MonthOfYear,
 //    timeZone: TimeZone
-//): Int {
+// ): Int {
 //    val month = monthOfYear.month
 //    val year = monthOfYear.year
 //    val startDate = start.toLocalDateTime(timeZone).date
@@ -74,7 +77,7 @@ fun ZonedDateTimeRange.countDays() =
 //
 //        else -> 0
 //    }
-//}
+// }
 
 // copied from IsoChronology
 fun isLeapYear(year: Long): Boolean {
@@ -91,8 +94,11 @@ operator fun ZonedDateTime.minus(other: ZonedDateTime) = instant - other.instant
 fun List<ZonedDateTimeRange>.averageDuration() = map {
     it.endInclusive.instant.epochSeconds - it.start.instant.epochSeconds
 }.let {
-    if (it.size > 1) it.average().roundToLong()
-    else it.first()
+    if (it.size > 1) {
+        it.average().roundToLong()
+    } else {
+        it.first()
+    }
 }.toDuration(DurationUnit.SECONDS)
 
 fun List<ZonedDateTimeRange>.maxDuration() = maxOf { it.duration }
@@ -108,7 +114,6 @@ fun ZonedDateTimeRange.withZeroSeconds() =
 
 fun InstantRange.withZeroSeconds(timeZone: TimeZone) =
     start.withZeroSeconds(timeZone)..endInclusive.withZeroSeconds(timeZone)
-
 
 fun ZonedDateTime.withZeroSeconds() = ZonedDateTime(
     instant.withZeroSeconds(timeZone),

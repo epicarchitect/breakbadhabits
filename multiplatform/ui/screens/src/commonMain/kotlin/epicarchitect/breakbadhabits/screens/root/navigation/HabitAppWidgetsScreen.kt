@@ -8,7 +8,6 @@ import epicarchitect.breakbadhabits.screens.LocalAppModule
 import epicarchitect.breakbadhabits.screens.habits.widgets.HabitAppWidgets
 import epicarchitect.breakbadhabits.screens.hold
 
-
 class HabitAppWidgetsScreen : Screen {
     @Composable
     override fun Content() {

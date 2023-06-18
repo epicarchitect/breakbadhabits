@@ -33,7 +33,6 @@ fun <T> SingleSelectionGrid(
 
     when (val state = state) {
         SingleSelectionController.State.Loading -> {
-
         }
 
         is SingleSelectionController.State.Loaded -> {
@@ -83,4 +82,3 @@ fun <T> SingleSelectionGrid(
         }
     }
 }
-

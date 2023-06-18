@@ -6,12 +6,12 @@ import kotlinx.coroutines.withContext
 
 class HabitWidgetUpdater(
     private val coroutineDispatchers: CoroutineDispatchers,
-    private val mainDatabase: MainDatabase,
+    private val mainDatabase: MainDatabase
 ) {
     suspend fun updateAppWidget(
         id: Int,
         title: String,
-        habitIds: List<Int>,
+        habitIds: List<Int>
     ) = withContext(coroutineDispatchers.io) {
         mainDatabase.habitWidgetQueries.update(
             id = id,

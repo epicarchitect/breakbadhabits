@@ -21,18 +21,21 @@ class HabitAbstinenceProvider(
     fun currentAbstinenceFlow(
         habitId: Int
     ) = habitTrackProvider.habitTrackFlowByMaxEnd(habitId).flatMapLatest { lastTrack ->
-        if (lastTrack == null) flowOf(null)
-        else dateTimeProvider.currentDateTimeFlow().map { currentTime ->
-            HabitAbstinence(
-                habitId = habitId,
-                dateTimeRange = lastTrack.dateTimeRange.endInclusive..currentTime
-            )
+        if (lastTrack == null) {
+            flowOf(null)
+        } else {
+            dateTimeProvider.currentDateTimeFlow().map { currentTime ->
+                HabitAbstinence(
+                    habitId = habitId,
+                    dateTimeRange = lastTrack.dateTimeRange.endInclusive..currentTime
+                )
+            }
         }
     }.flowOn(coroutineDispatchers.default)
 
     fun abstinenceListFlow(habitId: Int) = combine(
         habitTrackProvider.habitTracksFlow(habitId),
-        dateTimeProvider.currentDateTimeFlow(),
+        dateTimeProvider.currentDateTimeFlow()
     ) { tracks, currentTime ->
         val ranges = tracks.map { it.dateTimeRange }.combineIntersections()
         List(ranges.size) { index ->

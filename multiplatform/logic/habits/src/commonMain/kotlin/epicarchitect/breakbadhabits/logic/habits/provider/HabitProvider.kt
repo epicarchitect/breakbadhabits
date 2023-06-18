@@ -6,8 +6,8 @@ import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import epicarchitect.breakbadhabits.foundation.icons.IconProvider
 import epicarchitect.breakbadhabits.foundation.icons.requireIcon
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
-import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 import epicarchitect.breakbadhabits.sqldelight.main.Habit as DatabaseHabit
+import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
 class HabitProvider(
     private val mainDatabase: MainDatabase,

@@ -2,6 +2,8 @@ package epicarchitect.breakbadhabits.foundation.datetime
 
 import epicarchitect.breakbadhabits.foundation.math.ranges.ascended
 import epicarchitect.breakbadhabits.foundation.math.ranges.isAscended
+import kotlin.math.abs
+import kotlin.math.floor
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -11,8 +13,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.math.abs
-import kotlin.math.floor
 
 data class MonthOfYear(
     val year: Int,
@@ -44,7 +44,6 @@ data class MonthOfYear(
         return cmp
     }
 }
-
 
 fun MonthOfYear.previous(): MonthOfYear = addMonths(-1)
 
@@ -135,7 +134,6 @@ fun MonthOfYear.toInstantAtEnd(timeZone: TimeZone) = toInstant(
     minute = 59,
     second = 59
 )
-
 
 fun MonthOfYear.toZonedInstantAtStart(timeZone: TimeZone) = ZonedDateTime(
     instant = toInstantAtStart(timeZone),

@@ -8,13 +8,13 @@ import kotlinx.coroutines.withContext
 class HabitWidgetCreator(
     private val idGenerator: IdGenerator,
     private val mainDatabase: MainDatabase,
-    private val coroutineDispatchers: CoroutineDispatchers,
+    private val coroutineDispatchers: CoroutineDispatchers
 ) {
 
     suspend fun createAppWidget(
         systemId: Int,
         title: String,
-        habitIds: List<Int>,
+        habitIds: List<Int>
     ) = withContext(coroutineDispatchers.io) {
         mainDatabase.habitWidgetQueries.insert(
             id = idGenerator.nextId(),

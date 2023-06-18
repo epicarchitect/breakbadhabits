@@ -42,7 +42,7 @@ class HabitCreationViewModel(
     val dailyEventCountInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
         initialInput = 1,
-        validation = trackEventCountValidator::validate,
+        validation = trackEventCountValidator::validate
     )
 
     val firstTrackTimeInputController = ValidatedInputController(
@@ -56,20 +56,21 @@ class HabitCreationViewModel(
         request = {
             val dailyEventCount =
                 dailyEventCountInputController.validateAndRequire<CorrectHabitTrackEventCount>()
-            val firstTrackRange =
+            val trackRange =
                 firstTrackTimeInputController.validateAndRequire<CorrectHabitTrackTime>()
 
+            val eventCount = dailyEventCount.data * trackRange.data.duration.inWholeDays.toInt()
             habitCreator.createHabit(
                 name = habitNameController.validateAndRequire(),
                 icon = habitIconSelectionController.requireSelectedItem(),
-                trackEventCount = dailyEventCount.data * firstTrackRange.data.duration.inWholeDays.toInt(), // TODO resolve this
-                trackTime = firstTrackRange
+                trackEventCount = eventCount, // TODO resolve this
+                trackTime = trackRange
             )
         },
         isAllowedFlow = combine(
             habitNameController.state,
             dailyEventCountInputController.state,
-            firstTrackTimeInputController.state,
+            firstTrackTimeInputController.state
         ) { habitName, firstTrackEventCount, firstTrackRange ->
             habitName.validationResult.let {
                 it == null || it is CorrectHabitNewName
@@ -81,4 +82,3 @@ class HabitCreationViewModel(
         }
     )
 }
-

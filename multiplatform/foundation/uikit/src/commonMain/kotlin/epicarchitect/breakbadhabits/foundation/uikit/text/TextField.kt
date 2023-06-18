@@ -25,7 +25,7 @@ fun TextField(
     readOnly: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    regex: Regex? = null,
+    regex: Regex? = null
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -34,13 +34,18 @@ fun TextField(
             regex.matches(value) -> value
             else -> ""
         },
-        onValueChange = if (regex == null) onValueChange
-        else { text: String ->
-            if (regex.matches(text)) {
-                onValueChange(text)
+        onValueChange = if (regex == null) {
+            onValueChange
+        } else {
+            { text: String ->
+                if (regex.matches(text)) {
+                    onValueChange(text)
+                }
             }
         },
-        label = if (label == null) null else {
+        label = if (label == null) {
+            null
+        } else {
             {
                 Text(
                     text = label,

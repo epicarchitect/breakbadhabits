@@ -1,12 +1,12 @@
 package epicarchitect.breakbadhabits.foundation.uikit
 
+import androidx.compose.foundation.Image as FoundationImage
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.foundation.Image as FoundationImage
 
 @Composable
 fun Image(

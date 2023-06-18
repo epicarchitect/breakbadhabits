@@ -14,7 +14,7 @@ import kotlinx.datetime.Instant
 fun SelectionEpicCalendarDialog(
     state: IntervalSelectionEpicCalendarState,
     onSelected: (ClosedRange<Instant>) -> Unit,
-    onCancel: () -> Unit,
+    onCancel: () -> Unit
 ) {
     Dialog(onDismiss = onCancel) {
         Column(

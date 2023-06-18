@@ -53,7 +53,7 @@ class HabitTrackUpdatingViewModel(
     val timeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
         initialInput = ZonedDateTimeRange.of(dateTimeProvider.getCurrentDateTime()),
-        validation = trackRangeValidator::validate,
+        validation = trackRangeValidator::validate
     )
 
     val commentInputController = InputController(
@@ -77,9 +77,9 @@ class HabitTrackUpdatingViewModel(
             commentInputController.state,
             initialHabitTrack
         ) { eventCount, trackRange, comment, initialTrack ->
-            val isChanged = initialTrack?.dateTimeRange != trackRange.input
-                    || initialTrack.eventCount != eventCount.input
-                    || initialTrack.comment != comment.input
+            val isChanged = initialTrack?.dateTimeRange != trackRange.input ||
+                initialTrack.eventCount != eventCount.input ||
+                initialTrack.comment != comment.input
 
             isChanged && trackRange.validationResult.let {
                 it == null || it is CorrectHabitTrackTime

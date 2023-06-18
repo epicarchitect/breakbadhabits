@@ -5,6 +5,10 @@ import com.android.build.gradle.BaseExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+plugins {
+    id("convention.ktlint.base")
+}
+
 configure<BaseExtension> {
     namespace = buildAndroidNamespace()
     compileSdkVersion(BuildConstants.TARGET_ANDROID_SDK)

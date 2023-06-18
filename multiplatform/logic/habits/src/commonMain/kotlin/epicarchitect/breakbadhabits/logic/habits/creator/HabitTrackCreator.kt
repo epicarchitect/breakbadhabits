@@ -17,7 +17,7 @@ class HabitTrackCreator(
         habitId: Int,
         range: CorrectHabitTrackTime,
         eventCount: CorrectHabitTrackEventCount,
-        comment: String,
+        comment: String
     ) = withContext(coroutineDispatchers.io) {
         mainDatabase.habitTrackQueries.insert(
             id = idGenerator.nextId(),

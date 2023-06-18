@@ -20,18 +20,21 @@ class HabitAppWidgetsViewModel(
     val itemsController = LoadingController(
         coroutineScope = viewModelScope,
         flow = habitWidgetProvider.provideAllFlow().flatMapLatest { configs ->
-            if (configs.isEmpty()) flowOf(emptyList())
-            else combine(
-                configs.map { config ->
-                    combine(config.habitIds.map(habitProvider::habitFlow)) { habits ->
-                        Item(
-                            widget = config,
-                            habits = habits.filterNotNull()
-                        )
+            if (configs.isEmpty()) {
+                flowOf(emptyList())
+            } else {
+                combine(
+                    configs.map { config ->
+                        combine(config.habitIds.map(habitProvider::habitFlow)) { habits ->
+                            Item(
+                                widget = config,
+                                habits = habits.filterNotNull()
+                            )
+                        }
                     }
+                ) {
+                    it.toList()
                 }
-            ) {
-                it.toList()
             }
         }
     )

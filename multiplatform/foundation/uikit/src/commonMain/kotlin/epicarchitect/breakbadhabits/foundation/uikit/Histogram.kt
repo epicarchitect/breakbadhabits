@@ -56,13 +56,16 @@ fun Histogram(
         }
 
         val barWidthPx = if (boxSize.width > 0) {
-            (boxSize.width - startPaddingPx - endPaddingPx) / visibleBarCount - (barPaddingPx - barPaddingPx / visibleBarCount)
+            val resolve = boxSize.width - startPaddingPx - endPaddingPx
+            val ktlint = visibleBarCount - (barPaddingPx - barPaddingPx / visibleBarCount)
+            resolve / ktlint // please fix this shit
         } else {
             0f
         }
 
         val canvasWidth = with(LocalDensity.current) {
-            (barWidthPx * values.size + (values.size - 1) * barPaddingPx + startPaddingPx + endPaddingPx).toDp()
+            val paddings = barPaddingPx + startPaddingPx + endPaddingPx
+            (barWidthPx * values.size + (values.size - 1) * paddings).toDp()
         }
 
         Canvas(
@@ -87,8 +90,9 @@ fun Histogram(
 //                }
 
                 val maxY = values.max()
-                val minBarOffsetY =
-                    size.height - (size.height - valueTextPaddingPx * 2 - valueTextSizePx - barPaddingPx)
+                val minBarOffsetY = size.height.let { height ->
+                    height - (height - valueTextPaddingPx * 2 - valueTextSizePx - barPaddingPx)
+                }
                 val maxBarOffsetY = size.height - size.height * 0.02f
 
                 values.forEachIndexed { index, barValue ->

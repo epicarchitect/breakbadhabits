@@ -7,4 +7,3 @@ interface CoroutineDispatchers {
     val default: CoroutineDispatcher
     val main: CoroutineDispatcher
 }
-
