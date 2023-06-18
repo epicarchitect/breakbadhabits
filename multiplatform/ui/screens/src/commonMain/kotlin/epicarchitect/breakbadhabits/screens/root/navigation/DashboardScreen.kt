@@ -20,9 +20,7 @@ class DashboardScreen : Screen {
         ) {
             val navigator = LocalNavigator.currentOrThrow
             val presentationModule = LocalAppModule.current.presentation
-            val viewModel = hold {
-                presentationModule.dashboard.createDashboardViewModel()
-            }
+            val viewModel = hold(factory = presentationModule.dashboard::dashboardViewModel)
 
             Dashboard(
                 habitItemsController = viewModel.itemsLoadingController,

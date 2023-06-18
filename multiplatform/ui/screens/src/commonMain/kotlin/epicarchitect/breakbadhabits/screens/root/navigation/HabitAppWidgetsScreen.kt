@@ -14,10 +14,7 @@ class HabitAppWidgetsScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
-        val viewModel = hold {
-            presentationModule.habits.createHabitAppWidgetsViewModel()
-        }
-
+        val viewModel = hold(factory = presentationModule.habits::habitAppWidgetsViewModel)
         HabitAppWidgets(
             itemsController = viewModel.itemsController,
             onWidgetClick = {

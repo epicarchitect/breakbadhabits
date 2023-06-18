@@ -16,7 +16,7 @@ class HabitUpdatingScreen(private val habitId: Int) : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
         val viewModel = hold {
-            presentationModule.habits.createHabitUpdatingViewModel(habitId)
+            presentationModule.habits.habitUpdatingViewModel(habitId)
         }
 
         LaunchedEffectWhenExecuted(viewModel.updatingController, navigator::pop)

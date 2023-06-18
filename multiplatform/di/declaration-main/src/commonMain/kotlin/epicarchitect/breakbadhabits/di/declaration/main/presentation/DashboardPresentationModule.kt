@@ -7,8 +7,10 @@ import epicarchitect.breakbadhabits.presentation.dashboard.DashboardViewModel
 class DashboardPresentationModule(
     private val habitsLogicModule: HabitsLogicModule
 ) : DashboardPresentationModule {
-    override fun createDashboardViewModel() = DashboardViewModel(
-        habitProvider = habitsLogicModule.habitProvider,
-        habitAbstinenceProvider = habitsLogicModule.habitAbstinenceProvider
-    )
+
+    override val dashboardViewModel
+        get() = DashboardViewModel(
+            habitProvider = habitsLogicModule.habitProvider,
+            habitAbstinenceProvider = habitsLogicModule.habitAbstinenceProvider
+        )
 }

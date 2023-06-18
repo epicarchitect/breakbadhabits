@@ -21,7 +21,7 @@ class HabitTracksScreen(private val habitId: Int) : Screen {
             val navigator = LocalNavigator.currentOrThrow
             val presentationModule = LocalAppModule.current.presentation
             val viewModel = hold {
-                presentationModule.habits.createHabitTracksViewModel(habitId)
+                presentationModule.habits.habitTracksViewModel(habitId)
             }
 
             HabitTracks(

@@ -25,7 +25,7 @@ class HabitsAppWidgetConfigCreationActivity : ComponentActivity() {
                 }
 
                 val viewModel = remember {
-                    presentationModule.createHabitWidgetCreationViewModel(widgetSystemId)
+                    presentationModule.habitWidgetCreationViewModel(widgetSystemId)
                 }
 
                 LaunchedEffectWhenExecuted(viewModel.creationController) {

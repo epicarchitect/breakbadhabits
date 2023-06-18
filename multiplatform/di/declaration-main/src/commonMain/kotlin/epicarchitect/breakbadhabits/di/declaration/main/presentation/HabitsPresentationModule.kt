@@ -17,16 +17,18 @@ class HabitsPresentationModule(
     private val habitsLogicModule: HabitsLogicModule,
     private val dateTimeLogicModule: DateTimeLogicModule
 ) : HabitsPresentationModule {
-    override fun createHabitCreationViewModel() = HabitCreationViewModel(
-        habitCreator = habitsLogicModule.habitCreator,
-        habitNewNameValidator = habitsLogicModule.habitNewNameValidator,
-        trackTimeValidator = habitsLogicModule.habitTrackTimeValidator,
-        trackEventCountValidator = habitsLogicModule.habitTrackEventCountValidator,
-        iconProvider = habitsLogicModule.habitIconProvider,
-        dateTimeProvider = dateTimeLogicModule.dateTimeProvider
-    )
 
-    override fun createHabitUpdatingViewModel(habitId: Int) = HabitUpdatingViewModel(
+    override val habitCreationViewModel
+        get() = HabitCreationViewModel(
+            habitCreator = habitsLogicModule.habitCreator,
+            habitNewNameValidator = habitsLogicModule.habitNewNameValidator,
+            trackTimeValidator = habitsLogicModule.habitTrackTimeValidator,
+            trackEventCountValidator = habitsLogicModule.habitTrackEventCountValidator,
+            iconProvider = habitsLogicModule.habitIconProvider,
+            dateTimeProvider = dateTimeLogicModule.dateTimeProvider
+        )
+
+    override fun habitUpdatingViewModel(habitId: Int) = HabitUpdatingViewModel(
         habitProvider = habitsLogicModule.habitProvider,
         habitUpdater = habitsLogicModule.habitUpdater,
         habitDeleter = habitsLogicModule.habitDeleter,
@@ -35,7 +37,7 @@ class HabitsPresentationModule(
         habitId = habitId
     )
 
-    override fun createHabitDetailsViewModel(habitId: Int) = HabitDetailsViewModel(
+    override fun habitDetailsViewModel(habitId: Int) = HabitDetailsViewModel(
         habitProvider = habitsLogicModule.habitProvider,
         habitTrackProvider = habitsLogicModule.habitTrackProvider,
         habitAbstinenceProvider = habitsLogicModule.habitAbstinenceProvider,
@@ -44,7 +46,7 @@ class HabitsPresentationModule(
         habitId = habitId
     )
 
-    override fun createHabitTrackCreationViewModel(habitId: Int) = HabitTrackCreationViewModel(
+    override fun habitTrackCreationViewModel(habitId: Int) = HabitTrackCreationViewModel(
         habitProvider = habitsLogicModule.habitProvider,
         habitTrackCreator = habitsLogicModule.habitTrackCreator,
         trackRangeValidator = habitsLogicModule.habitTrackTimeValidator,
@@ -53,13 +55,13 @@ class HabitsPresentationModule(
         habitId = habitId
     )
 
-    override fun createHabitTracksViewModel(habitId: Int) = HabitTracksViewModel(
+    override fun habitTracksViewModel(habitId: Int) = HabitTracksViewModel(
         habitProvider = habitsLogicModule.habitProvider,
         habitTrackProvider = habitsLogicModule.habitTrackProvider,
         habitId = habitId
     )
 
-    override fun createHabitTrackUpdatingViewModel(habitTrackId: Int) = HabitTrackUpdatingViewModel(
+    override fun habitTrackUpdatingViewModel(habitTrackId: Int) = HabitTrackUpdatingViewModel(
         habitProvider = habitsLogicModule.habitProvider,
         habitTrackProvider = habitsLogicModule.habitTrackProvider,
         habitTrackUpdater = habitsLogicModule.habitTrackUpdater,
@@ -70,12 +72,13 @@ class HabitsPresentationModule(
         habitTrackId = habitTrackId
     )
 
-    override fun createHabitAppWidgetsViewModel() = HabitAppWidgetsViewModel(
-        habitWidgetProvider = habitsLogicModule.habitWidgetProvider,
-        habitProvider = habitsLogicModule.habitProvider
-    )
+    override val habitAppWidgetsViewModel: HabitAppWidgetsViewModel
+        get() = HabitAppWidgetsViewModel(
+            habitWidgetProvider = habitsLogicModule.habitWidgetProvider,
+            habitProvider = habitsLogicModule.habitProvider
+        )
 
-    override fun createHabitWidgetUpdatingViewModel(
+    override fun habitWidgetUpdatingViewModel(
         habitWidgetId: Int
     ) = HabitAppWidgetUpdatingViewModel(
         habitProvider = habitsLogicModule.habitProvider,
@@ -85,7 +88,7 @@ class HabitsPresentationModule(
         habitWidgetId = habitWidgetId
     )
 
-    override fun createHabitWidgetCreationViewModel(
+    override fun habitWidgetCreationViewModel(
         widgetSystemId: Int
     ) = HabitAppWidgetCreationViewModel(
         habitProvider = habitsLogicModule.habitProvider,

@@ -16,11 +16,13 @@ class BreakBadHabitsApp : Application() {
     }
 }
 
-private fun registerAppWidgetUpdates(app: Application) {
+private fun registerAppWidgetUpdates(
+    app: Application
+) = with(AppModuleHolder.logic.habits) {
     combine(
-        AppModuleHolder.logic.habits.habitProvider.habitsFlow(),
-        AppModuleHolder.logic.habits.habitTrackProvider.habitTracksFlow(),
-        AppModuleHolder.logic.habits.habitWidgetProvider.provideAllFlow()
+        habitProvider.habitsFlow(),
+        habitTrackProvider.habitTracksFlow(),
+        habitWidgetProvider.provideAllFlow()
     ) { _, _, _ ->
         HabitsAppWidgetProvider.sendUpdateIntent(app)
     }.launchIn(CoroutineScope(Dispatchers.Default))

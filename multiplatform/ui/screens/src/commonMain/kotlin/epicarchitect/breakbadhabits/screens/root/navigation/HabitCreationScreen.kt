@@ -21,9 +21,7 @@ class HabitCreationScreen : Screen {
         ) {
             val navigator = LocalNavigator.currentOrThrow
             val presentationModule = LocalAppModule.current.presentation
-            val viewModel = hold {
-                presentationModule.habits.createHabitCreationViewModel()
-            }
+            val viewModel = hold(factory = presentationModule.habits::habitCreationViewModel)
 
             LaunchedEffectWhenExecuted(viewModel.creationController, navigator::pop)
 

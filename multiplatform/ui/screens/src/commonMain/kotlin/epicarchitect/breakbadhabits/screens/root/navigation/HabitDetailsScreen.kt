@@ -14,7 +14,7 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val presentationModule = LocalAppModule.current.presentation
         val viewModel = hold {
-            presentationModule.habits.createHabitDetailsViewModel(habitId)
+            presentationModule.habits.habitDetailsViewModel(habitId)
         }
 
         HabitDetails(

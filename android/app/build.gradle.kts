@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
-        resourceConfigurations.addAll(listOf("en", "ru"))
+        resourceConfigurations += setOf("en", "ru")
     }
 
     signingConfigs {

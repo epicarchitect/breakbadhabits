@@ -11,13 +11,15 @@ import epicarchitect.breakbadhabits.presentation.habits.HabitTracksViewModel
 import epicarchitect.breakbadhabits.presentation.habits.HabitUpdatingViewModel
 
 interface HabitsPresentationModule {
-    fun createHabitCreationViewModel(): HabitCreationViewModel
-    fun createHabitUpdatingViewModel(habitId: Int): HabitUpdatingViewModel
-    fun createHabitDetailsViewModel(habitId: Int): HabitDetailsViewModel
-    fun createHabitTrackCreationViewModel(habitId: Int): HabitTrackCreationViewModel
-    fun createHabitTracksViewModel(habitId: Int): HabitTracksViewModel
-    fun createHabitTrackUpdatingViewModel(habitTrackId: Int): HabitTrackUpdatingViewModel
-    fun createHabitAppWidgetsViewModel(): HabitAppWidgetsViewModel
-    fun createHabitWidgetUpdatingViewModel(habitWidgetId: Int): HabitAppWidgetUpdatingViewModel
-    fun createHabitWidgetCreationViewModel(widgetSystemId: Int): HabitAppWidgetCreationViewModel
+    val habitCreationViewModel: HabitCreationViewModel
+    fun habitUpdatingViewModel(habitId: Int): HabitUpdatingViewModel
+    fun habitDetailsViewModel(habitId: Int): HabitDetailsViewModel
+
+    fun habitTrackCreationViewModel(habitId: Int): HabitTrackCreationViewModel
+    fun habitTracksViewModel(habitId: Int): HabitTracksViewModel
+    fun habitTrackUpdatingViewModel(habitTrackId: Int): HabitTrackUpdatingViewModel
+
+    val habitAppWidgetsViewModel: HabitAppWidgetsViewModel
+    fun habitWidgetUpdatingViewModel(habitWidgetId: Int): HabitAppWidgetUpdatingViewModel
+    fun habitWidgetCreationViewModel(widgetSystemId: Int): HabitAppWidgetCreationViewModel
 }

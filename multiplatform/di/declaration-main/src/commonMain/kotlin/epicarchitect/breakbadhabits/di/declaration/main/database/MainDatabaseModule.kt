@@ -1,11 +1,16 @@
 package epicarchitect.breakbadhabits.di.declaration.main.database
 
+import epicarchitect.breakbadhabits.database.MainDatabaseFactory
+import epicarchitect.breakbadhabits.database.SqlDriverFactory
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
 class MainDatabaseModule(
     externals: MainDatabaseModuleExternals
-) : MainDatabaseModuleExternals by externals
+) {
+    private val mainDatabaseFactory = MainDatabaseFactory(externals.sqlDriverFactory)
+    val mainDatabase: MainDatabase by lazy(mainDatabaseFactory::create)
+}
 
 interface MainDatabaseModuleExternals {
-    val mainDatabase: MainDatabase
+    val sqlDriverFactory: SqlDriverFactory
 }

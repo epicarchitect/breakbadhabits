@@ -1,8 +1,7 @@
 package epicarchitect.breakbadhabits
 
 import android.app.Application
-import epicarchitect.breakbadhabits.database.DriverFactory
-import epicarchitect.breakbadhabits.database.MainDatabaseFactory
+import epicarchitect.breakbadhabits.database.SqlDriverFactory
 import epicarchitect.breakbadhabits.di.declaration.main.AppModule
 import epicarchitect.breakbadhabits.di.declaration.main.database.MainDatabaseModuleExternals
 import epicarchitect.breakbadhabits.di.declaration.main.foundation.FoundationModule
@@ -23,7 +22,7 @@ fun setupAppModuleHolder(app: Application) {
         foundation = FoundationModule(),
         externals = object : LogicModuleExternals {
             override val mainDatabaseExternal = object : MainDatabaseModuleExternals {
-                override val mainDatabase = MainDatabaseFactory(DriverFactory(app)).create()
+                override val sqlDriverFactory = SqlDriverFactory(app)
             }
             override val habitsExternal = object : HabitsLogicModuleExternals {
                 override val habitIconProvider = HabitIconProvider()
