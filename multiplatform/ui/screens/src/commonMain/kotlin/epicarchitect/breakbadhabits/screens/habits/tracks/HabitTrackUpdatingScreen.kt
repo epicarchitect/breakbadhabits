@@ -49,6 +49,23 @@ import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackTi
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import kotlinx.datetime.TimeZone
 
+//<string name="habitEventEditing_title">Editing an event</string>
+//<string name="habitEventEditing_habitName">Habit: %s</string>
+//<string name="habitEventEditing_event_description">Select the date and time when the event occurred.</string>
+//<string name="habitEventEditing_comment_description">You can write a comment, but you don\'t have to.</string>
+//<string name="habitEventEditing_comment">Comment</string>
+//<string name="habitEventEditing_finish">Save changes</string>
+//<string name="habitEventEditing_eventTimeValidation_biggestThenCurrentTime">The date and time of the event cannot be greater than the current time.</string>
+//<string name="habitEventEditing_eventDate">Event date: %s</string>
+//<string name="habitEventEditing_eventTime">Event time: %s</string>
+//<string name="habitEventEditing_deletion_description">You can delete this event.</string>
+//<string name="habitEventEditing_deletion_button">Delete this event</string>
+
+
+interface HabitTrackUpdatingResources {
+    val titleText: String
+    fun habitNameLabel(name: String): String
+}
 @Composable
 fun HabitTrackUpdating(
     eventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,

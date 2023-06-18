@@ -4,6 +4,8 @@ import androidx.compose.ui.text.intl.Locale
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitNewName
 import epicarchitect.breakbadhabits.screens.dashboard.DashboardResources
 import epicarchitect.breakbadhabits.screens.habits.HabitCreationResources
+import epicarchitect.breakbadhabits.screens.habits.tracks.HabitTrackCreationResources
+import epicarchitect.breakbadhabits.screens.habits.tracks.HabitTracksResources
 import epicarchitect.breakbadhabits.screens.settings.AppSettingsResources
 
 fun dashboardResourcesOf(locale: Locale) = when (locale.language) {
@@ -73,5 +75,36 @@ fun habitCreationResourcesOf(locale: Locale) = when (locale.language) {
             IncorrectHabitNewName.Reason.Empty -> "The title cannot be empty."
             is IncorrectHabitNewName.Reason.TooLong -> "The name cannot be longer than ${reason.maxLength} characters."
         }
+    }
+}
+
+fun habitTrackCreationResourcesOf(locale: Locale) = when (locale.language) {
+    "ru" -> object : HabitTrackCreationResources {
+        override val titleText = "Новое событие"
+        override val commentDescription = "Вы можете написать комментарий, но это не обязательно."
+        override val commentLabel = "Комментарий"
+        override val finishDescription = "Вы всегда сможете изменить или удалить это событие."
+        override val finishButton = "Записать событие"
+        override fun habitNameLabel(habitName: String) = "Привычка: $habitName"
+    }
+
+    else -> object : HabitTrackCreationResources {
+        override val titleText = "New event"
+        override val commentDescription = "You can write a comment, but you don't have to."
+        override val commentLabel = "Comment"
+        override val finishDescription = "You can always change or delete this event."
+        override val finishButton = "Save event"
+        override fun habitNameLabel(habitName: String) = "Habit: $habitName"
+    }
+}
+
+fun habitTracksResourcesOf(locale: Locale) = when (locale.language) {
+    "ru" -> object : HabitTracksResources {
+        override val newEventButton = "Добавить новые события"
+        override val habitTrackNoComment = "Комментарий отсутствует."
+    }
+    else -> object : HabitTracksResources {
+        override val newEventButton = "Add new events"
+        override val habitTrackNoComment = "There is no comment."
     }
 }

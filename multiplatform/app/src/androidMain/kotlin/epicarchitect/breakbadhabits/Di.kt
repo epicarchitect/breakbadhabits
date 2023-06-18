@@ -23,7 +23,7 @@ fun setupAppModuleHolder(app: Application) {
         foundation = FoundationModule(),
         externals = object : LogicModuleExternals {
             override val mainDatabaseExternal = object : MainDatabaseModuleExternals {
-                override val mainDatabase = MainDatabaseFactory.create(DriverFactory(app))
+                override val mainDatabase = MainDatabaseFactory(DriverFactory(app)).create()
             }
             override val habitsExternal = object : HabitsLogicModuleExternals {
                 override val habitIconProvider = HabitIconProvider()

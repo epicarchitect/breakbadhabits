@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,19 @@ import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackTi
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import kotlin.time.Duration.Companion.days
 
+val LocalHabitTrackCreationResources = compositionLocalOf<HabitTrackCreationResources> {
+    error("LocalHabitTrackCreationResources not provided")
+}
+
+interface HabitTrackCreationResources {
+    val titleText: String
+    val commentDescription: String
+    val commentLabel: String
+    val finishDescription: String
+    val finishButton: String
+    fun habitNameLabel(habitName: String): String
+}
+
 @Composable
 fun HabitTrackCreation(
     eventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
@@ -62,6 +76,7 @@ fun HabitTrackCreation(
     var rangeSelectionShow by remember { mutableStateOf(false) }
     val rangeState by timeInputController.state.collectAsState()
     var selectedTimeSelectionIndex by remember { mutableStateOf(0) }
+    val resources = LocalHabitTrackCreationResources.current
 
     ClearFocusWhenKeyboardHiddenEffect()
 
@@ -95,7 +110,7 @@ fun HabitTrackCreation(
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "stringResource(R.string.habitEventCreation_title)",
+            text = resources.titleText,
             type = Text.Type.Title,
             priority = Text.Priority.High
         )
@@ -106,11 +121,7 @@ fun HabitTrackCreation(
             if (it != null) {
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
-//                    text = stringResource(
-//                        R.string.habitEventCreation_habitName,
-//                        it.name
-//                    ),
-                    text = it.name,
+                    text = resources.habitNameLabel(it.name),
                     type = Text.Type.Description,
                     priority = Text.Priority.Low
                 )
@@ -227,7 +238,7 @@ fun HabitTrackCreation(
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "stringResource(R.string.habitEventCreation_comment_description)"
+            text = resources.commentDescription
         )
 
 
@@ -235,7 +246,7 @@ fun HabitTrackCreation(
 
         ValidatedTextField(
             modifier = Modifier.padding(horizontal = 16.dp),
-            label = "stringResource(R.string.habitEventCreation_comment)",
+            label = resources.commentLabel,
             controller = commentInputController,
             validationAdapter = remember {
                 TextFieldValidationAdapter {
@@ -252,7 +263,7 @@ fun HabitTrackCreation(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
-            text = "stringResource(R.string.habitEventCreation_finish_description)"
+            text = resources.finishDescription
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -262,7 +273,7 @@ fun HabitTrackCreation(
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
             controller = creationController,
-            text = "stringResource(R.string.habitEventCreation_finish)",
+            text = resources.finishButton,
             type = Button.Type.Main,
 //            icon = {
 //                LocalResourceIcon(resourceId = R.drawable.ic_done)

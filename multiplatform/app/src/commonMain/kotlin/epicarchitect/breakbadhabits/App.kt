@@ -6,5 +6,7 @@ import epicarchitect.breakbadhabits.screens.root.RootScreen
 
 @Composable
 fun App() {
-    RootScreen(AppModuleHolder.require())
+    RootScreen(
+        appModule = AppModuleHolder.require()
+    )
 }

@@ -6,8 +6,10 @@ import epicarchitect.breakbadhabits.sqldelight.main.HabitTrack
 import epicarchitect.breakbadhabits.sqldelight.main.HabitWidget
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
-object MainDatabaseFactory {
-    fun create(driverFactory: DriverFactory) = MainDatabase(
+class MainDatabaseFactory(
+    private val driverFactory: DriverFactory
+) {
+    fun create() = MainDatabase(
         driver = driverFactory.create(
             schema = MainDatabase.Schema,
             databaseName = "breakbadhabits-main.db"

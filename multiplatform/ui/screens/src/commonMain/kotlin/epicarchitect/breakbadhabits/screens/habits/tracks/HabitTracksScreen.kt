@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +38,14 @@ import epicarchitect.breakbadhabits.logic.habits.model.HabitTrack
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import kotlinx.datetime.TimeZone
 
-//import epicarchitect.breakbadhabits.foundation.uikit.R as UikitR
+val LocalHabitTracksResources = compositionLocalOf<HabitTracksResources> {
+    error("LocalHabitTracksResources not provided")
+}
+
+interface HabitTracksResources {
+    val newEventButton: String
+    val habitTrackNoComment: String
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -47,6 +55,7 @@ fun HabitTracks(
     onTrackClick: (trackId: Int) -> Unit,
     onAddClick: () -> Unit
 ) {
+    val resources = LocalHabitTracksResources.current
     val logicModule = LocalAppModule.current.logic
     val uiModule = LocalAppModule.current.ui
     val timeZone by logicModule.dateTime.dateTimeProvider.currentTimeZoneFlow()
@@ -193,10 +202,7 @@ fun HabitTracks(
 
                             Text(
                                 modifier = Modifier.padding(2.dp),
-                                text = track.comment.ifBlank {
-//                                    stringResource(R.string.habitEvents_noComment)
-                                    "asd"
-                                }
+                                text = track.comment.ifBlank(resources::habitTrackNoComment)
                             )
                         }
                     }
@@ -209,7 +215,7 @@ fun HabitTracks(
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
             onClick = onAddClick,
-            text = "Add new events",
+            text = resources.newEventButton,
             type = Button.Type.Main,
 //            icon = {
 //                LocalResourceIcon(resourceId = R.drawable.ic_add)
