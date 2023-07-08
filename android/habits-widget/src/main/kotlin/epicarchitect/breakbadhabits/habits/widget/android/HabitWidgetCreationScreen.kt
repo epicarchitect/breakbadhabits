@@ -102,7 +102,7 @@ fun HabitsAppWidgetConfigCreation(
             modifier = Modifier.align(Alignment.End),
             controller = creationController,
             text = "stringResource(R.string.habitsAppWidgetConfigCreation_finish)",
-            type = Button.Type.Main,
+            type = Button.Type.Main
 //            icon = {
 //                LocalResourceIcon(resourceId = R.drawable.ic_done)
 //            }
@@ -125,7 +125,7 @@ private fun LazyItemScope.HabitItem(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick),
+                .clickable(onClick = onClick)
         ) {
             Row(
                 modifier = Modifier.padding(8.dp),

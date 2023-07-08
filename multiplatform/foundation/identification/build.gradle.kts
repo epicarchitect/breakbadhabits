@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    commonMainApi(libs.russhwolf.settings)
+    commonMainApi(libs.russhwolf.multiplatformSettings)
 }

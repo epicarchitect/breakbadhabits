@@ -1,46 +1,48 @@
 [versions]
-agp = "8.0.2"
-kotlin = "1.8.20"
-kotlin-coroutines-core = "1.7.1"
-compose = "1.4.0"
-appcash-sqldelight = "2.0.0-rc01"
-kotlin-datetime = "0.4.0"
-kotlin-serialization-json = "1.5.1"
+android-gradlePlugin = "8.0.2"
+jetbrains-kotlin = "1.8.20"
+jetbrains-kotlin-coroutinesCore = "1.7.1"
+jetbrains-compose = "1.4.0"
+jetbrains-kotlin-datetime = "0.4.0"
+jetbrains-kotlin-serializationJson = "1.5.1"
 android-activityCompose = "1.7.1"
-epicarchitect-calendar-compose = "1.0.4"
 android-coreKtx = "1.10.1"
+cashapp-sqldelight = "2.0.0-rc01"
+epicarchitect-calendarCompose = "1.0.4"
 adrielcafe-voyager = "1.0.0-rc06"
 russhwolf-settings = "1.0.0"
-detekt = "1.23.0"
+arturbosch-detekt = "1.23.0"
+pinterest-ktlint = "0.50.0"
 
 [libraries]
-android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
-kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-arturbosch-detektGradlePlugin = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "detekt" }
-arturbosch-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradlePlugin" }
+jetbrains-kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "jetbrains-kotlin" }
+arturbosch-detektGradlePlugin = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "arturbosch-detekt" }
+pinterest-ktlint = { module = "com.pinterest:ktlint", version.ref = "pinterest-ktlint" }
 
-kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
-kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }
-kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines-core" }
+jetbrains-kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "jetbrains-kotlin-datetime" }
+jetbrains-kotlin-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "jetbrains-kotlin-serializationJson" }
+jetbrains-kotlin-coroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "jetbrains-kotlin-coroutinesCore" }
 
 android-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "android-activityCompose" }
 android-coreKtx = { module = "androidx.core:core-ktx", version.ref = "android-coreKtx" }
 
-appcash-sqldelight-androidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "appcash-sqldelight" }
-appcash-sqldelight-nativeDriver = { module = "app.cash.sqldelight:native-driver", version.ref = "appcash-sqldelight" }
-appcash-sqldelight-coroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "appcash-sqldelight" }
-appcash-sqldelight-primitiveAdapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "appcash-sqldelight" }
+cashapp-sqldelight-androidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "cashapp-sqldelight" }
+cashapp-sqldelight-nativeDriver = { module = "app.cash.sqldelight:native-driver", version.ref = "cashapp-sqldelight" }
+cashapp-sqldelight-coroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "cashapp-sqldelight" }
+cashapp-sqldelight-primitiveAdapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "cashapp-sqldelight" }
 
-russhwolf-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "russhwolf-settings" }
-russhwolf-settingsNoArg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "russhwolf-settings" }
+russhwolf-multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "russhwolf-settings" }
+russhwolf-multiplatformSettingsNoArg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "russhwolf-settings" }
 
-epicarchitect-calendar-compose-datePicker = { module = "io.github.epicarchitect:calendar-compose-datepicker", version.ref = "epicarchitect-calendar-compose" }
+epicarchitect-calendarComposeDatePicker = { module = "io.github.epicarchitect:calendar-compose-datepicker", version.ref = "epicarchitect-calendarCompose" }
 adrielcafe-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "adrielcafe-voyager" }
 
 [plugins]
-appcash-sqldelight = { id = "app.cash.sqldelight", version.ref = "appcash-sqldelight" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-android-library = { id = "com.android.library", version.ref = "agp" }
-android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+cashapp-sqldelight = { id = "app.cash.sqldelight", version.ref = "cashapp-sqldelight" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "jetbrains-kotlin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
+android-library = { id = "com.android.library", version.ref = "android-gradlePlugin" }
+android-application = { id = "com.android.application", version.ref = "android-gradlePlugin" }
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "jetbrains-kotlin" }
+arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt" }

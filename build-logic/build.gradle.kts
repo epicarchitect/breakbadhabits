@@ -7,6 +7,6 @@ dependencies {
     implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 
     implementation(libs.android.gradlePlugin)
-    implementation(libs.kotlin.gradlePlugin)
+    implementation(libs.jetbrains.kotlin.gradlePlugin)
     implementation(libs.arturbosch.detektGradlePlugin)
 }

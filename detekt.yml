@@ -21,12 +21,4 @@ complexity:
     active: false
 
 style:
-  active: true
-  MagicNumber:
-    active: false
-  MaxLineLength:
-    active: false
-  UnusedPrivateProperty:
-    active: false
-  UnusedParameter:
-    active: false
+  active: false

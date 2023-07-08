@@ -1,17 +1,11 @@
 package convention.detekt
 
-import libs
-
 plugins {
     id("io.gitlab.arturbosch.detekt")
 }
 
-dependencies {
-    detektPlugins(libs.arturbosch.detektFormatting)
-}
-
 detekt {
-    config.setFrom(rootProject.rootDir.path + "/detekt.yml")
+    config.setFrom("${rootProject.rootDir}/detekt.yml")
     source.setFrom(
         "src/commonMain/kotlin",
         "src/androidMain/kotlin",

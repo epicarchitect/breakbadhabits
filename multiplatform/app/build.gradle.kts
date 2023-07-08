@@ -1,7 +1,7 @@
 plugins {
     id("convention.multiplatform.library")
     kotlin("native.cocoapods")
-    alias(libs.plugins.compose)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {

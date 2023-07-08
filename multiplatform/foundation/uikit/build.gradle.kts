@@ -1,6 +1,6 @@
 plugins {
     id("convention.multiplatform.library")
-    alias(libs.plugins.compose)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
@@ -19,5 +19,5 @@ dependencies {
     commonMainApi(projects.multiplatform.foundation.datetime)
     commonMainApi(compose.foundation)
     commonMainImplementation(compose.material3)
-    commonMainImplementation(libs.epicarchitect.calendar.compose.datePicker)
+    commonMainImplementation(libs.epicarchitect.calendarComposeDatePicker)
 }

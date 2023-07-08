@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    commonMainApi(libs.kotlin.coroutines.core)
+    commonMainApi(libs.jetbrains.kotlin.coroutinesCore)
 }

@@ -4,5 +4,5 @@ plugins {
 
 dependencies {
     commonMainApi(projects.multiplatform.foundation.math)
-    commonMainApi(libs.kotlin.datetime)
+    commonMainApi(libs.jetbrains.kotlin.datetime)
 }
