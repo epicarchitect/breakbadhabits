@@ -54,5 +54,5 @@ include(
     ":multiplatform:foundation:math",
     ":multiplatform:foundation:icons",
     ":multiplatform:foundation:identification",
-    ":multiplatform:foundation:settings",
+    ":multiplatform:foundation:settings"
 )

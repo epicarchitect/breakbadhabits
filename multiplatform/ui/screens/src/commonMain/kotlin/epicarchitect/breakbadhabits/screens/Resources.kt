@@ -107,6 +107,7 @@ fun habitTracksResourcesOf(locale: Locale) = when (locale.language) {
         override val newEventButton = "Добавить новые события"
         override val habitTrackNoComment = "Комментарий отсутствует."
     }
+
     else -> object : HabitTracksResources {
         override val newEventButton = "Add new events"
         override val habitTrackNoComment = "There is no comment."
