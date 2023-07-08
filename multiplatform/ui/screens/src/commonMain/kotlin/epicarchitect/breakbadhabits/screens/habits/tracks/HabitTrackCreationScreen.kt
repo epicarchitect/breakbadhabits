@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
-import epicarchitect.breakbadhabits.foundation.datetime.withZeroSeconds
 import epicarchitect.breakbadhabits.foundation.math.ranges.isStartSameAsEnd
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
 import epicarchitect.breakbadhabits.foundation.uikit.SingleSelectionChipRow
@@ -46,7 +45,6 @@ import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackDa
 import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackEventCount
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import kotlinx.datetime.LocalDateTime
-import kotlin.time.Duration.Companion.days
 
 val LocalHabitTrackCreationResources = compositionLocalOf<HabitTrackCreationResources> {
     error("LocalHabitTrackCreationResources not provided")

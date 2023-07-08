@@ -17,8 +17,8 @@ import epicarchitect.breakbadhabits.logic.habits.updater.HabitTrackUpdater
 import epicarchitect.breakbadhabits.logic.habits.updater.HabitUpdater
 import epicarchitect.breakbadhabits.logic.habits.updater.HabitWidgetUpdater
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitNewNameValidator
-import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackEventCountValidator
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackDateTimeRangeValidator
+import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackEventCountValidator
 
 interface HabitsLogicModule {
     val habitIconProvider: IconProvider

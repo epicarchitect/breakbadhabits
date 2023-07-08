@@ -5,7 +5,6 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import epicarchitect.breakbadhabits.android.habits.widget.R
 import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
-import epicarchitect.breakbadhabits.foundation.datetime.duration
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.model.HabitAbstinence
 import epicarchitect.breakbadhabits.ui.format.DurationFormatter
