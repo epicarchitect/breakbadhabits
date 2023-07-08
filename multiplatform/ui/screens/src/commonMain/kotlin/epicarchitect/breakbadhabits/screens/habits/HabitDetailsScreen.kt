@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.datetime.MonthOfYear
-import epicarchitect.breakbadhabits.foundation.datetime.duration
 import epicarchitect.breakbadhabits.foundation.uikit.Card
 import epicarchitect.breakbadhabits.foundation.uikit.Histogram
 import epicarchitect.breakbadhabits.foundation.uikit.IconButton
@@ -28,7 +27,7 @@ import epicarchitect.breakbadhabits.foundation.uikit.StatisticData
 import epicarchitect.breakbadhabits.foundation.uikit.Statistics
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
-import epicarchitect.breakbadhabits.logic.habits.model.DailyHabitEventCount
+import epicarchitect.breakbadhabits.logic.habits.model.DailyHabitEventAmount
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.model.HabitAbstinence
 import epicarchitect.breakbadhabits.logic.habits.model.HabitStatistics
@@ -43,7 +42,7 @@ fun HabitDetails(
     habitAbstinenceController: LoadingController<HabitAbstinence?>,
     abstinenceListController: LoadingController<List<HabitAbstinence>>,
     statisticsController: LoadingController<HabitStatistics?>,
-    currentMonthDailyCountsController: LoadingController<DailyHabitEventCount>,
+    currentMonthDailyCountsController: LoadingController<DailyHabitEventAmount>,
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
     onAllTracksClick: () -> Unit
@@ -90,7 +89,7 @@ fun HabitDetails(
             ) { abstinence ->
                 Text(
                     text = abstinence?.let {
-                        durationFormatter.format(it.dateTimeRange.duration)
+                        durationFormatter.format(it.duration)
                     } ?: " stringResource(R.string.habits_noEvents)"
                 )
             }
@@ -191,7 +190,7 @@ fun HabitDetails(
 
                         val abstinenceTimes = remember(abstinenceList) {
                             abstinenceList.map {
-                                it.dateTimeRange.duration.inWholeSeconds.toFloat()
+                                it.duration.inWholeSeconds.toFloat()
                             }
                         }
 
@@ -292,14 +291,14 @@ private fun HabitStatistics.toStatisticsData(
     ),
     StatisticData(
         name = "context.getString(R.string.habitAnalyze_statistics_countEventsInCurrentMonth)",
-        value = eventCount.currentMonthCount.toString()
+        value = eventAmount.currentMonthCount.toString()
     ),
     StatisticData(
         name = "context.getString(R.string.habitAnalyze_statistics_countEventsInPreviousMonth)",
-        value = eventCount.previousMonthCount.toString()
+        value = eventAmount.previousMonthCount.toString()
     ),
     StatisticData(
         name = "context.getString(R.string.habitAnalyze_statistics_countEvents)",
-        value = eventCount.totalCount.toString()
+        value = eventAmount.totalCount.toString()
     )
 )

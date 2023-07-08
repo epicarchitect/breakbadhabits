@@ -15,19 +15,19 @@ class HabitWidgetProvider(
         id: Int
     ) = mainDatabase.habitWidgetQueries
         .selectById(id)
-        .asFlowOfOneOrNull(coroutineDispatchers, ::asHabitWidget)
+        .asFlowOfOneOrNull(coroutineDispatchers, ::mapToHabitWidget)
 
     fun provideFlowBySystemId(
         systemId: Int
     ) = mainDatabase.habitWidgetQueries
         .selectBySystemId(systemId)
-        .asFlowOfOneOrNull(coroutineDispatchers, ::asHabitWidget)
+        .asFlowOfOneOrNull(coroutineDispatchers, ::mapToHabitWidget)
 
     fun provideAllFlow() = mainDatabase.habitWidgetQueries
         .selectAll()
-        .asFlowOfList(coroutineDispatchers, ::asHabitWidget)
+        .asFlowOfList(coroutineDispatchers, ::mapToHabitWidget)
 
-    private fun asHabitWidget(value: DatabaseHabitWidget) = with(value) {
+    private fun mapToHabitWidget(value: DatabaseHabitWidget) = with(value) {
         HabitWidget(
             id = id,
             title = title,

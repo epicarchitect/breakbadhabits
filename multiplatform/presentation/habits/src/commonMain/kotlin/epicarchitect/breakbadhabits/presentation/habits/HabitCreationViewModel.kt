@@ -5,24 +5,24 @@ import epicarchitect.breakbadhabits.foundation.controller.SingleSelectionControl
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.controller.requireSelectedItem
 import epicarchitect.breakbadhabits.foundation.controller.validateAndRequire
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
 import epicarchitect.breakbadhabits.foundation.datetime.duration
 import epicarchitect.breakbadhabits.foundation.icons.IconProvider
 import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
 import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
+import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitCreator
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitNewName
+import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackDateTimeRange
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackTime
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitNewNameValidator
+import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackDateTimeRangeValidator
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackEventCountValidator
-import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackTimeValidator
 import kotlinx.coroutines.flow.combine
 
 class HabitCreationViewModel(
     habitCreator: HabitCreator,
     habitNewNameValidator: HabitNewNameValidator,
-    trackTimeValidator: HabitTrackTimeValidator,
+    trackTimeValidator: HabitTrackDateTimeRangeValidator,
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
     iconProvider: IconProvider
@@ -47,7 +47,7 @@ class HabitCreationViewModel(
 
     val firstTrackTimeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = ZonedDateTimeRange.of(dateTimeProvider.getCurrentDateTime()),
+        initialInput = dateTimeProvider.getCurrentDateTime().let { it..it },
         validation = trackTimeValidator::validate
     )
 
@@ -57,13 +57,16 @@ class HabitCreationViewModel(
             val dailyEventCount =
                 dailyEventCountInputController.validateAndRequire<CorrectHabitTrackEventCount>()
             val trackRange =
-                firstTrackTimeInputController.validateAndRequire<CorrectHabitTrackTime>()
+                firstTrackTimeInputController.validateAndRequire<CorrectHabitTrackDateTimeRange>()
 
-            val eventCount = dailyEventCount.data * trackRange.data.duration.inWholeDays.toInt()
+            val eventCount = dailyEventCount.data * trackRange.data.duration(
+                timeZone = dateTimeProvider.getCurrentTimeZone()
+            ).inWholeDays.toInt() // TODO this is shit
+
             habitCreator.createHabit(
                 name = habitNameController.validateAndRequire(),
                 icon = habitIconSelectionController.requireSelectedItem(),
-                trackEventCount = eventCount, // TODO resolve this
+                trackEventCount = eventCount,
                 trackTime = trackRange
             )
         },
@@ -75,7 +78,7 @@ class HabitCreationViewModel(
             habitName.validationResult.let {
                 it == null || it is CorrectHabitNewName
             } && firstTrackRange.validationResult.let {
-                it == null || it is CorrectHabitTrackTime
+                it == null || it is CorrectHabitTrackDateTimeRange
             } && firstTrackEventCount.validationResult.let {
                 it == null || it is CorrectHabitTrackEventCount
             }

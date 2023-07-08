@@ -38,6 +38,4 @@ class HabitIconProvider : IconProvider {
     )
 
     override fun iconsFlow() = flowOf(icons)
-
-    override suspend fun findIcon(id: Int) = icons.firstOrNull { it.id == id }
 }

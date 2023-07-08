@@ -22,8 +22,8 @@ import epicarchitect.breakbadhabits.logic.habits.updater.HabitTrackUpdater
 import epicarchitect.breakbadhabits.logic.habits.updater.HabitUpdater
 import epicarchitect.breakbadhabits.logic.habits.updater.HabitWidgetUpdater
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitNewNameValidator
+import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackDateTimeRangeValidator
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackEventCountValidator
-import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackTimeValidator
 
 class HabitsLogicModule(
     coroutinesModule: CoroutinesModule,
@@ -43,7 +43,8 @@ class HabitsLogicModule(
         HabitCreator(
             idGenerator = identificationModule.idGenerator,
             mainDatabase = mainDatabaseModule.mainDatabase,
-            coroutineDispatchers = coroutinesModule.coroutineDispatchers
+            coroutineDispatchers = coroutinesModule.coroutineDispatchers,
+            dateTimeProvider = dateTimeLogicModule.dateTimeProvider
         )
     }
     override val habitsConfigProvider by lazy {
@@ -57,8 +58,8 @@ class HabitsLogicModule(
             coroutineDispatchers = coroutinesModule.coroutineDispatchers
         )
     }
-    override val habitTrackTimeValidator by lazy {
-        HabitTrackTimeValidator(
+    override val habitTrackDateTimeRangeValidator by lazy {
+        HabitTrackDateTimeRangeValidator(
             dateTimeProvider = dateTimeLogicModule.dateTimeProvider
         )
     }
@@ -87,7 +88,8 @@ class HabitsLogicModule(
     override val habitTrackUpdater by lazy {
         HabitTrackUpdater(
             mainDatabase = mainDatabaseModule.mainDatabase,
-            coroutineDispatchers = coroutinesModule.coroutineDispatchers
+            coroutineDispatchers = coroutinesModule.coroutineDispatchers,
+            dateTimeProvider = dateTimeLogicModule.dateTimeProvider
         )
     }
     override val habitTrackDeleter by lazy {
@@ -108,7 +110,8 @@ class HabitsLogicModule(
         HabitTrackCreator(
             mainDatabase = mainDatabaseModule.mainDatabase,
             idGenerator = identificationModule.idGenerator,
-            coroutineDispatchers = coroutinesModule.coroutineDispatchers
+            coroutineDispatchers = coroutinesModule.coroutineDispatchers,
+            dateTimeProvider = dateTimeLogicModule.dateTimeProvider
         )
     }
     override val habitTrackProvider by lazy {

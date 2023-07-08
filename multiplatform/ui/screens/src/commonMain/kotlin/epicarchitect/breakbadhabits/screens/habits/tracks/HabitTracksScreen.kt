@@ -183,14 +183,14 @@ fun HabitTracks(
                                 modifier = Modifier.padding(2.dp),
                                 text = if (track.dateTimeRange.isStartSameAsEnd) {
                                     dateTimeFormatter.formatDateTime(
-                                        track.dateTimeRange.start.instant
+                                        track.dateTimeRange.start
                                     )
                                 } else {
                                     val start = dateTimeFormatter.formatDateTime(
-                                        track.dateTimeRange.start.instant
+                                        track.dateTimeRange.start
                                     )
                                     val end = dateTimeFormatter.formatDateTime(
-                                        track.dateTimeRange.endInclusive.instant
+                                        track.dateTimeRange.endInclusive
                                     )
                                     "$start - $end"
                                 },

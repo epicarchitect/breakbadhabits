@@ -1,10 +1,11 @@
 package epicarchitect.breakbadhabits.foundation.icons
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 interface IconProvider {
     fun iconsFlow(): Flow<List<Icon>>
-    suspend fun findIcon(id: Int): Icon?
+    fun iconFlow(id: Int): Flow<Icon?> = iconsFlow().map {
+        it.firstOrNull { it.id == id }
+    }
 }
-
-suspend fun IconProvider.requireIcon(id: Int) = checkNotNull(findIcon(id))

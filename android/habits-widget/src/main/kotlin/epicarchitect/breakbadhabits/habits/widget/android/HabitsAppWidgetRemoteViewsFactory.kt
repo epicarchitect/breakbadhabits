@@ -67,7 +67,7 @@ class HabitsAppWidgetRemoteViewsFactory(
             if (item.abstinence == null) {
                 context.getString(R.string.habitsAppWidget_noAbstinenceTime)
             } else {
-                durationFormatter.format(item.abstinence.dateTimeRange.duration)
+                durationFormatter.format(item.abstinence.duration)
             }
         )
     }

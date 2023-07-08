@@ -92,14 +92,15 @@ fun MonthOfYearRange.mountsBetween(): List<MonthOfYear> {
 }
 
 val LocalDate.monthOfYear get() = MonthOfYear(year, month)
+val LocalDateTime.monthOfYear get() = date.monthOfYear
 
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
 
 // fun InstantRange.monthOfYearRange(timeZone: TimeZone): MonthOfYearRange =
 //    start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
-
-fun ZonedDateTimeRange.monthOfYearRange(): MonthOfYearRange =
-    start.dateTime.date.monthOfYear..endInclusive.dateTime.date.monthOfYear
+//
+// fun ZonedDateTimeRange.monthOfYearRange(): MonthOfYearRange =
+//    start.dateTime.date.monthOfYear..endInclusive.dateTime.date.monthOfYear
 
 // fun MonthOfYear.atDay(dayOfMonth: Int) = LocalDate(year, month, dayOfMonth)
 
@@ -134,13 +135,13 @@ fun MonthOfYear.toInstantAtEnd(timeZone: TimeZone) = toInstant(
     minute = 59,
     second = 59
 )
-
-fun MonthOfYear.toZonedInstantAtStart(timeZone: TimeZone) = ZonedDateTime(
-    instant = toInstantAtStart(timeZone),
-    timeZone = timeZone
-)
-
-fun MonthOfYear.toZonedInstantAtEnd(timeZone: TimeZone) = ZonedDateTime(
-    instant = toInstantAtEnd(timeZone),
-    timeZone = timeZone
-)
+//
+// fun MonthOfYear.toZonedInstantAtStart(timeZone: TimeZone) = ZonedDateTime(
+//    instant = toInstantAtStart(timeZone),
+//    timeZone = timeZone
+// )
+//
+// fun MonthOfYear.toZonedInstantAtEnd(timeZone: TimeZone) = ZonedDateTime(
+//    instant = toInstantAtEnd(timeZone),
+//    timeZone = timeZone
+// )

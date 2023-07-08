@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.SingleSelectionController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
 import epicarchitect.breakbadhabits.foundation.icons.Icon
 import epicarchitect.breakbadhabits.foundation.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
@@ -36,12 +35,15 @@ import epicarchitect.breakbadhabits.foundation.uikit.text.TextFieldInputAdapter
 import epicarchitect.breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedInputField
 import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedTextField
+import epicarchitect.breakbadhabits.logic.datetime.provider.currentDateTimeFlow
+import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitNewName
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackEventCount
 import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitNewName
+import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackDateTimeRange
 import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackTime
 import epicarchitect.breakbadhabits.screens.LocalAppModule
+import kotlinx.datetime.LocalDateTime
 
 val LocalHabitCreationResourcesResources = compositionLocalOf<HabitCreationResources> {
     error("LocalHabitCreationResources not provided")
@@ -80,7 +82,7 @@ fun HabitCreation(
     habitIconSelectionController: SingleSelectionController<Icon>,
     habitNameController: ValidatedInputController<String, ValidatedHabitNewName>,
     dailyEventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
-    trackTimeController: ValidatedInputController<ZonedDateTimeRange, ValidatedHabitTrackTime>,
+    trackTimeController: ValidatedInputController<ClosedRange<LocalDateTime>, ValidatedHabitTrackDateTimeRange>,
     creationController: SingleRequestController
 ) {
     val resources = LocalHabitCreationResourcesResources.current

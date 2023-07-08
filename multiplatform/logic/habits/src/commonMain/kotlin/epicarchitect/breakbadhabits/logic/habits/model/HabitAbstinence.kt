@@ -1,8 +1,10 @@
 package epicarchitect.breakbadhabits.logic.habits.model
 
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
+import kotlinx.datetime.LocalDateTime
+import kotlin.time.Duration
 
 data class HabitAbstinence(
     val habitId: Int,
-    val dateTimeRange: ZonedDateTimeRange
+    val dateTimeRange: ClosedRange<LocalDateTime>,
+    val duration: Duration
 )

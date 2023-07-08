@@ -5,21 +5,20 @@ import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import epicarchitect.breakbadhabits.foundation.datetime.MonthOfYear
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
-import epicarchitect.breakbadhabits.foundation.datetime.countDays
 import epicarchitect.breakbadhabits.foundation.datetime.monthOfYear
 import epicarchitect.breakbadhabits.foundation.datetime.mountsBetween
-import epicarchitect.breakbadhabits.foundation.datetime.split
+import epicarchitect.breakbadhabits.foundation.datetime.numberOfDays
 import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
-import epicarchitect.breakbadhabits.logic.habits.model.DailyHabitEventCount
+import epicarchitect.breakbadhabits.logic.datetime.provider.toInstantBy
+import epicarchitect.breakbadhabits.logic.habits.model.DailyHabitEventAmount
 import epicarchitect.breakbadhabits.logic.habits.model.HabitTrack
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlin.math.roundToInt
-import kotlin.time.Duration.Companion.days
+import kotlinx.datetime.toLocalDateTime
 import epicarchitect.breakbadhabits.sqldelight.main.HabitTrack as DatabaseHabitTrack
 
 class HabitTrackProvider(
@@ -35,7 +34,7 @@ class HabitTrackProvider(
             .mapToList(coroutineDispatchers.io),
         dateTimeProvider.currentTimeZoneFlow()
     ) { list, timeZone ->
-        list.map { asHabitTrack(it, timeZone) }
+        list.map { mapToHabitTrack(it, timeZone) }
     }
 
     fun habitTracksFlow(habitId: Int) = combine(
@@ -45,24 +44,24 @@ class HabitTrackProvider(
             .mapToList(coroutineDispatchers.io),
         dateTimeProvider.currentTimeZoneFlow()
     ) { list, timeZone ->
-        list.map { asHabitTrack(it, timeZone) }
+        list.map { mapToHabitTrack(it, timeZone) }
     }
 
-    fun habitTrackFlowByMaxEnd(habitId: Int) = combine(
+    fun habitTrackWithMaxEndFlow(habitId: Int) = combine(
         mainDatabase.habitTrackQueries
             .selectByHabitIdAndMaxEndTime(habitId)
             .asFlow()
             .mapToOneOrNull(coroutineDispatchers.io),
         dateTimeProvider.currentTimeZoneFlow()
     ) { entity, timeZone ->
-        entity?.let { asHabitTrack(it, timeZone) }
+        entity?.let { mapToHabitTrack(it, timeZone) }
     }.flowOn(coroutineDispatchers.default)
 
     fun monthsToHabitTracksFlow(habitId: Int) = habitTracksFlow(habitId).map { tracks ->
         val map = mutableMapOf<MonthOfYear, MutableSet<HabitTrack>>()
         tracks.forEach { track ->
-            val startMonth = track.dateTimeRange.start.dateTime.date.monthOfYear
-            val endMonth = track.dateTimeRange.endInclusive.dateTime.date.monthOfYear
+            val startMonth = track.dateTimeRange.start.date.monthOfYear
+            val endMonth = track.dateTimeRange.endInclusive.date.monthOfYear
             val monthRange = startMonth..endMonth
             map.getOrPut(startMonth, ::mutableSetOf).add(track)
             map.getOrPut(endMonth, ::mutableSetOf).add(track)
@@ -75,39 +74,47 @@ class HabitTrackProvider(
 
     private fun provideHabitTracksByRange(
         habitId: Int,
-        range: ZonedDateTimeRange
+        range: ClosedRange<LocalDateTime>
     ) = combine(
         mainDatabase.habitTrackQueries
-            .selectByRange(habitId, range.start.instant, range.endInclusive.instant)
+            .selectByRange(
+                habitId = habitId,
+                startTime = range.start.toInstantBy(dateTimeProvider),
+                endTime = range.endInclusive.toInstantBy(dateTimeProvider)
+            )
             .asFlow()
             .mapToList(coroutineDispatchers.io),
         dateTimeProvider.currentTimeZoneFlow()
     ) { list, timeZone ->
-        list.map { asHabitTrack(it, timeZone) }
+        list.map { mapToHabitTrack(it, timeZone) }
     }
 
-    private fun provideTracksToDailyCount(
+    private fun provideTracksToDailyAmount(
         habitId: Int,
-        range: ZonedDateTimeRange
-    ) = provideHabitTracksByRange(habitId, range).map { tracks ->
+        range: ClosedRange<LocalDateTime>
+    ) = combine(
+        provideHabitTracksByRange(habitId, range),
+        dateTimeProvider.currentTimeZoneFlow()
+    ) { tracks, timeZone ->
         tracks.associateWith {
-            it.eventCount.toFloat() / it.dateTimeRange.countDays()
+            it.eventCount.toFloat() / it.dateTimeRange.numberOfDays(timeZone)
         }
     }
 
     fun provideDailyEventCountByRange(
         habitId: Int,
-        range: ZonedDateTimeRange
-    ) = provideTracksToDailyCount(habitId, range).map { dailyCountsToTrack ->
-        DailyHabitEventCount(
+        range: ClosedRange<LocalDateTime>
+    ) = provideTracksToDailyAmount(habitId, range).map { dailyCountsToTrack ->
+        DailyHabitEventAmount(
             tracks = dailyCountsToTrack.keys.toList(),
-            rangeToCount = range.split(step = 1.days).associateWith { range ->
-                dailyCountsToTrack.filter {
-                    range in it.key.dateTimeRange
-                }.entries.fold(0f) { total, entry ->
-                    total + entry.value
-                }.roundToInt()
-            }
+            datesToAmount = emptyMap()
+//            datesToAmount = range.split(step = 1.days).associateWith { range ->
+//                dailyCountsToTrack.filter {
+//                    range in it.key.dateTimeRange
+//                }.entries.fold(0f) { total, entry ->
+//                    total + entry.value
+//                }.roundToInt()
+//            }
         )
     }.flowOn(coroutineDispatchers.default)
 
@@ -118,21 +125,17 @@ class HabitTrackProvider(
             .mapToOneOrNull(coroutineDispatchers.io),
         dateTimeProvider.currentTimeZoneFlow()
     ) { entity, timeZone ->
-        entity?.let { asHabitTrack(it, timeZone) }
+        entity?.let { mapToHabitTrack(it, timeZone) }
     }.flowOn(coroutineDispatchers.default)
 
-    private fun asHabitTrack(
+    private fun mapToHabitTrack(
         value: DatabaseHabitTrack,
         timeZone: TimeZone
     ) = with(value) {
         HabitTrack(
             id = id,
             habitId = habitId,
-            dateTimeRange = ZonedDateTimeRange.of(
-                start = startTime,
-                endInclusive = endTime,
-                timeZone = timeZone
-            ),
+            dateTimeRange = startTime.toLocalDateTime(timeZone)..endTime.toLocalDateTime(timeZone),
             eventCount = eventCount,
             comment = comment
         )

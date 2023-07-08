@@ -22,7 +22,7 @@ class HabitsPresentationModule(
         get() = HabitCreationViewModel(
             habitCreator = habitsLogicModule.habitCreator,
             habitNewNameValidator = habitsLogicModule.habitNewNameValidator,
-            trackTimeValidator = habitsLogicModule.habitTrackTimeValidator,
+            trackTimeValidator = habitsLogicModule.habitTrackDateTimeRangeValidator,
             trackEventCountValidator = habitsLogicModule.habitTrackEventCountValidator,
             iconProvider = habitsLogicModule.habitIconProvider,
             dateTimeProvider = dateTimeLogicModule.dateTimeProvider
@@ -49,7 +49,7 @@ class HabitsPresentationModule(
     override fun habitTrackCreationViewModel(habitId: Int) = HabitTrackCreationViewModel(
         habitProvider = habitsLogicModule.habitProvider,
         habitTrackCreator = habitsLogicModule.habitTrackCreator,
-        trackRangeValidator = habitsLogicModule.habitTrackTimeValidator,
+        trackRangeValidator = habitsLogicModule.habitTrackDateTimeRangeValidator,
         trackEventCountValidator = habitsLogicModule.habitTrackEventCountValidator,
         dateTimeProvider = dateTimeLogicModule.dateTimeProvider,
         habitId = habitId
@@ -66,7 +66,7 @@ class HabitsPresentationModule(
         habitTrackProvider = habitsLogicModule.habitTrackProvider,
         habitTrackUpdater = habitsLogicModule.habitTrackUpdater,
         habitTrackDeleter = habitsLogicModule.habitTrackDeleter,
-        trackRangeValidator = habitsLogicModule.habitTrackTimeValidator,
+        trackRangeValidator = habitsLogicModule.habitTrackDateTimeRangeValidator,
         trackEventCountValidator = habitsLogicModule.habitTrackEventCountValidator,
         dateTimeProvider = dateTimeLogicModule.dateTimeProvider,
         habitTrackId = habitTrackId

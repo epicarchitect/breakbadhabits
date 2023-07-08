@@ -8,8 +8,5 @@ class FakeIcon(override val id: Int) : Icon
 
 class HabitIconProvider : IconProvider {
     private val icons = List(25) { FakeIcon(it) }
-
     override fun iconsFlow() = flowOf(icons)
-
-    override suspend fun findIcon(id: Int) = icons.firstOrNull { it.id == id }
 }

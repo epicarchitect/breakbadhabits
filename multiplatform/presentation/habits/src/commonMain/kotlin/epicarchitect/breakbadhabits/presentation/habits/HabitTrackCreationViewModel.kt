@@ -4,21 +4,21 @@ import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.controller.validateAndRequire
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
 import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
 import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
+import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitTrackCreator
 import epicarchitect.breakbadhabits.logic.habits.provider.HabitProvider
+import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackDateTimeRange
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackTime
+import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackDateTimeRangeValidator
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackEventCountValidator
-import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackTimeValidator
 import kotlinx.coroutines.flow.combine
 
 class HabitTrackCreationViewModel(
     habitProvider: HabitProvider,
     habitTrackCreator: HabitTrackCreator,
-    trackRangeValidator: HabitTrackTimeValidator,
+    trackRangeValidator: HabitTrackDateTimeRangeValidator,
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
     habitId: Int
@@ -37,7 +37,7 @@ class HabitTrackCreationViewModel(
 
     val timeInputController = ValidatedInputController(
         coroutineScope = viewModelScope,
-        initialInput = ZonedDateTimeRange.of(dateTimeProvider.getCurrentDateTime()),
+        initialInput = dateTimeProvider.getCurrentDateTime().let { it..it },
         validation = trackRangeValidator::validate
     )
 
@@ -62,7 +62,7 @@ class HabitTrackCreationViewModel(
             timeInputController.state
         ) { trackValue, trackRange ->
             trackRange.validationResult.let {
-                it == null || it is CorrectHabitTrackTime
+                it == null || it is CorrectHabitTrackDateTimeRange
             } && trackValue.validationResult.let {
                 it == null || it is CorrectHabitTrackEventCount
             }

@@ -23,8 +23,6 @@ import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
-import epicarchitect.breakbadhabits.foundation.datetime.ZonedDateTimeRange
-import epicarchitect.breakbadhabits.foundation.datetime.minus
 import epicarchitect.breakbadhabits.foundation.datetime.withZeroSeconds
 import epicarchitect.breakbadhabits.foundation.math.ranges.isStartSameAsEnd
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
@@ -39,12 +37,15 @@ import epicarchitect.breakbadhabits.foundation.uikit.text.TextFieldInputAdapter
 import epicarchitect.breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedInputField
 import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedTextField
+import epicarchitect.breakbadhabits.logic.datetime.provider.currentDateTimeFlow
+import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
+import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackDateTimeRange
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackTime
+import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackDateTimeRange
 import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackTime
 import epicarchitect.breakbadhabits.screens.LocalAppModule
+import kotlinx.datetime.LocalDateTime
 import kotlin.time.Duration.Companion.days
 
 val LocalHabitTrackCreationResources = compositionLocalOf<HabitTrackCreationResources> {
@@ -63,7 +64,7 @@ interface HabitTrackCreationResources {
 @Composable
 fun HabitTrackCreation(
     eventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
-    timeInputController: ValidatedInputController<ZonedDateTimeRange, ValidatedHabitTrackTime>,
+    timeInputController: ValidatedInputController<ClosedRange<LocalDateTime>, ValidatedHabitTrackDateTimeRange>,
     creationController: SingleRequestController,
     habitController: LoadingController<Habit?>,
     commentInputController: ValidatedInputController<String, Nothing>
@@ -180,18 +181,16 @@ fun HabitTrackCreation(
         LaunchedEffect(selectedTimeSelectionIndex) {
             if (selectedTimeSelectionIndex == 0) {
                 timeInputController.changeInput(
-                    ZonedDateTimeRange.of(
-                        currentTime.withZeroSeconds()
-                    )
+                    currentTime..currentTime
                 )
             }
 
             if (selectedTimeSelectionIndex == 1) {
-                timeInputController.changeInput(
-                    ZonedDateTimeRange.of(
-                        currentTime.minus(1.days).withZeroSeconds()
-                    )
-                )
+//                timeInputController.changeInput(
+//                    ZonedDateTimeRange.of(
+//                        currentTime.minus(1.days).withZeroSeconds()
+//                    )
+//                )
             }
         }
 
@@ -215,20 +214,20 @@ fun HabitTrackCreation(
             },
             text = rangeState.input.let {
                 if (it.isStartSameAsEnd) {
-                    val start = dateTimeFormatter.formatDateTime(it.start.instant)
+                    val start = dateTimeFormatter.formatDateTime(it.start)
                     "Дата и время: $start"
                 } else {
-                    val start = dateTimeFormatter.formatDateTime(it.start.instant)
-                    val end = dateTimeFormatter.formatDateTime(it.endInclusive.instant)
+                    val start = dateTimeFormatter.formatDateTime(it.start)
+                    val end = dateTimeFormatter.formatDateTime(it.endInclusive)
                     "Первое событие: $start, последнее событие: $end"
                 }
             }
         )
 
-        (rangeState.validationResult as? IncorrectHabitTrackTime)?.let {
+        (rangeState.validationResult as? IncorrectHabitTrackDateTimeRange)?.let {
             Spacer(Modifier.height(8.dp))
             when (it.reason) {
-                IncorrectHabitTrackTime.Reason.BiggestThenCurrentTime -> {
+                IncorrectHabitTrackDateTimeRange.Reason.BiggestThenCurrentTime -> {
                     ErrorText(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         text = "Нельзя выбрать время больше чем текущее"
