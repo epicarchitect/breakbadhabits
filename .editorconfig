@@ -12,7 +12,6 @@ ij_continuation_indent_size = 4
 
 [*.{kt,kts}]
 ktlint_code_style = intellij_idea
-ktlint_standard_annotation = disabled
 ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
 ij_kotlin_allow_trailing_comma_on_call_site = false
 ij_kotlin_allow_trailing_comma = false
