@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.di.declaration.main.database
 
-import epicarchitect.breakbadhabits.database.MainDatabaseFactory
-import epicarchitect.breakbadhabits.database.SqlDriverFactory
+import epicarchitect.breakbadhabits.database.main.MainDatabaseFactory
+import epicarchitect.breakbadhabits.foundation.sqldelight.SqlDriverFactory
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
 class MainDatabaseModule(

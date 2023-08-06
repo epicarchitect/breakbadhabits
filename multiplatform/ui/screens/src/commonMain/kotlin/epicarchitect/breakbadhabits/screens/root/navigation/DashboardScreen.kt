@@ -23,7 +23,7 @@ class DashboardScreen : Screen {
             val viewModel = hold(factory = presentationModule.dashboard::dashboardViewModel)
 
             Dashboard(
-                habitItemsController = viewModel.itemsLoadingController,
+                viewModel = viewModel,
                 onHabitClick = { habitId ->
                     navigator += HabitDetailsScreen(habitId)
                 },

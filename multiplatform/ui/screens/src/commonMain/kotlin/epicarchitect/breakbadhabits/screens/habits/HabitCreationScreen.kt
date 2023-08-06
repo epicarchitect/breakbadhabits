@@ -1,11 +1,13 @@
 package epicarchitect.breakbadhabits.screens.habits
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -21,10 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
-import epicarchitect.breakbadhabits.foundation.controller.SingleSelectionController
-import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
-import epicarchitect.breakbadhabits.foundation.icons.Icon
+import epicarchitect.breakbadhabits.foundation.uikit.Icon
+import epicarchitect.breakbadhabits.foundation.uikit.IconButton
 import epicarchitect.breakbadhabits.foundation.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.button.RequestButton
@@ -39,11 +39,9 @@ import epicarchitect.breakbadhabits.logic.datetime.provider.currentDateTimeFlow
 import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitNewName
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitNewName
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackDateTimeRange
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackEventCount
+import epicarchitect.breakbadhabits.presentation.habits.HabitCreationViewModel
 import epicarchitect.breakbadhabits.screens.LocalAppModule
-import kotlinx.datetime.LocalDateTime
+import epicarchitect.breakbadhabits.ui.icons.Icons
 
 val LocalHabitCreationResourcesResources = compositionLocalOf<HabitCreationResources> {
     error("LocalHabitCreationResources not provided")
@@ -76,14 +74,10 @@ interface HabitCreationResources {
 //    YEAR_10(R.string.habitCreation_habitTime_year_10, 365.days * 10)
 // }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HabitCreation(
-    habitIconSelectionController: SingleSelectionController<Icon>,
-    habitNameController: ValidatedInputController<String, ValidatedHabitNewName>,
-    dailyEventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
-    trackTimeController: ValidatedInputController<ClosedRange<LocalDateTime>, ValidatedHabitTrackDateTimeRange>,
-    creationController: SingleRequestController
+    viewModel: HabitCreationViewModel,
+    onBackClick: () -> Unit
 ) {
     val resources = LocalHabitCreationResourcesResources.current
     val logicModule = LocalAppModule.current.logic
@@ -110,12 +104,22 @@ fun HabitCreation(
     ) {
         Spacer(Modifier.height(16.dp))
 
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = resources.titleText,
-            type = Text.Type.Title,
-            priority = Text.Priority.High
-        )
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onBackClick) {
+                Icon(Icons.ArrowBack)
+            }
+
+            Spacer(Modifier.width(8.dp))
+
+            Text(
+                text = resources.titleText,
+                type = Text.Type.Title,
+                priority = Text.Priority.High
+            )
+        }
 
         Spacer(Modifier.height(16.dp))
 
@@ -130,7 +134,7 @@ fun HabitCreation(
 
         ValidatedTextField(
             modifier = Modifier.padding(horizontal = 16.dp),
-            controller = habitNameController,
+            controller = viewModel.habitNameController,
             validationAdapter = remember {
                 TextFieldValidationAdapter {
                     if (it !is IncorrectHabitNewName) {
@@ -156,12 +160,12 @@ fun HabitCreation(
 
         SingleSelectionGrid(
             modifier = Modifier.padding(horizontal = 16.dp),
-            controller = habitIconSelectionController,
+            controller = viewModel.habitIconSelectionController,
             cell = { icon ->
-//                LocalResourceIcon(
-//                    modifier = Modifier.size(24.dp),
-//                    resourceId = icon.resourceId
-//                )
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    icon = icon
+                )
             }
         )
 
@@ -200,7 +204,7 @@ fun HabitCreation(
 
         ValidatedInputField(
             modifier = Modifier.padding(horizontal = 16.dp),
-            controller = dailyEventCountInputController,
+            controller = viewModel.dailyEventCountInputController,
             inputAdapter = remember {
                 TextFieldInputAdapter(
                     decodeInput = { it.toString() },
@@ -235,12 +239,10 @@ fun HabitCreation(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
-            controller = creationController,
+            controller = viewModel.creationController,
             text = resources.finishButtonText,
-            type = Button.Type.Main
-//            icon = {
-//                LocalResourceIcon(resourceId = R.drawable.ic_done)
-//            }
+            type = Button.Type.Main,
+            icon = { Icon(Icons.Done) }
         )
 
         Spacer(Modifier.height(16.dp))

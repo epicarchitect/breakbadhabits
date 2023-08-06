@@ -23,10 +23,10 @@ import epicarchitect.breakbadhabits.presentation.habits.HabitAppWidgetsViewModel
 
 @Composable
 fun HabitAppWidgets(
-    itemsController: LoadingController<List<HabitAppWidgetsViewModel.Item>>,
+    viewModel: HabitAppWidgetsViewModel,
     onWidgetClick: (widgetId: Int) -> Unit
 ) {
-    LoadingBox(itemsController) { widgets ->
+    LoadingBox(viewModel.itemsController) { widgets ->
         Column(
             modifier = Modifier.fillMaxSize()
         ) {

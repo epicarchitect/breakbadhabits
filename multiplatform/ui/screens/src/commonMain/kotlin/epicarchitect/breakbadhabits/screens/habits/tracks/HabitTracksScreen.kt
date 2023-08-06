@@ -35,6 +35,7 @@ import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.model.HabitTrack
+import epicarchitect.breakbadhabits.presentation.habits.HabitTracksViewModel
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import kotlinx.datetime.TimeZone
 
@@ -50,8 +51,7 @@ interface HabitTracksResources {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HabitTracks(
-    habitController: LoadingController<Habit?>,
-    habitTracksController: LoadingController<Map<MonthOfYear, List<HabitTrack>>>,
+    viewModel: HabitTracksViewModel,
     onTrackClick: (trackId: Int) -> Unit,
     onAddClick: () -> Unit
 ) {
@@ -62,7 +62,7 @@ fun HabitTracks(
         .collectAsState(TimeZone.currentSystemDefault())
     val dateTimeFormatter = uiModule.format.dateTimeFormatter
 
-    LoadingBox(habitTracksController) { tracks ->
+    LoadingBox(viewModel.habitTracksController) { tracks ->
         val allTracks = remember(tracks) { tracks.values.flatten().toSet() }
         val months = remember(tracks) { tracks.keys }
         var currentMonth by remember(months) {
@@ -92,7 +92,7 @@ fun HabitTracks(
             ) {
                 LoadingBox(
                     modifier = Modifier.weight(1f),
-                    controller = habitController
+                    controller = viewModel.habitController
                 ) { habit ->
                     habit ?: return@LoadingBox
                     Text(

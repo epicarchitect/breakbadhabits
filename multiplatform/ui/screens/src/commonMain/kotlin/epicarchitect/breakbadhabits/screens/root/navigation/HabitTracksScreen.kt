@@ -25,8 +25,7 @@ class HabitTracksScreen(private val habitId: Int) : Screen {
             }
 
             HabitTracks(
-                habitController = viewModel.habitController,
-                habitTracksController = viewModel.habitTracksController,
+                viewModel = viewModel,
                 onTrackClick = {
                     navigator += HabitTrackUpdatingScreen(it)
                 },

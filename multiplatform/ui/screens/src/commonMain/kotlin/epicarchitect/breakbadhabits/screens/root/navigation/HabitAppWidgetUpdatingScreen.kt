@@ -21,11 +21,6 @@ class HabitAppWidgetUpdatingScreen(private val habitWidgetId: Int) : Screen {
         LaunchedEffectWhenExecuted(viewModel.updatingController, navigator::pop)
         LaunchedEffectWhenExecuted(viewModel.deletionController, navigator::pop)
 
-        HabitAppWidgetUpdating(
-            titleInputController = viewModel.titleInputController,
-            habitsSelectionController = viewModel.habitsSelectionController,
-            updatingController = viewModel.updatingController,
-            deletionController = viewModel.deletionController
-        )
+        HabitAppWidgetUpdating(viewModel)
     }
 }

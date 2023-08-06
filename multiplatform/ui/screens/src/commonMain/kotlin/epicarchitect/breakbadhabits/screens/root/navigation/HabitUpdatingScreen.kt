@@ -23,11 +23,6 @@ class HabitUpdatingScreen(private val habitId: Int) : Screen {
             navigator.popUntil { it is DashboardScreen }
         }
 
-        HabitEditing(
-            habitNameController = viewModel.habitNameController,
-            habitIconSelectionController = viewModel.habitIconSelectionController,
-            updatingController = viewModel.updatingController,
-            deletionController = viewModel.deletionController
-        )
+        HabitEditing(viewModel)
     }
 }

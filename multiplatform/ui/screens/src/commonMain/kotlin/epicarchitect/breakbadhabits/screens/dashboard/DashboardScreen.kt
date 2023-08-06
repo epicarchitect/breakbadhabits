@@ -1,11 +1,5 @@
 package epicarchitect.breakbadhabits.screens.dashboard
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,44 +14,30 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.uikit.Card
+import epicarchitect.breakbadhabits.foundation.uikit.Icon
 import epicarchitect.breakbadhabits.foundation.uikit.IconButton
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
 import epicarchitect.breakbadhabits.presentation.dashboard.DashboardHabitItem
+import epicarchitect.breakbadhabits.presentation.dashboard.DashboardViewModel
 import epicarchitect.breakbadhabits.screens.LocalAppModule
+import epicarchitect.breakbadhabits.ui.icons.Icons
 
-val LocalDashboardResources = compositionLocalOf<DashboardResources> {
-    error("LocalDashboardResources not provided")
-}
-
-interface DashboardResources {
-    val titleText: String
-    val newHabitButtonText: String
-    val emptyHabitsText: String
-    val habitHasNoEvents: String
-}
-
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Dashboard(
-    habitItemsController: LoadingController<List<DashboardHabitItem>>,
+    viewModel: DashboardViewModel,
     onHabitClick: (Int) -> Unit,
     onAddTrackClick: (Int) -> Unit,
     onHabitCreationClick: () -> Unit,
     onAppSettingsClick: () -> Unit
 ) {
     val resources = LocalDashboardResources.current
-    val itemsState by habitItemsController.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -76,13 +56,15 @@ fun Dashboard(
                 )
 
                 IconButton(
-                    onClick = onAppSettingsClick
-                ) {
-//                    LocalResourceIcon(R.drawable.ic_settings)
-                }
+                    onClick = onAppSettingsClick,
+                    icon = Icons.Settings
+                )
             }
 
-            LoadingBox(habitItemsController) { items ->
+            LoadingBox(
+                modifier = Modifier.fillMaxSize(),
+                controller = viewModel.itemsLoadingController
+            ) { items ->
                 if (items.isEmpty()) {
                     NotExistsHabits()
                 } else {
@@ -92,25 +74,19 @@ fun Dashboard(
                         onItemClick = onHabitClick
                     )
                 }
-            }
-        }
 
-        AnimatedVisibility(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomEnd),
-            visible = itemsState !is LoadingController.State.Loading,
-            enter = scaleIn() + fadeIn(),
-            exit = scaleOut() + fadeOut()
-        ) {
-            Button(
-                onClick = onHabitCreationClick,
-                text = resources.newHabitButtonText,
-                type = Button.Type.Main
-//                icon = {
-//                    LocalResourceIcon(resourceId = R.drawable.ic_add)
-//                }
-            )
+                Button(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomEnd),
+                    onClick = onHabitCreationClick,
+                    text = resources.newHabitButtonText,
+                    type = Button.Type.Main,
+                    icon = {
+                        Icon(Icons.Add)
+                    }
+                )
+            }
         }
     }
 }
@@ -190,7 +166,8 @@ private fun LazyItemScope.HabitItem(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-//                    LocalResourceIcon(item.habit.icon.resourceId)
+                    Icon(item.habit.icon)
+
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
                         text = item.habit.name,
@@ -202,7 +179,7 @@ private fun LazyItemScope.HabitItem(
                     modifier = Modifier.padding(top = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-//                    LocalResourceIcon(R.drawable.ic_time)
+                    Icon(Icons.Time)
 
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
@@ -219,10 +196,9 @@ private fun LazyItemScope.HabitItem(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(4.dp),
-                onClick = onResetClick
-            ) {
-//                LocalResourceIcon(R.drawable.ic_reset)
-            }
+                onClick = onResetClick,
+                icon = Icons.Replay
+            )
         }
     }
 }

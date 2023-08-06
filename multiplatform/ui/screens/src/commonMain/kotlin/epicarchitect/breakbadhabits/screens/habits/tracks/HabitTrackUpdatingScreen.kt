@@ -20,10 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.foundation.controller.InputController
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
-import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
-import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.math.ranges.isStartSameAsEnd
 import epicarchitect.breakbadhabits.foundation.uikit.Dialog
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
@@ -37,13 +33,10 @@ import epicarchitect.breakbadhabits.foundation.uikit.text.TextField
 import epicarchitect.breakbadhabits.foundation.uikit.text.TextFieldInputAdapter
 import epicarchitect.breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedInputField
-import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackDateTimeRange
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackDateTimeRange
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackEventCount
+import epicarchitect.breakbadhabits.presentation.habits.HabitTrackUpdatingViewModel
 import epicarchitect.breakbadhabits.screens.LocalAppModule
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 
 // <string name="habitEventEditing_title">Editing an event</string>
@@ -64,14 +57,7 @@ interface HabitTrackUpdatingResources {
 }
 
 @Composable
-fun HabitTrackUpdating(
-    eventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
-    timeInputController: ValidatedInputController<ClosedRange<LocalDateTime>, ValidatedHabitTrackDateTimeRange>,
-    updatingController: SingleRequestController,
-    deletionController: SingleRequestController,
-    habitController: LoadingController<Habit?>,
-    commentInputController: InputController<String>
-) {
+fun HabitTrackUpdating(viewModel: HabitTrackUpdatingViewModel) {
     val logicModule = LocalAppModule.current.logic
     val uiModule = LocalAppModule.current.ui
     val timeZone by logicModule.dateTime.dateTimeProvider.currentTimeZoneFlow()
@@ -79,7 +65,7 @@ fun HabitTrackUpdating(
 
     val dateTimeFormatter = uiModule.format.dateTimeFormatter
     var rangeSelectionShow by remember { mutableStateOf(false) }
-    val rangeState by timeInputController.state.collectAsState()
+    val rangeState by viewModel.timeInputController.state.collectAsState()
 
     ClearFocusWhenKeyboardHiddenEffect()
 
@@ -110,7 +96,7 @@ fun HabitTrackUpdating(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     RequestButton(
-                        controller = deletionController,
+                        controller = viewModel.deletionController,
                         text = "stringResource(R.string.yes)",
                         type = Button.Type.Main
                     )
@@ -157,7 +143,7 @@ fun HabitTrackUpdating(
 
         Spacer(Modifier.height(8.dp))
 
-        LoadingBox(habitController) {
+        LoadingBox(viewModel.habitController) {
             if (it != null) {
                 Text(
 //                    text = stringResource(
@@ -176,7 +162,7 @@ fun HabitTrackUpdating(
         Spacer(Modifier.height(16.dp))
 
         ValidatedInputField(
-            controller = eventCountInputController,
+            controller = viewModel.eventCountInputController,
             inputAdapter = remember {
                 TextFieldInputAdapter(
                     decodeInput = { it.toString() },
@@ -244,7 +230,7 @@ fun HabitTrackUpdating(
 
         TextField(
             label = "stringResource(R.string.habitEventEditing_comment)",
-            controller = commentInputController
+            controller = viewModel.commentInputController
         )
 
         Spacer(Modifier.height(24.dp))
@@ -269,7 +255,7 @@ fun HabitTrackUpdating(
 
         RequestButton(
             modifier = Modifier.align(Alignment.End),
-            controller = updatingController,
+            controller = viewModel.updatingController,
             text = "stringResource(R.string.habitEventEditing_finish)",
             type = Button.Type.Main
 //            icon = {

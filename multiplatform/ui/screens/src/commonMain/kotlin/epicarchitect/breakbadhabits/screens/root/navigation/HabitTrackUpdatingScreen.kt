@@ -21,13 +21,6 @@ class HabitTrackUpdatingScreen(private val habitTrackId: Int) : Screen {
         LaunchedEffectWhenExecuted(viewModel.updatingController, navigator::pop)
         LaunchedEffectWhenExecuted(viewModel.deletionController, navigator::pop)
 
-        HabitTrackUpdating(
-            eventCountInputController = viewModel.eventCountInputController,
-            timeInputController = viewModel.timeInputController,
-            updatingController = viewModel.updatingController,
-            deletionController = viewModel.deletionController,
-            habitController = viewModel.habitController,
-            commentInputController = viewModel.commentInputController
-        )
+        HabitTrackUpdating(viewModel)
     }
 }

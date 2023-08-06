@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -17,35 +18,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.foundation.uikit.Card
 import epicarchitect.breakbadhabits.foundation.uikit.Histogram
+import epicarchitect.breakbadhabits.foundation.uikit.Icon
 import epicarchitect.breakbadhabits.foundation.uikit.IconButton
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
 import epicarchitect.breakbadhabits.foundation.uikit.StatisticData
 import epicarchitect.breakbadhabits.foundation.uikit.Statistics
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
-import epicarchitect.breakbadhabits.logic.habits.model.DailyHabitEventAmount
-import epicarchitect.breakbadhabits.logic.habits.model.Habit
-import epicarchitect.breakbadhabits.logic.habits.model.HabitAbstinence
 import epicarchitect.breakbadhabits.logic.habits.model.HabitStatistics
+import epicarchitect.breakbadhabits.presentation.habits.HabitDetailsViewModel
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import epicarchitect.breakbadhabits.ui.format.DurationFormatter
+import epicarchitect.breakbadhabits.ui.icons.Icons
 import kotlinx.datetime.TimeZone
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HabitDetails(
-    habitController: LoadingController<Habit?>,
-    habitAbstinenceController: LoadingController<HabitAbstinence?>,
-    abstinenceListController: LoadingController<List<HabitAbstinence>>,
-    statisticsController: LoadingController<HabitStatistics?>,
-    currentMonthDailyCountsController: LoadingController<DailyHabitEventAmount>,
+    viewModel: HabitDetailsViewModel,
     onEditClick: () -> Unit,
     onAddTrackClick: () -> Unit,
-    onAllTracksClick: () -> Unit
+    onAllTracksClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val logicModule = LocalAppModule.current.logic
     val uiModule = LocalAppModule.current.ui
@@ -59,19 +56,19 @@ fun HabitDetails(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        controller = habitController
+        controller = viewModel.habitController
     ) { habit ->
         habit ?: return@LoadingBox
 
         Column {
             Spacer(modifier = Modifier.height(16.dp))
 
-//            LocalResourceIcon(
-//                modifier = Modifier
-//                    .size(44.dp)
-//                    .align(Alignment.CenterHorizontally),
-//                resourceId = habit.icon.resourceId
-//            )
+            Icon(
+                modifier = Modifier
+                    .size(44.dp)
+                    .align(Alignment.CenterHorizontally),
+                icon = habit.icon
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -85,7 +82,7 @@ fun HabitDetails(
 
             LoadingBox(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                controller = habitAbstinenceController
+                controller = viewModel.habitAbstinenceController
             ) { abstinence ->
                 Text(
                     text = abstinence?.let {
@@ -108,7 +105,7 @@ fun HabitDetails(
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                LoadingBox(currentMonthDailyCountsController) { dailyCounts ->
+                LoadingBox(viewModel.currentMonthDailyCountsController) { dailyCounts ->
                     Column(modifier = Modifier.fillMaxWidth()) {
                         val yearMonth = remember { MonthOfYear.now(timeZone) }
 //
@@ -174,7 +171,7 @@ fun HabitDetails(
                 }
             }
 
-            LoadingBox(abstinenceListController) { abstinenceList ->
+            LoadingBox(viewModel.abstinenceListController) { abstinenceList ->
                 if (abstinenceList.size < 3) return@LoadingBox
                 Card(
                     modifier = Modifier
@@ -212,7 +209,7 @@ fun HabitDetails(
                 }
             }
 
-            LoadingBox(statisticsController) { statistics ->
+            LoadingBox(viewModel.statisticsController) { statistics ->
                 statistics ?: return@LoadingBox
                 Card(
                     modifier = Modifier
@@ -250,10 +247,17 @@ fun HabitDetails(
         }
 
         IconButton(
+            modifier = Modifier.align(Alignment.TopStart),
+            onClick = onBackClick
+        ) {
+            Icon(Icons.ArrowBack)
+        }
+
+        IconButton(
             modifier = Modifier.align(Alignment.TopEnd),
             onClick = onEditClick
         ) {
-//            LocalResourceIcon(R.drawable.ic_settings)
+            Icon(Icons.Settings)
         }
     }
 }

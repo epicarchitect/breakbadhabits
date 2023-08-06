@@ -27,13 +27,7 @@ class HabitTrackCreationScreen(private val habitId: Int) : Screen {
 
             LaunchedEffectWhenExecuted(viewModel.creationController, navigator::pop)
 
-            HabitTrackCreation(
-                eventCountInputController = viewModel.eventCountInputController,
-                timeInputController = viewModel.timeInputController,
-                creationController = viewModel.creationController,
-                habitController = viewModel.habitController,
-                commentInputController = viewModel.commentInputController
-            )
+            HabitTrackCreation(viewModel)
         }
     }
 }

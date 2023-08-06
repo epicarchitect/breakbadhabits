@@ -2,10 +2,18 @@ package epicarchitect.breakbadhabits.foundation.uikit
 
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import epicarchitect.breakbadhabits.foundation.icons.Icon
 import androidx.compose.material3.Icon as MaterialIcon
+
+@Immutable
+data class VectorIcon(
+    override val id: Int,
+    val vector: ImageVector
+) : Icon
 
 @Composable
 fun LocalResourceIcon(
@@ -33,4 +41,18 @@ fun LocalResourceIcon(
 //        contentDescription = null,
 //        tint = tint,
 //    )
+}
+
+@Composable
+fun Icon(
+    icon: Icon,
+    modifier: Modifier = Modifier
+) {
+    if (icon is VectorIcon) {
+        MaterialIcon(
+            modifier = modifier,
+            imageVector = icon.vector,
+            contentDescription = null
+        )
+    }
 }

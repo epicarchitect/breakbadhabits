@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,11 +18,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
-import epicarchitect.breakbadhabits.foundation.controller.SingleSelectionController
-import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.icons.Icon
 import epicarchitect.breakbadhabits.foundation.uikit.Dialog
+import epicarchitect.breakbadhabits.foundation.uikit.Icon
 import epicarchitect.breakbadhabits.foundation.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.button.RequestButton
@@ -30,15 +29,11 @@ import epicarchitect.breakbadhabits.foundation.uikit.text.Text
 import epicarchitect.breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedTextField
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitNewName
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitNewName
+import epicarchitect.breakbadhabits.presentation.habits.HabitUpdatingViewModel
+import epicarchitect.breakbadhabits.ui.icons.Icons
 
 @Composable
-fun HabitEditing(
-    habitNameController: ValidatedInputController<String, ValidatedHabitNewName>,
-    habitIconSelectionController: SingleSelectionController<Icon>,
-    updatingController: SingleRequestController,
-    deletionController: SingleRequestController
-) {
+fun HabitEditing(viewModel: HabitUpdatingViewModel) {
     ClearFocusWhenKeyboardHiddenEffect()
 
     var deletionShow by remember { mutableStateOf(false) }
@@ -68,7 +63,7 @@ fun HabitEditing(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     RequestButton(
-                        controller = deletionController,
+                        controller = viewModel.deletionController,
                         text = "stringResource(R.string.yes)",
                         type = Button.Type.Main
                     )
@@ -98,7 +93,7 @@ fun HabitEditing(
         Spacer(Modifier.height(16.dp))
 
         ValidatedTextField(
-            controller = habitNameController,
+            controller = viewModel.habitNameController,
             validationAdapter = TextFieldValidationAdapter {
                 if (it !is IncorrectHabitNewName) {
                     null
@@ -130,12 +125,12 @@ fun HabitEditing(
         Spacer(Modifier.height(16.dp))
 
         SingleSelectionGrid(
-            controller = habitIconSelectionController,
+            controller = viewModel.habitIconSelectionController,
             cell = { icon ->
-//                LocalResourceIcon(
-//                    modifier = Modifier.size(24.dp),
-//                    resourceId = icon.resourceId
-//                )
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    icon = icon
+                )
             }
         )
 
@@ -161,12 +156,12 @@ fun HabitEditing(
 
         RequestButton(
             modifier = Modifier.align(Alignment.End),
-            controller = updatingController,
+            controller = viewModel.updatingController,
             text = "stringResource(R.string.habitEditing_finish)",
-            type = Button.Type.Main
-//            icon = {
-//                LocalResourceIcon(resourceId = R.drawable.ic_done)
-//            }
+            type = Button.Type.Main,
+            icon = {
+                Icon(Icons.Done)
+            }
         )
     }
 }

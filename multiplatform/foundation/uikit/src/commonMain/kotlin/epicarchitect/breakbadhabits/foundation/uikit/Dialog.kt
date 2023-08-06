@@ -6,11 +6,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.window.Popup
 import kotlinx.coroutines.delay
 
 @Composable
 fun Dialog(
-    onDismiss: () -> Unit,
+    onDismiss: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     var shown by remember { mutableStateOf(false) }
@@ -19,23 +21,14 @@ fun Dialog(
         delay(50)
         shown = true
     }
-//
-//    androidx.compose.ui.window.Dialog(
-//        onCloseRequest = { onDismiss() }
-//    ) {
-//        Box {
-//            Card {
-//                content()
-//
-//                AnimatedVisibility(
-//                    modifier = Modifier.matchParentSize(),
-//                    visible = !shown,
-//                    enter = fadeIn(),
-//                    exit = fadeOut()
-//                ) {
-//                    Surface {}
-//                }
-//            }
-//        }
-//    }
+
+    Popup(
+        content = {
+            Card {
+                content()
+            }
+        },
+        onDismissRequest = onDismiss,
+        alignment = Alignment.Center
+    )
 }

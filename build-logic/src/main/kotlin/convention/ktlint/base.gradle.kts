@@ -1,11 +1,9 @@
 package convention.ktlint
 
-import libs
-
 val ktlint by configurations.creating
 
 dependencies {
-    ktlint(libs.pinterest.ktlint) {
+    ktlint("com.pinterest:ktlint:0.50.0") {
         attributes {
             attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
         }

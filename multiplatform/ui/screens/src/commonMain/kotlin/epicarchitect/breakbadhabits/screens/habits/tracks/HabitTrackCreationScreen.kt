@@ -20,10 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
-import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
-import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.math.ranges.isStartSameAsEnd
+import epicarchitect.breakbadhabits.foundation.uikit.Dialog
+import epicarchitect.breakbadhabits.foundation.uikit.Icon
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
 import epicarchitect.breakbadhabits.foundation.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
@@ -38,13 +37,16 @@ import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedInputField
 import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedTextField
 import epicarchitect.breakbadhabits.logic.datetime.provider.currentDateTimeFlow
 import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
-import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackDateTimeRange
 import epicarchitect.breakbadhabits.logic.habits.validator.IncorrectHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackDateTimeRange
-import epicarchitect.breakbadhabits.logic.habits.validator.ValidatedHabitTrackEventCount
+import epicarchitect.breakbadhabits.presentation.habits.HabitTrackCreationViewModel
 import epicarchitect.breakbadhabits.screens.LocalAppModule
+import epicarchitect.breakbadhabits.ui.icons.Icons
+import epicarchitect.calendar.compose.datepicker.EpicDatePicker
+import epicarchitect.calendar.compose.datepicker.state.EpicDatePickerState
+import epicarchitect.calendar.compose.datepicker.state.rememberEpicDatePickerState
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 
 val LocalHabitTrackCreationResources = compositionLocalOf<HabitTrackCreationResources> {
     error("LocalHabitTrackCreationResources not provided")
@@ -60,44 +62,47 @@ interface HabitTrackCreationResources {
 }
 
 @Composable
-fun HabitTrackCreation(
-    eventCountInputController: ValidatedInputController<Int, ValidatedHabitTrackEventCount>,
-    timeInputController: ValidatedInputController<ClosedRange<LocalDateTime>, ValidatedHabitTrackDateTimeRange>,
-    creationController: SingleRequestController,
-    habitController: LoadingController<Habit?>,
-    commentInputController: ValidatedInputController<String, Nothing>
-) {
+fun HabitTrackCreation(viewModel: HabitTrackCreationViewModel) {
     val logicModule = LocalAppModule.current.logic
     val uiModule = LocalAppModule.current.ui
     val currentTime by logicModule.dateTime.dateTimeProvider.currentDateTimeFlow()
         .collectAsState(logicModule.dateTime.dateTimeProvider.getCurrentDateTime())
     val dateTimeFormatter = uiModule.format.dateTimeFormatter
     var rangeSelectionShow by remember { mutableStateOf(false) }
-    val rangeState by timeInputController.state.collectAsState()
+    val rangeState by viewModel.timeInputController.state.collectAsState()
     var selectedTimeSelectionIndex by remember { mutableStateOf(0) }
     val resources = LocalHabitTrackCreationResources.current
 
     ClearFocusWhenKeyboardHiddenEffect()
 
     if (rangeSelectionShow) {
-//        val epicCalendarState = rememberSelectionEpicCalendarState(
-//            timeZone = timeZone,
-//            initialRange = rangeState.input
-//        )
-//
-//        SelectionEpicCalendarDialog(
-//            state = epicCalendarState,
-//            onSelected = {
-//                rangeSelectionShow = false
-//                selectedTimeSelectionIndex = 2
-//                timeInputController.changeInput(
-//                    it.withZeroSeconds(timeZone)
-//                )
-//            },
-//            onCancel = {
-//                rangeSelectionShow = false
-//            }
-//        )
+        val state = rememberEpicDatePickerState(
+            selectedDates = viewModel.timeInputController.state.value.input.let {
+                listOf(it.start.date, it.endInclusive.date)
+            },
+            selectionMode = EpicDatePickerState.SelectionMode.Range
+        )
+        Dialog(
+            onDismiss = {
+                rangeSelectionShow = false
+                viewModel.timeInputController.changeInput(
+                    state.selectedDates.let {
+                        LocalDateTime(
+                            it.first(),
+                            LocalTime(0, 0)
+                        )..LocalDateTime(
+                            it.last(),
+                            LocalTime(0, 0)
+                        )
+                    }
+                )
+            }
+        ) {
+            EpicDatePicker(
+                modifier = Modifier,
+                state = state
+            )
+        }
     }
 
     Column(
@@ -116,7 +121,7 @@ fun HabitTrackCreation(
 
         Spacer(Modifier.height(4.dp))
 
-        LoadingBox(habitController) {
+        LoadingBox(viewModel.habitController) {
             if (it != null) {
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -138,7 +143,7 @@ fun HabitTrackCreation(
 
         ValidatedInputField(
             modifier = Modifier.padding(horizontal = 16.dp),
-            controller = eventCountInputController,
+            controller = viewModel.eventCountInputController,
             inputAdapter = remember {
                 TextFieldInputAdapter(
                     decodeInput = { it.toString() },
@@ -178,7 +183,7 @@ fun HabitTrackCreation(
 
         LaunchedEffect(selectedTimeSelectionIndex) {
             if (selectedTimeSelectionIndex == 0) {
-                timeInputController.changeInput(
+                viewModel.timeInputController.changeInput(
                     currentTime..currentTime
                 )
             }
@@ -246,7 +251,7 @@ fun HabitTrackCreation(
         ValidatedTextField(
             modifier = Modifier.padding(horizontal = 16.dp),
             label = resources.commentLabel,
-            controller = commentInputController,
+            controller = viewModel.commentInputController,
             validationAdapter = remember {
                 TextFieldValidationAdapter {
                     null
@@ -271,12 +276,12 @@ fun HabitTrackCreation(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
-            controller = creationController,
+            controller = viewModel.creationController,
             text = resources.finishButton,
-            type = Button.Type.Main
-//            icon = {
-//                LocalResourceIcon(resourceId = R.drawable.ic_done)
-//            }
+            type = Button.Type.Main,
+            icon = {
+                Icon(Icons.Done)
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))

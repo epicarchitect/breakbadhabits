@@ -18,11 +18,7 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
         }
 
         HabitDetails(
-            habitController = viewModel.habitController,
-            habitAbstinenceController = viewModel.habitAbstinenceController,
-            abstinenceListController = viewModel.abstinenceListController,
-            statisticsController = viewModel.statisticsController,
-            currentMonthDailyCountsController = viewModel.currentMonthDailyCountsController,
+            viewModel = viewModel,
             onEditClick = {
                 navigator += HabitUpdatingScreen(habitId)
             },
@@ -31,7 +27,8 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
             },
             onAllTracksClick = {
                 navigator += HabitTracksScreen(habitId)
-            }
+            },
+            onBackClick = navigator::pop
         )
     }
 }

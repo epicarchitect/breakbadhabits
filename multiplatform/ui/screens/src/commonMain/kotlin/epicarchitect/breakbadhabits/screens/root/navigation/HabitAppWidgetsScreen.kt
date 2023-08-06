@@ -15,7 +15,7 @@ class HabitAppWidgetsScreen : Screen {
         val presentationModule = LocalAppModule.current.presentation
         val viewModel = hold(factory = presentationModule.habits::habitAppWidgetsViewModel)
         HabitAppWidgets(
-            itemsController = viewModel.itemsController,
+            viewModel = viewModel,
             onWidgetClick = {
                 navigator += HabitAppWidgetUpdatingScreen(it)
             }

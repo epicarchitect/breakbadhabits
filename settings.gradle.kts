@@ -35,6 +35,7 @@ include(
 
     ":multiplatform:ui:screens",
     ":multiplatform:ui:format",
+    ":multiplatform:ui:icons",
 
     ":multiplatform:di:holder",
     ":multiplatform:di:declaration-main",
@@ -42,9 +43,11 @@ include(
 
     ":multiplatform:logic:habits",
     ":multiplatform:logic:datetime",
+    ":multiplatform:logic:settings",
 
     ":multiplatform:presentation:dashboard",
     ":multiplatform:presentation:habits",
+    ":multiplatform:presentation:settings",
 
     ":multiplatform:foundation:controllers",
     ":multiplatform:foundation:coroutines",
@@ -54,5 +57,5 @@ include(
     ":multiplatform:foundation:math",
     ":multiplatform:foundation:icons",
     ":multiplatform:foundation:identification",
-    ":multiplatform:foundation:settings"
+    ":multiplatform:foundation:sqldelight"
 )

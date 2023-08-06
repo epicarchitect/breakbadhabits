@@ -39,17 +39,13 @@ import epicarchitect.breakbadhabits.foundation.uikit.text.Text
 import epicarchitect.breakbadhabits.foundation.uikit.text.TextFieldValidationAdapter
 import epicarchitect.breakbadhabits.foundation.uikit.text.ValidatedTextField
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
+import epicarchitect.breakbadhabits.presentation.habits.HabitAppWidgetUpdatingViewModel
 
 @Composable
-fun HabitAppWidgetUpdating(
-    titleInputController: ValidatedInputController<String, Nothing>,
-    habitsSelectionController: MultiSelectionController<Habit>,
-    updatingController: SingleRequestController,
-    deletionController: SingleRequestController
-) {
+fun HabitAppWidgetUpdating(viewModel: HabitAppWidgetUpdatingViewModel) {
     ClearFocusWhenKeyboardHiddenEffect()
 
-    val habitsSelection by habitsSelectionController.state.collectAsState()
+    val habitsSelection by viewModel.habitsSelectionController.state.collectAsState()
 
     var deletionShow by remember { mutableStateOf(false) }
     if (deletionShow) {
@@ -78,7 +74,7 @@ fun HabitAppWidgetUpdating(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     RequestButton(
-                        controller = deletionController,
+                        controller = viewModel.deletionController,
                         text = "stringResource(R.string.yes)",
                         type = Button.Type.Main
                     )
@@ -107,7 +103,7 @@ fun HabitAppWidgetUpdating(
         Spacer(modifier = Modifier.height(12.dp))
 
         ValidatedTextField(
-            controller = titleInputController,
+            controller = viewModel.titleInputController,
             label = "Название",
             validationAdapter = TextFieldValidationAdapter { null }
         )
@@ -132,7 +128,7 @@ fun HabitAppWidgetUpdating(
                             habit = habit,
                             checked = habit in state.selectedItems,
                             onClick = {
-                                habitsSelectionController.toggleItem(habit)
+                                viewModel.habitsSelectionController.toggleItem(habit)
                             }
                         )
                     }
@@ -160,7 +156,7 @@ fun HabitAppWidgetUpdating(
 
         RequestButton(
             modifier = Modifier.align(Alignment.End),
-            controller = updatingController,
+            controller = viewModel.updatingController,
             text = "stringResource(R.string.habitsAppWidgetConfigEditing_finish)",
             type = Button.Type.Main
 //            icon = {
