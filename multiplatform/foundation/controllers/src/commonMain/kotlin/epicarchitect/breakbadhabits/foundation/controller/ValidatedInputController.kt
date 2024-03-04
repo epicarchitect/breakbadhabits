@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.foundation.controller
 
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-interface InputController<INPUT> : StateController<InputController.State<INPUT>> {
+interface InputController<INPUT> : Controller<InputController.State<INPUT>> {
 
     fun changeInput(input: INPUT)
 
@@ -26,8 +27,26 @@ fun <INPUT> InputController(
     initialInput
 )
 
+@Suppress("FunctionName")
+fun <INPUT> CoroutineScopeOwner.InputController(
+    initialInput: INPUT
+): InputController<INPUT> = InputControllerImpl(
+    coroutineScope,
+    initialInput
+)
+
+@Suppress("FunctionName")
+fun <INPUT, VALIDATION_RESULT> CoroutineScopeOwner.ValidatedInputController(
+    initialInput: INPUT,
+    validation: suspend INPUT.() -> VALIDATION_RESULT?
+) = ValidatedInputController(
+    coroutineScope,
+    initialInput,
+    validation
+)
+
 private class InputControllerImpl<INPUT>(
-    coroutineScope: CoroutineScope,
+    override val coroutineScope: CoroutineScope,
     initialInput: INPUT
 ) : InputController<INPUT> {
     private val inputState = MutableStateFlow(initialInput)
@@ -50,7 +69,7 @@ private class InputControllerImpl<INPUT>(
 }
 
 class ValidatedInputController<INPUT, VALIDATION_RESULT>(
-    private val coroutineScope: CoroutineScope,
+    override val coroutineScope: CoroutineScope,
     initialInput: INPUT,
     private val validation: suspend INPUT.() -> VALIDATION_RESULT?
 ) : InputController<INPUT> {

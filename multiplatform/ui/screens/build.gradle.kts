@@ -10,4 +10,5 @@ dependencies {
     commonMainApi(projects.multiplatform.foundation.uikit)
     commonMainApi(projects.multiplatform.presentation.dashboard)
     commonMainApi(projects.multiplatform.presentation.habits)
+    commonMainApi(projects.multiplatform.presentation.app)
 }

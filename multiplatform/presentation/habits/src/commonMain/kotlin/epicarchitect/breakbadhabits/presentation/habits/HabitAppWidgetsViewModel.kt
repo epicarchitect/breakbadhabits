@@ -1,25 +1,26 @@
 package epicarchitect.breakbadhabits.presentation.habits
 
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
-import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
+import epicarchitect.breakbadhabits.foundation.controller.DataFlowController
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.model.HabitWidget
 import epicarchitect.breakbadhabits.logic.habits.provider.HabitProvider
 import epicarchitect.breakbadhabits.logic.habits.provider.HabitWidgetProvider
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
 class HabitAppWidgetsViewModel(
+    override val coroutineScope: CoroutineScope,
     habitWidgetProvider: HabitWidgetProvider,
     habitProvider: HabitProvider
-) : ViewModel() {
+) : CoroutineScopeOwner {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val itemsController = LoadingController(
-        coroutineScope = viewModelScope,
-        flow = habitWidgetProvider.provideAllFlow().flatMapLatest { configs ->
+    val itemsController = DataFlowController(
+        habitWidgetProvider.provideAllFlow().flatMapLatest { configs ->
             if (configs.isEmpty()) {
                 flowOf(emptyList())
             } else {

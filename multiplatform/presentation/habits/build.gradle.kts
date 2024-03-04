@@ -5,5 +5,5 @@ plugins {
 dependencies {
     commonMainApi(projects.multiplatform.foundation.controllers)
     commonMainApi(projects.multiplatform.foundation.viewmodel)
-    commonMainApi(projects.multiplatform.logic.habits)
+    commonMainApi(projects.multiplatform.di.declaration)
 }

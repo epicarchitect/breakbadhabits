@@ -23,4 +23,5 @@ dependencies {
     commonMainApi(projects.multiplatform.database)
     commonMainApi(projects.multiplatform.di.holder)
     commonMainApi(projects.multiplatform.di.declarationMain)
+    commonMainApi(projects.multiplatform.presentation.app)
 }

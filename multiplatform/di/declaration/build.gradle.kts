@@ -4,7 +4,8 @@ plugins {
 
 dependencies {
     commonMainApi(projects.multiplatform.ui.format)
-    commonMainApi(projects.multiplatform.presentation.dashboard)
-    commonMainApi(projects.multiplatform.presentation.habits)
+    commonMainApi(projects.multiplatform.logic.habits)
+    commonMainApi(projects.multiplatform.logic.datetime)
+    commonMainApi(projects.multiplatform.logic.settings)
     commonMainApi(projects.multiplatform.foundation.identification)
 }

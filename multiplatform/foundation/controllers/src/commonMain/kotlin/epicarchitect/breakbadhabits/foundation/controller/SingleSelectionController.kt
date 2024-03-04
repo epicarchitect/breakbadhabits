@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.foundation.controller
 
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,10 +10,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 
 class SingleSelectionController<T>(
-    coroutineScope: CoroutineScope,
+    override val coroutineScope: CoroutineScope,
     itemsFlow: Flow<List<T>>,
     default: suspend (List<T>) -> T? = { null }
-) : StateController<SingleSelectionController.State<T>> {
+) : Controller<SingleSelectionController.State<T>> {
     private val selected = MutableStateFlow<T?>(null)
 
     override val state = combine(
@@ -54,3 +55,12 @@ fun <T> SingleSelectionController(
 
 fun <T> SingleSelectionController<T>.requireSelectedItem() =
     checkNotNull((state.value as SingleSelectionController.State.Loaded).selectedItem)
+
+fun <T> CoroutineScopeOwner.SingleSelectionController(
+    itemsFlow: Flow<List<T>>,
+    default: suspend (List<T>) -> T? = { null }
+) = SingleSelectionController(
+    coroutineScope,
+    itemsFlow,
+    default
+)

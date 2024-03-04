@@ -13,6 +13,7 @@ class HabitWidgetUpdater(
         title: String,
         habitIds: List<Int>
     ) = withContext(coroutineDispatchers.io) {
+
         mainDatabase.habitWidgetQueries.update(
             id = id,
             title = title,

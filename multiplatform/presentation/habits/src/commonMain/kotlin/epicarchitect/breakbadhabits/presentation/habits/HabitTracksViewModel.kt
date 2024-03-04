@@ -1,23 +1,23 @@
 package epicarchitect.breakbadhabits.presentation.habits
 
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
-import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
+import epicarchitect.breakbadhabits.foundation.controller.DataFlowController
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import epicarchitect.breakbadhabits.logic.habits.provider.HabitProvider
 import epicarchitect.breakbadhabits.logic.habits.provider.HabitTrackProvider
+import kotlinx.coroutines.CoroutineScope
 
 class HabitTracksViewModel(
+    override val coroutineScope: CoroutineScope,
     habitProvider: HabitProvider,
     habitTrackProvider: HabitTrackProvider,
     habitId: Int
-) : ViewModel() {
+) : CoroutineScopeOwner {
 
-    val habitController = LoadingController(
-        coroutineScope = viewModelScope,
+    val habitController = DataFlowController(
         flow = habitProvider.habitFlow(habitId)
     )
 
-    val habitTracksController = LoadingController(
-        coroutineScope = viewModelScope,
+    val habitTracksController = DataFlowController(
         flow = habitTrackProvider.monthsToHabitTracksFlow(habitId)
     )
 }

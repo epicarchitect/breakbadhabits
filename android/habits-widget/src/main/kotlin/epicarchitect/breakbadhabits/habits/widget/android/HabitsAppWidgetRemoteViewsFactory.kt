@@ -1,6 +1,8 @@
 package epicarchitect.breakbadhabits.habits.widget.android
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import epicarchitect.breakbadhabits.android.habits.widget.R

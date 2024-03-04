@@ -6,11 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
+import epicarchitect.breakbadhabits.foundation.controller.DataFlowController
 
 @Composable
 fun <DATA> LoadingBox(
-    controller: LoadingController<DATA>,
+    controller: DataFlowController<DATA>,
     modifier: Modifier = Modifier,
     loaded: @Composable BoxScope.(DATA) -> Unit
 ) {
@@ -18,11 +18,11 @@ fun <DATA> LoadingBox(
 
     Box(modifier) {
         when (val state = state) {
-            is LoadingController.State.Loaded -> {
+            is DataFlowController.State.Loaded -> {
                 loaded(state.data)
             }
 
-            is LoadingController.State.Loading -> {
+            is DataFlowController.State.Loading -> {
 //                Box(
 //                    modifier = Modifier.fillMaxSize(),
 //                    contentAlignment = Alignment.Center

@@ -7,7 +7,6 @@ import epicarchitect.breakbadhabits.di.declaration.main.foundation.FoundationMod
 import epicarchitect.breakbadhabits.di.declaration.main.logic.HabitsLogicModuleExternals
 import epicarchitect.breakbadhabits.di.declaration.main.logic.LogicModule
 import epicarchitect.breakbadhabits.di.declaration.main.logic.LogicModuleExternals
-import epicarchitect.breakbadhabits.di.declaration.main.presentation.PresentationModule
 import epicarchitect.breakbadhabits.di.declaration.main.ui.FormatModuleExternals
 import epicarchitect.breakbadhabits.di.declaration.main.ui.UiModule
 import epicarchitect.breakbadhabits.di.declaration.main.ui.UiModuleExternals
@@ -31,9 +30,6 @@ fun setupAppModuleHolder(app: Application) {
         }
     )
     val uiModule = UiModule(
-        presentation = PresentationModule(
-            logic = logicModule
-        ),
         externals = object : UiModuleExternals {
             override val formatModuleExternal = object : FormatModuleExternals {
                 override val dateTimeFormatter = AndroidDateTimeFormatter(
@@ -48,5 +44,5 @@ fun setupAppModuleHolder(app: Application) {
         }
     )
 
-    AppModuleHolder.current = AppModule(uiModule)
+    AppModuleHolder.current = AppModule(uiModule, logicModule)
 }

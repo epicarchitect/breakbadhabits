@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.foundation.controller
 
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,9 +9,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 class MultiSelectionController<T>(
-    coroutineScope: CoroutineScope,
+    override val coroutineScope: CoroutineScope,
     itemsFlow: Flow<List<T>>
-) : StateController<MultiSelectionController.State<T>> {
+) : Controller<MultiSelectionController.State<T>> {
     private val selectedItems = MutableStateFlow<Set<T>>(emptySet())
 
     override val state = combine(itemsFlow, selectedItems) { items, selectedItems ->
@@ -46,3 +47,7 @@ fun <T> MultiSelectionController<T>.toggleItem(item: T) = toggleItems(listOf(ite
 
 fun <T> MultiSelectionController<T>.requireSelectedItems() =
     (state.value as MultiSelectionController.State.Loaded).selectedItems
+
+fun <T> CoroutineScopeOwner.MultiSelectionController(
+    itemsFlow: Flow<List<T>>
+) = MultiSelectionController(coroutineScope, itemsFlow)

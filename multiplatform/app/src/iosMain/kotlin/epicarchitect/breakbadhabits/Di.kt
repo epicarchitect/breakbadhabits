@@ -12,6 +12,7 @@ import epicarchitect.breakbadhabits.di.declaration.main.ui.UiModule
 import epicarchitect.breakbadhabits.di.declaration.main.ui.UiModuleExternals
 import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
 import epicarchitect.breakbadhabits.foundation.sqldelight.SqlDriverFactory
+import epicarchitect.breakbadhabits.presentation.app.AppViewModel
 import epicarchitect.breakbadhabits.screens.HabitIconProvider
 import epicarchitect.breakbadhabits.ui.format.ios.IosDateTimeFormatter
 import epicarchitect.breakbadhabits.ui.format.ios.IosDurationFormatter
@@ -42,4 +43,5 @@ fun setupAppModuleHolder() {
     )
 
     AppModuleHolder.current = AppModule(uiModule)
+    AppViewModel.init()
 }

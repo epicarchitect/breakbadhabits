@@ -37,13 +37,7 @@ import kotlinx.datetime.TimeZone
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun HabitDetails(
-    viewModel: HabitDetailsViewModel,
-    onEditClick: () -> Unit,
-    onAddTrackClick: () -> Unit,
-    onAllTracksClick: () -> Unit,
-    onBackClick: () -> Unit
-) {
+fun HabitDetails(viewModel: HabitDetailsViewModel) {
     val logicModule = LocalAppModule.current.logic
     val uiModule = LocalAppModule.current.ui
     val timeZone by logicModule.dateTime.dateTimeProvider.currentTimeZoneFlow()
@@ -95,7 +89,7 @@ fun HabitDetails(
 
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = onAddTrackClick,
+                onClick = viewModel.addTrackController::request,
                 text = "stringResource(R.string.habit_resetTime)",
                 type = Button.Type.Main
             )
@@ -159,7 +153,7 @@ fun HabitDetails(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(44.dp)
-                                .clickable(onClick = onAllTracksClick)
+                                .clickable(onClick = viewModel.allTracksController::request)
                         ) {
                             Text(
                                 modifier = Modifier.align(Alignment.Center),
@@ -248,14 +242,14 @@ fun HabitDetails(
 
         IconButton(
             modifier = Modifier.align(Alignment.TopStart),
-            onClick = onBackClick
+            onClick = viewModel.closeController::request
         ) {
             Icon(Icons.ArrowBack)
         }
 
         IconButton(
             modifier = Modifier.align(Alignment.TopEnd),
-            onClick = onEditClick
+            onClick = viewModel.openEditController::request
         ) {
             Icon(Icons.Settings)
         }

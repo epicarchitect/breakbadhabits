@@ -24,7 +24,6 @@ import epicarchitect.breakbadhabits.foundation.uikit.IconButton
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
-import epicarchitect.breakbadhabits.presentation.dashboard.DashboardHabitItem
 import epicarchitect.breakbadhabits.presentation.dashboard.DashboardViewModel
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import epicarchitect.breakbadhabits.ui.icons.Icons
@@ -32,8 +31,6 @@ import epicarchitect.breakbadhabits.ui.icons.Icons
 @Composable
 fun Dashboard(
     viewModel: DashboardViewModel,
-    onHabitClick: (Int) -> Unit,
-    onAddTrackClick: (Int) -> Unit,
     onHabitCreationClick: () -> Unit,
     onAppSettingsClick: () -> Unit
 ) {
@@ -68,11 +65,7 @@ fun Dashboard(
                 if (items.isEmpty()) {
                     NotExistsHabits()
                 } else {
-                    LoadedHabits(
-                        items = items,
-                        onResetClick = onAddTrackClick,
-                        onItemClick = onHabitClick
-                    )
+                    LoadedHabits(items)
                 }
 
                 Button(
@@ -93,9 +86,7 @@ fun Dashboard(
 
 @Composable
 private fun LoadedHabits(
-    items: List<DashboardHabitItem>,
-    onResetClick: (Int) -> Unit,
-    onItemClick: (Int) -> Unit
+    items: List<DashboardViewModel.HabitItemViewModel>
 ) {
     LazyColumn(
         contentPadding = PaddingValues(
@@ -110,11 +101,7 @@ private fun LoadedHabits(
             items = items,
             key = { it.habit.id }
         ) { item ->
-            HabitItem(
-                item = item,
-                onClick = { onItemClick(item.habit.id) },
-                onResetClick = { onResetClick(item.habit.id) }
-            )
+            HabitItem(item)
         }
     }
 }
@@ -137,9 +124,7 @@ private fun NotExistsHabits() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LazyItemScope.HabitItem(
-    item: DashboardHabitItem,
-    onClick: () -> Unit,
-    onResetClick: () -> Unit
+    item: DashboardViewModel.HabitItemViewModel
 ) {
     val resources = LocalDashboardResources.current
     val uiModule = LocalAppModule.current.ui
@@ -153,7 +138,7 @@ private fun LazyItemScope.HabitItem(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
+                .clickable(onClick = item.openDetailsController::request)
         ) {
             Column(
                 modifier = Modifier.padding(
@@ -196,7 +181,7 @@ private fun LazyItemScope.HabitItem(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(4.dp),
-                onClick = onResetClick,
+                onClick = item.resetController::request,
                 icon = Icons.Replay
             )
         }

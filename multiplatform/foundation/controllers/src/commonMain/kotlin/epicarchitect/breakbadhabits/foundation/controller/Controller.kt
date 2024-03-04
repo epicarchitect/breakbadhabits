@@ -1,7 +1,8 @@
 package epicarchitect.breakbadhabits.foundation.controller
 
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import kotlinx.coroutines.flow.StateFlow
 
-interface StateController<DATA> {
+interface Controller<DATA> : CoroutineScopeOwner {
     val state: StateFlow<DATA>
 }

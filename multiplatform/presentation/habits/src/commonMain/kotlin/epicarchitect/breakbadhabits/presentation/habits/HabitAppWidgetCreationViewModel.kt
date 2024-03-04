@@ -4,29 +4,24 @@ import epicarchitect.breakbadhabits.foundation.controller.InputController
 import epicarchitect.breakbadhabits.foundation.controller.MultiSelectionController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.requireSelectedItems
-import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitWidgetCreator
 import epicarchitect.breakbadhabits.logic.habits.provider.HabitProvider
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 
 class HabitAppWidgetCreationViewModel(
+    override val coroutineScope: CoroutineScope,
     habitProvider: HabitProvider,
     habitWidgetCreator: HabitWidgetCreator,
     widgetSystemId: Int
-) : ViewModel() {
+) : CoroutineScopeOwner {
 
-    val titleInputController = InputController(
-        coroutineScope = viewModelScope,
-        initialInput = ""
-    )
+    val titleInputController = InputController(initialInput = "")
 
-    val habitsSelectionController = MultiSelectionController(
-        coroutineScope = viewModelScope,
-        itemsFlow = habitProvider.habitsFlow()
-    )
+    val habitsSelectionController = MultiSelectionController(habitProvider.habitsFlow())
 
     val creationController = SingleRequestController(
-        coroutineScope = viewModelScope,
         request = {
             habitWidgetCreator.createAppWidget(
                 title = titleInputController.state.value.input,

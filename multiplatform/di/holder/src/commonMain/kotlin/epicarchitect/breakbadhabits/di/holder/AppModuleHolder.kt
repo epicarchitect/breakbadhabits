@@ -9,6 +9,6 @@ object AppModuleHolder : AppModule {
     fun require() = checkNotNull(current)
     override val foundation get() = require().foundation
     override val logic get() = require().logic
-    override val presentation get() = require().presentation
+//    override val presentation get() = require().presentation
     override val ui get() = require().ui
 }

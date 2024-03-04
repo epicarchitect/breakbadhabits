@@ -1,56 +1,47 @@
 package epicarchitect.breakbadhabits.presentation.habits
 
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
+import epicarchitect.breakbadhabits.di.declaration.AppModule
+import epicarchitect.breakbadhabits.di.declaration.logic.DateTimeLogicModule
+import epicarchitect.breakbadhabits.di.declaration.logic.HabitsLogicModule
+import epicarchitect.breakbadhabits.foundation.controller.DataFlowController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.controller.validateAndRequire
-import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
-import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
-import epicarchitect.breakbadhabits.logic.habits.creator.HabitTrackCreator
-import epicarchitect.breakbadhabits.logic.habits.provider.HabitProvider
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackDateTimeRange
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackEventCount
-import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackDateTimeRangeValidator
-import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackEventCountValidator
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 
 class HabitTrackCreationViewModel(
-    habitProvider: HabitProvider,
-    habitTrackCreator: HabitTrackCreator,
-    trackRangeValidator: HabitTrackDateTimeRangeValidator,
-    trackEventCountValidator: HabitTrackEventCountValidator,
-    dateTimeProvider: DateTimeProvider,
+    override val coroutineScope: CoroutineScope,
+    appModule: AppModule,
     habitId: Int
-) : ViewModel() {
+) : CoroutineScopeOwner {
 
-    val habitController = LoadingController(
-        coroutineScope = viewModelScope,
-        flow = habitProvider.habitFlow(habitId)
+    val habitController = DataFlowController(
+        flow = appModule.logic.habits.habitProvider.habitFlow(habitId)
     )
 
     val eventCountInputController = ValidatedInputController(
-        coroutineScope = viewModelScope,
         initialInput = 1,
-        validation = trackEventCountValidator::validate
+        validation = appModule.logic.habits.habitTrackEventCountValidator::validate
     )
 
     val timeInputController = ValidatedInputController(
-        coroutineScope = viewModelScope,
-        initialInput = dateTimeProvider.getCurrentDateTime().let { it..it },
-        validation = trackRangeValidator::validate
+        initialInput = appModule.logic.dateTime.dateTimeProvider.getCurrentDateTime().let { it..it },
+        validation = appModule.logic.habits.habitTrackDateTimeRangeValidator::validate
     )
 
     val commentInputController = ValidatedInputController(
-        coroutineScope = viewModelScope,
         initialInput = "",
         validation = { null }
     )
 
     val creationController = SingleRequestController(
-        coroutineScope = viewModelScope,
         request = {
-            habitTrackCreator.createHabitTrack(
+            appModule.logic.habits.habitTrackCreator.createHabitTrack(
                 habitId = habitId,
                 range = timeInputController.validateAndRequire(),
                 eventCount = eventCountInputController.validateAndRequire(),

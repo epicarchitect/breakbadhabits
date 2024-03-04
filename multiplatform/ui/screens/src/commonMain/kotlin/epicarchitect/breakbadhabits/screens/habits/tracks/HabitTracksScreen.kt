@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.foundation.datetime.next
 import epicarchitect.breakbadhabits.foundation.datetime.previous
@@ -33,8 +32,6 @@ import epicarchitect.breakbadhabits.foundation.uikit.IconButton
 import epicarchitect.breakbadhabits.foundation.uikit.LoadingBox
 import epicarchitect.breakbadhabits.foundation.uikit.button.Button
 import epicarchitect.breakbadhabits.foundation.uikit.text.Text
-import epicarchitect.breakbadhabits.logic.habits.model.Habit
-import epicarchitect.breakbadhabits.logic.habits.model.HabitTrack
 import epicarchitect.breakbadhabits.presentation.habits.HabitTracksViewModel
 import epicarchitect.breakbadhabits.screens.LocalAppModule
 import kotlinx.datetime.TimeZone

@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.foundation.controller
 
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,13 +11,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SingleRequestController(
-    private val coroutineScope: CoroutineScope,
-    request: suspend () -> Unit,
-    isAllowedFlow: Flow<Boolean> = flowOf(true)
-) : StateController<SingleRequestController.State> {
+    override val coroutineScope: CoroutineScope,
+    isAllowedFlow: Flow<Boolean> = flowOf(true),
+    request: suspend () -> Unit
+) : Controller<SingleRequestController.State> {
     private val internalRequest = request
 
-    private val requestState = MutableStateFlow<RequestState>(RequestState.NotExecuted)
+    private val requestState = MutableStateFlow<RequestState>(RequestState.NotExecuted())
     override val state = combine(
         requestState,
         isAllowedFlow
@@ -30,7 +31,7 @@ class SingleRequestController(
         started = SharingStarted.Eagerly,
         initialValue = State(
             isRequestAllowed = false,
-            requestState = RequestState.NotExecuted
+            requestState = RequestState.NotExecuted()
         )
     )
 
@@ -38,12 +39,12 @@ class SingleRequestController(
     fun request() {
         coroutineScope.launch {
             try {
-                requestState.value = RequestState.Executing
+                requestState.value = RequestState.Executing()
                 require(state.value.isRequestAllowed)
                 internalRequest()
-                requestState.value = RequestState.Executed
+                requestState.value = RequestState.Executed()
             } catch (e: Exception) {
-                requestState.value = RequestState.NotExecuted
+                requestState.value = RequestState.NotExecuted()
             }
         }
     }
@@ -53,9 +54,18 @@ class SingleRequestController(
         val requestState: RequestState
     )
 
-    sealed class RequestState {
-        object NotExecuted : RequestState()
-        object Executing : RequestState()
-        object Executed : RequestState()
+    sealed interface RequestState {
+        class NotExecuted : RequestState
+        class Executing : RequestState
+        class Executed : RequestState
     }
 }
+
+fun CoroutineScopeOwner.SingleRequestController(
+    isAllowedFlow: Flow<Boolean> = flowOf(true),
+    request: suspend () -> Unit = {}
+) = SingleRequestController(
+    coroutineScope,
+    isAllowedFlow,
+    request
+)

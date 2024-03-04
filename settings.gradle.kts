@@ -45,6 +45,7 @@ include(
     ":multiplatform:logic:datetime",
     ":multiplatform:logic:settings",
 
+    ":multiplatform:presentation:app",
     ":multiplatform:presentation:dashboard",
     ":multiplatform:presentation:habits",
     ":multiplatform:presentation:settings",

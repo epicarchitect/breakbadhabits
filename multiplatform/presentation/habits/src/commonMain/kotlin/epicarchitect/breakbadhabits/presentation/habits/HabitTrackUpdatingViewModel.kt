@@ -1,11 +1,11 @@
 package epicarchitect.breakbadhabits.presentation.habits
 
+import epicarchitect.breakbadhabits.foundation.controller.DataFlowController
 import epicarchitect.breakbadhabits.foundation.controller.InputController
-import epicarchitect.breakbadhabits.foundation.controller.LoadingController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
 import epicarchitect.breakbadhabits.foundation.controller.validateAndRequire
-import epicarchitect.breakbadhabits.foundation.viewmodel.ViewModel
+import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
 import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
 import epicarchitect.breakbadhabits.logic.habits.deleter.HabitTrackDeleter
@@ -17,6 +17,7 @@ import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackDate
 import epicarchitect.breakbadhabits.logic.habits.validator.CorrectHabitTrackEventCount
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackDateTimeRangeValidator
 import epicarchitect.breakbadhabits.logic.habits.validator.HabitTrackEventCountValidator
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 class HabitTrackUpdatingViewModel(
+    override val coroutineScope: CoroutineScope,
     habitProvider: HabitProvider,
     habitTrackProvider: HabitTrackProvider,
     habitTrackUpdater: HabitTrackUpdater,
@@ -33,36 +35,29 @@ class HabitTrackUpdatingViewModel(
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
     habitTrackId: Int
-) : ViewModel() {
+) : CoroutineScopeOwner {
 
     private val initialHabitTrack = MutableStateFlow<HabitTrack?>(null)
 
-    val habitController = LoadingController(
-        coroutineScope = viewModelScope,
+    val habitController = DataFlowController(
         flow = initialHabitTrack.filterNotNull().flatMapLatest {
             habitProvider.habitFlow(it.habitId)
         }
     )
 
     val eventCountInputController = ValidatedInputController(
-        coroutineScope = viewModelScope,
         initialInput = 1,
         validation = trackEventCountValidator::validate
     )
 
     val timeInputController = ValidatedInputController(
-        coroutineScope = viewModelScope,
         initialInput = dateTimeProvider.getCurrentDateTime().let { it..it },
         validation = trackRangeValidator::validate
     )
 
-    val commentInputController = InputController(
-        coroutineScope = viewModelScope,
-        initialInput = ""
-    )
+    val commentInputController = InputController(initialInput = "")
 
     val updatingController = SingleRequestController(
-        coroutineScope = viewModelScope,
         request = {
             habitTrackUpdater.updateHabitTrack(
                 id = habitTrackId,
@@ -89,15 +84,12 @@ class HabitTrackUpdatingViewModel(
         }
     )
 
-    val deletionController = SingleRequestController(
-        coroutineScope = viewModelScope,
-        request = {
-            habitTrackDeleter.deleteHabitTrack(habitTrackId)
-        }
-    )
+    val deletionController = SingleRequestController {
+        habitTrackDeleter.deleteHabitTrack(habitTrackId)
+    }
 
     init {
-        viewModelScope.launch {
+        coroutineScope.launch {
             val habitTrack = habitTrackProvider.habitTrackFlow(habitTrackId).first()!!
             initialHabitTrack.value = habitTrack
             timeInputController.changeInput(habitTrack.dateTimeRange)

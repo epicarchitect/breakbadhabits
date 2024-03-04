@@ -19,28 +19,28 @@ class HabitsAppWidgetConfigCreationActivity : ComponentActivity() {
             AppTheme(
                 colorScheme = AppColorsSchemes.light
             ) {
-                val presentationModule = AppModuleHolder.presentation.habits
-                val widgetSystemId = remember {
-                    intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
-                }
-
-                val viewModel = remember {
-                    presentationModule.habitWidgetCreationViewModel(widgetSystemId)
-                }
-
-                LaunchedEffectWhenExecuted(viewModel.creationController) {
-                    setResult(
-                        RESULT_OK,
-                        Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetSystemId)
-                    )
-                    finish()
-                }
-
-                HabitsAppWidgetConfigCreation(
-                    titleInputController = viewModel.titleInputController,
-                    creationController = viewModel.creationController,
-                    habitsSelectionController = viewModel.habitsSelectionController
-                )
+//                val presentationModule = AppModuleHolder.presentation.habits
+//                val widgetSystemId = remember {
+//                    intent.extras!!.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)
+//                }
+//
+//                val viewModel = remember {
+//                    presentationModule.habitWidgetCreationViewModelwidgetSystemId)
+//                }
+//
+//                LaunchedEffectWhenExecuted(viewModel.creationController) {
+//                    setResult(
+//                        RESULT_OK,
+//                        Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetSystemId)
+//                    )
+//                    finish()
+//                }
+//
+//                HabitsAppWidgetConfigCreation(
+//                    titleInputController = viewModel.titleInputController,
+//                    creationController = viewModel.creationController,
+//                    habitsSelectionController = viewModel.habitsSelectionController
+//                )
             }
         }
     }

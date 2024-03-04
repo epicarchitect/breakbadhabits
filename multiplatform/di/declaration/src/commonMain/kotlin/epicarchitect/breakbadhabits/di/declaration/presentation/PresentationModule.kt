@@ -4,6 +4,6 @@ import epicarchitect.breakbadhabits.di.declaration.logic.LogicModule
 
 interface PresentationModule {
     val logic: LogicModule
-    val dashboard: DashboardPresentationModule
-    val habits: HabitsPresentationModule
+//    val dashboard: DashboardPresentationModule
+//    val habits: HabitsPresentationModule
 }

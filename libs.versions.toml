@@ -1,17 +1,17 @@
 [versions]
-android-gradlePlugin = "8.1.0"
-jetbrains-kotlin = "1.9.0"
+android-gradlePlugin = "8.1.2"
+jetbrains-kotlin = "1.9.10"
 jetbrains-kotlin-coroutinesCore = "1.7.3"
-jetbrains-compose = "1.4.3"
-jetbrains-kotlin-datetime = "0.4.0"
+jetbrains-compose = "1.5.2"
+jetbrains-kotlin-datetime = "0.4.1"
 jetbrains-kotlin-serializationJson = "1.5.1"
 android-activityCompose = "1.7.2"
-android-coreKtx = "1.10.1"
+android-coreKtx = "1.12.0"
 cashapp-sqldelight = "2.0.0"
-epicarchitect-calendarCompose = "1.0.4"
-adrielcafe-voyager = "1.0.0-rc06"
+epicarchitect-calendarCompose = "1.0.5"
+adrielcafe-voyager = "1.0.0-rc07"
 russhwolf-settings = "1.0.0"
-arturbosch-detekt = "1.23.0"
+arturbosch-detekt = "1.23.1"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradlePlugin" }
