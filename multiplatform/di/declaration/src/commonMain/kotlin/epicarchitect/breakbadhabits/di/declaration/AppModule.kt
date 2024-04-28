@@ -1,13 +1,12 @@
 package epicarchitect.breakbadhabits.di.declaration
 
-import epicarchitect.breakbadhabits.di.declaration.foundation.FoundationModule
-import epicarchitect.breakbadhabits.di.declaration.logic.LogicModule
-import epicarchitect.breakbadhabits.di.declaration.presentation.PresentationModule
-import epicarchitect.breakbadhabits.di.declaration.ui.UiModule
+import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
 interface AppModule {
-    val ui: UiModule
-//    val presentation: PresentationModule
-    val logic: LogicModule
-    val foundation: FoundationModule
+//    val habits: HabitsLogicModule
+    val format: FormatModule
+//    val dateTime: DateTimeLogicModule
+    val coroutines: CoroutinesModule
+    val identification: IdentificationModule
+    val mainDatabase: MainDatabase
 }

@@ -1,0 +1,16 @@
+import kotlin.Int;
+
+CREATE TABLE IF NOT EXISTS AppSettings (
+  id    INTEGER AS Int NOT NULL PRIMARY KEY,
+  theme INTEGER NOT NULL
+);
+
+INSERT OR IGNORE INTO AppSettings (id, theme)
+VALUES (0, 0);
+
+update:
+UPDATE AppSettings SET theme = ?
+WHERE id = 0;
+
+get:
+SELECT * FROM AppSettings LIMIT 1;

@@ -41,14 +41,14 @@ include(
     ":multiplatform:di:declaration-main",
     ":multiplatform:di:declaration",
 
-    ":multiplatform:logic:habits",
-    ":multiplatform:logic:datetime",
-    ":multiplatform:logic:settings",
-
-    ":multiplatform:presentation:app",
-    ":multiplatform:presentation:dashboard",
-    ":multiplatform:presentation:habits",
-    ":multiplatform:presentation:settings",
+//    ":multiplatform:logic:habits",
+//    ":multiplatform:logic:datetime",
+//    ":multiplatform:logic:settings",
+//
+//    ":multiplatform:presentation:app",
+//    ":multiplatform:presentation:dashboard",
+//    ":multiplatform:presentation:habits",
+//    ":multiplatform:presentation:settings",
 
     ":multiplatform:foundation:controllers",
     ":multiplatform:foundation:coroutines",

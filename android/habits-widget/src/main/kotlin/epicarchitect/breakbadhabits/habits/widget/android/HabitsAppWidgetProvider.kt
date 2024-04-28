@@ -10,8 +10,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.android.habits.widget.R
 import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -31,27 +34,24 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, widgetSystemId, newOptions)
-        sendUpdateIntent(
-            context
-        )
+        sendUpdateIntent(context)
     }
 
-    override fun onDeleted(context: Context, widgetSystemIds: IntArray) = runBlocking {
+    override fun onDeleted(context: Context, widgetSystemIds: IntArray) {
         super.onDeleted(context, widgetSystemIds)
-        AppModuleHolder.logic.habits.habitWidgetDeleter.deleteBySystemIds(widgetSystemIds.toList())
+        widgetSystemIds.forEach {
+            AppModuleHolder.require().mainDatabase.habitWidgetQueries.deleteBySystemId(it)
+        }
     }
 
-    private fun updateAppWidget(
-        context: Context,
-        manager: AppWidgetManager,
-        widgetSystemId: Int
-    ) = runBlocking {
+    private fun updateAppWidget(context: Context, manager: AppWidgetManager, widgetSystemId: Int) = runBlocking {
         val isDarkModeEnabled = context.resources.configuration.let {
             it.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         }
 
-        val widget =
-            AppModuleHolder.logic.habits.habitWidgetProvider.provideFlowBySystemId(widgetSystemId)
+        val widget = AppModuleHolder.require().mainDatabase.habitWidgetQueries.selectBySystemId(widgetSystemId)
+                .asFlow()
+                .mapToOneOrNull(Dispatchers.IO)
                 .first()
         if (widget == null) {
             manager.updateAppWidget(

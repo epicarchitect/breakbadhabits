@@ -24,7 +24,7 @@ sealed class ValidatedHabitTrackDateTimeRange {
     abstract val data: ClosedRange<LocalDateTime>
 }
 
-data class CorrectHabitTrackDateTimeRange internal constructor(
+data class CorrectHabitTrackDateTimeRange constructor(
     override val data: ClosedRange<LocalDateTime>
 ) : ValidatedHabitTrackDateTimeRange()
 

@@ -1,11 +1,9 @@
 package epicarchitect.breakbadhabits
 
 import androidx.compose.runtime.Composable
-import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
-import epicarchitect.breakbadhabits.presentation.app.AppViewModel
-import epicarchitect.breakbadhabits.screens.root.RootScreen
+import epicarchitect.breakbadhabits.features.root.RootScreen
 
 @Composable
-fun App(appViewModel: AppViewModel) {
-    RootScreen(appViewModel)
+fun App() {
+    RootScreen()
 }

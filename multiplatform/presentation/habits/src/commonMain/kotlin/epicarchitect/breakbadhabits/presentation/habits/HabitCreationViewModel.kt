@@ -7,7 +7,7 @@ import epicarchitect.breakbadhabits.foundation.controller.requireSelectedItem
 import epicarchitect.breakbadhabits.foundation.controller.validateAndRequire
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import epicarchitect.breakbadhabits.foundation.datetime.duration
-import epicarchitect.breakbadhabits.foundation.icons.IconProvider
+import epicarchitect.breakbadhabits.foundation.icons.Icons
 import epicarchitect.breakbadhabits.logic.datetime.provider.DateTimeProvider
 import epicarchitect.breakbadhabits.logic.datetime.provider.getCurrentDateTime
 import epicarchitect.breakbadhabits.logic.habits.creator.HabitCreator
@@ -27,10 +27,10 @@ class HabitCreationViewModel(
     trackTimeValidator: HabitTrackDateTimeRangeValidator,
     trackEventCountValidator: HabitTrackEventCountValidator,
     dateTimeProvider: DateTimeProvider,
-    iconProvider: IconProvider
+    icons: Icons
 ) : CoroutineScopeOwner {
 
-    val habitIconSelectionController = SingleSelectionController(iconProvider.iconsFlow())
+    val habitIconSelectionController = SingleSelectionController(icons.iconsFlow())
 
     val habitNameController = ValidatedInputController(
         initialInput = "",

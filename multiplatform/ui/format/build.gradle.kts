@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
-    commonMainApi(projects.multiplatform.logic.datetime)
+//    commonMainApi(projects.multiplatform.logic.datetime)
+    commonMainApi(projects.multiplatform.foundation.datetime)
 }

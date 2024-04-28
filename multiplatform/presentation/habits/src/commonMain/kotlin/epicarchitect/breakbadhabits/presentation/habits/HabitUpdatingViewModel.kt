@@ -7,7 +7,7 @@ import epicarchitect.breakbadhabits.foundation.controller.requireSelectedItem
 import epicarchitect.breakbadhabits.foundation.controller.validateAndRequire
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import epicarchitect.breakbadhabits.foundation.coroutines.flow.firstNotNull
-import epicarchitect.breakbadhabits.foundation.icons.IconProvider
+import epicarchitect.breakbadhabits.foundation.icons.Icons
 import epicarchitect.breakbadhabits.logic.habits.deleter.HabitDeleter
 import epicarchitect.breakbadhabits.logic.habits.provider.HabitProvider
 import epicarchitect.breakbadhabits.logic.habits.updater.HabitUpdater
@@ -25,7 +25,7 @@ class HabitUpdatingViewModel(
     habitUpdater: HabitUpdater,
     habitDeleter: HabitDeleter,
     habitNewNameValidator: HabitNewNameValidator,
-    iconProvider: IconProvider,
+    icons: Icons,
     habitId: Int
 ) : CoroutineScopeOwner {
 
@@ -36,7 +36,7 @@ class HabitUpdatingViewModel(
     )
 
     val habitIconSelectionController = SingleSelectionController(
-        itemsFlow = iconProvider.iconsFlow(),
+        itemsFlow = icons.iconsFlow(),
         default = { initialHabit.firstNotNull().icon }
     )
 

@@ -1,14 +1,24 @@
 package epicarchitect.breakbadhabits.di.declaration.main
 
 import epicarchitect.breakbadhabits.di.declaration.AppModule
-import epicarchitect.breakbadhabits.di.declaration.main.logic.LogicModule
-import epicarchitect.breakbadhabits.di.declaration.ui.UiModule
+import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 
 class AppModule(
-    override val ui: UiModule,
-    override val logic: LogicModule
+    formatExternals: FormatModuleExternals,
+    mainDatabaseExternals: MainDatabaseModuleExternals,
+//    habitsLogicExternals: HabitsLogicModuleExternals
 ) : AppModule {
-    //    override val presentation = ui.presentation
-//    override val logic = ui.logic
-    override val foundation = logic.foundation
+    private val mainDatabaseModule = MainDatabaseModule(mainDatabaseExternals)
+    override val coroutines = CoroutinesModule()
+    override val format = FormatModule(formatExternals)
+//    override val dateTime = DateTimeLogicModule(coroutines)
+    override val identification = IdentificationModule()
+//    override val habits = HabitsLogicModule(
+//        coroutines,
+//        dateTime,
+//        identification,
+//        mainDatabaseModule,
+//        habitsLogicExternals
+//    )
+    override val mainDatabase: MainDatabase = mainDatabaseModule.mainDatabase
 }

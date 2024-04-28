@@ -1,5 +1,7 @@
 package epicarchitect.breakbadhabits.foundation.uikit.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 object AppColorsSchemes {
@@ -31,12 +33,7 @@ object AppColorsSchemes {
         onSurface = Color(0xFF2C2C2C)
     )
 
-//    @Composable
-//    fun of(mode: DarkMode) = when (mode) {
-//        DarkMode.ENABLED -> true
-//        DarkMode.DISABLED -> false
-//        DarkMode.BY_SYSTEM -> isSystemInDarkTheme()
-//    }.let {
-//        if (it) dark else light
-//    }
+    val system: AppColorScheme
+        @Composable
+        get() = if (isSystemInDarkTheme()) dark else light
 }

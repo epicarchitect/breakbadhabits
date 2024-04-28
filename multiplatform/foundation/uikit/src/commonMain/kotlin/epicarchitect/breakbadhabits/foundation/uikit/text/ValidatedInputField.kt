@@ -191,18 +191,6 @@ fun <INPUT> InputField(
     isError: Boolean = false
 ) {
     val state by controller.state.collectAsState()
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-    val finalKeyboardOptions = keyboardOptions ?: remember {
-        KeyboardOptions(imeAction = ImeAction.Done)
-    }
-    val finalKeyboardActions = keyboardActions ?: remember {
-        KeyboardActions(
-            onDone = {
-                keyboardController?.hide()
-            }
-        )
-    }
 
     TextField(
         modifier = modifier.fillMaxWidth(),
@@ -214,12 +202,11 @@ fun <INPUT> InputField(
         multiline = multiline,
         maxLines = maxLines,
         visualTransformation = visualTransformation,
-        keyboardOptions = finalKeyboardOptions,
-        keyboardActions = finalKeyboardActions,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         readOnly = readOnly,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        isError = isError,
         regex = regex
     )
 }

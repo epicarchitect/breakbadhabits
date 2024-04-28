@@ -43,6 +43,11 @@ class DateTimeProvider(
         started = SharingStarted.WhileSubscribed(),
         initialValue = value()
     )
+
+    data class State(
+        val instant: Instant,
+        val timeZone: TimeZone
+    )
 }
 
 fun <T> DateTimeProvider.withCurrentInstantAndTimeZone(

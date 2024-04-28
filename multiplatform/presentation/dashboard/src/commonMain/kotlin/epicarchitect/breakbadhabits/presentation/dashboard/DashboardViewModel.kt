@@ -1,15 +1,12 @@
 package epicarchitect.breakbadhabits.presentation.dashboard
 
-import epicarchitect.breakbadhabits.di.declaration.logic.HabitsLogicModule
+import epicarchitect.breakbadhabits.di.declaration.HabitsLogicModule
 import epicarchitect.breakbadhabits.foundation.controller.DataFlowController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwner
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineScopeOwnersManager
-import epicarchitect.breakbadhabits.logic.habits.deleter.HabitDeleter
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.logic.habits.model.HabitAbstinence
-import epicarchitect.breakbadhabits.logic.habits.provider.HabitAbstinenceProvider
-import epicarchitect.breakbadhabits.logic.habits.provider.HabitProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.combine

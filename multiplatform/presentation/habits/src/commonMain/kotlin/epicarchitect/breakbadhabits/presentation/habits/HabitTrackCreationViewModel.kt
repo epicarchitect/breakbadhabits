@@ -1,8 +1,6 @@
 package epicarchitect.breakbadhabits.presentation.habits
 
 import epicarchitect.breakbadhabits.di.declaration.AppModule
-import epicarchitect.breakbadhabits.di.declaration.logic.DateTimeLogicModule
-import epicarchitect.breakbadhabits.di.declaration.logic.HabitsLogicModule
 import epicarchitect.breakbadhabits.foundation.controller.DataFlowController
 import epicarchitect.breakbadhabits.foundation.controller.SingleRequestController
 import epicarchitect.breakbadhabits.foundation.controller.ValidatedInputController
@@ -21,17 +19,17 @@ class HabitTrackCreationViewModel(
 ) : CoroutineScopeOwner {
 
     val habitController = DataFlowController(
-        flow = appModule.logic.habits.habitProvider.habitFlow(habitId)
+        flow = appModule.habits.habitProvider.habitFlow(habitId)
     )
 
     val eventCountInputController = ValidatedInputController(
         initialInput = 1,
-        validation = appModule.logic.habits.habitTrackEventCountValidator::validate
+        validation = appModule.habits.habitTrackEventCountValidator::validate
     )
 
     val timeInputController = ValidatedInputController(
-        initialInput = appModule.logic.dateTime.dateTimeProvider.getCurrentDateTime().let { it..it },
-        validation = appModule.logic.habits.habitTrackDateTimeRangeValidator::validate
+        initialInput = appModule.dateTime.dateTimeProvider.getCurrentDateTime().let { it..it },
+        validation = appModule.habits.habitTrackDateTimeRangeValidator::validate
     )
 
     val commentInputController = ValidatedInputController(
@@ -41,7 +39,7 @@ class HabitTrackCreationViewModel(
 
     val creationController = SingleRequestController(
         request = {
-            appModule.logic.habits.habitTrackCreator.createHabitTrack(
+            appModule.habits.habitTrackCreator.createHabitTrack(
                 habitId = habitId,
                 range = timeInputController.validateAndRequire(),
                 eventCount = eventCountInputController.validateAndRequire(),

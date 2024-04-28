@@ -10,11 +10,11 @@ kotlin {
                 implementation(libs.cashapp.sqldelight.androidDriver)
             }
         }
-        getByName("iosMain") {
-            dependencies {
-                implementation(libs.cashapp.sqldelight.nativeDriver)
-            }
-        }
+//        getByName("iosMain") {
+//            dependencies {
+//                implementation(libs.cashapp.sqldelight.nativeDriver)
+//            }
+//        }
     }
 }
 

@@ -6,7 +6,7 @@ import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.foundation.coroutines.CoroutineDispatchers
 import epicarchitect.breakbadhabits.foundation.coroutines.flow.flatMapOrNullLatest
 import epicarchitect.breakbadhabits.foundation.icons.Icon
-import epicarchitect.breakbadhabits.foundation.icons.IconProvider
+import epicarchitect.breakbadhabits.foundation.icons.Icons
 import epicarchitect.breakbadhabits.logic.habits.model.Habit
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 import kotlinx.coroutines.flow.combine
@@ -16,7 +16,7 @@ import epicarchitect.breakbadhabits.sqldelight.main.Habit as DatabaseHabit
 class HabitProvider(
     private val mainDatabase: MainDatabase,
     private val coroutineDispatchers: CoroutineDispatchers,
-    private val iconProvider: IconProvider
+    private val icons: Icons
 ) {
 
     fun habitsFlow() = combine(
@@ -24,7 +24,7 @@ class HabitProvider(
             .selectAll()
             .asFlow()
             .mapToList(coroutineDispatchers.io),
-        iconProvider.iconsFlow()
+        icons.iconsFlow()
     ) { habits, icons ->
         habits.map { habit ->
             mapToHabit(
@@ -39,7 +39,7 @@ class HabitProvider(
         .asFlow()
         .mapToOneOrNull(coroutineDispatchers.io)
         .flatMapOrNullLatest { habit ->
-            iconProvider.iconFlow(habit.iconId).map { icon ->
+            icons.iconFlow(habit.iconId).map { icon ->
                 mapToHabit(
                     databaseHabit = habit,
                     icon = checkNotNull(icon)

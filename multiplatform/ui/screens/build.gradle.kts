@@ -8,7 +8,8 @@ dependencies {
     commonMainApi(projects.multiplatform.ui.icons)
     commonMainApi(projects.multiplatform.di.holder)
     commonMainApi(projects.multiplatform.foundation.uikit)
-    commonMainApi(projects.multiplatform.presentation.dashboard)
-    commonMainApi(projects.multiplatform.presentation.habits)
-    commonMainApi(projects.multiplatform.presentation.app)
+//    commonMainApi(projects.multiplatform.presentation.dashboard)
+//    commonMainApi(projects.multiplatform.presentation.habits)
+//    commonMainApi(projects.multiplatform.presentation.app)
+    commonMainApi(projects.multiplatform.di.declaration)
 }
