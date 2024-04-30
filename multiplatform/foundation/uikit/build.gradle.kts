@@ -15,7 +15,7 @@ kotlin {
 }
 
 dependencies {
-    commonMainApi(projects.multiplatform.foundation.controllers)
+//    commonMainApi(projects.multiplatform.foundation.controllers)
     commonMainApi(projects.multiplatform.foundation.datetime)
     commonMainApi(projects.multiplatform.foundation.icons)
     commonMainApi(compose.foundation)

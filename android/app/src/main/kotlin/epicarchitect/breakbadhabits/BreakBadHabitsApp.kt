@@ -1,10 +1,11 @@
 package epicarchitect.breakbadhabits
 
 import android.app.Application
+import epicarchitect.breakbadhabits.database.SqlDriverFactory
 
 class BreakBadHabitsApp : Application() {
     override fun onCreate() {
         super.onCreate()
-        setupAppModuleHolder(this)
+        SqlDriverFactory.context = this
     }
 }

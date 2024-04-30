@@ -8,5 +8,5 @@ dependencies {
     commonMainApi(projects.multiplatform.database)
 //    commonMainApi(projects.multiplatform.logic.datetime)
 //    commonMainApi(projects.multiplatform.logic.settings)
-    commonMainApi(projects.multiplatform.foundation.identification)
+//    commonMainApi(projects.multiplatform.foundation.identification)
 }

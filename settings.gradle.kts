@@ -33,13 +33,13 @@ include(
     ":multiplatform:app",
     ":multiplatform:database",
 
-    ":multiplatform:ui:screens",
-    ":multiplatform:ui:format",
-    ":multiplatform:ui:icons",
+//    ":multiplatform:ui:screens",
+//    ":multiplatform:ui:format",
+//    ":multiplatform:ui:icons",
 
-    ":multiplatform:di:holder",
-    ":multiplatform:di:declaration-main",
-    ":multiplatform:di:declaration",
+//    ":multiplatform:di:holder",
+//    ":multiplatform:di:declaration-main",
+//    ":multiplatform:di:declaration",
 
 //    ":multiplatform:logic:habits",
 //    ":multiplatform:logic:datetime",
@@ -50,13 +50,13 @@ include(
 //    ":multiplatform:presentation:habits",
 //    ":multiplatform:presentation:settings",
 
-    ":multiplatform:foundation:controllers",
-    ":multiplatform:foundation:coroutines",
+//    ":multiplatform:foundation:controllers",
+//    ":multiplatform:foundation:coroutines",
     ":multiplatform:foundation:datetime",
     ":multiplatform:foundation:uikit",
-    ":multiplatform:foundation:viewmodel",
+//    ":multiplatform:foundation:viewmodel",
     ":multiplatform:foundation:math",
     ":multiplatform:foundation:icons",
-    ":multiplatform:foundation:identification",
-    ":multiplatform:foundation:sqldelight"
+//    ":multiplatform:foundation:identification",
+//    ":multiplatform:foundation:sqldelight"
 )

@@ -6,14 +6,11 @@ import android.widget.RemoteViewsService
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
-import epicarchitect.breakbadhabits.UpdatingAppTime
 import epicarchitect.breakbadhabits.android.habits.widget.R
-import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
-import epicarchitect.breakbadhabits.features.dashboard.LastHabitTrackAbstinence
-import epicarchitect.breakbadhabits.foundation.coroutines.DefaultCoroutineDispatchers
+import epicarchitect.breakbadhabits.database.AppData
+import epicarchitect.breakbadhabits.foundation.datetime.duration
+import epicarchitect.breakbadhabits.newarch.time.SystemAppTime
 import epicarchitect.breakbadhabits.sqldelight.main.Habit
-import epicarchitect.breakbadhabits.ui.format.DurationFormatter
-import epicarchitect.breakbadhabits.ui.format.android.AndroidDurationFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -23,40 +20,42 @@ class HabitsAppWidgetRemoteViewsFactory(
     private val context: Context,
     private val widgetSystemId: Int
 ) : RemoteViewsService.RemoteViewsFactory {
-    private val durationFormatter = AndroidDurationFormatter(
-        resources = context.resources,
-        defaultAccuracy = DurationFormatter.Accuracy.HOURS
-    )
+//    private val durationFormatter = AndroidDurationFormatter(
+//        resources = context.resources,
+//        defaultAccuracy = DurationFormatter.Accuracy.HOURS
+//    )
 
     private fun loadItems() = runBlocking {
-        val config = AppModuleHolder.require().mainDatabase.habitWidgetQueries.selectById(widgetSystemId)
+        val config = AppData.mainDatabase.habitWidgetQueries.selectById(widgetSystemId)
             .asFlow()
             .mapToOneOrNull(Dispatchers.IO)
             .first()
 
-        val appTime = UpdatingAppTime.state().value
+        val appTime = SystemAppTime()
 
         if (config == null) {
             emptyList()
         } else {
-            AppModuleHolder.require().mainDatabase.habitQueries
+            AppData.mainDatabase.habitQueries
                 .selectAll().asFlow()
                 .mapToList(Dispatchers.IO)
                 .first()
                 .filter {
                     config.habitIds.contains(it.id)
                 }.map {
-                    val lastTrack = AppModuleHolder.require().mainDatabase.habitTrackQueries
+                    val lastTrack = AppData.mainDatabase.habitTrackQueries
                         .selectByHabitIdAndMaxEndTime(it.id)
                         .asFlow()
-                        .mapToOneOrNull(DefaultCoroutineDispatchers.io)
+                        .mapToOneOrNull(Dispatchers.IO)
                         .first()
 
-                    val abstinence = lastTrack?.let { LastHabitTrackAbstinence(it, appTime.instant()) }
+                    val abstinence = lastTrack?.let {
+                        (it.endTime..appTime.instant()).duration()
+                    }
 
                     Item(
                         habit = it,
-                        abstinence = abstinence?.duration
+                        abstinence = abstinence
                     )
                 }
         }
@@ -87,7 +86,8 @@ class HabitsAppWidgetRemoteViewsFactory(
             if (item.abstinence == null) {
                 context.getString(R.string.habitsAppWidget_noAbstinenceTime)
             } else {
-                durationFormatter.format(item.abstinence)
+//                durationFormatter.format(item.abstinence)
+                item.abstinence.toString()
             }
         )
     }

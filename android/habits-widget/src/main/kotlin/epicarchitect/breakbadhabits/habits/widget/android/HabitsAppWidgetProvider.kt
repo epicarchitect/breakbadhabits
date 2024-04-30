@@ -13,7 +13,7 @@ import android.widget.RemoteViews
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.android.habits.widget.R
-import epicarchitect.breakbadhabits.di.holder.AppModuleHolder
+import epicarchitect.breakbadhabits.database.AppData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -40,7 +40,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
     override fun onDeleted(context: Context, widgetSystemIds: IntArray) {
         super.onDeleted(context, widgetSystemIds)
         widgetSystemIds.forEach {
-            AppModuleHolder.require().mainDatabase.habitWidgetQueries.deleteBySystemId(it)
+            AppData.mainDatabase.habitWidgetQueries.deleteBySystemId(it)
         }
     }
 
@@ -49,7 +49,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
             it.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         }
 
-        val widget = AppModuleHolder.require().mainDatabase.habitWidgetQueries.selectBySystemId(widgetSystemId)
+        val widget = AppData.mainDatabase.habitWidgetQueries.selectBySystemId(widgetSystemId)
                 .asFlow()
                 .mapToOneOrNull(Dispatchers.IO)
                 .first()

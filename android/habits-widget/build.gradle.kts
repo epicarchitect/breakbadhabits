@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     api(projects.multiplatform.foundation.uikit)
-    api(projects.multiplatform.di.holder)
-    api(projects.multiplatform.ui.screens)
+    implementation(projects.multiplatform.app)
+//    api(projects.multiplatform.di.holder)
+//    api(projects.multiplatform.ui.screens)
 }

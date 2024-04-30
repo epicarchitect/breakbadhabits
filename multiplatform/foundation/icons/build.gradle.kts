@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    commonMainApi(projects.multiplatform.foundation.coroutines)
+    commonMainApi(libs.jetbrains.kotlin.coroutinesCore)
 }

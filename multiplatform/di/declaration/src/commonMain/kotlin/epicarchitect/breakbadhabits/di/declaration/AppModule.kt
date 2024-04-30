@@ -7,6 +7,6 @@ interface AppModule {
     val format: FormatModule
 //    val dateTime: DateTimeLogicModule
     val coroutines: CoroutinesModule
-    val identification: IdentificationModule
+//    val identification: IdentificationModule
     val mainDatabase: MainDatabase
 }
