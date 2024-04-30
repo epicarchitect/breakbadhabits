@@ -1,8 +1,8 @@
-package epicarchitect.breakbadhabits.defaultDependencies.habits.widgets
+package epicarchitect.breakbadhabits.defaultDependencies.habits.widgets.list
 
 import cafe.adriel.voyager.navigator.Navigator
 import epicarchitect.breakbadhabits.defaultDependencies.habits.widgets.editing.HabitWidgetEditingScreen
-import epicarchitect.breakbadhabits.features.habits.widgets.HabitWidgetsNavigation
+import epicarchitect.breakbadhabits.features.habits.widgets.list.HabitWidgetsNavigation
 
 class DefaultHabitWidgetsNavigation(private val navigator: Navigator) : HabitWidgetsNavigation {
     override fun openWidget(widgetId: Int) {

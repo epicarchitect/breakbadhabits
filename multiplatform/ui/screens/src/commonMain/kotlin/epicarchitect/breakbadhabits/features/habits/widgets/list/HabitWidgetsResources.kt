@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.features.habits.widgets
+package epicarchitect.breakbadhabits.features.habits.widgets.list
 
 interface HabitWidgetsResources {
     fun title(): String

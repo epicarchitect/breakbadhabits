@@ -3,6 +3,7 @@ package epicarchitect.breakbadhabits.defaultDependencies.habits.details
 import cafe.adriel.voyager.navigator.Navigator
 import epicarchitect.breakbadhabits.defaultDependencies.habits.editing.HabitEditingScreen
 import epicarchitect.breakbadhabits.defaultDependencies.habits.tracks.creation.HabitTrackCreationScreen
+import epicarchitect.breakbadhabits.defaultDependencies.habits.tracks.list.HabitTracksScreen
 import epicarchitect.breakbadhabits.features.habits.details.HabitDetailsNavigation
 
 class DefaultHabitDetailsNavigation(
@@ -15,6 +16,10 @@ class DefaultHabitDetailsNavigation(
 
     override fun openEditingScreen() {
         navigator += HabitEditingScreen(habitId)
+    }
+
+    override fun openTracksScreen() {
+        navigator += HabitTracksScreen(habitId)
     }
 
     override fun back() {

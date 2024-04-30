@@ -1,7 +1,7 @@
-package epicarchitect.breakbadhabits.defaultDependencies.habits.widgets
+package epicarchitect.breakbadhabits.defaultDependencies.habits.widgets.list
 
 import androidx.compose.ui.text.intl.Locale
-import epicarchitect.breakbadhabits.features.habits.widgets.HabitWidgetsResources
+import epicarchitect.breakbadhabits.features.habits.widgets.list.HabitWidgetsResources
 
 class RussianHabitWidgetsResources : HabitWidgetsResources {
     override fun title() = "Виджеты"

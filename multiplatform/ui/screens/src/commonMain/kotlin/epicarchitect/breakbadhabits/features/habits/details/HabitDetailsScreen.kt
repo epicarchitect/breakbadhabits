@@ -139,6 +139,14 @@ fun HabitDetails(dependencies: HabitDetailsDependencies) {
                 type = Button.Type.Main
             )
 
+
+            Button(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = dependencies.navigation::openTracksScreen,
+                text = "tracks",
+                type = Button.Type.Main
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Card(

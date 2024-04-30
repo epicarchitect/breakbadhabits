@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.features.habits.widgets
+package epicarchitect.breakbadhabits.features.habits.widgets.list
 
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 

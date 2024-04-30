@@ -17,7 +17,8 @@ class HabitTrackCreationScreen(private val habitId: Int) : Screen {
                 habitId = habitId,
                 navigation = DefaultHabitTrackCreationNavigation(LocalNavigator.currentOrThrow),
                 resources = LocalizedHabitTrackCreationResources(Locale.current),
-                mainDatabase = LocalAppModule.current.mainDatabase
+                mainDatabase = LocalAppModule.current.mainDatabase,
+                idGenerator = LocalAppModule.current.identification.idGenerator
             )
         )
     }

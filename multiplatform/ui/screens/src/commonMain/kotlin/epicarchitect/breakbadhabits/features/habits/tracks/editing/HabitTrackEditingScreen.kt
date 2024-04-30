@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.features.habits.tracks.creation
+package epicarchitect.breakbadhabits.features.habits.tracks.editing
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -42,25 +42,34 @@ import epicarchitect.calendar.compose.datepicker.EpicDatePicker
 import epicarchitect.calendar.compose.datepicker.state.EpicDatePickerState
 import epicarchitect.calendar.compose.datepicker.state.rememberEpicDatePickerState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.minus
 import kotlinx.datetime.toInstant
 
-
 @Composable
-fun HabitTrackCreation(dependencies: HabitTrackCreationDependencies) {
+fun HabitTrackEditing(dependencies: HabitTrackEditingDependencies) {
+    val initialHabitTrack by remember(dependencies) {
+        dependencies.mainDatabase.habitTrackQueries
+            .selectById(dependencies.habitTrackId)
+            .asFlow()
+            .mapToOneOrNull(Dispatchers.IO)
+    }.collectAsState(null)
+
+    val habit by remember(initialHabitTrack) {
+        initialHabitTrack?.let {
+            dependencies.mainDatabase.habitQueries
+                .selectById(it.habitId)
+                .asFlow()
+                .mapToOneOrNull(Dispatchers.IO)
+        } ?: emptyFlow()
+    }.collectAsState(null)
+
     val dateTimeFormatter = LocalAppModule.current.format.dateTimeFormatter
     val appTime by UpdatingAppTime.state().collectAsState()
     var rangeSelectionShow by rememberSaveable { mutableStateOf(false) }
     var selectedTimeSelectionIndex by remember { mutableIntStateOf(0) }
-
-    val habit by remember(dependencies) {
-        dependencies.mainDatabase.habitQueries
-            .selectById(dependencies.habitId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
-    }.collectAsState(null)
 
     var selectedDates by rememberSaveable {
         mutableStateOf(listOf(appTime.date()))
@@ -69,8 +78,8 @@ fun HabitTrackCreation(dependencies: HabitTrackCreationDependencies) {
         mutableStateOf(listOf(appTime.time()))
     }
 
-    var eventCount by rememberSaveable() {
-        mutableIntStateOf(0)
+    var eventCount by rememberSaveable(initialHabitTrack) {
+        mutableIntStateOf(initialHabitTrack?.eventCount ?: 0)
     }
     var validatedEventCount by remember {
         mutableStateOf<ValidatedHabitTrackEventCount?>(null)
@@ -256,9 +265,8 @@ fun HabitTrackCreation(dependencies: HabitTrackCreationDependencies) {
             text = dependencies.resources.finishButton(),
             type = Button.Type.Main,
             onClick = {
-                dependencies.mainDatabase.habitTrackQueries.insert(
-                    id = dependencies.idGenerator.nextId(),
-                    habitId = dependencies.habitId,
+                dependencies.mainDatabase.habitTrackQueries.update(
+                    id = dependencies.habitTrackId,
                     startTime = LocalDateTime(
                         date = selectedDates.first(),
                         time = selectedTimeInDates.first()

@@ -7,7 +7,7 @@ import epicarchitect.breakbadhabits.logic.habits.model.HabitWidget
 import epicarchitect.breakbadhabits.sqldelight.main.MainDatabase
 import epicarchitect.breakbadhabits.sqldelight.main.HabitWidget as DatabaseHabitWidget
 
-class HabitWidgetProvider(
+class HabitWidgetMapperMapp(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val mainDatabase: MainDatabase
 ) {
