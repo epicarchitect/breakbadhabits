@@ -8,3 +8,7 @@ plugins {
     alias(libs.plugins.jetbrains.android) apply false
     alias(libs.plugins.cashapp.sqldelight) apply false
 }
+
+tasks.register("clean", Delete::class) {
+    delete(rootProject.layout.buildDirectory)
+}
