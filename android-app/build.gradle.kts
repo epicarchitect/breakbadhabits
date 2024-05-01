@@ -2,16 +2,16 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.android)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.jetbrains.composeCompiler)
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
-    bundle {
-        storeArchive {
-            enable = true
-        }
-    }
-
     namespace = "epicarchitect.breakbadhabits.app"
+    bundle.storeArchive.enable = true
     compileSdk = 34
 
     defaultConfig {
@@ -44,15 +44,6 @@ android {
         debug {
             applicationIdSuffix = ".debug"
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
