@@ -1,5 +1,3 @@
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
 rootProject.name = "breakbadhabits"
 
 pluginManagement {
@@ -22,8 +20,3 @@ dependencyResolutionManagement {
         }
     }
 }
-
-include(
-    ":android-app",
-    ":kmp-lib"
-)

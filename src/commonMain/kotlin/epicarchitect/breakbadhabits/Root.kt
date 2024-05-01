@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @Composable
-fun App() {
+fun Root() {
     val appSettingsState = remember {
         AppData.mainDatabase.appSettingsQueries
             .get()

@@ -22,16 +22,13 @@ cashapp-sqldelightAndroidDriver = { module = "app.cash.sqldelight:android-driver
 cashapp-sqldelightNativeDriver = { module = "app.cash.sqldelight:native-driver", version.ref = "cashapp-sqldelight" }
 cashapp-sqldelightCoroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "cashapp-sqldelight" }
 cashapp-sqldelightPrimitiveAdapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "cashapp-sqldelight" }
-cashapp-sqldelightRuntime = { module = "app.cash.sqldelight:runtime", version.ref = "cashapp-sqldelight" }
 russhwolf-multiplatformSettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "russhwolf-settings" }
 russhwolf-multiplatformSettingsNoArg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "russhwolf-settings" }
 epicarchitect-calendarComposeDatePicker = { module = "io.github.epicarchitect:calendar-compose-datepicker", version.ref = "epicarchitect-calendarCompose" }
 adrielcafe-voyagerNavigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "adrielcafe-voyager" }
 
 [plugins]
-android-library = { id = "com.android.library", version.ref = "android-gradlePlugin" }
 android-application = { id = "com.android.application", version.ref = "android-gradlePlugin" }
-jetbrains-android = { id = "org.jetbrains.kotlin.android", version.ref = "jetbrains-kotlin" }
 jetbrains-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "jetbrains-kotlin" }
 jetbrains-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "jetbrains-kotlin" }
 jetbrains-composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "jetbrains-kotlin" }

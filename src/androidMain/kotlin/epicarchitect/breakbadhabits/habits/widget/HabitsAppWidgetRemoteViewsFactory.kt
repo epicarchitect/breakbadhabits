@@ -6,7 +6,7 @@ import android.widget.RemoteViewsService
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
-import epicarchitect.breakbadhabits.app.R
+import epicarchitect.breakbadhabits.R
 import epicarchitect.breakbadhabits.database.AppData
 import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.datetime.duration

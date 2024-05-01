@@ -12,7 +12,7 @@ import android.view.View
 import android.widget.RemoteViews
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
-import epicarchitect.breakbadhabits.app.R
+import epicarchitect.breakbadhabits.R
 import epicarchitect.breakbadhabits.database.AppData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

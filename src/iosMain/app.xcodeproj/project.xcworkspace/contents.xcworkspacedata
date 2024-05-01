@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:">
+      location = "self:/Users/alex/Development/epicarchitect/breakbadhabits/src/iosMain/app.xcodeproj">
    </FileRef>
 </Workspace>
