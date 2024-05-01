@@ -9,6 +9,7 @@
 
 android/app/release
 android/app/debug
+.kotlin
 
 # Files for the ART/Dalvik VM
 *.dex
