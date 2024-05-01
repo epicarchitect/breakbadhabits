@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="epicarchitect.breakbadhabits.habits.widget.android.HabitsAppWidgetConfigCreationActivity"
-    android:initialLayout="@layout/habits_app_widget_dark"
-    android:minWidth="40dp"
-    android:minHeight="40dp"
-    android:resizeMode="vertical|horizontal"
-    android:updatePeriodMillis="1800000" />
