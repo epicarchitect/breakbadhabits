@@ -43,7 +43,7 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
     val resources = LocalHabitWidgetCreationResources.current
 
     val habits by remember {
-        AppData.mainDatabase.habitQueries
+        AppData.database.habitQueries
             .selectAll()
             .asFlow()
             .mapToList(Dispatchers.IO)
@@ -119,8 +119,7 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
             text = resources.finishButton(),
             type = Button.Type.Main,
             onClick = {
-                AppData.mainDatabase.habitWidgetQueries.insert(
-                    id = AppData.idGenerator.nextId(),
+                AppData.database.habitWidgetQueries.insert(
                     title = widgetTitle,
                     habitIds = selectedHabitIds,
                     systemId = systemWidgetId

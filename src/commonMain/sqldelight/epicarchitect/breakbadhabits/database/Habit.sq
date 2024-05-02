@@ -1,18 +1,13 @@
 import kotlin.Int;
 
 CREATE TABLE IF NOT EXISTS Habit (
-  id     INTEGER AS Int NOT NULL PRIMARY KEY,
+  id     INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
   name   TEXT NOT NULL,
   iconId INTEGER AS Int NOT NULL
 );
 
-insert:
-INSERT INTO Habit
-VALUES (?, ?, ?);
-
 update:
-UPDATE Habit SET name = ?, iconId = ?
-WHERE id = ?;
+UPDATE Habit SET name = ?, iconId = ? WHERE id = ?;
 
 deleteById:
 DELETE FROM Habit WHERE id = ?;
@@ -25,3 +20,20 @@ SELECT * FROM Habit WHERE id = ?;
 
 countWithName:
 SELECT count(*) FROM Habit WHERE name = ?;
+
+insertWithTrack {
+    INSERT INTO Habit(id, name, iconId) VALUES (
+        NULL,
+        :habitName,
+        :habitIconId
+    );
+
+    INSERT INTO HabitTrack(id, habitId, startTime, endTime, eventCount, comment) VALUES (
+        NULL,
+        (SELECT last_insert_rowid()),
+        :trackStartTime,
+        :trackEndTime,
+        :trackEventCount,
+        ""
+    );
+}

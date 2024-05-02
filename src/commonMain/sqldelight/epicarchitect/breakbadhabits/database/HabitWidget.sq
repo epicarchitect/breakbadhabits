@@ -2,15 +2,14 @@ import kotlin.Int;
 import kotlin.collections.List;
 
 CREATE TABLE IF NOT EXISTS HabitWidget (
-  id       INTEGER AS Int NOT NULL PRIMARY KEY,
+  id       INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
   title    TEXT NOT NULL,
   systemId INTEGER AS Int NOT NULL,
   habitIds TEXT AS List<Int> NOT NULL
 );
 
 insert:
-INSERT INTO HabitWidget
-VALUES (?, ?, ?, ?);
+INSERT INTO HabitWidget VALUES (NULL, ?, ?, ?);
 
 update:
 UPDATE HabitWidget SET title = ?, habitIds = ? WHERE id = ?;

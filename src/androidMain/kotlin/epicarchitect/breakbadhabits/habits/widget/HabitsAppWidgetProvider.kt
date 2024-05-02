@@ -40,7 +40,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
     override fun onDeleted(context: Context, widgetSystemIds: IntArray) {
         super.onDeleted(context, widgetSystemIds)
         widgetSystemIds.forEach {
-            AppData.mainDatabase.habitWidgetQueries.deleteBySystemId(it)
+            AppData.database.habitWidgetQueries.deleteBySystemId(it)
         }
     }
 
@@ -49,7 +49,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
             it.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         }
 
-        val widget = AppData.mainDatabase.habitWidgetQueries
+        val widget = AppData.database.habitWidgetQueries
             .selectBySystemId(widgetSystemId)
             .asFlow()
             .mapToOneOrNull(Dispatchers.IO)

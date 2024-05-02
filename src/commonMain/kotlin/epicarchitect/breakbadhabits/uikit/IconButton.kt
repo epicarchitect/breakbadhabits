@@ -2,7 +2,7 @@ package epicarchitect.breakbadhabits.uikit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import epicarchitect.breakbadhabits.icons.Icon
+import epicarchitect.breakbadhabits.entity.icons.Icon
 import androidx.compose.material3.IconButton as MaterialIconButton
 
 @Composable

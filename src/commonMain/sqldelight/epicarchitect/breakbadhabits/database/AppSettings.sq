@@ -5,12 +5,10 @@ CREATE TABLE IF NOT EXISTS AppSettings (
   theme INTEGER NOT NULL
 );
 
-INSERT OR IGNORE INTO AppSettings (id, theme)
-VALUES (0, 0);
+INSERT OR IGNORE INTO AppSettings VALUES (0, 0);
 
 update:
-UPDATE AppSettings SET theme = ?
-WHERE id = 0;
+UPDATE AppSettings SET theme = ? WHERE id = 0;
 
 get:
 SELECT * FROM AppSettings LIMIT 1;

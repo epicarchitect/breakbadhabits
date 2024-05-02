@@ -2,7 +2,7 @@ import kotlin.Int;
 import kotlinx.datetime.Instant;
 
 CREATE TABLE IF NOT EXISTS HabitTrack (
-  id         INTEGER AS Int NOT NULL PRIMARY KEY,
+  id         INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
   habitId    INTEGER AS Int NOT NULL,
   startTime  INTEGER AS Instant NOT NULL,
   endTime    INTEGER AS Instant NOT NULL,
@@ -11,12 +11,10 @@ CREATE TABLE IF NOT EXISTS HabitTrack (
 );
 
 insert:
-INSERT INTO HabitTrack
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO HabitTrack VALUES (NULL, ?, ?, ?, ?, ?);
 
 update:
-UPDATE HabitTrack SET startTime = ?, endTime = ?, eventCount = ?, comment = ?
-WHERE id = ?;
+UPDATE HabitTrack SET startTime = ?, endTime = ?, eventCount = ?, comment = ? WHERE id = ?;
 
 deleteById:
 DELETE FROM HabitTrack WHERE id = ?;

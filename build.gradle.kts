@@ -1,13 +1,20 @@
 plugins {
     alias(libs.plugins.jetbrains.multiplatform)
-    alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.jetbrains.composeCompiler)
+    alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.jetbrains.serialization)
     alias(libs.plugins.android.application)
     alias(libs.plugins.cashapp.sqldelight)
 }
 
 kotlin {
+    @Suppress("OPT_IN_USAGE")
+    compilerOptions {
+        freeCompilerArgs = listOf(
+            "-Xexpect-actual-classes" // remove warnings for expect classes
+        )
+    }
+
     jvmToolchain(17)
 
     androidTarget()
@@ -18,6 +25,7 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "KMPLib"
+            freeCompilerArgs = listOf("-Xbinary=bundleId=$baseName")
         }
     }
 
@@ -31,8 +39,6 @@ kotlin {
             implementation(libs.jetbrains.serializationJson)
             implementation(libs.cashapp.sqldelightCoroutinesExtensions)
             implementation(libs.cashapp.sqldelightPrimitiveAdapters)
-            implementation(libs.russhwolf.multiplatformSettings)
-            implementation(libs.russhwolf.multiplatformSettingsNoArg)
             implementation(libs.adrielcafe.voyagerNavigator)
             implementation(libs.epicarchitect.calendarComposeDatePicker)
         }
@@ -87,6 +93,25 @@ android {
         debug {
             applicationIdSuffix = ".debug"
         }
+    }
+
+    // TODO: check
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    // TODO: remove on stable compose
+    lint {
+        checkReleaseBuilds = false
+        checkDependencies = false
+        checkAllWarnings = false
+        checkTestSources = false
+        abortOnError = false
+        ignoreTestSources = true
+        ignoreTestFixturesSources = true
+        ignoreWarnings = true
     }
 }
 

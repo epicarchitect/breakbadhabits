@@ -9,8 +9,8 @@ import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.R
 import epicarchitect.breakbadhabits.database.AppData
 import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.datetime.duration
-import epicarchitect.breakbadhabits.newarch.time.SystemAppTime
+import epicarchitect.breakbadhabits.entity.datetime.duration
+import epicarchitect.breakbadhabits.entity.time.SystemAppTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -26,7 +26,7 @@ class HabitsAppWidgetRemoteViewsFactory(
 //    )
 
     private fun loadItems() = runBlocking {
-        val config = AppData.mainDatabase.habitWidgetQueries.selectById(widgetSystemId)
+        val config = AppData.database.habitWidgetQueries.selectById(widgetSystemId)
             .asFlow()
             .mapToOneOrNull(Dispatchers.IO)
             .first()
@@ -36,14 +36,14 @@ class HabitsAppWidgetRemoteViewsFactory(
         if (config == null) {
             emptyList()
         } else {
-            AppData.mainDatabase.habitQueries
+            AppData.database.habitQueries
                 .selectAll().asFlow()
                 .mapToList(Dispatchers.IO)
                 .first()
                 .filter {
                     config.habitIds.contains(it.id)
                 }.map {
-                    val lastTrack = AppData.mainDatabase.habitTrackQueries
+                    val lastTrack = AppData.database.habitTrackQueries
                         .selectByHabitIdAndMaxEndTime(it.id)
                         .asFlow()
                         .mapToOneOrNull(Dispatchers.IO)
