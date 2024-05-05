@@ -27,9 +27,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.entity.time.UpdatingAppTime
-import epicarchitect.breakbadhabits.entity.time.date
-import epicarchitect.breakbadhabits.entity.time.time
+import epicarchitect.breakbadhabits.entity.datetime.UpdatingAppTime
+import epicarchitect.breakbadhabits.entity.datetime.date
+import epicarchitect.breakbadhabits.entity.datetime.time
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountValidator
 import epicarchitect.breakbadhabits.entity.validator.IncorrectHabitTrackEventCount
 import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackEventCount

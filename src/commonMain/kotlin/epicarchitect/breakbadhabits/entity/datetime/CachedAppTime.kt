@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.entity.time
+package epicarchitect.breakbadhabits.entity.datetime
 
 class CachedAppTime(
     private val base: AppTime

@@ -7,6 +7,7 @@ import epicarchitect.breakbadhabits.habits.widget.HabitsAppWidgetProvider
 import epicarchitect.breakbadhabits.ui.Root
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

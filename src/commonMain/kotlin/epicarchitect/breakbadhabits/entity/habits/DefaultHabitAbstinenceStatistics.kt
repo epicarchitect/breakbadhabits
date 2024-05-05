@@ -1,10 +1,10 @@
 package epicarchitect.breakbadhabits.entity.habits
 
+import epicarchitect.breakbadhabits.entity.datetime.AppTime
 import epicarchitect.breakbadhabits.entity.datetime.averageDuration
 import epicarchitect.breakbadhabits.entity.datetime.duration
 import epicarchitect.breakbadhabits.entity.datetime.maxDuration
 import epicarchitect.breakbadhabits.entity.datetime.minDuration
-import epicarchitect.breakbadhabits.entity.time.AppTime
 import kotlinx.datetime.Instant
 
 class DefaultHabitAbstinenceStatistics(

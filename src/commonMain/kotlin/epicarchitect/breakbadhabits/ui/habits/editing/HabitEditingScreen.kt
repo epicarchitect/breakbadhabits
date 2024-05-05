@@ -144,6 +144,10 @@ fun HabitEditing(habitId: Int) {
             value = habitName,
             onValueChange = {
                 habitName = it
+                validatedHabitName = HabitNewNameValidator(
+                    mainDatabase = AppData.database,
+                    config = HabitsConfig()
+                ).validate(habitName)
             },
             label = resources.habitNameLabel(),
             error = (validatedHabitName as? IncorrectHabitNewName)?.let {

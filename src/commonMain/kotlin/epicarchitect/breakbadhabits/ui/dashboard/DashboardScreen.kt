@@ -29,12 +29,13 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.database.AppData
 import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.entity.datetime.UpdatingAppTime
 import epicarchitect.breakbadhabits.entity.datetime.duration
 import epicarchitect.breakbadhabits.entity.icons.HabitIcons
 import epicarchitect.breakbadhabits.entity.icons.VectorIcons
-import epicarchitect.breakbadhabits.entity.time.UpdatingAppTime
 import epicarchitect.breakbadhabits.ui.appSettings.AppSettingsScreen
 import epicarchitect.breakbadhabits.ui.habits.creation.HabitCreationScreen
+import epicarchitect.breakbadhabits.ui.habits.details.FormattedDuration
 import epicarchitect.breakbadhabits.ui.habits.details.HabitDetailsScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.uikit.Card
@@ -206,7 +207,12 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
 
                     Text(
                         modifier = Modifier.padding(start = 12.dp),
-                        text = abstinence?.toString() ?: resources.habitHasNoEvents(),
+                        text = abstinence?.let {
+                            FormattedDuration(
+                                value = it,
+                                accuracy = FormattedDuration.Accuracy.SECONDS
+                            ).toString()
+                        } ?: resources.habitHasNoEvents(),
                         type = Text.Type.Description,
                         priority = Text.Priority.Medium
                     )

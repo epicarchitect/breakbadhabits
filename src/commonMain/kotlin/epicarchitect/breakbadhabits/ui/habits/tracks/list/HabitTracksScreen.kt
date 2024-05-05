@@ -33,22 +33,25 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.database.AppData
 import epicarchitect.breakbadhabits.database.HabitTrack
 import epicarchitect.breakbadhabits.entity.datetime.MonthOfYear
+import epicarchitect.breakbadhabits.entity.datetime.UpdatingAppTime
 import epicarchitect.breakbadhabits.entity.datetime.monthOfYear
 import epicarchitect.breakbadhabits.entity.datetime.mountsBetween
 import epicarchitect.breakbadhabits.entity.icons.VectorIcons
-import epicarchitect.breakbadhabits.entity.time.UpdatingAppTime
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.editing.HabitTrackEditingScreen
 import epicarchitect.breakbadhabits.uikit.IconButton
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.text.Text
+import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
+import epicarchitect.calendar.compose.ranges.drawEpicRanges
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class HabitTracksScreen(private val habitId: Int) : Screen {
     @Composable
@@ -77,6 +80,8 @@ fun HabitTracks(habitId: Int) {
             .asFlow()
             .mapToList(Dispatchers.IO)
     }.collectAsState(emptyList())
+
+    val timeZone = UpdatingAppTime.timeZone()
 
     val groupedByMonthTracks = remember(tracks) {
         tracks.groupByMonth(UpdatingAppTime.timeZone())
@@ -141,7 +146,17 @@ fun HabitTracks(habitId: Int) {
             }
         }
 
+        val rangeColor = AppTheme.colorScheme.primary
+
         EpicCalendarPager(
+            pageModifier = {
+                Modifier.drawEpicRanges(
+                    ranges = tracks.map {
+                        it.startTime.toLocalDateTime(timeZone).date..it.endTime.toLocalDateTime(timeZone).date
+                    },
+                    color = rangeColor
+                )
+            },
             state = epicCalendarState
         )
 

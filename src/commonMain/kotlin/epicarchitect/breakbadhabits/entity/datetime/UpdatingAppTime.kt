@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.entity.time
+package epicarchitect.breakbadhabits.entity.datetime
 
 import epicarchitect.breakbadhabits.entity.util.DefaultUpdatingValue
 import epicarchitect.breakbadhabits.entity.util.UpdatingValue

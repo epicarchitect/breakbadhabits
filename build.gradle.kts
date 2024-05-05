@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.jetbrains.multiplatform)
     alias(libs.plugins.jetbrains.composeCompiler)
     alias(libs.plugins.jetbrains.compose)
-    alias(libs.plugins.jetbrains.serialization)
     alias(libs.plugins.android.application)
     alias(libs.plugins.cashapp.sqldelight)
 }
@@ -36,7 +35,6 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.jetbrains.datetime)
             implementation(libs.jetbrains.coroutinesCore)
-            implementation(libs.jetbrains.serializationJson)
             implementation(libs.cashapp.sqldelightCoroutinesExtensions)
             implementation(libs.cashapp.sqldelightPrimitiveAdapters)
             implementation(libs.adrielcafe.voyagerNavigator)

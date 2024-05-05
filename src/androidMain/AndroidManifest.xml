@@ -15,7 +15,7 @@
             android:name="epicarchitect.breakbadhabits.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/Activity"
+            android:theme="@style/App.Theme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,8 @@
         <activity
             android:name="epicarchitect.breakbadhabits.habits.widget.HabitsAppWidgetConfigCreationActivity"
             android:exported="true"
-            android:theme="@style/Activity">
+            android:theme="@style/App.Theme"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

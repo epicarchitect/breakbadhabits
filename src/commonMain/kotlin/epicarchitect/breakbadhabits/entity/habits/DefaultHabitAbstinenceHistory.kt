@@ -1,8 +1,8 @@
 package epicarchitect.breakbadhabits.entity.habits
 
 import epicarchitect.breakbadhabits.database.HabitTrack
+import epicarchitect.breakbadhabits.entity.datetime.AppTime
 import epicarchitect.breakbadhabits.entity.math.ranges.combineIntersections
-import epicarchitect.breakbadhabits.entity.time.AppTime
 import kotlinx.datetime.Instant
 
 class DefaultHabitAbstinenceHistory(

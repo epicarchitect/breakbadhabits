@@ -5,11 +5,9 @@ import epicarchitect.breakbadhabits.entity.math.ranges.isAscended
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
-import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.abs
 import kotlin.math.floor
@@ -49,8 +47,6 @@ fun MonthOfYear.previous(): MonthOfYear = addMonths(-1)
 
 fun MonthOfYear.next(): MonthOfYear = addMonths(1)
 
-fun MonthOfYear.length() = numberOfDays
-
 fun MonthOfYear.addMonths(monthsToAdd: Int): MonthOfYear {
     if (monthsToAdd == 0) return this
     val monthCount = year * 12 + (month.number - 1)
@@ -60,7 +56,7 @@ fun MonthOfYear.addMonths(monthsToAdd: Int): MonthOfYear {
     return MonthOfYear(newYear, Month(newMonth))
 }
 
-fun MonthOfYearRange.countMountsBetween(): Int {
+fun ClosedRange<MonthOfYear>.countMountsBetween(): Int {
     val range = ascended()
     val start = range.start
     val end = range.endInclusive
@@ -78,7 +74,7 @@ fun MonthOfYearRange.countMountsBetween(): Int {
     return abs(result)
 }
 
-fun MonthOfYearRange.mountsBetween(): List<MonthOfYear> {
+fun ClosedRange<MonthOfYear>.mountsBetween(): List<MonthOfYear> {
     val mountsBetweenCount = countMountsBetween()
     if (mountsBetweenCount == 0) return emptyList()
 
@@ -92,56 +88,5 @@ fun MonthOfYearRange.mountsBetween(): List<MonthOfYear> {
 }
 
 val LocalDate.monthOfYear get() = MonthOfYear(year, month)
-val LocalDateTime.monthOfYear get() = date.monthOfYear
 
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
-
-// fun InstantRange.monthOfYearRange(timeZone: TimeZone): MonthOfYearRange =
-//    start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
-//
-// fun ZonedDateTimeRange.monthOfYearRange(): MonthOfYearRange =
-//    start.dateTime.date.monthOfYear..endInclusive.dateTime.date.monthOfYear
-
-// fun MonthOfYear.atDay(dayOfMonth: Int) = LocalDate(year, month, dayOfMonth)
-
-// fun MonthOfYear.lastDayOfWeek() = atDay(length()).dayOfWeek
-
-// fun MonthOfYear.toInstantRange(timeZone: TimeZone): InstantRange {
-//    val start = LocalDateTime(year, month, 1, 0, 0, 0)
-//    val end = LocalDateTime(year, month, length(), 23, 59, 59)
-//    return start.toInstant(timeZone)..end.toInstant(timeZone)
-// }
-
-fun MonthOfYear.toInstant(
-    timeZone: TimeZone,
-    dayOfMonth: Int,
-    hour: Int,
-    minute: Int,
-    second: Int
-) = LocalDateTime(year, month, dayOfMonth, hour, minute, second).toInstant(timeZone)
-
-fun MonthOfYear.toInstantAtStart(timeZone: TimeZone) = toInstant(
-    timeZone = timeZone,
-    dayOfMonth = 1,
-    hour = 0,
-    minute = 0,
-    second = 0
-)
-
-fun MonthOfYear.toInstantAtEnd(timeZone: TimeZone) = toInstant(
-    timeZone = timeZone,
-    dayOfMonth = length(),
-    hour = 23,
-    minute = 59,
-    second = 59
-)
-//
-// fun MonthOfYear.toZonedInstantAtStart(timeZone: TimeZone) = ZonedDateTime(
-//    instant = toInstantAtStart(timeZone),
-//    timeZone = timeZone
-// )
-//
-// fun MonthOfYear.toZonedInstantAtEnd(timeZone: TimeZone) = ZonedDateTime(
-//    instant = toInstantAtEnd(timeZone),
-//    timeZone = timeZone
-// )

@@ -1,15 +1,15 @@
 package epicarchitect.breakbadhabits.uikit
 
-import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 
 @Composable
 fun Dialog(
-    onDismiss: (() -> Unit)? = null,
-    content: @Composable BoxScope.() -> Unit
+    onDismiss: () -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit
 ) {
     androidx.compose.ui.window.Dialog(
-        onDismissRequest = { onDismiss?.invoke() },
+        onDismissRequest = onDismiss,
     ) {
         Card(content = content)
     }

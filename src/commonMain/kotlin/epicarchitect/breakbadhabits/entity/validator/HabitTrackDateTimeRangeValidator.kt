@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.entity.validator
 
-import epicarchitect.breakbadhabits.entity.time.SystemAppTime
+import epicarchitect.breakbadhabits.entity.datetime.SystemAppTime
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toLocalDateTime
 

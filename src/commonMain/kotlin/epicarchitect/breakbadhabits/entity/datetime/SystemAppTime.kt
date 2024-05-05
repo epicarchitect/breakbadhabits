@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.entity.time
+package epicarchitect.breakbadhabits.entity.datetime
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone

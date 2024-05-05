@@ -18,6 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
@@ -29,7 +32,7 @@ import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 fun Histogram(
     modifier: Modifier = Modifier,
     values: List<Float>,
-    valueFormatter: (Float) -> String = Float::toString,
+    valueFormatter: (Float) -> CharSequence = Float::toString,
     barPadding: Dp = 12.dp,
     startPadding: Dp = 12.dp,
     endPadding: Dp = 12.dp,
@@ -45,6 +48,7 @@ fun Histogram(
     val endPaddingPx = with(LocalDensity.current) { endPadding.toPx() }
     val valueTextSizePx = with(LocalDensity.current) { valueTextSize.toPx() }
     val valueTextPaddingPx = with(LocalDensity.current) { valueTextPadding.toPx() }
+    val textMeasurer = rememberTextMeasurer()
 
     Box(
         modifier = modifier.onSizeChanged {
@@ -56,16 +60,15 @@ fun Histogram(
         }
 
         val barWidthPx = if (boxSize.width > 0) {
-            val resolve = boxSize.width - startPaddingPx - endPaddingPx
-            val ktlint = visibleBarCount - (barPaddingPx - barPaddingPx / visibleBarCount)
-            resolve / ktlint // please fix this shit
+            (boxSize.width - startPaddingPx - endPaddingPx) / visibleBarCount - (barPaddingPx - barPaddingPx / visibleBarCount)
         } else {
-            0f
+            0f // here problem
         }
 
         val canvasWidth = with(LocalDensity.current) {
-            val paddings = barPaddingPx + startPaddingPx + endPaddingPx
-            (barWidthPx * values.size + (values.size - 1) * paddings).toDp()
+            (barWidthPx * values.size + (values.size - 1) * barPaddingPx + startPaddingPx + endPaddingPx).toDp()
+//            val paddings = barPaddingPx + startPaddingPx + endPaddingPx
+//            (barWidthPx * values.size + (values.size - 1) * paddings).toDp()
         }
 
         Canvas(
@@ -83,12 +86,6 @@ fun Histogram(
                 top = 0f,
                 bottom = 0f
             ) {
-//                val textPaint = Paint().apply {
-//                    color = valueTextColor.toArgb()
-//                    isAntiAlias = true
-//                    textSize = valueTextSizePx
-//                }
-
                 val maxY = values.max()
                 val minBarOffsetY = size.height.let { height ->
                     height - (height - valueTextPaddingPx * 2 - valueTextSizePx - barPaddingPx)
@@ -107,12 +104,18 @@ fun Histogram(
 
                     val barHeightPx = size.height - barOffset.y
 
-//                    drawContext.canvas.nativeCanvas.drawText(
-//                        valueFormatter(barValue),
-//                        barOffset.x + barWidthPx / 2 - textPaint.textSize,
-//                        barOffset.y - valueTextPaddingPx,
-//                        textPaint
-//                    )
+                    drawText(
+                        textMeasurer = textMeasurer,
+                        text = valueFormatter(barValue).toString(),
+                        topLeft = Offset(
+                            barOffset.x + barWidthPx / 2 - valueTextSizePx / 2,
+                            barOffset.y - valueTextPaddingPx - valueTextSizePx,
+                        ),
+                        style = TextStyle.Default.copy(
+                            color = valueTextColor,
+                            fontSize = valueTextSize
+                        )
+                    )
 
                     drawRect(
                         color = barColor,

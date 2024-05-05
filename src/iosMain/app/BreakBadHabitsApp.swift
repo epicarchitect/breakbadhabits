@@ -13,7 +13,7 @@ struct BreakBadHabitsApp: App {
     var body: some Scene {
         WindowGroup {
             ComposeView()
-                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+                .ignoresSafeArea()
         }
     }
 }
