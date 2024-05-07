@@ -85,7 +85,10 @@ android {
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "android-app-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "src/androidMain/proguard-rules.pro"
+            )
         }
 
         debug {
@@ -116,7 +119,7 @@ android {
 sqldelight {
     databases {
         create("MainDatabase") {
-            packageName.set("epicarchitect.breakbadhabits.database")
+            packageName.set("epicarchitect.breakbadhabits.data")
         }
     }
 }

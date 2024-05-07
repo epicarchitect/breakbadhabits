@@ -22,17 +22,17 @@ DELETE FROM HabitTrack WHERE id = ?;
 deleteByHabitId:
 DELETE FROM HabitTrack WHERE habitId = ?;
 
-selectAll:
+tracks:
 SELECT * FROM HabitTrack;
 
-selectById:
+trackById:
 SELECT * FROM HabitTrack WHERE id = ?;
 
-selectByHabitId:
+tracksByHabitId:
 SELECT * FROM HabitTrack WHERE habitId = ?;
 
-selectByHabitIdAndMaxEndTime:
+trackByHabitIdAndMaxEndTime:
 SELECT * FROM HabitTrack WHERE habitId = :habitId AND endTime = (SELECT max(endTime) FROM HabitTrack WHERE habitId = :habitId) LIMIT 1;
 
-selectByRange:
+tracksByRange:
 SELECT * FROM HabitTrack WHERE habitId = :habitId AND ((startTime BETWEEN :startTime AND :endTime) OR (endTime BETWEEN :startTime AND :endTime));

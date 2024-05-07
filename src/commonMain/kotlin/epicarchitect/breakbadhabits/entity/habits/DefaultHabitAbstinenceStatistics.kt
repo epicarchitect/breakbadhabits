@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.entity.habits
 
-import epicarchitect.breakbadhabits.entity.datetime.AppTime
+import epicarchitect.breakbadhabits.entity.datetime.DateTime
 import epicarchitect.breakbadhabits.entity.datetime.averageDuration
 import epicarchitect.breakbadhabits.entity.datetime.duration
 import epicarchitect.breakbadhabits.entity.datetime.maxDuration
@@ -9,7 +9,7 @@ import kotlinx.datetime.Instant
 
 class DefaultHabitAbstinenceStatistics(
     private val history: HabitAbstinenceHistory,
-    private val appTime: AppTime
+    private val dateTime: DateTime
 ) : HabitAbstinenceStatistics {
     override fun averageDuration() = history.abstinenceRanges().averageDuration()
 
@@ -18,6 +18,6 @@ class DefaultHabitAbstinenceStatistics(
     override fun minDuration() = history.abstinenceRanges().minDuration()
 
     override fun durationSinceFirstTrack() = history.failedRanges().minOfOrNull(ClosedRange<Instant>::start)?.let {
-        (appTime.instant()..it).duration()
+        (dateTime.instant()..it).duration()
     }
 }

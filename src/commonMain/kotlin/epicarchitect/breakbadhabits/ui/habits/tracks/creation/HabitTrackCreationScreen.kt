@@ -21,15 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.entity.datetime.UpdatingAppTime
-import epicarchitect.breakbadhabits.entity.datetime.date
-import epicarchitect.breakbadhabits.entity.datetime.time
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountValidator
 import epicarchitect.breakbadhabits.entity.validator.IncorrectHabitTrackEventCount
 import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackEventCount
@@ -44,8 +40,6 @@ import epicarchitect.breakbadhabits.uikit.text.TextField
 import epicarchitect.calendar.compose.datepicker.EpicDatePicker
 import epicarchitect.calendar.compose.datepicker.state.EpicDatePickerState
 import epicarchitect.calendar.compose.datepicker.state.rememberEpicDatePickerState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.minus
@@ -67,17 +61,14 @@ fun HabitTrackCreation(habitId: Int) {
     var selectedTimeSelectionIndex by remember { mutableIntStateOf(0) }
 
     val habit by remember(habitId) {
-        AppData.database.habitQueries
-            .selectById(habitId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
+        AppData.database.habitQueries.habitById(habitId).flowOfOneOrNull()
     }.collectAsState(null)
 
     var selectedDates by rememberSaveable {
-        mutableStateOf(listOf(UpdatingAppTime.date()))
+        mutableStateOf(listOf(AppData.userDateTime.local().date))
     }
     var selectedTimeInDates by rememberSaveable {
-        mutableStateOf(listOf(UpdatingAppTime.time()))
+        mutableStateOf(listOf(AppData.userDateTime.local().time))
     }
 
     var eventCount by rememberSaveable {
@@ -92,13 +83,13 @@ fun HabitTrackCreation(habitId: Int) {
 
     LaunchedEffect(selectedTimeSelectionIndex) {
         if (selectedTimeSelectionIndex == 0) {
-            selectedDates = listOf(UpdatingAppTime.date())
-            selectedTimeInDates = listOf(UpdatingAppTime.time())
+            selectedDates = listOf(AppData.userDateTime.local().date)
+            selectedTimeInDates = listOf(AppData.userDateTime.local().time)
         }
 
         if (selectedTimeSelectionIndex == 1) {
-            selectedDates = listOf(UpdatingAppTime.date().minus(DatePeriod(days = 1)))
-            selectedTimeInDates = listOf(UpdatingAppTime.time())
+            selectedDates = listOf(AppData.userDateTime.local().date.minus(DatePeriod(days = 1)))
+            selectedTimeInDates = listOf(AppData.userDateTime.local().time)
         }
     }
 
@@ -266,11 +257,11 @@ fun HabitTrackCreation(habitId: Int) {
                     startTime = LocalDateTime(
                         date = selectedDates.first(),
                         time = selectedTimeInDates.first()
-                    ).toInstant(UpdatingAppTime.timeZone()),
+                    ).toInstant(AppData.userDateTime.timeZone()),
                     endTime = LocalDateTime(
                         date = selectedDates.last(),
                         time = selectedTimeInDates.last()
-                    ).toInstant(UpdatingAppTime.timeZone()),
+                    ).toInstant(AppData.userDateTime.timeZone()),
                     eventCount = eventCount,
                     comment = comment
                 )

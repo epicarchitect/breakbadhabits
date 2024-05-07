@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.entity.habits
 
-import epicarchitect.breakbadhabits.database.HabitTrack
-import epicarchitect.breakbadhabits.entity.datetime.AppTime
+import epicarchitect.breakbadhabits.data.HabitTrack
+import epicarchitect.breakbadhabits.entity.datetime.DateTime
 import epicarchitect.breakbadhabits.entity.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.entity.datetime.monthOfYear
 import epicarchitect.breakbadhabits.entity.datetime.previous
@@ -9,18 +9,18 @@ import kotlinx.datetime.TimeZone
 
 class DefaultHabitEventAmountStatistics(
     private val habitTracks: List<HabitTrack>,
-    private val appTime: AppTime
+    private val dateTime: DateTime
 ) : HabitEventAmountStatistics {
-    private fun currentMonth() = appTime.instant().monthOfYear(appTime.timeZone())
+    private fun currentMonth() = dateTime.instant().monthOfYear(dateTime.timeZone())
 
     override fun currentMonthCount() = habitTracks.countEventsInMonth(
-        monthOfYear = appTime.instant().monthOfYear(appTime.timeZone()),
-        timeZone = appTime.timeZone()
+        monthOfYear = dateTime.instant().monthOfYear(dateTime.timeZone()),
+        timeZone = dateTime.timeZone()
     )
 
     override fun previousMonthCount() = habitTracks.countEventsInMonth(
         monthOfYear = currentMonth().previous(),
-        timeZone = appTime.timeZone()
+        timeZone = dateTime.timeZone()
     )
 
     override fun totalCount() = habitTracks.countEvents()

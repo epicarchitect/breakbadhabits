@@ -14,29 +14,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.database.HabitWidget
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.data.HabitWidget
 import epicarchitect.breakbadhabits.entity.icons.VectorIcons
 import epicarchitect.breakbadhabits.ui.habits.widgets.editing.HabitWidgetEditingScreen
 import epicarchitect.breakbadhabits.uikit.Card
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
+import epicarchitect.breakbadhabits.uikit.stateOfList
 import epicarchitect.breakbadhabits.uikit.text.Text
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 
 class HabitWidgetsScreen : Screen {
     @Composable
@@ -49,20 +44,6 @@ class HabitWidgetsScreen : Screen {
 fun HabitAppWidgets() {
     val navigator = LocalNavigator.currentOrThrow
     val resources = LocalHabitWidgetsResources.current
-
-    val widgets by remember {
-        AppData.database.habitWidgetQueries
-            .selectAll()
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-    }.collectAsState(emptyList())
-
-    val habits by remember {
-        AppData.database.habitQueries
-            .selectAll()
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-    }.collectAsState(emptyList())
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -84,34 +65,39 @@ fun HabitAppWidgets() {
             )
         }
 
-        if (widgets.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Center,
-                    text = resources.emptyList()
-                )
-            }
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp,
-                    bottom = 160.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(widgets, key = { it.id }) { item ->
-                    WidgetConfigItem(
-                        item = item,
-                        habits = habits.filter {
-                            item.habitIds.contains(it.id)
-                        }
+        FlowStateContainer(
+            state1 = stateOfList { AppData.database.habitWidgetQueries.widgets() },
+            state2 = stateOfList { AppData.database.habitQueries.habits() }
+        ) { widgets, habits ->
+            if (widgets.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                        text = resources.emptyList()
                     )
+                }
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 16.dp,
+                        bottom = 160.dp
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(widgets, key = { it.id }) { item ->
+                        WidgetConfigItem(
+                            item = item,
+                            habits = habits.filter {
+                                item.habitIds.contains(it.id)
+                            }
+                        )
+                    }
                 }
             }
         }

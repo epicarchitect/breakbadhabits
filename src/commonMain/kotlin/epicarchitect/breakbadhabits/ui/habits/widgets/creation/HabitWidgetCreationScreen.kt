@@ -26,21 +26,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.entity.util.flowOfList
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 
 class HabitWidgetCreationScreen(private val systemWidgetId: Int) : Screen {
     @Composable
@@ -55,10 +52,7 @@ fun HabitWidgetCreation(systemWidgetId: Int) {
     val navigator = LocalNavigator.currentOrThrow
 
     val habits by remember {
-        AppData.database.habitQueries
-            .selectAll()
-            .asFlow()
-            .mapToList(Dispatchers.IO)
+        AppData.database.habitQueries.habits().flowOfList()
     }.collectAsState(emptyList())
 
     val selectedHabitIds = rememberSaveable {

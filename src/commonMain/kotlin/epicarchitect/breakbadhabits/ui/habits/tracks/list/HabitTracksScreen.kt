@@ -24,19 +24,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.database.HabitTrack
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.entity.datetime.MonthOfYear
-import epicarchitect.breakbadhabits.entity.datetime.UpdatingAppTime
 import epicarchitect.breakbadhabits.entity.datetime.monthOfYear
 import epicarchitect.breakbadhabits.entity.datetime.mountsBetween
 import epicarchitect.breakbadhabits.entity.icons.VectorIcons
+import epicarchitect.breakbadhabits.entity.util.flowOfList
+import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.editing.HabitTrackEditingScreen
 import epicarchitect.breakbadhabits.uikit.IconButton
@@ -47,8 +45,6 @@ import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -68,23 +64,17 @@ fun HabitTracks(habitId: Int) {
     val coroutineScope = rememberCoroutineScope()
 
     val habit by remember(habitId) {
-        AppData.database.habitQueries
-            .selectById(habitId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
+        AppData.database.habitQueries.habitById(habitId).flowOfOneOrNull()
     }.collectAsState(null)
 
     val tracks by remember(habitId) {
-        AppData.database.habitTrackQueries
-            .selectByHabitId(habitId)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
+        AppData.database.habitTrackQueries.tracksByHabitId(habitId).flowOfList()
     }.collectAsState(emptyList())
 
-    val timeZone = UpdatingAppTime.timeZone()
+    val timeZone = AppData.userDateTime.timeZone()
 
     val groupedByMonthTracks = remember(tracks) {
-        tracks.groupByMonth(UpdatingAppTime.timeZone())
+        tracks.groupByMonth(timeZone)
     }
 
     val epicCalendarState = rememberEpicCalendarPagerState()

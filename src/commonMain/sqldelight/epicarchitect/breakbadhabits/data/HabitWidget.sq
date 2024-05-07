@@ -20,11 +20,11 @@ DELETE FROM HabitWidget WHERE id = ?;
 deleteBySystemId:
 DELETE FROM HabitWidget WHERE systemId = ?;
 
-selectById:
+widgetById:
 SELECT * FROM HabitWidget WHERE id = ?;
 
-selectBySystemId:
+widgetBySystemId:
 SELECT * FROM HabitWidget WHERE systemId = ?;
 
-selectAll:
+widgets:
 SELECT * FROM HabitWidget;

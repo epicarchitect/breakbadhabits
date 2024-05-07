@@ -3,17 +3,11 @@ package epicarchitect.breakbadhabits.habits.widget
 import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.R
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.entity.datetime.SystemAppTime
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.entity.datetime.duration
 import epicarchitect.breakbadhabits.ui.habits.details.FormattedDuration
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 class HabitsAppWidgetRemoteViewsFactory(
@@ -22,41 +16,30 @@ class HabitsAppWidgetRemoteViewsFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private fun loadItems() = runBlocking {
-        val config = AppData.database.habitWidgetQueries.selectById(widgetSystemId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
-            .first()
-
-        val appTime = SystemAppTime()
+        val config = AppData.database.habitWidgetQueries.widgetById(widgetSystemId).executeAsOneOrNull()
 
         if (config == null) {
             emptyList()
         } else {
-            AppData.database.habitQueries
-                .selectAll().asFlow()
-                .mapToList(Dispatchers.IO)
-                .first()
-                .filter {
-                    config.habitIds.contains(it.id)
-                }.map {
-                    val lastTrack = AppData.database.habitTrackQueries
-                        .selectByHabitIdAndMaxEndTime(it.id)
-                        .asFlow()
-                        .mapToOneOrNull(Dispatchers.IO)
-                        .first()
+            AppData.database.habitQueries.habits().executeAsList().filter {
+                config.habitIds.contains(it.id)
+            }.map {
+                val lastTrack = AppData.database.habitTrackQueries
+                    .trackByHabitIdAndMaxEndTime(it.id)
+                    .executeAsOneOrNull()
 
-                    val abstinence = lastTrack?.let {
-                        FormattedDuration(
-                            value = (it.endTime..appTime.instant()).duration(),
-                            accuracy = FormattedDuration.Accuracy.HOURS
-                        ).toString()
-                    }
-
-                    Item(
-                        habit = it,
-                        abstinence = abstinence
-                    )
+                val abstinence = lastTrack?.let {
+                    FormattedDuration(
+                        value = (it.endTime..AppData.userDateTime.instant()).duration(),
+                        accuracy = FormattedDuration.Accuracy.HOURS
+                    ).toString()
                 }
+
+                Item(
+                    habit = it,
+                    abstinence = abstinence
+                )
+            }
         }
     }
 

@@ -16,20 +16,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.entity.datetime.UpdatingAppTime
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.entity.datetime.duration
 import epicarchitect.breakbadhabits.entity.icons.HabitIcons
 import epicarchitect.breakbadhabits.entity.icons.VectorIcons
@@ -39,13 +34,13 @@ import epicarchitect.breakbadhabits.ui.habits.details.FormattedDuration
 import epicarchitect.breakbadhabits.ui.habits.details.HabitDetailsScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.uikit.Card
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
 import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.stateOfList
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.map
 
 class DashboardScreen : Screen {
     @Composable
@@ -83,35 +78,32 @@ fun Dashboard() {
                 )
             }
 
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                val items by remember {
-                    AppData.database.habitQueries.selectAll()
-                        .asFlow()
-                        .mapToList(Dispatchers.IO)
-                        .map { it.sortedByDescending(Habit::id) }
-                }.collectAsState(emptyList())
-
-                if (items.isEmpty()) {
-                    EmptyHabits()
-                } else {
-                    LoadedHabits(items)
-                }
-
-                Button(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.BottomEnd),
-                    onClick = {
-                        navigator += HabitCreationScreen()
-                    },
-                    text = resources.newHabitButtonText(),
-                    type = Button.Type.Main,
-                    icon = {
-                        Icon(VectorIcons.Add)
+            FlowStateContainer(
+                state = stateOfList { AppData.database.habitQueries.habits() }
+            ) { items ->
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (items.isEmpty()) {
+                        EmptyHabits()
+                    } else {
+                        LoadedHabits(items)
                     }
-                )
+
+                    Button(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomEnd),
+                        onClick = {
+                            navigator += HabitCreationScreen()
+                        },
+                        text = resources.newHabitButtonText(),
+                        type = Button.Type.Main,
+                        icon = {
+                            Icon(VectorIcons.Add)
+                        }
+                    )
+                }
             }
         }
     }
@@ -196,26 +188,26 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
                 ) {
                     Icon(VectorIcons.Time)
 
-                    val lastTrack by AppData.database.habitTrackQueries
-                        .selectByHabitIdAndMaxEndTime(habit.id)
-                        .asFlow()
-                        .mapToOneOrNull(Dispatchers.IO)
-                        .collectAsState(null)
+                    FlowStateContainer(
+                        state = stateOfOneOrNull {
+                            AppData.database.habitTrackQueries.trackByHabitIdAndMaxEndTime(habit.id)
+                        }
+                    ) { track ->
+                        val appTime by AppData.userDateTime.collectAsState()
+                        val abstinence = track?.let { (it.endTime..appTime.instant()).duration() }
 
-                    val appTime by UpdatingAppTime.state().collectAsState()
-                    val abstinence = lastTrack?.let { (it.endTime..appTime.instant()).duration() }
-
-                    Text(
-                        modifier = Modifier.padding(start = 12.dp),
-                        text = abstinence?.let {
-                            FormattedDuration(
-                                value = it,
-                                accuracy = FormattedDuration.Accuracy.SECONDS
-                            ).toString()
-                        } ?: resources.habitHasNoEvents(),
-                        type = Text.Type.Description,
-                        priority = Text.Priority.Medium
-                    )
+                        Text(
+                            modifier = Modifier.padding(start = 12.dp),
+                            text = abstinence?.let {
+                                FormattedDuration(
+                                    value = it,
+                                    accuracy = FormattedDuration.Accuracy.SECONDS
+                                ).toString()
+                            } ?: resources.habitHasNoEvents(),
+                            type = Text.Type.Description,
+                            priority = Text.Priority.Medium
+                        )
+                    }
                 }
             }
 

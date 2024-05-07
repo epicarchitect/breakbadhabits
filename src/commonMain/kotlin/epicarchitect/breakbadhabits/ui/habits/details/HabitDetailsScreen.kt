@@ -21,14 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.entity.datetime.UpdatingAppTime
+import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.entity.datetime.duration
 import epicarchitect.breakbadhabits.entity.datetime.onlyDays
 import epicarchitect.breakbadhabits.entity.datetime.onlyHours
@@ -48,19 +44,20 @@ import epicarchitect.breakbadhabits.ui.habits.editing.HabitEditingScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.list.HabitTracksScreen
 import epicarchitect.breakbadhabits.uikit.Card
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Histogram
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
 import epicarchitect.breakbadhabits.uikit.StatisticData
 import epicarchitect.breakbadhabits.uikit.Statistics
 import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.stateOfList
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -72,29 +69,25 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
     }
 }
 
+
+
 @Composable
 fun HabitDetails(habitId: Int) {
     val resources = LocalHabitDetailsResources.current
     val navigator = LocalNavigator.currentOrThrow
 
-    val habitState = remember(habitId) {
-        AppData.database.habitQueries
-            .selectById(habitId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
-    }.collectAsState(null)
-
-    val habit = habitState.value
-
-    if (habit != null) {
-        val habitTracks by remember(habit) {
-            AppData.database.habitTrackQueries
-                .selectByHabitId(habitId)
-                .asFlow()
-                .mapToList(Dispatchers.IO)
-        }.collectAsState(emptyList())
-
-        val appTime by UpdatingAppTime.state().collectAsState()
+    FlowStateContainer(
+        state1 = stateOfOneOrNull {
+            AppData.database.habitQueries.habitById(habitId)
+        },
+        state2 = stateOfList {
+            AppData.database.habitTrackQueries.tracksByHabitId(habitId)
+        },
+        state3 = stateOfOneOrNull {
+            AppData.database.habitTrackQueries.trackByHabitIdAndMaxEndTime(habitId)
+        }
+    ) { habit, habitTracks, lastTrack ->
+        val appTime by AppData.userDateTime.collectAsState()
         val timeZone = appTime.timeZone()
 
         val abstinenceHistory = remember(habitTracks, appTime) {
@@ -124,13 +117,6 @@ fun HabitDetails(habitId: Int) {
             )
         }
 
-        val lastTrack by remember(habitId) {
-            AppData.database.habitTrackQueries
-                .selectByHabitIdAndMaxEndTime(habitId)
-                .asFlow()
-                .mapToOneOrNull(Dispatchers.IO)
-        }.collectAsState(null)
-
         val abstinence = lastTrack?.let { (it.endTime..appTime.instant()).duration() }
 
         Column(
@@ -155,7 +141,7 @@ fun HabitDetails(habitId: Int) {
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .size(44.dp),
-                    icon = HabitIcons[habit.iconId]
+                    icon = HabitIcons[habit?.iconId ?: 0]
                 )
 
                 IconButton(
@@ -171,7 +157,7 @@ fun HabitDetails(habitId: Int) {
 
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = habit.name,
+                text = habit?.name ?: "error",
                 type = Text.Type.Title
             )
 

@@ -12,10 +12,10 @@ UPDATE Habit SET name = ?, iconId = ? WHERE id = ?;
 deleteById:
 DELETE FROM Habit WHERE id = ?;
 
-selectAll:
+habits:
 SELECT * FROM Habit;
 
-selectById:
+habitById:
 SELECT * FROM Habit WHERE id = ?;
 
 countWithName:

@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.entity.validator
 
-import epicarchitect.breakbadhabits.database.MainDatabase
+import epicarchitect.breakbadhabits.data.MainDatabase
 import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
 
 class HabitNewNameValidator(

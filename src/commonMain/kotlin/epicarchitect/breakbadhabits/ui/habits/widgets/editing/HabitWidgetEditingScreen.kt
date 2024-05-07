@@ -28,14 +28,13 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.entity.util.flowOfList
+import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.Dialog
@@ -44,8 +43,6 @@ import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 
 class HabitWidgetEditingScreen(private val widgetId: Int) : Screen {
     @Composable
@@ -60,17 +57,11 @@ fun HabitWidgetEditing(widgetId: Int) {
     val resources = LocalHabitWidgetEditingResources.current
 
     val habits by remember {
-        AppData.database.habitQueries
-            .selectAll()
-            .asFlow()
-            .mapToList(Dispatchers.IO)
+        AppData.database.habitQueries.habits().flowOfList()
     }.collectAsState(emptyList())
 
     val initialWidgetState = remember(widgetId) {
-        AppData.database.habitWidgetQueries
-            .selectById(widgetId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
+        AppData.database.habitWidgetQueries.widgetById(widgetId).flowOfOneOrNull()
     }.collectAsState(null)
 
     val initialWidget = initialWidgetState.value

@@ -6,22 +6,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
+import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.ui.habits.widgets.list.HabitWidgetsScreen
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.button.RadioButton
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 
 class AppSettingsScreen : Screen {
     @Composable
@@ -34,17 +30,10 @@ class AppSettingsScreen : Screen {
 fun AppSettings() {
     val navigator = LocalNavigator.currentOrThrow
     val resources = LocalAppSettingsResources.current
-    val appSettingsState = remember {
-        AppData.database
-            .appSettingsQueries
-            .get()
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
-    }.collectAsState(initial = null)
 
-    val appSettings = appSettingsState.value
-
-    if (appSettings != null) {
+    FlowStateContainer(
+        state = stateOfOneOrNull { AppData.database.appSettingsQueries.settings() }
+    ) { settings ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,7 +58,7 @@ fun AppSettings() {
 
             RadioButton(
                 text = resources.themeSelectionSystemTheme(),
-                selected = appSettings.theme == 0L,
+                selected = settings?.theme == 0L,
                 onSelect = {
                     AppData.database.appSettingsQueries.update(theme = 0L)
                 }
@@ -77,7 +66,7 @@ fun AppSettings() {
 
             RadioButton(
                 text = resources.themeSelectionLightTheme(),
-                selected = appSettings.theme == 1L,
+                selected = settings?.theme == 1L,
                 onSelect = {
                     AppData.database.appSettingsQueries.update(theme = 1L)
                 }
@@ -85,7 +74,7 @@ fun AppSettings() {
 
             RadioButton(
                 text = resources.themeSelectionDarkTheme(),
-                selected = appSettings.theme == 2L,
+                selected = settings?.theme == 2L,
                 onSelect = {
                     AppData.database.appSettingsQueries.update(theme = 2L)
                 }

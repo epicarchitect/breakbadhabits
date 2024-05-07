@@ -26,8 +26,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.database.AppData
-import epicarchitect.breakbadhabits.entity.datetime.UpdatingAppTime
+import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
 import epicarchitect.breakbadhabits.entity.icons.HabitIcons
 import epicarchitect.breakbadhabits.entity.icons.VectorIcons
@@ -238,7 +237,7 @@ fun HabitCreation() {
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
             onClick = {
-                val endTime = UpdatingAppTime.instant()
+                val endTime = AppData.userDateTime.instant()
                 AppData.database.habitQueries.insertWithTrack(
                     habitName = (validatedHabitName as CorrectHabitNewName).data,
                     habitIconId = selectedIconId,

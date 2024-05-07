@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.entity.validator
 
-import epicarchitect.breakbadhabits.entity.datetime.SystemAppTime
+import epicarchitect.breakbadhabits.data.AppData
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toLocalDateTime
 
@@ -10,9 +10,9 @@ class HabitTrackDateTimeRangeValidator {
     } ?: CorrectHabitTrackDateTimeRange(data)
 
     private fun ClosedRange<LocalDateTime>.incorrectReason() = when {
-        SystemAppTime().instant().toLocalDateTime(SystemAppTime().timeZone()).let {
+        AppData.userDateTime.instant().toLocalDateTime(AppData.userDateTime.timeZone()).let {
             it < start || it < endInclusive
-        } -> IncorrectHabitTrackDateTimeRange.Reason.BiggestThenCurrentTime
+        }    -> IncorrectHabitTrackDateTimeRange.Reason.BiggestThenCurrentTime
 
         else -> null
     }

@@ -10,5 +10,5 @@ INSERT OR IGNORE INTO AppSettings VALUES (0, 0);
 update:
 UPDATE AppSettings SET theme = ? WHERE id = 0;
 
-get:
+settings:
 SELECT * FROM AppSettings LIMIT 1;

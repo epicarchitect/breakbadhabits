@@ -13,7 +13,7 @@ import android.widget.RemoteViews
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.R
-import epicarchitect.breakbadhabits.database.AppData
+import epicarchitect.breakbadhabits.data.AppData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -50,7 +50,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         }
 
         val widget = AppData.database.habitWidgetQueries
-            .selectBySystemId(widgetSystemId)
+            .widgetBySystemId(widgetSystemId)
             .asFlow()
             .mapToOneOrNull(Dispatchers.IO)
             .first()
