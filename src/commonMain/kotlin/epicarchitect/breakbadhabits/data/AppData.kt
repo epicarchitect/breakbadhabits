@@ -4,6 +4,7 @@ import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import epicarchitect.breakbadhabits.data.datetime.SystemDateTime
 import epicarchitect.breakbadhabits.data.datetime.UpdatingDateTime
 import epicarchitect.breakbadhabits.entity.datetime.CachedDateTime
+import epicarchitect.breakbadhabits.entity.datetime.ZeroMillisecondsDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -41,6 +42,12 @@ object AppData {
     val userDateTime = UpdatingDateTime(
         scope = coroutineScope,
         delay = { 1.seconds },
-        value = { CachedDateTime(SystemDateTime()) }
+        value = {
+            CachedDateTime(
+                ZeroMillisecondsDateTime(
+                    SystemDateTime()
+                )
+            )
+        }
     )
 }
