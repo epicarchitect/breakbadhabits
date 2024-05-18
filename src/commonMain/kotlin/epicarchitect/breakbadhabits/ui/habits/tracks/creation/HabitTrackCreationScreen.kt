@@ -52,9 +52,8 @@ class HabitTrackCreationScreen(private val habitId: Int) : Screen {
 
 @Composable
 fun HabitTrackCreation(habitId: Int) {
-    val resources by AppData.resources.collectAsState()
-    val habitTrackCreationStrings = resources.strings.habitTrackCreationStrings
-    val icons = resources.icons
+    val habitTrackCreationStrings = AppData.resources.strings.habitTrackCreationStrings
+    val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
     val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow

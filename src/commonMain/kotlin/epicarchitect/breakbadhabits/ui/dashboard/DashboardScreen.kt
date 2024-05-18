@@ -50,9 +50,8 @@ class DashboardScreen : Screen {
 @Composable
 fun Dashboard() {
     val navigator = LocalNavigator.currentOrThrow
-    val resources by AppData.resources.collectAsState()
-    val dashboardStrings = resources.strings.dashboardStrings
-    val icons = resources.icons
+    val dashboardStrings = AppData.resources.strings.dashboardStrings
+    val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
 
     ScreenBasis(
@@ -105,7 +104,6 @@ private fun LoadedHabits(items: List<Habit>) {
 
 @Composable
 private fun EmptyHabits() {
-    val resources by AppData.resources.collectAsState()
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -113,7 +111,7 @@ private fun EmptyHabits() {
         Text(
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
-            text = resources.strings.dashboardStrings.emptyHabitsText()
+            text = AppData.resources.strings.dashboardStrings.emptyHabitsText()
         )
     }
 }
@@ -122,9 +120,8 @@ private fun EmptyHabits() {
 @Composable
 private fun LazyItemScope.HabitCard(habit: Habit) {
     val navigator = LocalNavigator.currentOrThrow
-    val resources by AppData.resources.collectAsState()
-    val strings = resources.strings
-    val icons = resources.icons
+    val strings = AppData.resources.strings
+    val icons = AppData.resources.icons
     Card(
         modifier = Modifier
             .fillMaxWidth()

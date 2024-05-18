@@ -48,8 +48,7 @@ class HabitWidgetCreationScreen(private val systemWidgetId: Int) : Screen {
 
 @Composable
 fun HabitWidgetCreation(systemWidgetId: Int) {
-    val resources by AppData.resources.collectAsState()
-    val habitWidgetCreationStrings = resources.strings.habitWidgetCreationStrings
+    val habitWidgetCreationStrings = AppData.resources.strings.habitWidgetCreationStrings
     val navigator = LocalNavigator.currentOrThrow
     val habitQueries = AppData.database.habitQueries
     val habitWidgetQueries = AppData.database.habitWidgetQueries

@@ -58,13 +58,12 @@ class HabitTracksScreen(private val habitId: Int) : Screen {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HabitTracks(habitId: Int) {
-    val resources by AppData.resources.collectAsState()
     val navigator = LocalNavigator.currentOrThrow
     val coroutineScope = rememberCoroutineScope()
     val habitQueries = AppData.database.habitQueries
     val habitTrackQueries = AppData.database.habitTrackQueries
-    val habitTracksStrings = resources.strings.habitTracksStrings
-    val icons = resources.icons
+    val habitTracksStrings = AppData.resources.strings.habitTracksStrings
+    val icons = AppData.resources.icons
 
     val habit by remember(habitId) {
         habitQueries.habitById(habitId).flowOfOneOrNull()

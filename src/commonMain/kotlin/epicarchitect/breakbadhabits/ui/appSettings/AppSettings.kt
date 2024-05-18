@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -31,8 +29,7 @@ class AppSettingsScreen : Screen {
 @Composable
 fun AppSettings() {
     val navigator = LocalNavigator.currentOrThrow
-    val resources by AppData.resources.collectAsState()
-    val appSettingsStrings = resources.strings.appSettingsStrings
+    val appSettingsStrings = AppData.resources.strings.appSettingsStrings
     val appSettingsQueries = AppData.database.appSettingsQueries
 
     FlowStateContainer(

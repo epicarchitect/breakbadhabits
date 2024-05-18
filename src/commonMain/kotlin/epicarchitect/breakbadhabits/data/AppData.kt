@@ -1,11 +1,10 @@
 package epicarchitect.breakbadhabits.data
 
-import androidx.compose.ui.text.intl.Locale
 import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import epicarchitect.breakbadhabits.data.database.InstantAdapter
 import epicarchitect.breakbadhabits.data.database.ListOfIntAdapter
 import epicarchitect.breakbadhabits.data.database.SqlDriverFactory
-import epicarchitect.breakbadhabits.data.database.appSettings.AppThemeAdapter
+import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsThemeAdapter
 import epicarchitect.breakbadhabits.data.resources.AppResources
 import epicarchitect.breakbadhabits.entity.datetime.CachedDateTime
 import epicarchitect.breakbadhabits.entity.datetime.SystemDateTime
@@ -14,12 +13,12 @@ import epicarchitect.breakbadhabits.entity.datetime.ZeroMillisecondsDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlin.time.Duration.Companion.seconds
 
 object AppData {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    val resources = AppResources()
 
     val database = AppDatabase(
         driver = SqlDriverFactory.create(
@@ -44,7 +43,7 @@ object AppData {
         ),
         AppSettingsAdapter = AppSettings.Adapter(
             idAdapter = IntColumnAdapter,
-            themeAdapter = AppThemeAdapter
+            themeAdapter = AppSettingsThemeAdapter
         )
     )
 
@@ -59,8 +58,4 @@ object AppData {
             )
         }
     )
-
-    // TODO: update by locale
-    val resources: StateFlow<AppResources> = MutableStateFlow(AppResources(Locale.current))
-
 }

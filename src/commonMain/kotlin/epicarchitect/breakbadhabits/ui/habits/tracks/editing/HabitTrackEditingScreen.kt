@@ -53,8 +53,7 @@ class HabitTrackEditingScreen(private val habitTrackId: Int) : Screen {
 
 @Composable
 fun HabitTrackEditing(habitTrackId: Int) {
-    val resources by AppData.resources.collectAsState()
-    val habitTrackEditingStrings = resources.strings.habitTrackEditingStrings
+    val habitTrackEditingStrings = AppData.resources.strings.habitTrackEditingStrings
     val habitQueries = AppData.database.habitQueries
     val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow

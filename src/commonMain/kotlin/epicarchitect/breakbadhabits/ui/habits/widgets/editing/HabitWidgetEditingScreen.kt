@@ -54,8 +54,7 @@ class HabitWidgetEditingScreen(private val widgetId: Int) : Screen {
 @Composable
 fun HabitWidgetEditing(widgetId: Int) {
     val navigator = LocalNavigator.currentOrThrow
-    val resources by AppData.resources.collectAsState()
-    val habitWidgetEditingStrings = resources.strings.habitWidgetEditingStrings
+    val habitWidgetEditingStrings = AppData.resources.strings.habitWidgetEditingStrings
     val habitQueries = AppData.database.habitQueries
     val habitWidgetQueries = AppData.database.habitWidgetQueries
 

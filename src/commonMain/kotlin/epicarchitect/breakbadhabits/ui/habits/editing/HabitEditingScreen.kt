@@ -52,9 +52,8 @@ class HabitEditingScreen(private val habitId: Int) : Screen {
 fun HabitEditing(habitId: Int) {
     val navigator = LocalNavigator.currentOrThrow
     val habitQueries = AppData.database.habitQueries
-    val resources by AppData.resources.collectAsState()
-    val habitEditingStrings = resources.strings.habitEditingStrings
-    val icons = resources.icons
+    val habitEditingStrings = AppData.resources.strings.habitEditingStrings
+    val icons = AppData.resources.icons
 
     val initialHabit by remember(habitId) {
         habitQueries.habitById(habitId).flowOfOneOrNull()

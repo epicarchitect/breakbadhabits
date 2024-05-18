@@ -1,9 +1,9 @@
 [versions]
 android-gradlePlugin = "8.3.2"
-jetbrains-kotlin = "2.0.0-RC2"
+jetbrains-kotlin = "2.0.0-RC3"
 jetbrains-coroutinesCore = "1.8.0"
-jetbrains-compose = "1.6.10-beta03"
-jetbrains-datetime = "0.6.0-RC.2"
+jetbrains-compose = "1.6.10-rc03"
+jetbrains-datetime = "0.6.0"
 android-activityCompose = "1.9.0"
 android-coreKtx = "1.13.0"
 cashapp-sqldelight = "2.0.2"

@@ -13,7 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -70,9 +69,8 @@ class HabitCreationScreen : Screen {
 
 @Composable
 fun HabitCreation() {
-    val resources by AppData.resources.collectAsState()
-    val habitCreationStrings = resources.strings.habitCreationStrings
-    val icons = resources.icons
+    val habitCreationStrings = AppData.resources.strings.habitCreationStrings
+    val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
 

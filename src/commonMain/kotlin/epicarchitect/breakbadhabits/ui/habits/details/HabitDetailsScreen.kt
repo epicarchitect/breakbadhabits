@@ -66,11 +66,10 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
 
 @Composable
 fun HabitDetails(habitId: Int) {
-    val resources by AppData.resources.collectAsState()
     val appTime by AppData.userDateTime.collectAsState()
     val timeZone = appTime.timeZone()
-    val habitDetailsStrings = resources.strings.habitDetailsStrings
-    val icons = resources.icons
+    val habitDetailsStrings = AppData.resources.strings.habitDetailsStrings
+    val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
     val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow

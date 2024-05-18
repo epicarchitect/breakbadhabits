@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -44,9 +42,8 @@ class HabitWidgetsScreen : Screen {
 @Composable
 fun HabitAppWidgets() {
     val navigator = LocalNavigator.currentOrThrow
-    val resources by AppData.resources.collectAsState()
-    val icons = resources.icons
-    val habitWidgetsStrings = resources.strings.habitWidgetsStrings
+    val icons = AppData.resources.icons
+    val habitWidgetsStrings = AppData.resources.strings.habitWidgetsStrings
 
     Column(
         modifier = Modifier.fillMaxSize()

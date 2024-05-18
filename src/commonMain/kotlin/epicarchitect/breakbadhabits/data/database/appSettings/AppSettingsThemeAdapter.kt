@@ -2,7 +2,7 @@ package epicarchitect.breakbadhabits.data.database.appSettings
 
 import app.cash.sqldelight.ColumnAdapter
 
-object AppThemeAdapter : ColumnAdapter<AppSettingsTheme, Long> {
+object AppSettingsThemeAdapter : ColumnAdapter<AppSettingsTheme, Long> {
     override fun decode(databaseValue: Long) = when (databaseValue) {
         1L   -> AppSettingsTheme.LIGHT
         2L   -> AppSettingsTheme.DARK
