@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.data
+package epicarchitect.breakbadhabits.data.database
 
 import app.cash.sqldelight.ColumnAdapter
 import kotlinx.datetime.Instant

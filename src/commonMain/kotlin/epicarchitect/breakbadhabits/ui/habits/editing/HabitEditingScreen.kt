@@ -26,9 +26,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
-import epicarchitect.breakbadhabits.entity.icons.HabitIcons
-import epicarchitect.breakbadhabits.entity.icons.VectorIcons
 import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.entity.validator.CorrectHabitNewName
 import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidator
@@ -54,10 +51,13 @@ class HabitEditingScreen(private val habitId: Int) : Screen {
 @Composable
 fun HabitEditing(habitId: Int) {
     val navigator = LocalNavigator.currentOrThrow
-    val resources = LocalHabitEditingResources.current
+    val habitQueries = AppData.database.habitQueries
+    val resources by AppData.resources.collectAsState()
+    val habitEditingStrings = resources.strings.habitEditingStrings
+    val icons = resources.icons
 
     val initialHabit by remember(habitId) {
-        AppData.database.habitQueries.habitById(habitId).flowOfOneOrNull()
+        habitQueries.habitById(habitId).flowOfOneOrNull()
     }.collectAsState(null)
 
     var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit?.name ?: "") }
@@ -73,7 +73,7 @@ fun HabitEditing(habitId: Int) {
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = resources.deleteConfirmation(),
+                    text = habitEditingStrings.deleteConfirmation(),
                     type = Text.Type.Description,
                     priority = Text.Priority.High
                 )
@@ -84,7 +84,7 @@ fun HabitEditing(habitId: Int) {
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Button(
-                        text = resources.cancel(),
+                        text = habitEditingStrings.cancel(),
                         onClick = {
                             deletionShow = false
                         }
@@ -93,10 +93,10 @@ fun HabitEditing(habitId: Int) {
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Button(
-                        text = resources.yes(),
+                        text = habitEditingStrings.yes(),
                         type = Button.Type.Main,
                         onClick = {
-                            AppData.database.habitQueries.deleteById(habitId)
+                            habitQueries.deleteById(habitId)
                             navigator.popUntil { it is DashboardScreen }
                         }
                     )
@@ -112,7 +112,7 @@ fun HabitEditing(habitId: Int) {
             .padding(16.dp)
     ) {
         Text(
-            text = resources.titleText(),
+            text = habitEditingStrings.titleText(),
             type = Text.Type.Title,
             priority = Text.Priority.High
         )
@@ -120,7 +120,7 @@ fun HabitEditing(habitId: Int) {
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = resources.habitNameDescription()
+            text = habitEditingStrings.habitNameDescription()
         )
 
         Spacer(Modifier.height(16.dp))
@@ -130,31 +130,25 @@ fun HabitEditing(habitId: Int) {
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth()
                 .onFocusLost {
-                    validatedHabitName = HabitNewNameValidator(
-                        mainDatabase = AppData.database,
-                        config = HabitsConfig()
-                    ).validate(habitName)
+                    validatedHabitName = HabitNewNameValidator().validate(habitName)
                 },
             value = habitName,
             onValueChange = {
-                habitName = it
-                validatedHabitName = HabitNewNameValidator(
-                    mainDatabase = AppData.database,
-                    config = HabitsConfig()
-                ).validate(habitName)
+                habitName = it.toString()
+                validatedHabitName = HabitNewNameValidator().validate(habitName)
             },
-            label = resources.habitNameLabel(),
+            label = habitEditingStrings.habitNameLabel(),
             error = (validatedHabitName as? IncorrectHabitNewName)?.let {
-                resources.habitNameValidationError(it.reason)
+                habitEditingStrings.habitNameValidationError(it.reason)
             },
-            description = resources.habitNameDescription()
+            description = habitEditingStrings.habitNameDescription()
         )
 
         Spacer(Modifier.height(24.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = resources.habitIconDescription(),
+            text = habitEditingStrings.habitIconDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -163,8 +157,8 @@ fun HabitEditing(habitId: Int) {
 
         SingleSelectionGrid(
             modifier = Modifier.padding(horizontal = 16.dp),
-            items = HabitIcons.list,
-            selectedItem = HabitIcons[selectedIconId],
+            items = icons.habitIcons,
+            selectedItem = icons.habitIcons.getById(selectedIconId),
             cell = { icon ->
                 Icon(
                     modifier = Modifier.size(24.dp),
@@ -179,13 +173,13 @@ fun HabitEditing(habitId: Int) {
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = resources.deleteDescription()
+            text = habitEditingStrings.deleteDescription()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            text = resources.deleteButton(),
+            text = habitEditingStrings.deleteButton(),
             type = Button.Type.Dangerous,
             onClick = {
                 deletionShow = true
@@ -201,16 +195,16 @@ fun HabitEditing(habitId: Int) {
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
             onClick = {
-                AppData.database.habitQueries.update(
+                habitQueries.update(
                     id = habitId,
                     name = (validatedHabitName as CorrectHabitNewName).data,
                     iconId = selectedIconId
                 )
                 navigator.pop()
             },
-            text = resources.finishButtonText(),
+            text = habitEditingStrings.finishButtonText(),
             type = Button.Type.Main,
-            icon = { Icon(VectorIcons.Done) },
+            icon = { Icon(icons.commonIcons.Done) },
             enabled = validatedHabitName is CorrectHabitNewName
         )
 

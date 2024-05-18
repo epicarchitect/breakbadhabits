@@ -1,19 +1,21 @@
 package epicarchitect.breakbadhabits.ui.appSettings
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme
 import epicarchitect.breakbadhabits.ui.habits.widgets.list.HabitWidgetsScreen
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
+import epicarchitect.breakbadhabits.uikit.ScreenBasis
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.button.RadioButton
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
@@ -29,21 +31,46 @@ class AppSettingsScreen : Screen {
 @Composable
 fun AppSettings() {
     val navigator = LocalNavigator.currentOrThrow
-    val resources = LocalAppSettingsResources.current
+    val resources by AppData.resources.collectAsState()
+    val appSettingsStrings = resources.strings.appSettingsStrings
+    val appSettingsQueries = AppData.database.appSettingsQueries
 
     FlowStateContainer(
-        state = stateOfOneOrNull { AppData.database.appSettingsQueries.settings() }
+        state = stateOfOneOrNull { appSettingsQueries.settings() }
     ) { settings ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+        ScreenBasis(
+            contentModifier = Modifier.verticalScroll(rememberScrollState()),
+            topBar = ScreenBasis.TitleTopBar(
+                title = appSettingsStrings.titleText(),
+                leftActionButton = ScreenBasis.BackActionButton(onClick = navigator::pop)
+            )
         ) {
             Text(
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                text = resources.titleText(),
-                type = Text.Type.Title,
-                priority = Text.Priority.High
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    top = 8.dp,
+                    end = 8.dp,
+                    bottom = 4.dp
+                ),
+                text = appSettingsStrings.themeSelectionDescription()
+            )
+
+            RadioButton(
+                text = appSettingsStrings.themeSelectionSystemTheme(),
+                selected = settings?.theme == AppSettingsTheme.SYSTEM,
+                onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.SYSTEM) }
+            )
+
+            RadioButton(
+                text = appSettingsStrings.themeSelectionLightTheme(),
+                selected = settings?.theme == AppSettingsTheme.LIGHT,
+                onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.LIGHT) }
+            )
+
+            RadioButton(
+                text = appSettingsStrings.themeSelectionDarkTheme(),
+                selected = settings?.theme == AppSettingsTheme.DARK,
+                onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.DARK) }
             )
 
             Text(
@@ -53,41 +80,7 @@ fun AppSettings() {
                     end = 8.dp,
                     bottom = 4.dp
                 ),
-                text = resources.themeSelectionDescription()
-            )
-
-            RadioButton(
-                text = resources.themeSelectionSystemTheme(),
-                selected = settings?.theme == 0L,
-                onSelect = {
-                    AppData.database.appSettingsQueries.update(theme = 0L)
-                }
-            )
-
-            RadioButton(
-                text = resources.themeSelectionLightTheme(),
-                selected = settings?.theme == 1L,
-                onSelect = {
-                    AppData.database.appSettingsQueries.update(theme = 1L)
-                }
-            )
-
-            RadioButton(
-                text = resources.themeSelectionDarkTheme(),
-                selected = settings?.theme == 2L,
-                onSelect = {
-                    AppData.database.appSettingsQueries.update(theme = 2L)
-                }
-            )
-
-            Text(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    top = 8.dp,
-                    end = 8.dp,
-                    bottom = 4.dp
-                ),
-                text = resources.widgetsDescription()
+                text = appSettingsStrings.widgetsDescription()
             )
 
             Button(
@@ -97,10 +90,8 @@ fun AppSettings() {
                     end = 8.dp,
                     bottom = 16.dp
                 ),
-                onClick = {
-                    navigator += HabitWidgetsScreen()
-                },
-                text = resources.widgetsButton()
+                onClick = { navigator += HabitWidgetsScreen() },
+                text = appSettingsStrings.widgetsButton()
             )
         }
     }

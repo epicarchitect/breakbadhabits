@@ -32,7 +32,6 @@ import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.entity.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.entity.datetime.monthOfYear
 import epicarchitect.breakbadhabits.entity.datetime.mountsBetween
-import epicarchitect.breakbadhabits.entity.icons.VectorIcons
 import epicarchitect.breakbadhabits.entity.util.flowOfList
 import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
@@ -59,16 +58,20 @@ class HabitTracksScreen(private val habitId: Int) : Screen {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HabitTracks(habitId: Int) {
-    val resources = LocalHabitTracksResources.current
+    val resources by AppData.resources.collectAsState()
     val navigator = LocalNavigator.currentOrThrow
     val coroutineScope = rememberCoroutineScope()
+    val habitQueries = AppData.database.habitQueries
+    val habitTrackQueries = AppData.database.habitTrackQueries
+    val habitTracksStrings = resources.strings.habitTracksStrings
+    val icons = resources.icons
 
     val habit by remember(habitId) {
-        AppData.database.habitQueries.habitById(habitId).flowOfOneOrNull()
+        habitQueries.habitById(habitId).flowOfOneOrNull()
     }.collectAsState(null)
 
     val tracks by remember(habitId) {
-        AppData.database.habitTrackQueries.tracksByHabitId(habitId).flowOfList()
+        habitTrackQueries.tracksByHabitId(habitId).flowOfList()
     }.collectAsState(emptyList())
 
     val timeZone = AppData.userDateTime.timeZone()
@@ -114,7 +117,7 @@ fun HabitTracks(habitId: Int) {
                     }
                 }
             ) {
-                epicarchitect.breakbadhabits.uikit.Icon(VectorIcons.ArrowBack)
+                epicarchitect.breakbadhabits.uikit.Icon(icons.commonIcons.ArrowBack)
             }
 
             Text(
@@ -132,7 +135,7 @@ fun HabitTracks(habitId: Int) {
                     }
                 }
             ) {
-                epicarchitect.breakbadhabits.uikit.Icon(VectorIcons.ArrowForward)
+                epicarchitect.breakbadhabits.uikit.Icon(icons.commonIcons.ArrowForward)
             }
         }
 
@@ -186,7 +189,7 @@ fun HabitTracks(habitId: Int) {
 
                         Text(
                             modifier = Modifier.padding(2.dp),
-                            text = track.comment.ifBlank(resources::habitTrackNoComment)
+                            text = track.comment.ifBlank(habitTracksStrings::habitTrackNoComment)
                         )
                     }
                 }
@@ -199,7 +202,7 @@ fun HabitTracks(habitId: Int) {
         onClick = {
             navigator += HabitTrackCreationScreen(habitId)
         },
-        text = resources.newEventButton(),
+        text = habitTracksStrings.newEventButton(),
         type = Button.Type.Main
     )
 }

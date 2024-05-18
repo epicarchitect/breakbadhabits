@@ -1,12 +1,11 @@
 package epicarchitect.breakbadhabits.entity.validator
 
-import epicarchitect.breakbadhabits.data.MainDatabase
+import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
 
-class HabitNewNameValidator(
-    private val mainDatabase: MainDatabase,
-    private val config: HabitsConfig
-) {
+class HabitNewNameValidator {
+
+    private val config = HabitsConfig()
 
     fun validate(
         data: String,
@@ -24,7 +23,7 @@ class HabitNewNameValidator(
     }
 
     private fun String.isAlreadyUsed() =
-        mainDatabase.habitQueries.countWithName(this@isAlreadyUsed).executeAsOne() > 0
+        AppData.database.habitQueries.countWithName(this@isAlreadyUsed).executeAsOne() > 0
 }
 
 sealed class ValidatedHabitNewName {

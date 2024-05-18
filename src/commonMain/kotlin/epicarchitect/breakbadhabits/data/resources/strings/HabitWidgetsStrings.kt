@@ -1,30 +1,19 @@
-package epicarchitect.breakbadhabits.ui.habits.widgets.list
+package epicarchitect.breakbadhabits.data.resources.strings
 
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.text.intl.Locale
-
-val LocalHabitWidgetsResources = compositionLocalOf {
-    if (Locale.current.language == "ru") {
-        RussianHabitWidgetsResources()
-    } else {
-        EnglishHabitWidgetsResources()
-    }
-}
-
-interface HabitWidgetsResources {
+interface HabitWidgetsStrings {
     fun title(): String
     fun emptyList(): String
     fun deleteConfirmation(): String
 }
 
-class RussianHabitWidgetsResources : HabitWidgetsResources {
+class RussianHabitWidgetsStrings : HabitWidgetsStrings {
     override fun title() = "Виджеты"
     override fun emptyList() = "Виджеты отсутствуют. Вы можете добавить их на главный экран вашего телефона."
     override fun deleteConfirmation() =
         "Вы уверены что хотите удалить этот виджет? Вам придется удалить виджет с главного экрана вручную."
 }
 
-class EnglishHabitWidgetsResources : HabitWidgetsResources {
+class EnglishHabitWidgetsStrings : HabitWidgetsStrings {
     override fun title() = "Widgets"
     override fun emptyList() = "There are no widgets. You can add them to your phone's home screen."
     override fun deleteConfirmation() =

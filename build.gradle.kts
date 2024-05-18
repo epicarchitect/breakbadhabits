@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.cashapp.sqldelightCoroutinesExtensions)
             implementation(libs.cashapp.sqldelightPrimitiveAdapters)
             implementation(libs.adrielcafe.voyagerNavigator)
+            implementation(libs.adrielcafe.voyagerTransitions)
             implementation(libs.epicarchitect.calendarComposeDatePicker)
         }
         androidMain.dependencies {
@@ -59,7 +60,7 @@ android {
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         resourceConfigurations += setOf("en", "ru")
-        minSdk = 26
+        minSdk = 30
         targetSdk = 34
         versionCode = 70
         versionName = "4.0.0"
@@ -96,7 +97,6 @@ android {
         }
     }
 
-    // TODO: check
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -118,7 +118,7 @@ android {
 
 sqldelight {
     databases {
-        create("MainDatabase") {
+        create("AppDatabase") {
             packageName.set("epicarchitect.breakbadhabits.data")
         }
     }

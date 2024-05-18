@@ -48,11 +48,14 @@ class HabitWidgetCreationScreen(private val systemWidgetId: Int) : Screen {
 
 @Composable
 fun HabitWidgetCreation(systemWidgetId: Int) {
-    val resources = LocalHabitWidgetCreationResources.current
+    val resources by AppData.resources.collectAsState()
+    val habitWidgetCreationStrings = resources.strings.habitWidgetCreationStrings
     val navigator = LocalNavigator.currentOrThrow
+    val habitQueries = AppData.database.habitQueries
+    val habitWidgetQueries = AppData.database.habitWidgetQueries
 
     val habits by remember {
-        AppData.database.habitQueries.habits().flowOfList()
+        habitQueries.habits().flowOfList()
     }.collectAsState(emptyList())
 
     val selectedHabitIds = rememberSaveable {
@@ -70,7 +73,7 @@ fun HabitWidgetCreation(systemWidgetId: Int) {
             .padding(16.dp)
     ) {
         Text(
-            text = resources.title(),
+            text = habitWidgetCreationStrings.title(),
             type = Text.Type.Title,
             priority = Text.Priority.High
         )
@@ -78,23 +81,23 @@ fun HabitWidgetCreation(systemWidgetId: Int) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = resources.nameDescription()
+            text = habitWidgetCreationStrings.nameDescription()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         TextField(
-            label = resources.title(),
+            label = habitWidgetCreationStrings.title(),
             value = widgetTitle,
             onValueChange = {
-                widgetTitle = it
+                widgetTitle = it.toString()
             }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = resources.habitsDescription()
+            text = habitWidgetCreationStrings.habitsDescription()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -122,10 +125,10 @@ fun HabitWidgetCreation(systemWidgetId: Int) {
 
         Button(
             modifier = Modifier.align(Alignment.End),
-            text = resources.finishButton(),
+            text = habitWidgetCreationStrings.finishButton(),
             type = Button.Type.Main,
             onClick = {
-                AppData.database.habitWidgetQueries.insert(
+                habitWidgetQueries.insert(
                     title = widgetTitle,
                     habitIds = selectedHabitIds,
                     systemId = systemWidgetId

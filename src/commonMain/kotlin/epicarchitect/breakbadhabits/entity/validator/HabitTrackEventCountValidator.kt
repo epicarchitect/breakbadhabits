@@ -1,30 +1,30 @@
 package epicarchitect.breakbadhabits.entity.validator
 
-class HabitTrackEventCountValidator {
+class ValidatedHabitTrackInput(
+    private val input: CharSequence
+): CharSequence {
+    constructor(value: Int) : this(value.toString())
 
-    fun validate(data: Int) = data.incorrectReason()?.let {
-        IncorrectHabitTrackEventCount(data, it)
-    } ?: CorrectHabitTrackEventCount(data)
+    fun toInt() = input.toString().toIntOrNull()
 
-    private fun Int.incorrectReason() = when {
-        this <= 0 -> IncorrectHabitTrackEventCount.Reason.Empty
-        else -> null
+    fun incorrectReason(): IncorrectReason? {
+        val intValue = toInt()
+        return when {
+            intValue == null || intValue <= 0 -> IncorrectReason.Empty
+            else -> null
+        }
     }
-}
 
-sealed class ValidatedHabitTrackEventCount {
-    abstract val data: Int
-}
+    override val length: Int
+        get() = toString().length
 
-data class CorrectHabitTrackEventCount internal constructor(
-    override val data: Int
-) : ValidatedHabitTrackEventCount()
+    override fun get(index: Int) = toString()[index]
 
-data class IncorrectHabitTrackEventCount internal constructor(
-    override val data: Int,
-    val reason: Reason
-) : ValidatedHabitTrackEventCount() {
-    sealed class Reason {
-        object Empty : Reason()
+    override fun subSequence(startIndex: Int, endIndex: Int) = toString().subSequence(startIndex, endIndex)
+
+    override fun toString() = toInt().toString()
+
+    sealed class IncorrectReason {
+        object Empty : IncorrectReason()
     }
 }

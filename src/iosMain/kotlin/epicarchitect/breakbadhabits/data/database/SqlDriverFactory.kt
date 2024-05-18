@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.data
+package epicarchitect.breakbadhabits.data.database
 
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver

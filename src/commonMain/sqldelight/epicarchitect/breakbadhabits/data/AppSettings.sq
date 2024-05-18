@@ -1,8 +1,9 @@
+import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme;
 import kotlin.Int;
 
 CREATE TABLE IF NOT EXISTS AppSettings (
   id    INTEGER AS Int NOT NULL PRIMARY KEY,
-  theme INTEGER NOT NULL
+  theme INTEGER AS AppSettingsTheme NOT NULL
 );
 
 INSERT OR IGNORE INTO AppSettings VALUES (0, 0);

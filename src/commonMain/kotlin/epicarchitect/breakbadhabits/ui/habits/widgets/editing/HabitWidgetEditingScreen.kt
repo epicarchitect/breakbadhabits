@@ -54,14 +54,17 @@ class HabitWidgetEditingScreen(private val widgetId: Int) : Screen {
 @Composable
 fun HabitWidgetEditing(widgetId: Int) {
     val navigator = LocalNavigator.currentOrThrow
-    val resources = LocalHabitWidgetEditingResources.current
+    val resources by AppData.resources.collectAsState()
+    val habitWidgetEditingStrings = resources.strings.habitWidgetEditingStrings
+    val habitQueries = AppData.database.habitQueries
+    val habitWidgetQueries = AppData.database.habitWidgetQueries
 
     val habits by remember {
-        AppData.database.habitQueries.habits().flowOfList()
+        habitQueries.habits().flowOfList()
     }.collectAsState(emptyList())
 
     val initialWidgetState = remember(widgetId) {
-        AppData.database.habitWidgetQueries.widgetById(widgetId).flowOfOneOrNull()
+        habitWidgetQueries.widgetById(widgetId).flowOfOneOrNull()
     }.collectAsState(null)
 
     val initialWidget = initialWidgetState.value
@@ -84,7 +87,7 @@ fun HabitWidgetEditing(widgetId: Int) {
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = resources.deleteConfirmation(),
+                        text = habitWidgetEditingStrings.deleteConfirmation(),
                         type = Text.Type.Description,
                         priority = Text.Priority.High
                     )
@@ -95,7 +98,7 @@ fun HabitWidgetEditing(widgetId: Int) {
                         modifier = Modifier.align(Alignment.End)
                     ) {
                         Button(
-                            text = resources.cancel(),
+                            text = habitWidgetEditingStrings.cancel(),
                             onClick = {
                                 deletionShow = false
                             }
@@ -104,11 +107,9 @@ fun HabitWidgetEditing(widgetId: Int) {
                         Spacer(modifier = Modifier.width(16.dp))
 
                         Button(
-                            text = resources.yes(),
+                            text = habitWidgetEditingStrings.yes(),
                             type = Button.Type.Main,
-                            onClick = {
-                                AppData.database.habitWidgetQueries.deleteById(widgetId)
-                            }
+                            onClick = { habitWidgetQueries.deleteById(widgetId) }
                         )
                     }
                 }
@@ -121,7 +122,7 @@ fun HabitWidgetEditing(widgetId: Int) {
                 .padding(16.dp)
         ) {
             Text(
-                text = resources.title(),
+                text = habitWidgetEditingStrings.title(),
                 type = Text.Type.Title,
                 priority = Text.Priority.High
             )
@@ -129,23 +130,23 @@ fun HabitWidgetEditing(widgetId: Int) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = resources.nameDescription()
+                text = habitWidgetEditingStrings.nameDescription()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             TextField(
-                label = resources.title(),
+                label = habitWidgetEditingStrings.title(),
                 value = widgetTitle,
                 onValueChange = {
-                    widgetTitle = it
+                    widgetTitle = it.toString()
                 }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = resources.habitsDescription()
+                text = habitWidgetEditingStrings.habitsDescription()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -172,13 +173,13 @@ fun HabitWidgetEditing(widgetId: Int) {
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = resources.deleteDescription()
+                text = habitWidgetEditingStrings.deleteDescription()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                text = resources.deleteButtonText(),
+                text = habitWidgetEditingStrings.deleteButtonText(),
                 type = Button.Type.Dangerous,
                 onClick = {
                     deletionShow = true
@@ -189,10 +190,10 @@ fun HabitWidgetEditing(widgetId: Int) {
 
             Button(
                 modifier = Modifier.align(Alignment.End),
-                text = resources.finishButton(),
+                text = habitWidgetEditingStrings.finishButton(),
                 type = Button.Type.Main,
                 onClick = {
-                    AppData.database.habitWidgetQueries.update(
+                    habitWidgetQueries.update(
                         id = widgetId,
                         title = widgetTitle,
                         habitIds = selectedHabitIds,

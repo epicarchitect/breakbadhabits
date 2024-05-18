@@ -3,6 +3,7 @@ package epicarchitect.breakbadhabits.ui.habits.tracks.creation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -26,14 +27,11 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
-import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountValidator
-import epicarchitect.breakbadhabits.entity.validator.IncorrectHabitTrackEventCount
-import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackEventCount
+import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackInput
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
-import epicarchitect.breakbadhabits.uikit.ext.onFocusLost
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
@@ -54,14 +52,18 @@ class HabitTrackCreationScreen(private val habitId: Int) : Screen {
 
 @Composable
 fun HabitTrackCreation(habitId: Int) {
-    val resources = LocalHabitTrackCreationResources.current
+    val resources by AppData.resources.collectAsState()
+    val habitTrackCreationStrings = resources.strings.habitTrackCreationStrings
+    val icons = resources.icons
+    val habitQueries = AppData.database.habitQueries
+    val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow
 
     var rangeSelectionShow by rememberSaveable { mutableStateOf(false) }
     var selectedTimeSelectionIndex by remember { mutableIntStateOf(0) }
 
     val habit by remember(habitId) {
-        AppData.database.habitQueries.habitById(habitId).flowOfOneOrNull()
+        habitQueries.habitById(habitId).flowOfOneOrNull()
     }.collectAsState(null)
 
     var selectedDates by rememberSaveable {
@@ -71,12 +73,9 @@ fun HabitTrackCreation(habitId: Int) {
         mutableStateOf(listOf(AppData.userDateTime.local().time))
     }
 
-    var eventCount by rememberSaveable {
-        mutableIntStateOf(0)
-    }
-    var validatedEventCount by remember {
-        mutableStateOf<ValidatedHabitTrackEventCount?>(null)
-    }
+    var eventCount by rememberSaveable { mutableIntStateOf(0) }
+    var validatedEventCount by remember { mutableStateOf(ValidatedHabitTrackInput(0)) }
+
     var comment by rememberSaveable {
         mutableStateOf("")
     }
@@ -122,7 +121,7 @@ fun HabitTrackCreation(habitId: Int) {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = resources.titleText(),
+            text = habitTrackCreationStrings.titleText(),
             type = Text.Type.Title,
             priority = Text.Priority.High
         )
@@ -132,7 +131,7 @@ fun HabitTrackCreation(habitId: Int) {
         habit?.let {
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                text = resources.habitNameLabel(it.name),
+                text = habitTrackCreationStrings.habitNameLabel(it.name),
                 type = Text.Type.Description,
                 priority = Text.Priority.Low
             )
@@ -148,21 +147,19 @@ fun HabitTrackCreation(habitId: Int) {
         Spacer(Modifier.height(12.dp))
 
         TextField(
-            modifier = Modifier.onFocusLost {
-                validatedEventCount = HabitTrackEventCountValidator().validate(eventCount)
-            },
+            modifier = Modifier.fillMaxWidth(),
             value = eventCount.toString(),
             onValueChange = {
-                eventCount = it.toIntOrNull() ?: 0
+                val validated = ValidatedHabitTrackInput(it)
+                eventCount = validated.toInt() ?: 0
+                validatedEventCount = validated
             },
             label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
             regex = Regexps.integersOrEmpty(maxCharCount = 4),
-            error = (validatedEventCount as? IncorrectHabitTrackEventCount)?.let {
-                resources.trackEventCountError(it.reason)
-            },
+            error = validatedEventCount.incorrectReason()?.let(habitTrackCreationStrings::trackEventCountError),
         )
 
         Spacer(Modifier.height(24.dp))
@@ -219,7 +216,7 @@ fun HabitTrackCreation(habitId: Int) {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = resources.commentDescription()
+            text = habitTrackCreationStrings.commentDescription()
         )
 
         Spacer(Modifier.height(12.dp))
@@ -228,7 +225,7 @@ fun HabitTrackCreation(habitId: Int) {
             modifier = Modifier.padding(horizontal = 16.dp),
             value = comment,
             onValueChange = {
-                comment = it
+                comment = it.toString()
             }
         )
 
@@ -240,7 +237,7 @@ fun HabitTrackCreation(habitId: Int) {
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
-            text = resources.finishDescription()
+            text = habitTrackCreationStrings.finishDescription()
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -249,7 +246,7 @@ fun HabitTrackCreation(habitId: Int) {
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
-            text = resources.finishButton(),
+            text = habitTrackCreationStrings.finishButton(),
             type = Button.Type.Main,
             onClick = {
                 AppData.database.habitTrackQueries.insert(

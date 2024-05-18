@@ -11,7 +11,7 @@ import kotlin.time.Duration
 
 
 fun <T> updatingStateFlow(
-    scope: CoroutineScope,
+    coroutineScope: CoroutineScope,
     delay: () -> Duration,
     value: () -> T
 ) = flow {
@@ -19,4 +19,4 @@ fun <T> updatingStateFlow(
         delay(delay())
         emit(value())
     }
-}.stateIn(scope, SharingStarted.WhileSubscribed(), value())
+}.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), value())

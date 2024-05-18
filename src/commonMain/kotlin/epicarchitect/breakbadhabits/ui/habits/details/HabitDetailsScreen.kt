@@ -19,17 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.resources.strings.HabitDetailsStrings
+import epicarchitect.breakbadhabits.entity.datetime.FormattedDuration
 import epicarchitect.breakbadhabits.entity.datetime.duration
-import epicarchitect.breakbadhabits.entity.datetime.onlyDays
-import epicarchitect.breakbadhabits.entity.datetime.onlyHours
-import epicarchitect.breakbadhabits.entity.datetime.onlyMinutes
-import epicarchitect.breakbadhabits.entity.datetime.onlySeconds
 import epicarchitect.breakbadhabits.entity.habits.CachedHabitAbstinenceHistory
 import epicarchitect.breakbadhabits.entity.habits.CachedHabitAbstinenceStatistics
 import epicarchitect.breakbadhabits.entity.habits.CachedHabitEventAmountStatistics
@@ -38,8 +35,6 @@ import epicarchitect.breakbadhabits.entity.habits.DefaultHabitAbstinenceStatisti
 import epicarchitect.breakbadhabits.entity.habits.DefaultHabitEventAmountStatistics
 import epicarchitect.breakbadhabits.entity.habits.HabitAbstinenceStatistics
 import epicarchitect.breakbadhabits.entity.habits.HabitEventAmountStatistics
-import epicarchitect.breakbadhabits.entity.icons.HabitIcons
-import epicarchitect.breakbadhabits.entity.icons.VectorIcons
 import epicarchitect.breakbadhabits.ui.habits.editing.HabitEditingScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.list.HabitTracksScreen
@@ -69,27 +64,22 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
     }
 }
 
-
-
 @Composable
 fun HabitDetails(habitId: Int) {
-    val resources = LocalHabitDetailsResources.current
+    val resources by AppData.resources.collectAsState()
+    val appTime by AppData.userDateTime.collectAsState()
+    val timeZone = appTime.timeZone()
+    val habitDetailsStrings = resources.strings.habitDetailsStrings
+    val icons = resources.icons
+    val habitQueries = AppData.database.habitQueries
+    val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow
 
     FlowStateContainer(
-        state1 = stateOfOneOrNull {
-            AppData.database.habitQueries.habitById(habitId)
-        },
-        state2 = stateOfList {
-            AppData.database.habitTrackQueries.tracksByHabitId(habitId)
-        },
-        state3 = stateOfOneOrNull {
-            AppData.database.habitTrackQueries.trackByHabitIdAndMaxEndTime(habitId)
-        }
+        state1 = stateOfOneOrNull { habitQueries.habitById(habitId) },
+        state2 = stateOfList { habitTrackQueries.tracksByHabitId(habitId) },
+        state3 = stateOfOneOrNull { habitTrackQueries.trackByHabitIdAndMaxEndTime(habitId) }
     ) { habit, habitTracks, lastTrack ->
-        val appTime by AppData.userDateTime.collectAsState()
-        val timeZone = appTime.timeZone()
-
         val abstinenceHistory = remember(habitTracks, appTime) {
             CachedHabitAbstinenceHistory(
                 DefaultHabitAbstinenceHistory(
@@ -134,14 +124,14 @@ fun HabitDetails(habitId: Int) {
                 IconButton(
                     onClick = navigator::pop
                 ) {
-                    Icon(VectorIcons.ArrowBack)
+                    Icon(icons.commonIcons.ArrowBack)
                 }
 
                 Icon(
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .size(44.dp),
-                    icon = HabitIcons[habit?.iconId ?: 0]
+                    icon = icons.habitIcons.getById(habit?.iconId ?: 0)
                 )
 
                 IconButton(
@@ -149,7 +139,7 @@ fun HabitDetails(habitId: Int) {
                         navigator += HabitEditingScreen(habitId)
                     }
                 ) {
-                    Icon(VectorIcons.Settings)
+                    Icon(icons.commonIcons.Settings)
                 }
             }
 
@@ -171,8 +161,8 @@ fun HabitDetails(habitId: Int) {
                     FormattedDuration(
                         value = it,
                         accuracy = FormattedDuration.Accuracy.SECONDS
-                    ).toString()
-                } ?: resources.habitHasNoEvents(),
+                    )
+                } ?: habitDetailsStrings.habitHasNoEvents(),
                 type = Text.Type.Description,
                 priority = Text.Priority.Medium
             )
@@ -184,7 +174,7 @@ fun HabitDetails(habitId: Int) {
                 onClick = {
                     navigator += HabitTrackCreationScreen(habitId)
                 },
-                text = resources.addHabitTrack(),
+                text = habitDetailsStrings.addHabitTrack(),
                 type = Button.Type.Main
             )
 
@@ -233,8 +223,7 @@ fun HabitDetails(habitId: Int) {
                 ) {
                     Text(
                         modifier = Modifier.align(Alignment.Center),
-                        text = "Перейти к событиям"
-                        // stringResource(R.string.habit_showAllEvents)
+                        text = habitDetailsStrings.showAllTracks()
                     )
                 }
             }
@@ -254,7 +243,7 @@ fun HabitDetails(habitId: Int) {
                     Column {
                         Text(
                             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                            text = resources.abstinenceChartTitle(),
+                            text = habitDetailsStrings.abstinenceChartTitle(),
                             type = Text.Type.Title
                         )
 
@@ -291,7 +280,7 @@ fun HabitDetails(habitId: Int) {
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = resources.statisticsTitle(),
+                        text = habitDetailsStrings.statisticsTitle(),
                         type = Text.Type.Title
                     )
 
@@ -299,9 +288,11 @@ fun HabitDetails(habitId: Int) {
 
                     Statistics(
                         modifier = Modifier.fillMaxWidth(),
-                        statistics = remember(habitEventAmountStatistics, abstinenceStatistics) {
-                            buildStatisticsData(abstinenceStatistics, habitEventAmountStatistics, resources)
-                        }
+                        statistics = buildStatisticsData(
+                            abstinenceStatistics = abstinenceStatistics,
+                            eventAmountStatistics = habitEventAmountStatistics,
+                            strings = habitDetailsStrings
+                        )
                     )
                 }
             }
@@ -312,135 +303,46 @@ fun HabitDetails(habitId: Int) {
 private fun buildStatisticsData(
     abstinenceStatistics: HabitAbstinenceStatistics,
     eventAmountStatistics: HabitEventAmountStatistics,
-    resources: HabitDetailsResources
+    strings: HabitDetailsStrings
 ) = listOf(
     StatisticData(
-        name = resources.statisticsAverageAbstinenceTime(),
+        name = strings.statisticsAverageAbstinenceTime(),
         value = FormattedDuration(
             value = abstinenceStatistics.averageDuration() ?: Duration.ZERO,
             accuracy = FormattedDuration.Accuracy.HOURS
         ).toString()
     ),
     StatisticData(
-        name = resources.statisticsMaxAbstinenceTime(),
+        name = strings.statisticsMaxAbstinenceTime(),
         value = FormattedDuration(
             value = abstinenceStatistics.maxDuration() ?: Duration.ZERO,
             accuracy = FormattedDuration.Accuracy.HOURS
         ).toString()
     ),
     StatisticData(
-        name = resources.statisticsMinAbstinenceTime(),
+        name = strings.statisticsMinAbstinenceTime(),
         value = FormattedDuration(
             value = abstinenceStatistics.minDuration() ?: Duration.ZERO,
             accuracy = FormattedDuration.Accuracy.HOURS
         ).toString()
     ),
     StatisticData(
-        name = resources.statisticsDurationSinceFirstTrack(),
+        name = strings.statisticsDurationSinceFirstTrack(),
         value = FormattedDuration(
             value = abstinenceStatistics.durationSinceFirstTrack() ?: Duration.ZERO,
             accuracy = FormattedDuration.Accuracy.HOURS
         ).toString()
     ),
     StatisticData(
-        name = resources.statisticsCountEventsInCurrentMonth(),
+        name = strings.statisticsCountEventsInCurrentMonth(),
         value = eventAmountStatistics.currentMonthCount().toString()
     ),
     StatisticData(
-        name = resources.statisticsCountEventsInPreviousMonth(),
+        name = strings.statisticsCountEventsInPreviousMonth(),
         value = eventAmountStatistics.previousMonthCount().toString()
     ),
     StatisticData(
-        name = resources.statisticsTotalCountEvents(),
+        name = strings.statisticsTotalCountEvents(),
         value = eventAmountStatistics.totalCount().toString()
     )
 )
-
-class FormattedDuration(
-    val value: Duration,
-    val accuracy: Accuracy
-) : CharSequence {
-
-    private val resources = if (Locale.current.language == "ru") {
-        object : Resources {
-            override fun secondsText() = "с"
-            override fun minutesText() = "м"
-            override fun hoursText() = "ч"
-            override fun daysText() = "д"
-        }
-    } else {
-        object : Resources {
-            override fun secondsText() = "s"
-            override fun minutesText() = "m"
-            override fun hoursText() = "h"
-            override fun daysText() = "d"
-        }
-    }
-
-    private val formatted by lazy {
-        format(value, accuracy)
-    }
-    override val length: Int
-        get() = formatted.length
-
-    override fun get(index: Int) = formatted[index]
-
-    override fun subSequence(startIndex: Int, endIndex: Int) = formatted.subSequence(startIndex, endIndex)
-
-    override fun toString() = formatted
-
-    private fun format(
-        duration: Duration,
-        accuracy: Accuracy
-    ): String {
-        var result = ""
-        val seconds = duration.onlySeconds
-        val minutes = duration.onlyMinutes
-        val hours = duration.onlyHours
-        val days = duration.onlyDays
-
-        val appendDays = days != 0L
-        val appendHours = hours != 0L && (!appendDays || accuracy.order > 1)
-        val appendMinutes = minutes != 0L && (!appendDays && !appendHours || accuracy.order > 2)
-        val appendSeconds = !appendDays && !appendHours && !appendMinutes || accuracy.order > 3
-
-        if (appendDays) {
-            result += days
-            result += resources.daysText()
-        }
-
-        if (appendHours) {
-            if (appendDays) result += " "
-            result += hours
-            result += resources.hoursText()
-        }
-
-        if (appendMinutes) {
-            if (appendHours || appendDays) result += " "
-            result += minutes
-            result += resources.minutesText()
-        }
-
-        if (appendSeconds) {
-            if (appendMinutes || appendHours || appendDays) result += " "
-            result += seconds
-            result += resources.secondsText()
-        }
-
-        return result
-    }
-
-    enum class Accuracy(val order: Int) {
-        DAYS(1),
-        HOURS(2),
-        MINUTES(3),
-        SECONDS(4)
-    }
-
-    private interface Resources {
-        fun secondsText(): String
-        fun minutesText(): String
-        fun hoursText(): String
-        fun daysText(): String
-    }
-}

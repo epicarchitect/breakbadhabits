@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -24,7 +26,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.data.HabitWidget
-import epicarchitect.breakbadhabits.entity.icons.VectorIcons
 import epicarchitect.breakbadhabits.ui.habits.widgets.editing.HabitWidgetEditingScreen
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
@@ -43,7 +44,9 @@ class HabitWidgetsScreen : Screen {
 @Composable
 fun HabitAppWidgets() {
     val navigator = LocalNavigator.currentOrThrow
-    val resources = LocalHabitWidgetsResources.current
+    val resources by AppData.resources.collectAsState()
+    val icons = resources.icons
+    val habitWidgetsStrings = resources.strings.habitWidgetsStrings
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -53,13 +56,13 @@ fun HabitAppWidgets() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = navigator::pop) {
-                Icon(VectorIcons.ArrowBack)
+                Icon(icons.commonIcons.ArrowBack)
             }
 
             Spacer(Modifier.width(8.dp))
 
             Text(
-                text = resources.title(),
+                text = habitWidgetsStrings.title(),
                 type = Text.Type.Title,
                 priority = Text.Priority.High
             )
@@ -77,7 +80,7 @@ fun HabitAppWidgets() {
                     Text(
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
-                        text = resources.emptyList()
+                        text = habitWidgetsStrings.emptyList()
                     )
                 }
             } else {

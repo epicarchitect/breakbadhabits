@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.data
+package epicarchitect.breakbadhabits.data.database
 
 import android.annotation.SuppressLint
 import android.content.Context

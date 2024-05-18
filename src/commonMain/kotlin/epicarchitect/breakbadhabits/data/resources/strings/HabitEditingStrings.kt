@@ -1,18 +1,8 @@
-package epicarchitect.breakbadhabits.ui.habits.editing
+package epicarchitect.breakbadhabits.data.resources.strings
 
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.text.intl.Locale
 import epicarchitect.breakbadhabits.entity.validator.IncorrectHabitNewName
 
-val LocalHabitEditingResources = compositionLocalOf {
-    if (Locale.current.language == "ru") {
-        RussianHabitEditingResources()
-    } else {
-        EnglishHabitEditingResources()
-    }
-}
-
-interface HabitEditingResources {
+interface HabitEditingStrings {
     fun titleText(): String
     fun habitNameDescription(): String
     fun habitNameLabel(): String
@@ -26,7 +16,7 @@ interface HabitEditingResources {
     fun deleteButton(): String
 }
 
-class RussianHabitEditingResources : HabitEditingResources {
+class RussianHabitEditingStrings : HabitEditingStrings {
     override fun titleText() = "Новая привычка"
     override fun habitNameDescription() = "Введите название привычки, например курение."
     override fun habitNameLabel() = "Название привычки"
@@ -34,11 +24,12 @@ class RussianHabitEditingResources : HabitEditingResources {
     override fun finishButtonText() = "Сохранить изменения"
     override fun habitNameValidationError(reason: IncorrectHabitNewName.Reason) = when (reason) {
         IncorrectHabitNewName.Reason.AlreadyUsed -> "Это название уже используется."
-        IncorrectHabitNewName.Reason.Empty -> "Название не может быть пустым."
-        is IncorrectHabitNewName.Reason.TooLong -> {
+        IncorrectHabitNewName.Reason.Empty       -> "Название не может быть пустым."
+        is IncorrectHabitNewName.Reason.TooLong  -> {
             "Название не может быть длиннее чем ${reason.maxLength} символов."
         }
     }
+
     override fun deleteConfirmation() = "Вы уверены, что хотите удалить эту привычку?"
     override fun cancel() = "Отмена"
     override fun yes() = "Да"
@@ -46,7 +37,7 @@ class RussianHabitEditingResources : HabitEditingResources {
     override fun deleteButton() = "Удалить эту привычку"
 }
 
-class EnglishHabitEditingResources : HabitEditingResources {
+class EnglishHabitEditingStrings : HabitEditingStrings {
     override fun titleText() = "Editing a habit"
     override fun habitNameDescription() = "Enter a name for the habit, such as smoking."
     override fun habitNameLabel() = "Habit name"
@@ -54,11 +45,12 @@ class EnglishHabitEditingResources : HabitEditingResources {
     override fun finishButtonText() = "Save changes"
     override fun habitNameValidationError(reason: IncorrectHabitNewName.Reason) = when (reason) {
         IncorrectHabitNewName.Reason.AlreadyUsed -> "This name has already been used."
-        IncorrectHabitNewName.Reason.Empty -> "The title cannot be empty."
-        is IncorrectHabitNewName.Reason.TooLong -> {
+        IncorrectHabitNewName.Reason.Empty       -> "The title cannot be empty."
+        is IncorrectHabitNewName.Reason.TooLong  -> {
             "The name cannot be longer than ${reason.maxLength} characters."
         }
     }
+
     override fun deleteConfirmation() = "Are you sure you want to remove this habit?"
     override fun cancel() = "Cancel"
     override fun yes() = "Yes"

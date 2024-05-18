@@ -1,17 +1,6 @@
-package epicarchitect.breakbadhabits.ui.habits.widgets.editing
+package epicarchitect.breakbadhabits.data.resources.strings
 
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.text.intl.Locale
-
-val LocalHabitWidgetEditingResources = compositionLocalOf {
-    if (Locale.current.language == "ru") {
-        RussianHabitWidgetEditingResources()
-    } else {
-        EnglishHabitWidgetEditingResources()
-    }
-}
-
-interface HabitWidgetEditingResources {
+interface HabitWidgetEditingStrings {
     fun title(): String
     fun nameTitle(): String
     fun habitsDescription(): String
@@ -25,7 +14,7 @@ interface HabitWidgetEditingResources {
 }
 
 
-class RussianHabitWidgetEditingResources : HabitWidgetEditingResources {
+class RussianHabitWidgetEditingStrings : HabitWidgetEditingStrings {
     override fun title() = "Редактирование виджета"
     override fun habitsDescription() = "Выберите привычки для виджета."
     override fun nameDescription() = "Введите название виджета."
@@ -40,7 +29,7 @@ class RussianHabitWidgetEditingResources : HabitWidgetEditingResources {
     override fun finishButton() = "Сохранить изменения"
 }
 
-class EnglishHabitWidgetEditingResources : HabitWidgetEditingResources {
+class EnglishHabitWidgetEditingStrings : HabitWidgetEditingStrings {
     override fun title() = "Editing a widget"
     override fun habitsDescription() = "Choose habits for the widget."
     override fun nameDescription() = "Enter a name for the widget."

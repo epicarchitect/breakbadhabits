@@ -31,7 +31,7 @@ object Text {
 
 @Composable
 fun Text(
-    text: String,
+    text: CharSequence,
     modifier: Modifier = Modifier,
     type: Text.Type = Text.Type.Default,
     priority: Text.Priority = Text.Priority.Default,
@@ -41,7 +41,7 @@ fun Text(
 ) {
     MaterialText(
         modifier = modifier,
-        text = text,
+        text = text.toString(),
         style = when (type) {
             Text.Type.Title -> when (priority) {
                 Text.Priority.High -> MaterialTheme.typography.titleLarge

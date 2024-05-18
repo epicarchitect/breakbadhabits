@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -27,24 +28,17 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
-import epicarchitect.breakbadhabits.entity.icons.HabitIcons
-import epicarchitect.breakbadhabits.entity.icons.VectorIcons
 import epicarchitect.breakbadhabits.entity.validator.CorrectHabitNewName
-import epicarchitect.breakbadhabits.entity.validator.CorrectHabitTrackEventCount
 import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidator
-import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountValidator
 import epicarchitect.breakbadhabits.entity.validator.IncorrectHabitNewName
-import epicarchitect.breakbadhabits.entity.validator.IncorrectHabitTrackEventCount
 import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitNewName
-import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackEventCount
+import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackInput
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
-import epicarchitect.breakbadhabits.uikit.ext.onFocusLost
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
@@ -76,14 +70,17 @@ class HabitCreationScreen : Screen {
 
 @Composable
 fun HabitCreation() {
-    val resources = LocalHabitCreationResources.current
+    val resources by AppData.resources.collectAsState()
+    val habitCreationStrings = resources.strings.habitCreationStrings
+    val icons = resources.icons
+    val habitQueries = AppData.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
 
     var habitName by rememberSaveable { mutableStateOf("") }
     var validatedHabitName by remember { mutableStateOf<ValidatedHabitNewName?>(null) }
 
     var selectedIconId by rememberSaveable { mutableIntStateOf(0) }
-    val selectedIcon = remember(selectedIconId) { HabitIcons[selectedIconId] }
+    val selectedIcon = remember(selectedIconId) { icons.habitIcons.getById(selectedIconId) }
 
     var selectedHabitTimeIndex by rememberSaveable { mutableIntStateOf(0) }
     val selectedHabitTime = remember(selectedHabitTimeIndex) {
@@ -91,7 +88,7 @@ fun HabitCreation() {
     }
 
     var trackEventCount by rememberSaveable { mutableIntStateOf(0) }
-    var validatedTrackEventCount by remember { mutableStateOf<ValidatedHabitTrackEventCount?>(null) }
+    var validatedTrackEventCount by remember { mutableStateOf(ValidatedHabitTrackInput(0)) }
 
     ClearFocusWhenKeyboardHiddenEffect()
 
@@ -107,13 +104,13 @@ fun HabitCreation() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = navigator::pop) {
-                Icon(VectorIcons.ArrowBack)
+                Icon(icons.commonIcons.ArrowBack)
             }
 
             Spacer(Modifier.width(8.dp))
 
             Text(
-                text = resources.titleText(),
+                text = habitCreationStrings.titleText(),
                 type = Text.Type.Title,
                 priority = Text.Priority.High
             )
@@ -123,7 +120,7 @@ fun HabitCreation() {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = resources.habitNameDescription(),
+            text = habitCreationStrings.habitNameDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -133,29 +130,24 @@ fun HabitCreation() {
         TextField(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-                .onFocusLost {
-                    validatedHabitName = HabitNewNameValidator(
-                        mainDatabase = AppData.database,
-                        config = HabitsConfig()
-                    ).validate(habitName)
-                },
+                .fillMaxWidth(),
             value = habitName,
             onValueChange = {
-                habitName = it
+                habitName = it.toString()
+                validatedHabitName = HabitNewNameValidator().validate(habitName)
             },
-            label = resources.habitNameLabel(),
+            label = habitCreationStrings.habitNameLabel(),
             error = (validatedHabitName as? IncorrectHabitNewName)?.let {
-                resources.habitNameValidationError(it.reason)
+                habitCreationStrings.habitNameValidationError(it.reason)
             },
-            description = resources.habitNameDescription()
+            description = habitCreationStrings.habitNameDescription()
         )
 
         Spacer(Modifier.height(24.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = resources.habitIconDescription(),
+            text = habitCreationStrings.habitIconDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -164,7 +156,7 @@ fun HabitCreation() {
 
         SingleSelectionGrid(
             modifier = Modifier.padding(horizontal = 16.dp),
-            items = HabitIcons.list,
+            items = icons.habitIcons,
             selectedItem = selectedIcon,
             cell = { icon ->
                 Icon(
@@ -189,7 +181,7 @@ fun HabitCreation() {
         Spacer(Modifier.height(12.dp))
 
         SingleSelectionChipRow(
-            items = HabitCreationTime.entries.map(resources::habitTime),
+            items = HabitCreationTime.entries.map(habitCreationStrings::habitTime),
             onClick = {
                 selectedHabitTimeIndex = it
             },
@@ -211,16 +203,14 @@ fun HabitCreation() {
         TextField(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .onFocusLost {
-                    validatedTrackEventCount = HabitTrackEventCountValidator().validate(trackEventCount)
-                },
+                .fillMaxWidth(),
             value = trackEventCount.toString(),
             onValueChange = {
-                trackEventCount = it.toIntOrNull() ?: 0
+                val validated = ValidatedHabitTrackInput(it)
+                trackEventCount = validated.toInt() ?: 0
+                validatedTrackEventCount = validated
             },
-            error = (validatedTrackEventCount as? IncorrectHabitTrackEventCount)?.let {
-                resources.trackEventCountError(it.reason)
-            },
+            error = validatedTrackEventCount.incorrectReason()?.let(habitCreationStrings::trackEventCountError),
             label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
@@ -238,21 +228,21 @@ fun HabitCreation() {
                 .align(Alignment.End),
             onClick = {
                 val endTime = AppData.userDateTime.instant()
-                AppData.database.habitQueries.insertWithTrack(
+                habitQueries.insertWithTrack(
                     habitName = (validatedHabitName as CorrectHabitNewName).data,
                     habitIconId = selectedIconId,
-                    trackEventCount = (validatedTrackEventCount as CorrectHabitTrackEventCount).data,
+                    trackEventCount = validatedTrackEventCount.toInt()!!,
                     trackStartTime = endTime - selectedHabitTime.offset,
                     trackEndTime = endTime
                 )
                 navigator.pop()
             },
-            text = resources.finishButtonText(),
+            text = habitCreationStrings.finishButtonText(),
             type = Button.Type.Main,
-            icon = { Icon(VectorIcons.Done) },
+            icon = { Icon(icons.commonIcons.Done) },
             enabled = validatedHabitName is CorrectHabitNewName &&
                 trackEventCount != 0 &&
-                validatedTrackEventCount is CorrectHabitTrackEventCount
+                validatedTrackEventCount.incorrectReason() == null
         )
 
         Spacer(Modifier.height(16.dp))

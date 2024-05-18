@@ -1,17 +1,6 @@
-package epicarchitect.breakbadhabits.ui.appSettings
+package epicarchitect.breakbadhabits.data.resources.strings
 
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.text.intl.Locale
-
-val LocalAppSettingsResources = compositionLocalOf {
-    if (Locale.current.language == "ru") {
-        RussianAppSettingsResources()
-    } else {
-        EnglishAppSettingsResources()
-    }
-}
-
-interface AppSettingsResources {
+interface AppSettingsStrings {
     fun titleText(): String
     fun themeSelectionDescription(): String
     fun themeSelectionSystemTheme(): String
@@ -21,7 +10,7 @@ interface AppSettingsResources {
     fun widgetsButton(): String
 }
 
-class RussianAppSettingsResources : AppSettingsResources {
+class RussianAppSettingsStrings : AppSettingsStrings {
     override fun titleText() = "Настройки"
     override fun themeSelectionDescription() = "Выберите тему оформления приложения"
     override fun themeSelectionSystemTheme() = "Как в системе"
@@ -31,7 +20,7 @@ class RussianAppSettingsResources : AppSettingsResources {
     override fun widgetsButton() = "Настройте свои виджеты"
 }
 
-class EnglishAppSettingsResources : AppSettingsResources {
+class EnglishAppSettingsStrings : AppSettingsStrings {
     override fun titleText() = "Settings"
     override fun themeSelectionDescription() = "Select a theme for the application"
     override fun themeSelectionSystemTheme() = "As in the system"

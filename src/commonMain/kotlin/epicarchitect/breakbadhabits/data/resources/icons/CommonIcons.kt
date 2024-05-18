@@ -1,4 +1,4 @@
-package epicarchitect.breakbadhabits.entity.icons
+package epicarchitect.breakbadhabits.data.resources.icons
 
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.Message
@@ -39,7 +39,7 @@ import androidx.compose.material.icons.filled.WineBar
 import epicarchitect.breakbadhabits.uikit.VectorIcon
 import androidx.compose.material.icons.Icons as MaterialIcons
 
-object VectorIcons {
+class CommonIcons {
     val Smoke = VectorIcon(0, MaterialIcons.Filled.SmokingRooms)
     val Phone = VectorIcon(1, MaterialIcons.Filled.PhoneAndroid)
     val Pizza = VectorIcon(2, MaterialIcons.Filled.LocalPizza)

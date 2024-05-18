@@ -70,7 +70,7 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
                 label = resources.title(),
                 value = widgetTitle,
                 onValueChange = {
-                    widgetTitle = it
+                    widgetTitle = it.toString()
                 }
             )
 

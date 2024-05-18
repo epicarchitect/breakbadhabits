@@ -6,8 +6,8 @@ import android.widget.RemoteViewsService
 import epicarchitect.breakbadhabits.R
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.entity.datetime.FormattedDuration
 import epicarchitect.breakbadhabits.entity.datetime.duration
-import epicarchitect.breakbadhabits.ui.habits.details.FormattedDuration
 import kotlinx.coroutines.runBlocking
 
 class HabitsAppWidgetRemoteViewsFactory(

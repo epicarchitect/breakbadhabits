@@ -1,18 +1,8 @@
-package epicarchitect.breakbadhabits.ui.habits.details
+package epicarchitect.breakbadhabits.data.resources.strings
 
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.text.intl.Locale
-
-val LocalHabitDetailsResources = compositionLocalOf {
-    if (Locale.current.language == "ru") {
-        RussianHabitDetailsResources()
-    } else {
-        EnglishHabitDetailsResources()
-    }
-}
-
-interface HabitDetailsResources {
+interface HabitDetailsStrings {
     fun habitHasNoEvents(): String
+    fun showAllTracks(): String
     fun addHabitTrack(): String
     fun abstinenceChartTitle(): String
     fun statisticsTitle(): String
@@ -25,8 +15,9 @@ interface HabitDetailsResources {
     fun statisticsTotalCountEvents(): String
 }
 
-class RussianHabitDetailsResources : HabitDetailsResources {
+class RussianHabitDetailsStrings : HabitDetailsStrings {
     override fun habitHasNoEvents() = "События отсутствуют"
+    override fun showAllTracks() = "Перейти к событиям"
     override fun addHabitTrack() = "Добавить событие"
     override fun abstinenceChartTitle() = "График воздержания"
     override fun statisticsTitle() = "Статистика"
@@ -39,8 +30,9 @@ class RussianHabitDetailsResources : HabitDetailsResources {
     override fun statisticsTotalCountEvents() = "Всего событий"
 }
 
-class EnglishHabitDetailsResources : HabitDetailsResources {
+class EnglishHabitDetailsStrings : HabitDetailsStrings {
     override fun habitHasNoEvents() = "No events"
+    override fun showAllTracks() = "Show all events"
     override fun addHabitTrack() = "Add event"
     override fun abstinenceChartTitle() = "Abstinence chart"
     override fun statisticsTitle() = "Statistics"

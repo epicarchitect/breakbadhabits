@@ -1,6 +1,5 @@
-package epicarchitect.breakbadhabits.data.datetime
+package epicarchitect.breakbadhabits.entity.datetime
 
-import epicarchitect.breakbadhabits.entity.datetime.DateTime
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

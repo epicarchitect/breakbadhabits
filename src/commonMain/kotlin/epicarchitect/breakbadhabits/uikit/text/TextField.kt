@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -25,11 +24,10 @@ import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 @Stable
 private val DefaultKeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    value: CharSequence,
+    onValueChange: (CharSequence) -> Unit,
     modifier: Modifier = Modifier,
     label: String? = null,
     multiline: Boolean = false,
@@ -58,8 +56,8 @@ fun TextField(
     OutlinedTextField(
         modifier = modifier,
         value = when {
-            regex == null -> value
-            regex.matches(value) -> value
+            regex == null -> value.toString()
+            regex.matches(value) -> value.toString()
             else -> ""
         },
         onValueChange = if (regex == null) {
