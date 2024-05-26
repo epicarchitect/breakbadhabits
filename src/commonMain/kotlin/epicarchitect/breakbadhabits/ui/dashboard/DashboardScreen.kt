@@ -58,13 +58,13 @@ fun Dashboard() {
         modifier = Modifier.fillMaxSize(),
         topBar = ScreenBasis.TitleTopBar(
             rightActionButton = ScreenBasis.IconActionButton(
-                icon = icons.commonIcons.Settings,
+                icon = icons.commonIcons.settings,
                 onClick = { navigator += AppSettingsScreen() }
             ),
             title = dashboardStrings.titleText()
         ),
         floatingActionButton = ScreenBasis.FloatingActionButton(
-            icon = icons.commonIcons.Add,
+            icon = icons.commonIcons.add,
             onClick = { navigator += HabitCreationScreen() },
             title =  dashboardStrings.newHabitButtonText()
         ),
@@ -73,46 +73,35 @@ fun Dashboard() {
             state = stateOfList { habitQueries.habits() }
         ) { items ->
             if (items.isEmpty()) {
-                EmptyHabits()
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                        text = dashboardStrings.emptyHabitsText()
+                    )
+                }
             } else {
-                LoadedHabits(items)
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 4.dp,
+                        bottom = 100.dp
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(
+                        items = items,
+                        key = { it.id }
+                    ) { item ->
+                        HabitCard(item)
+                    }
+                }
             }
         }
-    }
-}
-
-
-@Composable
-private fun LoadedHabits(items: List<Habit>) {
-    LazyColumn(
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            end = 16.dp,
-            top = 4.dp,
-            bottom = 100.dp
-        ),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(
-            items = items,
-            key = { it.id }
-        ) { item ->
-            HabitCard(item)
-        }
-    }
-}
-
-@Composable
-private fun EmptyHabits() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            modifier = Modifier.padding(16.dp),
-            textAlign = TextAlign.Center,
-            text = AppData.resources.strings.dashboardStrings.emptyHabitsText()
-        )
     }
 }
 
@@ -158,7 +147,7 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
                     modifier = Modifier.padding(top = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(icons.commonIcons.Time)
+                    Icon(icons.commonIcons.time)
 
                     FlowStateContainer(
                         state = stateOfOneOrNull {
@@ -190,7 +179,7 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
                 onClick = {
                     navigator += HabitTrackCreationScreen(habit.id)
                 },
-                icon = icons.commonIcons.Replay
+                icon = icons.commonIcons.replay
             )
         }
     }

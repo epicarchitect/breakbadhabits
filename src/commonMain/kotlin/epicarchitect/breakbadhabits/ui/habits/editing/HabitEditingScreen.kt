@@ -26,18 +26,16 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
 import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
-import epicarchitect.breakbadhabits.entity.validator.CorrectHabitNewName
-import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidator
-import epicarchitect.breakbadhabits.entity.validator.IncorrectHabitNewName
-import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitNewName
+import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidation
+import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.ui.dashboard.DashboardScreen
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
-import epicarchitect.breakbadhabits.uikit.ext.onFocusLost
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
 
@@ -55,12 +53,10 @@ fun HabitEditing(habitId: Int) {
     val habitEditingStrings = AppData.resources.strings.habitEditingStrings
     val icons = AppData.resources.icons
 
-    val initialHabit by remember(habitId) {
-        habitQueries.habitById(habitId).flowOfOneOrNull()
-    }.collectAsState(null)
+    val initialHabit by remember(habitId) { habitQueries.habitById(habitId).flowOfOneOrNull() }.collectAsState(null)
 
     var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit?.name ?: "") }
-    var validatedHabitName by remember { mutableStateOf<ValidatedHabitNewName?>(null) }
+    var habitNameValidation by remember { mutableStateOf<HabitNewNameValidation?>(null) }
     var selectedIconId by rememberSaveable(initialHabit) { mutableIntStateOf(initialHabit?.iconId ?: 0) }
 
     ClearFocusWhenKeyboardHiddenEffect()
@@ -127,19 +123,14 @@ fun HabitEditing(habitId: Int) {
         TextField(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-                .onFocusLost {
-                    validatedHabitName = HabitNewNameValidator().validate(habitName)
-                },
+                .fillMaxWidth(),
             value = habitName,
             onValueChange = {
-                habitName = it.toString()
-                validatedHabitName = HabitNewNameValidator().validate(habitName)
+                habitName = it
+                habitNameValidation = null
             },
             label = habitEditingStrings.habitNameLabel(),
-            error = (validatedHabitName as? IncorrectHabitNewName)?.let {
-                habitEditingStrings.habitNameValidationError(it.reason)
-            },
+            error = habitNameValidation?.incorrectReason()?.let(habitEditingStrings::habitNameValidationError),
             description = habitEditingStrings.habitNameDescription()
         )
 
@@ -194,17 +185,22 @@ fun HabitEditing(habitId: Int) {
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
             onClick = {
+                habitNameValidation = HabitNewNameValidation(
+                    input = habitName,
+                    initialInput = initialHabit!!.name
+                )
+                if (habitNameValidation?.incorrectReason() != null) return@Button
+
                 habitQueries.update(
                     id = habitId,
-                    name = (validatedHabitName as CorrectHabitNewName).data,
+                    name = habitName,
                     iconId = selectedIconId
                 )
                 navigator.pop()
             },
             text = habitEditingStrings.finishButtonText(),
             type = Button.Type.Main,
-            icon = { Icon(icons.commonIcons.Done) },
-            enabled = validatedHabitName is CorrectHabitNewName
+            icon = { Icon(icons.commonIcons.done) }
         )
 
         Spacer(Modifier.height(16.dp))

@@ -123,7 +123,7 @@ fun HabitDetails(habitId: Int) {
                 IconButton(
                     onClick = navigator::pop
                 ) {
-                    Icon(icons.commonIcons.ArrowBack)
+                    Icon(icons.commonIcons.arrowBack)
                 }
 
                 Icon(
@@ -138,7 +138,7 @@ fun HabitDetails(habitId: Int) {
                         navigator += HabitEditingScreen(habitId)
                     }
                 ) {
-                    Icon(icons.commonIcons.Settings)
+                    Icon(icons.commonIcons.settings)
                 }
             }
 
@@ -233,7 +233,7 @@ fun HabitDetails(habitId: Int) {
                 }
             }
 
-            if (abstinenceTimes.size > 3) {
+            if (abstinenceTimes.size > 2) {
                 Card(
                     modifier = Modifier
                         .padding(top = 24.dp)

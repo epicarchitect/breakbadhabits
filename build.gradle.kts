@@ -103,17 +103,17 @@ android {
         }
     }
 
-    // TODO: remove on stable compose
-    lint {
-        checkReleaseBuilds = false
-        checkDependencies = false
-        checkAllWarnings = false
-        checkTestSources = false
-        abortOnError = false
-        ignoreTestSources = true
-        ignoreTestFixturesSources = true
-        ignoreWarnings = true
-    }
+//    // TODO: remove on stable compose
+//    lint {
+//        checkReleaseBuilds = false
+//        checkDependencies = false
+//        checkAllWarnings = false
+//        checkTestSources = false
+//        abortOnError = false
+//        ignoreTestSources = true
+//        ignoreTestFixturesSources = true
+//        ignoreWarnings = true
+//    }
 }
 
 sqldelight {

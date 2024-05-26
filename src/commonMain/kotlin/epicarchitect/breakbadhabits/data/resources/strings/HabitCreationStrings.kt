@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-import epicarchitect.breakbadhabits.entity.validator.IncorrectHabitNewName
-import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackInput
+import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidation
+import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.ui.habits.creation.HabitCreationTime
 
 interface HabitCreationStrings {
@@ -10,9 +10,9 @@ interface HabitCreationStrings {
     fun habitNameLabel(): String
     fun habitIconDescription(): String
     fun finishButtonText(): String
-    fun habitNameValidationError(reason: IncorrectHabitNewName.Reason): String
+    fun habitNameValidationError(reason: HabitNewNameValidation.IncorrectReason): String
     fun habitTime(time: HabitCreationTime): String
-    fun trackEventCountError(reason: ValidatedHabitTrackInput.IncorrectReason): String
+    fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason): String
 }
 
 class RussianHabitCreationStrings : HabitCreationStrings {
@@ -21,10 +21,10 @@ class RussianHabitCreationStrings : HabitCreationStrings {
     override fun habitNameLabel() = "Название привычки"
     override fun habitIconDescription() = "Выберите подходящую иконку для привычки."
     override fun finishButtonText() = "Создать привычку"
-    override fun habitNameValidationError(reason: IncorrectHabitNewName.Reason) = when (reason) {
-        IncorrectHabitNewName.Reason.AlreadyUsed -> "Это название уже используется."
-        IncorrectHabitNewName.Reason.Empty -> "Название не может быть пустым."
-        is IncorrectHabitNewName.Reason.TooLong -> {
+    override fun habitNameValidationError(reason: HabitNewNameValidation.IncorrectReason) = when (reason) {
+        HabitNewNameValidation.IncorrectReason.AlreadyUsed -> "Это название уже используется."
+        HabitNewNameValidation.IncorrectReason.Empty -> "Название не может быть пустым."
+        is HabitNewNameValidation.IncorrectReason.TooLong -> {
             "Название не может быть длиннее чем ${reason.maxLength} символов."
         }
     }
@@ -45,8 +45,8 @@ class RussianHabitCreationStrings : HabitCreationStrings {
         HabitCreationTime.YEAR_10 -> "10 лет"
     }
 
-    override fun trackEventCountError(reason: ValidatedHabitTrackInput.IncorrectReason) = when (reason) {
-        ValidatedHabitTrackInput.IncorrectReason.Empty -> {
+    override fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason) = when (reason) {
+        HabitTrackEventCountInputValidation.IncorrectReason.Empty -> {
             "Поле не может быть пустым"
         }
     }
@@ -58,10 +58,10 @@ class EnglishHabitCreationStrings : HabitCreationStrings {
     override fun habitNameLabel() = "Habit name"
     override fun habitIconDescription() = "Choose the appropriate icon for the habit."
     override fun finishButtonText() = "Create a habit"
-    override fun habitNameValidationError(reason: IncorrectHabitNewName.Reason) = when (reason) {
-        IncorrectHabitNewName.Reason.AlreadyUsed -> "This name has already been used."
-        IncorrectHabitNewName.Reason.Empty -> "The title cannot be empty."
-        is IncorrectHabitNewName.Reason.TooLong -> {
+    override fun habitNameValidationError(reason: HabitNewNameValidation.IncorrectReason) = when (reason) {
+        HabitNewNameValidation.IncorrectReason.AlreadyUsed -> "This name has already been used."
+        HabitNewNameValidation.IncorrectReason.Empty -> "The title cannot be empty."
+        is HabitNewNameValidation.IncorrectReason.TooLong -> {
             "The name cannot be longer than ${reason.maxLength} characters."
         }
     }
@@ -82,8 +82,8 @@ class EnglishHabitCreationStrings : HabitCreationStrings {
         HabitCreationTime.YEAR_10 -> "10 years"
     }
 
-    override fun trackEventCountError(reason: ValidatedHabitTrackInput.IncorrectReason) = when (reason) {
-        ValidatedHabitTrackInput.IncorrectReason.Empty -> {
+    override fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason) = when (reason) {
+        HabitTrackEventCountInputValidation.IncorrectReason.Empty -> {
             "Cant be empty"
         }
     }

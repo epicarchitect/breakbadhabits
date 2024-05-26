@@ -66,7 +66,7 @@ object ScreenBasis {
         @Composable
         override fun Content() {
             IconButton(
-                icon = AppData.resources.icons.commonIcons.ArrowBack,
+                icon = AppData.resources.icons.commonIcons.arrowBack,
                 onClick = onClick
             )
         }

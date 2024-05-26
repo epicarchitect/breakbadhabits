@@ -27,7 +27,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
-import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackInput
+import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.uikit.button.Button
@@ -82,7 +82,7 @@ fun HabitTrackEditing(habitTrackId: Int) {
         mutableIntStateOf(initialHabitTrack?.eventCount ?: 0)
     }
     var validatedEventCount by remember {
-        mutableStateOf(ValidatedHabitTrackInput(0))
+        mutableStateOf(HabitTrackEventCountInputValidation(0))
     }
     var comment by rememberSaveable {
         mutableStateOf("")
@@ -158,7 +158,7 @@ fun HabitTrackEditing(habitTrackId: Int) {
             modifier = Modifier.fillMaxWidth(),
             value = eventCount.toString(),
             onValueChange = {
-                val validated = ValidatedHabitTrackInput(it)
+                val validated = HabitTrackEventCountInputValidation(it)
                 eventCount = validated.toInt() ?: 0
                 validatedEventCount = validated
             },

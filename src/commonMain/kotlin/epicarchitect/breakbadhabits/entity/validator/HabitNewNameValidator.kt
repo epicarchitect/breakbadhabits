@@ -1,46 +1,26 @@
 package epicarchitect.breakbadhabits.entity.validator
 
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
 
-class HabitNewNameValidator {
+class HabitNewNameValidation(
+    private val input: String,
+    private val initialInput: String? = null
+) {
 
-    private val config = HabitsConfig()
-
-    fun validate(
-        data: String,
-        initial: String? = null
-    ) = data.incorrectReason(initial)?.let {
-        IncorrectHabitNewName(data, it)
-    } ?: CorrectHabitNewName(data)
-
-    private fun String.incorrectReason(initial: String? = null) = when {
-        initial == this -> null
-        isEmpty() -> IncorrectHabitNewName.Reason.Empty
-        length > config.maxHabitNameLength() -> IncorrectHabitNewName.Reason.TooLong(config.maxHabitNameLength())
-        isAlreadyUsed() -> IncorrectHabitNewName.Reason.AlreadyUsed
-        else -> null
+    fun incorrectReason(): IncorrectReason? {
+        val maxLength = AppData.habitsConfig.maxHabitNameLength()
+        return when {
+            initialInput == input                                                 -> null
+            input.isEmpty()                                                       -> IncorrectReason.Empty
+            input.length > maxLength                                              -> IncorrectReason.TooLong(maxLength)
+            AppData.database.habitQueries.countWithName(input).executeAsOne() > 0 -> IncorrectReason.AlreadyUsed
+            else                                                                  -> null
+        }
     }
 
-    private fun String.isAlreadyUsed() =
-        AppData.database.habitQueries.countWithName(this@isAlreadyUsed).executeAsOne() > 0
-}
-
-sealed class ValidatedHabitNewName {
-    abstract val data: String
-}
-
-data class CorrectHabitNewName internal constructor(
-    override val data: String
-) : ValidatedHabitNewName()
-
-data class IncorrectHabitNewName internal constructor(
-    override val data: String,
-    val reason: Reason
-) : ValidatedHabitNewName() {
-    sealed class Reason {
-        object Empty : Reason()
-        object AlreadyUsed : Reason()
-        class TooLong(val maxLength: Int) : Reason()
+    sealed class IncorrectReason {
+        object Empty : IncorrectReason()
+        object AlreadyUsed : IncorrectReason()
+        class TooLong(val maxLength: Int) : IncorrectReason()
     }
 }

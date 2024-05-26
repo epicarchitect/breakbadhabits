@@ -10,6 +10,7 @@ import epicarchitect.breakbadhabits.entity.datetime.CachedDateTime
 import epicarchitect.breakbadhabits.entity.datetime.SystemDateTime
 import epicarchitect.breakbadhabits.entity.datetime.UpdatingDateTime
 import epicarchitect.breakbadhabits.entity.datetime.ZeroMillisecondsDateTime
+import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -58,4 +59,6 @@ object AppData {
             )
         }
     )
+
+    val habitsConfig = HabitsConfig()
 }

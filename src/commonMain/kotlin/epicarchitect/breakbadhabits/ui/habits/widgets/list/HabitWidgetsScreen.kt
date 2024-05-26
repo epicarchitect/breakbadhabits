@@ -53,7 +53,7 @@ fun HabitAppWidgets() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = navigator::pop) {
-                Icon(icons.commonIcons.ArrowBack)
+                Icon(icons.commonIcons.arrowBack)
             }
 
             Spacer(Modifier.width(8.dp))

@@ -27,7 +27,7 @@ private val DefaultKeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
 @Composable
 fun TextField(
     value: CharSequence,
-    onValueChange: (CharSequence) -> Unit,
+    onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     label: String? = null,
     multiline: Boolean = false,

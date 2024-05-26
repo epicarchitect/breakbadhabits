@@ -1,10 +1,10 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-import epicarchitect.breakbadhabits.entity.validator.ValidatedHabitTrackInput
+import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 
 interface HabitTrackEditingStrings {
     fun habitNameLabel(name: String): String
-    fun trackEventCountError(reason: ValidatedHabitTrackInput.IncorrectReason): String
+    fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason): String
     fun titleText(): String
     fun commentDescription(): String
     fun commentLabel(): String
@@ -19,8 +19,8 @@ class RussianHabitTrackEditingStrings : HabitTrackEditingStrings {
     override fun finishDescription() = "Вы всегда сможете изменить или удалить это событие."
     override fun finishButton() = "Записать событие"
     override fun habitNameLabel(name: String) = "Привычка: $name"
-    override fun trackEventCountError(reason: ValidatedHabitTrackInput.IncorrectReason) = when (reason) {
-        ValidatedHabitTrackInput.IncorrectReason.Empty -> {
+    override fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason) = when (reason) {
+        HabitTrackEventCountInputValidation.IncorrectReason.Empty -> {
             "Поле не может быть пустым"
         }
     }
@@ -34,8 +34,8 @@ class EnglishHabitTrackEditingStrings : HabitTrackEditingStrings {
     override fun finishButton() = "Save event"
 
     override fun habitNameLabel(name: String) = "Habit: $name"
-    override fun trackEventCountError(reason: ValidatedHabitTrackInput.IncorrectReason) = when (reason) {
-        ValidatedHabitTrackInput.IncorrectReason.Empty -> {
+    override fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason) = when (reason) {
+        HabitTrackEventCountInputValidation.IncorrectReason.Empty -> {
             "Cant be empty"
         }
     }

@@ -18,6 +18,6 @@ class DefaultHabitAbstinenceStatistics(
     override fun minDuration() = history.abstinenceRanges().minDuration()
 
     override fun durationSinceFirstTrack() = history.failedRanges().minOfOrNull(ClosedRange<Instant>::start)?.let {
-        (dateTime.instant()..it).duration()
+        (it..dateTime.instant()).duration()
     }
 }
