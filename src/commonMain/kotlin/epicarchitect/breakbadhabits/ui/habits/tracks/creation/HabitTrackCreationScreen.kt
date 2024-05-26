@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,12 +37,11 @@ import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.calendar.RangeSelectionCalendarDialog
+import epicarchitect.breakbadhabits.uikit.calendar.rememberSelectionCalendarState
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
-import epicarchitect.calendar.compose.datepicker.EpicDatePicker
-import epicarchitect.calendar.compose.datepicker.state.EpicDatePickerState
-import epicarchitect.calendar.compose.datepicker.state.rememberEpicDatePickerState
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.minus
@@ -51,6 +54,7 @@ class HabitTrackCreationScreen(private val habitId: Int) : Screen {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HabitTrackCreation(habitId: Int) {
     val habitTrackCreationStrings = AppData.resources.strings.habitTrackCreationStrings
@@ -92,21 +96,18 @@ fun HabitTrackCreation(habitId: Int) {
     }
 
     if (rangeSelectionShow) {
-        val state = rememberEpicDatePickerState(
-            selectedDates = selectedDates,
-            selectionMode = EpicDatePickerState.SelectionMode.Range
-        )
-        Dialog(
-            onDismiss = {
+        val state = rememberSelectionCalendarState(selectedDates)
+
+        RangeSelectionCalendarDialog(
+            state = state,
+            onCancel = {
                 rangeSelectionShow = false
-                selectedDates = state.selectedDates
+            },
+            onConfirm = {
+                rangeSelectionShow = false
+                selectedDates = state.epicState.selectedDates
             }
-        ) {
-            EpicDatePicker(
-                modifier = Modifier,
-                state = state
-            )
-        }
+        )
     }
 
     Column(

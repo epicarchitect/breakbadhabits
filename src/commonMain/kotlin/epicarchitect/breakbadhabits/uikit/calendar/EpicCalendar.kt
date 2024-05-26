@@ -1,7 +1,53 @@
 package epicarchitect.breakbadhabits.uikit.calendar
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
+import epicarchitect.breakbadhabits.ui.habits.tracks.list.fromEpic
+import epicarchitect.breakbadhabits.uikit.Card
+import epicarchitect.breakbadhabits.uikit.Dialog
+import epicarchitect.breakbadhabits.uikit.Icon
+import epicarchitect.breakbadhabits.uikit.IconButton
+import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.text.Text
+import epicarchitect.breakbadhabits.uikit.theme.AppTheme
+import epicarchitect.calendar.compose.basis.next
+import epicarchitect.calendar.compose.basis.previous
+import epicarchitect.calendar.compose.datepicker.EpicDatePicker
+import epicarchitect.calendar.compose.datepicker.state.EpicDatePickerState
+import epicarchitect.calendar.compose.datepicker.state.rememberEpicDatePickerState
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
 
 private val ZeroRangeShape = RoundedCornerShape(0)
 private val StartRangeShape = RoundedCornerShape(
@@ -275,3 +321,223 @@ private val FullRangeShape = CircleShape
 //        const val VISIBLE_DAYS_COUNT = 42
 //    }
 // }
+
+class SelectionCalendarState(
+    val epicState: EpicDatePickerState
+) {
+    var selectedMonth by mutableStateOf(epicState.pagerState.currentMonth)
+    var showYearMonthSelection by mutableStateOf(false)
+}
+
+@Composable
+fun rememberSelectionCalendarState(
+    initialSelectedDates: List<LocalDate>
+): SelectionCalendarState {
+    val epicState = rememberEpicDatePickerState(
+        selectedDates = initialSelectedDates,
+        selectionMode = EpicDatePickerState.SelectionMode.Range
+    )
+    return remember(epicState) {
+        SelectionCalendarState(epicState)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun RangeSelectionCalendarDialog(
+    state: SelectionCalendarState,
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    LaunchedEffect(state.selectedMonth) {
+        state.epicState.pagerState.scrollToMonth(state.selectedMonth)
+    }
+    LaunchedEffect(state.epicState.pagerState.pagerState.isScrollInProgress) {
+        if (!state.epicState.pagerState.pagerState.isScrollInProgress) {
+            state.selectedMonth = state.epicState.pagerState.currentMonth
+        }
+    }
+    Dialog(
+        onDismiss = onCancel
+    ) {
+        Column {
+            AnimatedVisibility(visible = !state.showYearMonthSelection) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconButton(
+                        onClick = {
+                            state.selectedMonth = state.selectedMonth.previous()
+                        },
+                        icon = AppData.resources.icons.commonIcons.arrowLeft
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            .weight(1f)
+                            .padding(horizontal = 4.dp)
+                            .clip(RoundedCornerShape(100.dp))
+                            .clickable {
+                                state.showYearMonthSelection = !state.showYearMonthSelection
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = PlatformDateTimeFormatter.monthOfYear(state.epicState.pagerState.currentMonth.fromEpic()),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            state.selectedMonth = state.selectedMonth.next()
+                        },
+                        icon = AppData.resources.icons.commonIcons.arrowRight
+                    )
+                }
+            }
+            AnimatedVisibility(visible = state.showYearMonthSelection) {
+                var yearMonthSelectionBoxSize by remember { mutableStateOf(IntSize.Zero) }
+                Column(
+                    modifier = Modifier.onSizeChanged {
+                        yearMonthSelectionBoxSize = it
+                    }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                state.showYearMonthSelection = false
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            modifier = Modifier.padding(4.dp),
+                            icon = AppData.resources.icons.commonIcons.arrowUp
+                        )
+                    }
+
+                    ScrollableTabRow(
+                        selectedTabIndex = state.selectedMonth.month.ordinal,
+                        modifier = Modifier.fillMaxWidth(),
+                        containerColor = Color.Transparent,
+                        indicator = {},
+                        divider = {},
+                        edgePadding = 12.dp
+                    ) {
+                        repeat(Month.entries.size) {
+                            val month = Month.entries[it]
+                            val monthTitle = month.toString()
+                            val isSelected = state.selectedMonth.month == month
+                            Card(
+                                modifier = Modifier.padding(4.dp),
+                                backgroundColor = if (isSelected) {
+                                    AppTheme.colorScheme.primary
+                                } else {
+                                    AppTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+                                },
+                                elevation = 0.dp
+                            ) {
+                                androidx.compose.material3.Text(
+                                    modifier = Modifier
+                                        .defaultMinSize(minWidth = 90.dp)
+                                        .clickable {
+                                            state.selectedMonth = state.selectedMonth.copy(month = month)
+                                        }
+                                        .padding(
+                                            vertical = 8.dp,
+                                            horizontal = 20.dp
+                                        ),
+                                    text = monthTitle,
+                                    textAlign = TextAlign.Center,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = 14.sp,
+                                    color = if (isSelected) {
+                                        AppTheme.colorScheme.onPrimary
+                                    } else {
+                                        AppTheme.colorScheme.onBackground
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    val yearsCount =
+                        state.epicState.pagerState.monthRange.endInclusive.year - state.epicState.pagerState.monthRange.start.year
+                    ScrollableTabRow(
+                        selectedTabIndex = yearsCount - (state.epicState.pagerState.monthRange.endInclusive.year - state.epicState.pagerState.currentMonth.year),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        containerColor = Color.Transparent,
+                        indicator = {},
+                        divider = {},
+                        edgePadding = 12.dp
+                    ) {
+                        state.epicState.pagerState.monthRange.let {
+                            it.start.year..it.endInclusive.year
+                        }.forEach { year ->
+                            val yearTitle = year.toString()
+                            val isSelected = state.epicState.pagerState.currentMonth.year == year
+
+                            Card(
+                                modifier = Modifier.padding(4.dp),
+                                backgroundColor = if (isSelected) {
+                                    AppTheme.colorScheme.primary
+                                } else {
+                                    AppTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+                                },
+                                elevation = 0.dp,
+                            ) {
+                                androidx.compose.material3.Text(
+                                    modifier = Modifier
+                                        .defaultMinSize(minWidth = 90.dp)
+                                        .clickable {
+                                            state.selectedMonth = state.selectedMonth.copy(year = year)
+                                        }
+                                        .padding(
+                                            vertical = 8.dp,
+                                            horizontal = 20.dp
+                                        ),
+                                    text = yearTitle,
+                                    textAlign = TextAlign.Center,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = 14.sp,
+                                    color = if (isSelected) {
+                                        AppTheme.colorScheme.onPrimary
+                                    } else {
+                                        AppTheme.colorScheme.onBackground
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            EpicDatePicker(
+                modifier = Modifier,
+                state = state.epicState
+            )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(top = 12.dp, end = 16.dp, bottom = 8.dp)
+            ) {
+                Button(
+                    onClick = onCancel,
+                    text = "Cancel"
+                )
+                Spacer(Modifier.padding(4.dp))
+                Button(
+                    onClick = onConfirm,
+//                    text = if (state.selectedTab == 0 && state.selectedEndDate == null || state.selectedTab == 1 && state.selectedStartDate == null) "Next" else "Apply",
+//                    enabled = state.selectedTab == 0 && state.selectedStartDate != null || state.selectedTab == 1 && state.selectedEndDate != null,
+                    type = Button.Type.Main,
+                    text = "Apply"
+                )
+            }
+        }
+    }
+}

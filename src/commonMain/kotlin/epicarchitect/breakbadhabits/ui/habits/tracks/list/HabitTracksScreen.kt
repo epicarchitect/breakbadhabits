@@ -116,7 +116,7 @@ fun HabitTracks(habitId: Int) {
                                 }
                             }
                         ) {
-                            Icon(icons.commonIcons.arrowBack)
+                            Icon(icons.commonIcons.arrowLeft)
                         }
 
                         Text(
@@ -134,7 +134,7 @@ fun HabitTracks(habitId: Int) {
                                 }
                             }
                         ) {
-                            Icon(icons.commonIcons.arrowForward)
+                            Icon(icons.commonIcons.arrowRight)
                         }
                     }
                 }

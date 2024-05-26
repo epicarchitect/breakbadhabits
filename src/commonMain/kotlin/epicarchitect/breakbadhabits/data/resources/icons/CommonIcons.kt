@@ -1,8 +1,8 @@
 package epicarchitect.breakbadhabits.data.resources.icons
 
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.FrontHand
 import androidx.compose.material.icons.filled.Games
 import androidx.compose.material.icons.filled.Grass
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LaptopChromebook
 import androidx.compose.material.icons.filled.Light
 import androidx.compose.material.icons.filled.LocalPizza
@@ -76,6 +78,8 @@ class CommonIcons {
     val error = VectorIcon(32, MaterialIcons.Filled.Error)
     val done = VectorIcon(33, MaterialIcons.Filled.Done)
     val navigationBack = VectorIcon(34, MaterialIcons.AutoMirrored.Filled.ArrowBack)
-    val arrowBack = VectorIcon(34, MaterialIcons.AutoMirrored.Filled.ArrowBackIos)
-    val arrowForward = VectorIcon(35, MaterialIcons.AutoMirrored.Filled.ArrowForwardIos)
+    val arrowLeft = VectorIcon(35, MaterialIcons.AutoMirrored.Filled.KeyboardArrowLeft)
+    val arrowRight = VectorIcon(36, MaterialIcons.AutoMirrored.Filled.KeyboardArrowRight)
+    val arrowUp = VectorIcon(37, MaterialIcons.Filled.KeyboardArrowUp)
+    val arrowDown = VectorIcon(38, MaterialIcons.Filled.KeyboardArrowDown)
 }
