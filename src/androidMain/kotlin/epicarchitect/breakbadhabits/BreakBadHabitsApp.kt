@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.onEach
 class BreakBadHabitsApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        instance = this
         SqlDriverFactory.context = this
         AppData.database.appSettingsQueries.settings().flowOfOneOrNull().onEach {
             AppCompatDelegate.setDefaultNightMode(
@@ -24,5 +25,9 @@ class BreakBadHabitsApp : Application() {
                 }
             )
         }.launchIn(CoroutineScope(Dispatchers.Main))
+    }
+
+    companion object {
+        lateinit var instance: BreakBadHabitsApp
     }
 }
