@@ -1,14 +1,12 @@
 package epicarchitect.breakbadhabits.ui.habits.creation
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -30,11 +28,10 @@ import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidation
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.uikit.Icon
-import epicarchitect.breakbadhabits.uikit.IconButton
+import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
@@ -85,39 +82,15 @@ fun HabitCreation() {
     var trackEventCount by rememberSaveable { mutableIntStateOf(0) }
     var trackEventCountValidation by remember { mutableStateOf<HabitTrackEventCountInputValidation?>(null) }
 
-    val inputIsValid = remember(habitNameValidation, trackEventCountValidation) {
-        habitNameValidation?.let { name ->
-            trackEventCountValidation?.let { eventCount ->
-                name.incorrectReason() == null && eventCount.incorrectReason() == null
-            } ?: false
-        } ?: false
-    }
-
-    ClearFocusWhenKeyboardHiddenEffect()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = navigator::pop) {
-                Icon(icons.commonIcons.arrowBack)
-            }
-
-            Spacer(Modifier.width(8.dp))
-
-            Text(
-                text = habitCreationStrings.titleText(),
-                type = Text.Type.Title,
-                priority = Text.Priority.High
-            )
-        }
+        SimpleTopAppBar(
+            title = habitCreationStrings.titleText(),
+            onBackClick = navigator::pop
+        )
 
         Spacer(Modifier.height(16.dp))
 

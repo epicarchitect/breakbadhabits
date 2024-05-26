@@ -40,7 +40,6 @@ import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.ProgressIndicator
 import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
 
@@ -77,8 +76,6 @@ fun HabitWidgetEditing(widgetId: Int) {
     if (initialWidget == null) {
         ProgressIndicator()
     } else {
-        ClearFocusWhenKeyboardHiddenEffect()
-
         var deletionShow by remember { mutableStateOf(false) }
         if (deletionShow) {
             Dialog(onDismiss = { deletionShow = false }) {

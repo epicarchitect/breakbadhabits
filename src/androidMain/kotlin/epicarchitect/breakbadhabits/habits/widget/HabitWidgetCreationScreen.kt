@@ -30,7 +30,6 @@ import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import epicarchitect.breakbadhabits.uikit.stateOfList
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
@@ -44,8 +43,6 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
     ) { habits ->
         val selectedHabitIds = rememberSaveable { mutableStateListOf<Int>() }
         var widgetTitle by rememberSaveable { mutableStateOf("") }
-
-        ClearFocusWhenKeyboardHiddenEffect()
 
         Column(
             modifier = Modifier

@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -30,14 +28,17 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.entity.datetime.MonthOfYear
+import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
 import epicarchitect.breakbadhabits.entity.datetime.monthOfYear
 import epicarchitect.breakbadhabits.entity.datetime.mountsBetween
-import epicarchitect.breakbadhabits.entity.util.flowOfList
-import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.editing.HabitTrackEditingScreen
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
+import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
 import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.stateOfList
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 import epicarchitect.calendar.compose.basis.EpicMonth
@@ -65,145 +66,164 @@ fun HabitTracks(habitId: Int) {
     val habitTracksStrings = AppData.resources.strings.habitTracksStrings
     val icons = AppData.resources.icons
 
-    val habit by remember(habitId) {
-        habitQueries.habitById(habitId).flowOfOneOrNull()
-    }.collectAsState(null)
+    FlowStateContainer(
+        state1 = stateOfOneOrNull { habitQueries.habitById(habitId) },
+        state2 = stateOfList { habitTrackQueries.tracksByHabitId(habitId) }
+    ) { habit, tracks ->
+        val timeZone = AppData.userDateTime.timeZone()
 
-    val tracks by remember(habitId) {
-        habitTrackQueries.tracksByHabitId(habitId).flowOfList()
-    }.collectAsState(emptyList())
+        val groupedByMonthTracks = remember(tracks) {
+            tracks.groupByMonth(timeZone)
+        }
 
-    val timeZone = AppData.userDateTime.timeZone()
+        val epicCalendarState = rememberEpicCalendarPagerState()
 
-    val groupedByMonthTracks = remember(tracks) {
-        tracks.groupByMonth(timeZone)
-    }
-
-    val epicCalendarState = rememberEpicCalendarPagerState()
-
-    val currentTracks = remember(epicCalendarState.currentMonth, groupedByMonthTracks) {
-        groupedByMonthTracks[epicCalendarState.currentMonth.fromEpic()]?.toList() ?: emptyList()
-    }
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        val currentTracks = remember(epicCalendarState.currentMonth, groupedByMonthTracks) {
+            groupedByMonthTracks[epicCalendarState.currentMonth.fromEpic()]?.toList() ?: emptyList()
+        }
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            habit?.let {
-                Text(
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    text = it.name,
-                    type = Text.Type.Title,
-                    maxLines = 1
-                )
-            }
-        }
-
-        val title = remember(epicCalendarState.currentMonth) {
-            "${epicCalendarState.currentMonth.month} ${epicCalendarState.currentMonth.year}"
-        }
-
-        Row {
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        epicCalendarState.scrollMonths(-1)
-                    }
-                }
-            ) {
-                epicarchitect.breakbadhabits.uikit.Icon(icons.commonIcons.arrowBack)
-            }
-
-            Text(
-                modifier = Modifier.defaultMinSize(minWidth = 110.dp),
-                text = title,
-                type = Text.Type.Title,
-                textAlign = TextAlign.Center,
-                priority = Text.Priority.Low
-            )
-
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        epicCalendarState.scrollMonths(1)
-                    }
-                }
-            ) {
-                epicarchitect.breakbadhabits.uikit.Icon(icons.commonIcons.arrowForward)
-            }
-        }
-
-        val rangeColor = AppTheme.colorScheme.primary
-
-        EpicCalendarPager(
-            pageModifier = {
-                Modifier.drawEpicRanges(
-                    ranges = tracks.map {
-                        it.startTime.toLocalDateTime(timeZone).date..it.endTime.toLocalDateTime(timeZone).date
-                    },
-                    color = rangeColor
-                )
-            },
-            state = epicCalendarState
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 100.dp)
-        ) {
-            items(currentTracks, key = { it.id }) { track ->
-                Box(
-                    modifier = Modifier
-                        .animateItemPlacement()
-                        .fillMaxWidth()
-                        .clickable {
-                            navigator += HabitTrackEditingScreen(track.id)
-                        }
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        modifier = Modifier.padding(
-                            start = 14.dp,
-                            end = 14.dp,
-                            top = 4.dp,
-                            bottom = 4.dp
-                        )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.5f),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = track.startTime.toString() + track.endTime.toString(),
-                            type = Text.Type.Title
+                        IconButton(
+                            onClick = navigator::pop,
+                            icon = icons.commonIcons.navigationBack
                         )
 
                         Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = "eventCount: " + track.eventCount
+                            text = habit?.name ?: "",
+                            type = Text.Type.Title,
+                            maxLines = 1
                         )
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    epicCalendarState.scrollMonths(-1)
+                                }
+                            }
+                        ) {
+                            Icon(icons.commonIcons.arrowBack)
+                        }
 
                         Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = track.comment.ifBlank(habitTracksStrings::habitTrackNoComment)
+                            modifier = Modifier.defaultMinSize(minWidth = 110.dp),
+                            text = PlatformDateTimeFormatter.monthOfYear(epicCalendarState.currentMonth.fromEpic()),
+                            type = Text.Type.Title,
+                            textAlign = TextAlign.Center,
+                            priority = Text.Priority.Low
                         )
+
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    epicCalendarState.scrollMonths(1)
+                                }
+                            }
+                        ) {
+                            Icon(icons.commonIcons.arrowForward)
+                        }
+                    }
+                }
+
+                val rangeColor = AppTheme.colorScheme.primary
+
+                EpicCalendarPager(
+                    pageModifier = {
+                        Modifier.drawEpicRanges(
+                            ranges = tracks.map {
+                                it.startTime.toLocalDateTime(timeZone).date..it.endTime.toLocalDateTime(timeZone).date
+                            },
+                            color = rangeColor
+                        )
+                    },
+                    state = epicCalendarState
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = 100.dp)
+                ) {
+                    items(currentTracks, key = { it.id }) { track ->
+                        Box(
+                            modifier = Modifier
+                                .animateItemPlacement()
+                                .fillMaxWidth()
+                                .clickable {
+                                    navigator += HabitTrackEditingScreen(track.id)
+                                }
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(
+                                    start = 14.dp,
+                                    end = 14.dp,
+                                    top = 4.dp,
+                                    bottom = 4.dp
+                                )
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(2.dp),
+                                    text = track.startTime.let {
+                                        PlatformDateTimeFormatter.localDateTime(it.toLocalDateTime(timeZone))
+                                    } + " – " + track.endTime.let {
+                                        PlatformDateTimeFormatter.localDateTime(it.toLocalDateTime(timeZone))
+                                    },
+                                    type = Text.Type.Title
+                                )
+
+                                Text(
+                                    modifier = Modifier.padding(2.dp),
+                                    text = "Event count: " + track.eventCount
+                                )
+
+                                val days = (track.endTime - track.startTime).inWholeDays
+
+                                if (days > 0) {
+                                    Text(
+                                        modifier = Modifier.padding(2.dp),
+                                        text = "Daily event count: " + track.eventCount / days
+                                    )
+                                }
+
+                                if (track.comment.isNotBlank()) {
+                                    Text(
+                                        modifier = Modifier.padding(2.dp),
+                                        text = track.comment
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
+
+            Button(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                onClick = {
+                    navigator += HabitTrackCreationScreen(habitId)
+                },
+                text = habitTracksStrings.newEventButton(),
+                type = Button.Type.Main
+            )
         }
     }
-    Button(
-        modifier = Modifier
-            .padding(16.dp),
-        onClick = {
-            navigator += HabitTrackCreationScreen(habitId)
-        },
-        text = habitTracksStrings.newEventButton(),
-        type = Button.Type.Main
-    )
 }
 
 private fun List<HabitTrack>.groupByMonth(timeZone: TimeZone): Map<MonthOfYear, Collection<HabitTrack>> {

@@ -31,17 +31,11 @@ private interface Resources {
 class FormattedDuration(
     val value: Duration,
     val accuracy: Accuracy
-) : CharSequence {
+) {
 
     private val formatted by lazy {
         format(value, accuracy)
     }
-    override val length: Int
-        get() = formatted.length
-
-    override fun get(index: Int) = formatted[index]
-
-    override fun subSequence(startIndex: Int, endIndex: Int) = formatted.subSequence(startIndex, endIndex)
 
     override fun toString() = formatted
 

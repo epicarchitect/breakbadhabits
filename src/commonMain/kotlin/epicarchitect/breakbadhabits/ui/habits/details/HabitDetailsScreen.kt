@@ -26,6 +26,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.resources.strings.HabitDetailsStrings
 import epicarchitect.breakbadhabits.entity.datetime.FormattedDuration
+import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
 import epicarchitect.breakbadhabits.entity.datetime.duration
 import epicarchitect.breakbadhabits.entity.habits.CachedHabitAbstinenceHistory
 import epicarchitect.breakbadhabits.entity.habits.CachedHabitAbstinenceStatistics
@@ -38,6 +39,7 @@ import epicarchitect.breakbadhabits.entity.habits.HabitEventAmountStatistics
 import epicarchitect.breakbadhabits.ui.habits.editing.HabitEditingScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.list.HabitTracksScreen
+import epicarchitect.breakbadhabits.ui.habits.tracks.list.fromEpic
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Histogram
@@ -112,10 +114,7 @@ fun HabitDetails(habitId: Int) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(bottom = 24.dp, start = 16.dp, end = 16.dp)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -123,12 +122,12 @@ fun HabitDetails(habitId: Int) {
                 IconButton(
                     onClick = navigator::pop
                 ) {
-                    Icon(icons.commonIcons.arrowBack)
+                    Icon(icons.commonIcons.navigationBack)
                 }
 
                 Icon(
                     modifier = Modifier
-                        .padding(top = 16.dp)
+                        .padding(top = 12.dp)
                         .size(44.dp),
                     icon = icons.habitIcons.getById(habit?.iconId ?: 0)
                 )
@@ -154,14 +153,13 @@ fun HabitDetails(habitId: Int) {
 
             Text(
                 modifier = Modifier
-                    .padding(start = 12.dp)
                     .align(Alignment.CenterHorizontally),
                 text = abstinence?.let {
                     FormattedDuration(
                         value = it,
                         accuracy = FormattedDuration.Accuracy.SECONDS
                     )
-                } ?: habitDetailsStrings.habitHasNoEvents(),
+                }?.toString() ?: habitDetailsStrings.habitHasNoEvents(),
                 type = Text.Type.Description,
                 priority = Text.Priority.Medium
             )
@@ -180,10 +178,11 @@ fun HabitDetails(habitId: Int) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Card(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 val calendarState = rememberEpicCalendarPagerState()
-                val title = calendarState.currentMonth.toString()
 
                 Text(
                     modifier = Modifier.padding(
@@ -192,7 +191,7 @@ fun HabitDetails(habitId: Int) {
                         bottom = 12.dp,
                         top = 16.dp
                     ),
-                    text = title,
+                    text = PlatformDateTimeFormatter.monthOfYear(calendarState.currentMonth.fromEpic()),
                     type = Text.Type.Title
                 )
 
@@ -227,16 +226,17 @@ fun HabitDetails(habitId: Int) {
                 }
             }
 
-            val abstinenceTimes = remember(abstinenceHistory) {
+            val abstinenceDurationsInSeconds = remember(abstinenceHistory) {
                 abstinenceHistory.abstinenceRanges().map {
-                    it.duration().inWholeSeconds.toFloat()
+                    it.duration().inWholeSeconds
                 }
             }
 
-            if (abstinenceTimes.size > 2) {
+            if (abstinenceDurationsInSeconds.size > 2) {
                 Card(
                     modifier = Modifier
                         .padding(top = 24.dp)
+                        .padding(horizontal = 16.dp)
                         .fillMaxWidth()
                 ) {
                     Column {
@@ -250,12 +250,12 @@ fun HabitDetails(habitId: Int) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(300.dp),
-                            values = abstinenceTimes,
+                            values = abstinenceDurationsInSeconds,
                             valueFormatter = {
                                 FormattedDuration(
-                                    value = it.toLong().seconds,
+                                    value = it.seconds,
                                     accuracy = FormattedDuration.Accuracy.DAYS
-                                )
+                                ).toString()
                             }
                         )
                     }
@@ -265,7 +265,7 @@ fun HabitDetails(habitId: Int) {
 
             Card(
                 modifier = Modifier
-                    .padding(top = 24.dp)
+                    .padding(16.dp)
                     .fillMaxWidth()
             ) {
                 Column(

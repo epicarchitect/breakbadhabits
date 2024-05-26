@@ -26,16 +26,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.entity.habits.HabitsConfig
 import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidation
-import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.ui.dashboard.DashboardScreen
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.Icon
+import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
 
@@ -58,8 +56,6 @@ fun HabitEditing(habitId: Int) {
     var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit?.name ?: "") }
     var habitNameValidation by remember { mutableStateOf<HabitNewNameValidation?>(null) }
     var selectedIconId by rememberSaveable(initialHabit) { mutableIntStateOf(initialHabit?.iconId ?: 0) }
-
-    ClearFocusWhenKeyboardHiddenEffect()
 
     var deletionShow by remember { mutableStateOf(false) }
     if (deletionShow) {
@@ -104,17 +100,16 @@ fun HabitEditing(habitId: Int) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp)
     ) {
-        Text(
-            text = habitEditingStrings.titleText(),
-            type = Text.Type.Title,
-            priority = Text.Priority.High
+        SimpleTopAppBar(
+            title = habitEditingStrings.titleText(),
+            onBackClick = navigator::pop,
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
         Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = habitEditingStrings.habitNameDescription()
         )
 
@@ -163,12 +158,14 @@ fun HabitEditing(habitId: Int) {
         Spacer(Modifier.height(24.dp))
 
         Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = habitEditingStrings.deleteDescription()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = habitEditingStrings.deleteButton(),
             type = Button.Type.Dangerous,
             onClick = {
@@ -182,7 +179,7 @@ fun HabitEditing(habitId: Int) {
 
         Button(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(16.dp)
                 .align(Alignment.End),
             onClick = {
                 habitNameValidation = HabitNewNameValidation(

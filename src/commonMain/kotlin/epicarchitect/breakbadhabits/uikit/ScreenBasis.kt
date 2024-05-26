@@ -134,16 +134,33 @@ object ScreenBasis {
 }
 
 @Composable
-fun DefaultTopAppBar(
-    title: @Composable () -> Unit,
-    navigationAction: @Composable (() -> Unit)? = null,
-    actions: @Composable (() -> Unit)? = null,
+fun SimpleTopAppBar(
+    title: String,
+    modifier: Modifier = Modifier,
+    onBackClick: (() -> Unit)? = null,
+    actions: @Composable () -> Unit = {}
 ) {
     Row(
+        modifier = modifier.height(40.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        navigationAction?.invoke()
-        title()
-        actions?.invoke()
+        if (onBackClick != null) {
+            IconButton(
+                icon = AppData.resources.icons.commonIcons.navigationBack,
+                onClick = onBackClick
+            )
+        } else {
+            Spacer(modifier = Modifier.padding(start = 24.dp))
+        }
+
+        Text(
+            text = title,
+            type = Text.Type.Title
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        actions()
     }
 }
 

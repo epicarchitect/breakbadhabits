@@ -1,11 +1,12 @@
 package epicarchitect.breakbadhabits.data.resources.icons
 
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AllInclusive
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.BugReport
@@ -74,6 +75,7 @@ class CommonIcons {
     val settings = VectorIcon(31, MaterialIcons.Filled.Settings)
     val error = VectorIcon(32, MaterialIcons.Filled.Error)
     val done = VectorIcon(33, MaterialIcons.Filled.Done)
-    val arrowBack = VectorIcon(34, MaterialIcons.Filled.ArrowBackIosNew)
+    val navigationBack = VectorIcon(34, MaterialIcons.AutoMirrored.Filled.ArrowBack)
+    val arrowBack = VectorIcon(34, MaterialIcons.AutoMirrored.Filled.ArrowBackIos)
     val arrowForward = VectorIcon(35, MaterialIcons.AutoMirrored.Filled.ArrowForwardIos)
 }

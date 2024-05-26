@@ -26,12 +26,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
 import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.uikit.Dialog
+import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
@@ -100,7 +101,6 @@ fun HabitTrackEditing(habitTrackId: Int) {
         }
     }
 
-    ClearFocusWhenKeyboardHiddenEffect()
 
     if (rangeSelectionShow) {
         val state = rememberEpicDatePickerState(
@@ -125,13 +125,9 @@ fun HabitTrackEditing(habitTrackId: Int) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitTrackEditingStrings.titleText(),
-            type = Text.Type.Title,
-            priority = Text.Priority.High
+        SimpleTopAppBar(
+            title = habitTrackEditingStrings.titleText(),
+            onBackClick = navigator::pop
         )
 
         Spacer(Modifier.height(4.dp))
@@ -155,7 +151,9 @@ fun HabitTrackEditing(habitTrackId: Int) {
         Spacer(Modifier.height(12.dp))
 
         TextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             value = eventCount.toString(),
             onValueChange = {
                 val validated = HabitTrackEventCountInputValidation(it)
@@ -202,17 +200,17 @@ fun HabitTrackEditing(habitTrackId: Int) {
                     val start = LocalDateTime(
                         date = it.first(),
                         time = selectedTimeInDates.first()
-                    )
+                    ).let(PlatformDateTimeFormatter::localDateTime)
                     "Дата и время: $start"
                 } else if (it.size == 2) {
                     val start = LocalDateTime(
                         date = it.first(),
                         time = selectedTimeInDates.first()
-                    )
+                    ).let(PlatformDateTimeFormatter::localDateTime)
                     val end = LocalDateTime(
                         date = it.last(),
                         time = selectedTimeInDates.last()
-                    )
+                    ).let(PlatformDateTimeFormatter::localDateTime)
                     "Первое событие: $start, последнее событие: $end"
                 } else {
                     "select"
@@ -233,7 +231,7 @@ fun HabitTrackEditing(habitTrackId: Int) {
             modifier = Modifier.padding(horizontal = 16.dp),
             value = comment,
             onValueChange = {
-                comment = it.toString()
+                comment = it
             }
         )
 
@@ -248,11 +246,11 @@ fun HabitTrackEditing(habitTrackId: Int) {
             text = habitTrackEditingStrings.finishDescription()
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(16.dp)
                 .align(Alignment.End),
             text = habitTrackEditingStrings.finishButton(),
             type = Button.Type.Main,

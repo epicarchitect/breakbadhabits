@@ -35,7 +35,6 @@ import epicarchitect.breakbadhabits.entity.util.flowOfList
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.effect.ClearFocusWhenKeyboardHiddenEffect
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
 
@@ -63,8 +62,6 @@ fun HabitWidgetCreation(systemWidgetId: Int) {
     var widgetTitle by rememberSaveable {
         mutableStateOf("")
     }
-
-    ClearFocusWhenKeyboardHiddenEffect()
 
     Column(
         modifier = Modifier

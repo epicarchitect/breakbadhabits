@@ -7,16 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,6 +36,8 @@ import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
+import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
+import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.stateOfList
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
@@ -50,7 +49,6 @@ class DashboardScreen : Screen {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Dashboard() {
     val navigator = LocalNavigator.currentOrThrow
@@ -58,68 +56,66 @@ fun Dashboard() {
     val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        dashboardStrings.titleText(),
-                        type =
-                    )
-                },
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Column {
+            SimpleTopAppBar(
+                modifier = Modifier.fillMaxWidth(),
+                title = dashboardStrings.titleText(),
                 actions = {
                     IconButton(
-                        icon = icons.commonIcons.settings,
-                        onClick = { navigator += AppSettingsScreen() }
+                        onClick = { navigator += AppSettingsScreen() },
+                        icon = icons.commonIcons.settings
                     )
+                    Spacer(modifier = Modifier.padding(start = 8.dp))
                 }
             )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-              onClick = {
-                  navigator += HabitCreationScreen()
-              }
-            ) {
-                Icon(icons.commonIcons.add)
-                Text(dashboardStrings.newHabitButtonText())
-            }
-        }
-    ) {
-        FlowStateContainer(
-            modifier = Modifier.padding(it),
-            state = stateOfList { habitQueries.habits() }
-        ) { items ->
-            if (items.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Center,
-                        text = dashboardStrings.emptyHabitsText()
-                    )
-                }
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 4.dp,
-                        bottom = 100.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(
-                        items = items,
-                        key = { it.id }
-                    ) { item ->
-                        HabitCard(item)
+
+            FlowStateContainer(
+                state = stateOfList { habitQueries.habits() }
+            ) { items ->
+                if (items.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            textAlign = TextAlign.Center,
+                            text = dashboardStrings.emptyHabitsText()
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 8.dp,
+                            bottom = 100.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(
+                            items = items,
+                            key = { it.id }
+                        ) { item ->
+                            HabitCard(item)
+                        }
                     }
                 }
             }
         }
+
+        Button(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            onClick = { navigator += HabitCreationScreen() },
+            text = dashboardStrings.newHabitButtonText(),
+            icon = { Icon(icons.commonIcons.add) },
+            type = Button.Type.Main
+        )
     }
 }
 

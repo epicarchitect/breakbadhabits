@@ -1,10 +1,10 @@
 package epicarchitect.breakbadhabits.ui.appSettings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,7 +15,7 @@ import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme
 import epicarchitect.breakbadhabits.ui.habits.widgets.list.HabitWidgetsScreen
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
-import epicarchitect.breakbadhabits.uikit.ScreenBasis
+import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.button.RadioButton
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
@@ -37,21 +37,15 @@ fun AppSettings() {
     FlowStateContainer(
         state = stateOfOneOrNull { appSettingsQueries.settings() }
     ) { settings ->
-        Scaffold {
-
-        }
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
-
-        }
-        ScreenBasis(
-            contentModifier = Modifier.verticalScroll(rememberScrollState()),
-            topBar = ScreenBasis.TitleTopBar(
+            SimpleTopAppBar(
+                modifier = Modifier.fillMaxWidth(),
                 title = appSettingsStrings.titleText(),
-                leftActionButton = ScreenBasis.BackActionButton(onClick = navigator::pop)
+                onBackClick = navigator::pop,
             )
-        ) {
+
             Text(
                 modifier = Modifier.padding(
                     start = 16.dp,

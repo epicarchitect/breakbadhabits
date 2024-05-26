@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.uikit.text.Text
 
 data class StatisticData(
-    val name: String,
-    val value: String
+    val name: CharSequence,
+    val value: CharSequence
 )
 
 @Composable
