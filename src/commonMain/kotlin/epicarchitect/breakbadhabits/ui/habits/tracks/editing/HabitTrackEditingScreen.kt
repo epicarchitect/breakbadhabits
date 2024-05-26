@@ -82,8 +82,8 @@ fun HabitTrackEditing(habitTrackId: Int) {
     var eventCount by rememberSaveable(initialHabitTrack) {
         mutableIntStateOf(initialHabitTrack?.eventCount ?: 0)
     }
-    var validatedEventCount by remember {
-        mutableStateOf(HabitTrackEventCountInputValidation(0))
+    var eventCountValidation by remember {
+        mutableStateOf<HabitTrackEventCountInputValidation?>(null)
     }
     var comment by rememberSaveable {
         mutableStateOf("")
@@ -156,16 +156,15 @@ fun HabitTrackEditing(habitTrackId: Int) {
                 .padding(horizontal = 16.dp),
             value = eventCount.toString(),
             onValueChange = {
-                val validated = HabitTrackEventCountInputValidation(it)
-                eventCount = validated.toInt() ?: 0
-                validatedEventCount = validated
+                eventCount = it.toIntOrNull() ?: 0
+                eventCountValidation = null
             },
             label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
             regex = Regexps.integersOrEmpty(maxCharCount = 4),
-            error = validatedEventCount.incorrectReason()?.let(habitTrackEditingStrings::trackEventCountError),
+            error = eventCountValidation?.incorrectReason()?.let(habitTrackEditingStrings::trackEventCountError),
         )
 
         Spacer(Modifier.height(24.dp))
@@ -255,6 +254,9 @@ fun HabitTrackEditing(habitTrackId: Int) {
             text = habitTrackEditingStrings.finishButton(),
             type = Button.Type.Main,
             onClick = {
+                eventCountValidation = HabitTrackEventCountInputValidation(eventCount)
+                if (eventCountValidation?.incorrectReason() != null) return@Button
+
                 AppData.database.habitTrackQueries.update(
                     id = habitTrackId,
                     startTime = LocalDateTime(

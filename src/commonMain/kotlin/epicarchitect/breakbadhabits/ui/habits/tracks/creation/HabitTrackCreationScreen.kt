@@ -54,7 +54,6 @@ class HabitTrackCreationScreen(private val habitId: Int) : Screen {
 @Composable
 fun HabitTrackCreation(habitId: Int) {
     val habitTrackCreationStrings = AppData.resources.strings.habitTrackCreationStrings
-    val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
     val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow
@@ -74,7 +73,7 @@ fun HabitTrackCreation(habitId: Int) {
     }
 
     var eventCount by rememberSaveable { mutableIntStateOf(0) }
-    var validatedEventCount by remember { mutableStateOf(HabitTrackEventCountInputValidation(0)) }
+    var eventCountValidation by remember { mutableStateOf<HabitTrackEventCountInputValidation?>(null) }
 
     var comment by rememberSaveable {
         mutableStateOf("")
@@ -146,16 +145,15 @@ fun HabitTrackCreation(habitId: Int) {
                 .padding(horizontal = 16.dp),
             value = eventCount.toString(),
             onValueChange = {
-                val validated = HabitTrackEventCountInputValidation(it)
-                eventCount = validated.toInt() ?: 0
-                validatedEventCount = validated
+                eventCount = it.toIntOrNull() ?: 0
+                eventCountValidation = null
             },
             label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
             regex = Regexps.integersOrEmpty(maxCharCount = 4),
-            error = validatedEventCount.incorrectReason()?.let(habitTrackCreationStrings::trackEventCountError),
+            error = eventCountValidation?.incorrectReason()?.let(habitTrackCreationStrings::trackEventCountError),
         )
 
         Spacer(Modifier.height(24.dp))
@@ -245,7 +243,10 @@ fun HabitTrackCreation(habitId: Int) {
             text = habitTrackCreationStrings.finishButton(),
             type = Button.Type.Main,
             onClick = {
-                AppData.database.habitTrackQueries.insert(
+                eventCountValidation = HabitTrackEventCountInputValidation(eventCount)
+                if (eventCountValidation?.incorrectReason() != null) return@Button
+
+                habitTrackQueries.insert(
                     habitId = habitId,
                     startTime = LocalDateTime(
                         date = selectedDates.first(),
