@@ -116,8 +116,9 @@ fun HabitDetails(habitId: Int) {
                 .verticalScroll(rememberScrollState())
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth().height(40.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
                     onClick = navigator::pop
@@ -125,14 +126,8 @@ fun HabitDetails(habitId: Int) {
                     Icon(icons.commonIcons.navigationBack)
                 }
 
-                Icon(
-                    modifier = Modifier
-                        .padding(top = 12.dp)
-                        .size(44.dp),
-                    icon = icons.habitIcons.getById(habit?.iconId ?: 0)
-                )
-
                 IconButton(
+                    modifier = Modifier.padding(end = 8.dp),
                     onClick = {
                         navigator += HabitEditingScreen(habitId)
                     }
@@ -140,6 +135,13 @@ fun HabitDetails(habitId: Int) {
                     Icon(icons.commonIcons.settings)
                 }
             }
+
+            Icon(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(44.dp),
+                icon = icons.habitIcons.getById(habit?.iconId ?: 0)
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 

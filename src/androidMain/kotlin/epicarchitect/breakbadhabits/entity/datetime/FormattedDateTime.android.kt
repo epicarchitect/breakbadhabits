@@ -22,7 +22,7 @@ actual object PlatformDateTimeFormatter {
 
     actual fun monthOfYear(monthOfYear: MonthOfYear): String {
         val month = monthOfYear.month.getDisplayName(
-            TextStyle.SHORT,
+            TextStyle.FULL_STANDALONE,
             Locale.getDefault()
         ).replaceFirstChar(Char::uppercase)
 
