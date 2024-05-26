@@ -3,6 +3,7 @@ package epicarchitect.breakbadhabits.uikit
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -133,6 +134,20 @@ object ScreenBasis {
 }
 
 @Composable
+fun DefaultTopAppBar(
+    title: @Composable () -> Unit,
+    navigationAction: @Composable (() -> Unit)? = null,
+    actions: @Composable (() -> Unit)? = null,
+) {
+    Row(
+    ) {
+        navigationAction?.invoke()
+        title()
+        actions?.invoke()
+    }
+}
+
+@Composable
 fun ScreenBasis(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
@@ -157,5 +172,35 @@ fun ScreenBasis(
                 content = content
             )
         }
+    )
+}
+
+data class FloatingActionButtonConfig(
+    val text: String,
+    val onClick: () -> Unit
+)
+
+@Composable
+fun ScreenBasis(
+    modifier: Modifier = Modifier,
+    contentModifier: Modifier = Modifier,
+    topBar: ScreenBasis.TopBar? = null,
+    floatingActionButtonConfig: FloatingActionButtonConfig? = null,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    Scaffold(
+        modifier = modifier,
+        floatingActionButton = {
+            if (floatingActionButtonConfig != null) {
+                Button(
+                    onClick = floatingActionButtonConfig.onClick,
+                    text = floatingActionButtonConfig.text
+                )
+            }
+        },
+        topBar = {
+            topBar?.Content()
+        },
+        content = content
     )
 }

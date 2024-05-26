@@ -5,7 +5,8 @@ jetbrains-coroutinesCore = "1.8.0"
 jetbrains-compose = "1.6.10"
 jetbrains-datetime = "0.6.0"
 android-activityCompose = "1.9.0"
-android-coreKtx = "1.13.0"
+android-coreKtx = "1.13.1"
+android-appcompat = "1.6.1"
 cashapp-sqldelight = "2.0.2"
 epicarchitect-calendarCompose = "1.0.5"
 adrielcafe-voyager = "1.0.0"
@@ -15,6 +16,7 @@ jetbrains-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", versio
 jetbrains-coroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "jetbrains-coroutinesCore" }
 android-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "android-activityCompose" }
 android-coreKtx = { module = "androidx.core:core-ktx", version.ref = "android-coreKtx" }
+android-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "android-appcompat" }
 cashapp-sqldelightAndroidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "cashapp-sqldelight" }
 cashapp-sqldelightNativeDriver = { module = "app.cash.sqldelight:native-driver", version.ref = "cashapp-sqldelight" }
 cashapp-sqldelightCoroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "cashapp-sqldelight" }

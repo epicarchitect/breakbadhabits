@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,7 +39,6 @@ import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
-import epicarchitect.breakbadhabits.uikit.ScreenBasis
 import epicarchitect.breakbadhabits.uikit.stateOfList
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
@@ -47,6 +50,7 @@ class DashboardScreen : Screen {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Dashboard() {
     val navigator = LocalNavigator.currentOrThrow
@@ -54,22 +58,36 @@ fun Dashboard() {
     val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
 
-    ScreenBasis(
-        modifier = Modifier.fillMaxSize(),
-        topBar = ScreenBasis.TitleTopBar(
-            rightActionButton = ScreenBasis.IconActionButton(
-                icon = icons.commonIcons.settings,
-                onClick = { navigator += AppSettingsScreen() }
-            ),
-            title = dashboardStrings.titleText()
-        ),
-        floatingActionButton = ScreenBasis.FloatingActionButton(
-            icon = icons.commonIcons.add,
-            onClick = { navigator += HabitCreationScreen() },
-            title =  dashboardStrings.newHabitButtonText()
-        ),
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        dashboardStrings.titleText(),
+                        type =
+                    )
+                },
+                actions = {
+                    IconButton(
+                        icon = icons.commonIcons.settings,
+                        onClick = { navigator += AppSettingsScreen() }
+                    )
+                }
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+              onClick = {
+                  navigator += HabitCreationScreen()
+              }
+            ) {
+                Icon(icons.commonIcons.add)
+                Text(dashboardStrings.newHabitButtonText())
+            }
+        }
     ) {
         FlowStateContainer(
+            modifier = Modifier.padding(it),
             state = stateOfList { habitQueries.habits() }
         ) { items ->
             if (items.isEmpty()) {

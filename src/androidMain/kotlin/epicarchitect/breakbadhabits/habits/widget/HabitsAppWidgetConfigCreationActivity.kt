@@ -3,12 +3,12 @@ package epicarchitect.breakbadhabits.habits.widget
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import epicarchitect.breakbadhabits.BaseActivity
 import epicarchitect.breakbadhabits.uikit.theme.AppColorsSchemes
 import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 
-class HabitsAppWidgetConfigCreationActivity : ComponentActivity() {
+class HabitsAppWidgetConfigCreationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

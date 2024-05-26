@@ -1,8 +1,10 @@
 package epicarchitect.breakbadhabits.ui.appSettings
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,14 @@ fun AppSettings() {
     FlowStateContainer(
         state = stateOfOneOrNull { appSettingsQueries.settings() }
     ) { settings ->
+        Scaffold {
+
+        }
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+        ) {
+
+        }
         ScreenBasis(
             contentModifier = Modifier.verticalScroll(rememberScrollState()),
             topBar = ScreenBasis.TitleTopBar(

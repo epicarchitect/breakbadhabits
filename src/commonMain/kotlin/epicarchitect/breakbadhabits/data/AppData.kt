@@ -1,10 +1,6 @@
 package epicarchitect.breakbadhabits.data
 
-import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
-import epicarchitect.breakbadhabits.data.database.InstantAdapter
-import epicarchitect.breakbadhabits.data.database.ListOfIntAdapter
-import epicarchitect.breakbadhabits.data.database.SqlDriverFactory
-import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsThemeAdapter
+import epicarchitect.breakbadhabits.data.database.invoke
 import epicarchitect.breakbadhabits.data.resources.AppResources
 import epicarchitect.breakbadhabits.entity.datetime.CachedDateTime
 import epicarchitect.breakbadhabits.entity.datetime.SystemDateTime
@@ -21,32 +17,7 @@ object AppData {
 
     val resources = AppResources()
 
-    val database = AppDatabase(
-        driver = SqlDriverFactory.create(
-            schema = AppDatabase.Schema,
-            databaseName = "breakbadhabits.db"
-        ),
-        HabitAdapter = Habit.Adapter(
-            idAdapter = IntColumnAdapter,
-            iconIdAdapter = IntColumnAdapter
-        ),
-        HabitWidgetAdapter = HabitWidget.Adapter(
-            idAdapter = IntColumnAdapter,
-            systemIdAdapter = IntColumnAdapter,
-            habitIdsAdapter = ListOfIntAdapter
-        ),
-        HabitTrackAdapter = HabitTrack.Adapter(
-            idAdapter = IntColumnAdapter,
-            habitIdAdapter = IntColumnAdapter,
-            startTimeAdapter = InstantAdapter,
-            endTimeAdapter = InstantAdapter,
-            eventCountAdapter = IntColumnAdapter
-        ),
-        AppSettingsAdapter = AppSettings.Adapter(
-            idAdapter = IntColumnAdapter,
-            themeAdapter = AppSettingsThemeAdapter
-        )
-    )
+    val database = AppDatabase("breakbadhabits.db")
 
     val userDateTime = UpdatingDateTime(
         coroutineScope = coroutineScope,

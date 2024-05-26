@@ -9,9 +9,7 @@ plugins {
 kotlin {
     @Suppress("OPT_IN_USAGE")
     compilerOptions {
-        freeCompilerArgs = listOf(
-            "-Xexpect-actual-classes" // remove warnings for expect classes
-        )
+        freeCompilerArgs = listOf("-Xexpect-actual-classes")
     }
 
     jvmToolchain(17)
@@ -43,6 +41,7 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.android.coreKtx)
+            implementation(libs.android.appcompat)
             implementation(libs.android.activityCompose)
             implementation(libs.cashapp.sqldelightAndroidDriver)
         }
@@ -102,18 +101,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
-//    // TODO: remove on stable compose
-//    lint {
-//        checkReleaseBuilds = false
-//        checkDependencies = false
-//        checkAllWarnings = false
-//        checkTestSources = false
-//        abortOnError = false
-//        ignoreTestSources = true
-//        ignoreTestFixturesSources = true
-//        ignoreWarnings = true
-//    }
 }
 
 sqldelight {
