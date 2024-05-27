@@ -1,17 +1,17 @@
 package epicarchitect.breakbadhabits.ui.habits.tracks.editing
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,24 +26,26 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
-import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.uikit.Dialog
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
-import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.calendar.RangeSelectionCalendarDialog
+import epicarchitect.breakbadhabits.uikit.calendar.RangeSelectionCalendarDialogResources
+import epicarchitect.breakbadhabits.uikit.calendar.rememberSelectionCalendarState
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
-import epicarchitect.calendar.compose.datepicker.EpicDatePicker
-import epicarchitect.calendar.compose.datepicker.state.EpicDatePickerState
-import epicarchitect.calendar.compose.datepicker.state.rememberEpicDatePickerState
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.minus
+import epicarchitect.calendar.compose.basis.EpicMonth
+import epicarchitect.calendar.compose.basis.addYears
+import kotlinx.datetime.Month
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
 class HabitTrackEditingScreen(private val habitTrackId: Int) : Screen {
     @Composable
@@ -54,69 +56,111 @@ class HabitTrackEditingScreen(private val habitTrackId: Int) : Screen {
 
 @Composable
 fun HabitTrackEditing(habitTrackId: Int) {
+    FlowStateContainer(
+        state = stateOfOneOrNull {
+            AppData.database.habitTrackQueries.trackById(habitTrackId)
+        }
+    ) { habitTrack ->
+        if (habitTrack != null) {
+            FlowStateContainer(
+                state = stateOfOneOrNull(habitTrack) {
+                    // TODO maybe sql??
+                    AppData.database.habitQueries.habitById(habitTrack.habitId)
+                }
+            ) { habit ->
+                if (habit != null) {
+                    Loaded(habit, habitTrack)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Loaded(
+    habit: Habit,
+    habitTrack: HabitTrack,
+) {
     val habitTrackEditingStrings = AppData.resources.strings.habitTrackEditingStrings
-    val habitQueries = AppData.database.habitQueries
     val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow
 
-    val initialHabitTrack by remember(habitTrackId) {
-        habitTrackQueries.trackById(habitTrackId).flowOfOneOrNull()
-    }.collectAsState(null)
-
-    val habit by remember(initialHabitTrack) {
-        initialHabitTrack?.let {
-            habitQueries.habitById(it.habitId).flowOfOneOrNull()
-        } ?: emptyFlow()
-    }.collectAsState(null)
-
     var rangeSelectionShow by rememberSaveable { mutableStateOf(false) }
-    var selectedTimeSelectionIndex by remember { mutableIntStateOf(0) }
+    val timeZone = AppData.userDateTime.timeZone()
 
-    var selectedDates by rememberSaveable {
-        mutableStateOf(listOf(AppData.userDateTime.local().date))
-    }
-    var selectedTimeInDates by rememberSaveable {
-        mutableStateOf(listOf(AppData.userDateTime.local().time))
+    var selectedDateTimeRange by remember(habitTrack) {
+        mutableStateOf(habitTrack.startTime.toLocalDateTime(timeZone)..habitTrack.endTime.toLocalDateTime(timeZone))
     }
 
-    var eventCount by rememberSaveable(initialHabitTrack) {
-        mutableIntStateOf(initialHabitTrack?.eventCount ?: 0)
+    var eventCount by rememberSaveable(habitTrack) {
+        val days = (habitTrack.endTime - habitTrack.startTime).inWholeDays.toInt()
+        val eventCount = if (days == 0) habitTrack.eventCount else habitTrack.eventCount / days
+        mutableIntStateOf(eventCount)
     }
     var eventCountValidation by remember {
         mutableStateOf<HabitTrackEventCountInputValidation?>(null)
     }
-    var comment by rememberSaveable {
-        mutableStateOf("")
+    var comment by rememberSaveable(habitTrack) {
+        mutableStateOf(habitTrack.comment)
     }
-
-    LaunchedEffect(selectedTimeSelectionIndex) {
-        if (selectedTimeSelectionIndex == 0) {
-            selectedDates = listOf(AppData.userDateTime.local().date)
-            selectedTimeInDates = listOf(AppData.userDateTime.local().time)
-        }
-
-        if (selectedTimeSelectionIndex == 1) {
-            selectedDates = listOf(AppData.userDateTime.local().date.minus(DatePeriod(days = 1)))
-            selectedTimeInDates = listOf(AppData.userDateTime.local().time)
-        }
-    }
-
 
     if (rangeSelectionShow) {
-        val state = rememberEpicDatePickerState(
-            selectedDates = selectedDates,
-            selectionMode = EpicDatePickerState.SelectionMode.Range
-        )
-        Dialog(
-            onDismiss = {
-                rangeSelectionShow = false
-                selectedDates = state.selectedDates
+        val state = rememberSelectionCalendarState(
+            initialSelectedDateTime = selectedDateTimeRange,
+            monthRange = EpicMonth.now(AppData.userDateTime.timeZone()).let {
+                it.addYears(-10).copy(month = Month.JANUARY)..it.copy(month = Month.DECEMBER)
             }
-        ) {
-            EpicDatePicker(
-                modifier = Modifier,
-                state = state
-            )
+        )
+
+        RangeSelectionCalendarDialog(
+            state = state,
+            resources = RangeSelectionCalendarDialogResources(),
+            onCancel = {
+                rangeSelectionShow = false
+            },
+            onConfirm = {
+                rangeSelectionShow = false
+                selectedDateTimeRange = it
+            }
+        )
+    }
+
+    var deletionShow by remember { mutableStateOf(false) }
+    if (deletionShow) {
+        Dialog(onDismiss = { deletionShow = false }) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "habitTrackEditingStrings.deleteConfirmation()",
+                    type = Text.Type.Description,
+                    priority = Text.Priority.High
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Button(
+                        text = "habitTrackEditingStrings.cancel()",
+                        onClick = {
+                            deletionShow = false
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Button(
+                        text = "habitTrackEditingStrings.yes()",
+                        type = Button.Type.Main,
+                        onClick = {
+                            habitTrackQueries.deleteById(habitTrack.id)
+                            navigator.pop()
+                        }
+                    )
+                }
+            }
         }
     }
 
@@ -132,14 +176,12 @@ fun HabitTrackEditing(habitTrackId: Int) {
 
         Spacer(Modifier.height(4.dp))
 
-        habit?.let {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = habitTrackEditingStrings.habitNameLabel(it.name),
-                type = Text.Type.Description,
-                priority = Text.Priority.Low
-            )
-        }
+        Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = habitTrackEditingStrings.habitNameLabel(habit.name),
+            type = Text.Type.Description,
+            priority = Text.Priority.Low
+        )
 
         Spacer(Modifier.height(16.dp))
 
@@ -167,24 +209,11 @@ fun HabitTrackEditing(habitTrackId: Int) {
             error = eventCountValidation?.incorrectReason()?.let(habitTrackEditingStrings::trackEventCountError),
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(12.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
             text = "Укажите когда произошло событие:"
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        SingleSelectionChipRow(
-            items = listOf("Сейчас", "Вчера", "Свой интервал"),
-            onClick = {
-                if (it == 2) {
-                    rangeSelectionShow = true
-                }
-                selectedTimeSelectionIndex = it
-            },
-            selectedIndex = selectedTimeSelectionIndex
         )
 
         Spacer(Modifier.height(12.dp))
@@ -194,26 +223,10 @@ fun HabitTrackEditing(habitTrackId: Int) {
             onClick = {
                 rangeSelectionShow = true
             },
-            text = selectedDates.let {
-                if (it.size == 1) {
-                    val start = LocalDateTime(
-                        date = it.first(),
-                        time = selectedTimeInDates.first()
-                    ).let(PlatformDateTimeFormatter::localDateTime)
-                    "Дата и время: $start"
-                } else if (it.size == 2) {
-                    val start = LocalDateTime(
-                        date = it.first(),
-                        time = selectedTimeInDates.first()
-                    ).let(PlatformDateTimeFormatter::localDateTime)
-                    val end = LocalDateTime(
-                        date = it.last(),
-                        time = selectedTimeInDates.last()
-                    ).let(PlatformDateTimeFormatter::localDateTime)
-                    "Первое событие: $start, последнее событие: $end"
-                } else {
-                    "select"
-                }
+            text = selectedDateTimeRange.let {
+                val start = PlatformDateTimeFormatter.localDateTime(it.start)
+                val end = PlatformDateTimeFormatter.localDateTime(it.endInclusive)
+                "Первое событие: $start, последнее событие: $end"
             }
         )
 
@@ -231,6 +244,22 @@ fun HabitTrackEditing(habitTrackId: Int) {
             value = comment,
             onValueChange = {
                 comment = it
+            }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = "habitTrackEditingStrings.deleteDescription()"
+        )
+
+
+        Button(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = "habitTrackEditingStrings.deleteButton()",
+            type = Button.Type.Dangerous,
+            onClick = {
+                deletionShow = true
             }
         )
 
@@ -258,15 +287,9 @@ fun HabitTrackEditing(habitTrackId: Int) {
                 if (eventCountValidation?.incorrectReason() != null) return@Button
 
                 AppData.database.habitTrackQueries.update(
-                    id = habitTrackId,
-                    startTime = LocalDateTime(
-                        date = selectedDates.first(),
-                        time = selectedTimeInDates.first()
-                    ).toInstant(AppData.userDateTime.timeZone()),
-                    endTime = LocalDateTime(
-                        date = selectedDates.last(),
-                        time = selectedTimeInDates.last()
-                    ).toInstant(AppData.userDateTime.timeZone()),
+                    id = habitTrack.id,
+                    startTime = selectedDateTimeRange.start.toInstant(timeZone),
+                    endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone),
                     eventCount = eventCount,
                     comment = comment
                 )

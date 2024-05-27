@@ -2,6 +2,8 @@ package epicarchitect.breakbadhabits.entity.datetime
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.Month
 import platform.Foundation.NSDateFormatter
 
 actual object PlatformDateTimeFormatter {
@@ -16,4 +18,7 @@ actual object PlatformDateTimeFormatter {
         return dateTime.toString()
     }
     actual fun localDate(dateTime: LocalDate) = dateTime.toString()
+    actual fun localTime(time: LocalTime) = time.toString()
+
+    actual fun month(month: Month) = month.toString()
 }

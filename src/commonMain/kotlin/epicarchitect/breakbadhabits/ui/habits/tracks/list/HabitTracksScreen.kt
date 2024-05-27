@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -42,6 +43,8 @@ import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 import epicarchitect.calendar.compose.basis.EpicMonth
+import epicarchitect.calendar.compose.basis.contains
+import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
@@ -140,14 +143,28 @@ fun HabitTracks(habitId: Int) {
                 }
 
                 val rangeColor = AppTheme.colorScheme.primary
+                val ranges = tracks.map {
+                    it.startTime.toLocalDateTime(timeZone).date..it.endTime.toLocalDateTime(timeZone).date
+                }
 
                 EpicCalendarPager(
                     pageModifier = {
-                        Modifier.drawEpicRanges(
-                            ranges = tracks.map {
-                                it.startTime.toLocalDateTime(timeZone).date..it.endTime.toLocalDateTime(timeZone).date
-                            },
-                            color = rangeColor
+                        Modifier.drawEpicRanges(ranges, rangeColor)
+                    },
+                    dayOfMonthContent = { date ->
+                        val basisState = LocalBasisEpicCalendarState.current!!
+
+                        val isSelected = ranges.any { date in it }
+
+                        androidx.compose.material3.Text(
+                            modifier = Modifier.alpha(
+                                if (date in basisState.currentMonth) 1.0f
+                                else 0.5f
+                            ),
+                            text = date.dayOfMonth.toString(),
+                            textAlign = TextAlign.Center,
+                            color = if (isSelected) AppTheme.colorScheme.onPrimary
+                            else AppTheme.colorScheme.onSurface
                         )
                     },
                     state = epicCalendarState

@@ -5,6 +5,8 @@ import android.text.format.DateFormat
 import epicarchitect.breakbadhabits.BreakBadHabitsApp
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalTime
 import java.time.format.DateTimeFormatter
@@ -21,12 +23,7 @@ actual object PlatformDateTimeFormatter {
     }
 
     actual fun monthOfYear(monthOfYear: MonthOfYear): String {
-        val month = monthOfYear.month.getDisplayName(
-            TextStyle.FULL_STANDALONE,
-            Locale.getDefault()
-        ).replaceFirstChar(Char::uppercase)
-
-        return "$month ${monthOfYear.year}"
+        return "${month(monthOfYear.month)} ${monthOfYear.year}"
     }
 
     actual fun localDateTime(dateTime: LocalDateTime): String {
@@ -35,6 +32,17 @@ actual object PlatformDateTimeFormatter {
 
     actual fun localDate(dateTime: LocalDate): String {
         return dateFormatter.format(dateTime.toJavaLocalDate())
+    }
+
+    actual fun localTime(time: LocalTime): String {
+        return timeFormatter.format(time.toJavaLocalTime())
+    }
+
+    actual fun month(month: Month): String {
+        return month.getDisplayName(
+            TextStyle.FULL_STANDALONE,
+            Locale.getDefault()
+        ).replaceFirstChar(Char::uppercase)
     }
 
     private fun timePattern() = if (DateFormat.is24HourFormat(BreakBadHabitsApp.instance)) "HH:mm" else "hh:mm a"

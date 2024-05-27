@@ -9,13 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DateRangePicker
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,20 +25,26 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
-import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
-import epicarchitect.breakbadhabits.uikit.Dialog
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.calendar.RangeSelectionCalendarDialog
+import epicarchitect.breakbadhabits.uikit.calendar.RangeSelectionCalendarDialogResources
 import epicarchitect.breakbadhabits.uikit.calendar.rememberSelectionCalendarState
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
+import epicarchitect.calendar.compose.basis.EpicMonth
+import epicarchitect.calendar.compose.basis.addYears
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.minus
 import kotlinx.datetime.toInstant
 
@@ -54,26 +55,35 @@ class HabitTrackCreationScreen(private val habitId: Int) : Screen {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HabitTrackCreation(habitId: Int) {
+    FlowStateContainer(
+        state = stateOfOneOrNull {
+            AppData.database.habitQueries.habitById(habitId)
+        }
+    ) {
+        if (it != null) {
+            Loaded(habit = it)
+        }
+    }
+}
+
+@Composable
+private fun Loaded(habit: Habit) {
     val habitTrackCreationStrings = AppData.resources.strings.habitTrackCreationStrings
-    val habitQueries = AppData.database.habitQueries
     val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow
+    val timeZone = AppData.userDateTime.timeZone()
 
     var rangeSelectionShow by rememberSaveable { mutableStateOf(false) }
     var selectedTimeSelectionIndex by remember { mutableIntStateOf(0) }
 
-    val habit by remember(habitId) {
-        habitQueries.habitById(habitId).flowOfOneOrNull()
-    }.collectAsState(null)
-
-    var selectedDates by rememberSaveable {
-        mutableStateOf(listOf(AppData.userDateTime.local().date))
-    }
-    var selectedTimeInDates by rememberSaveable {
-        mutableStateOf(listOf(AppData.userDateTime.local().time))
+    var selectedDateTimeRange by remember {
+        mutableStateOf(
+            AppData.userDateTime.local().let {
+                LocalDateTime(it.date, LocalTime(it.hour, 0, 0))
+            }.let { it..it }
+        )
     }
 
     var eventCount by rememberSaveable { mutableIntStateOf(0) }
@@ -85,27 +95,36 @@ fun HabitTrackCreation(habitId: Int) {
 
     LaunchedEffect(selectedTimeSelectionIndex) {
         if (selectedTimeSelectionIndex == 0) {
-            selectedDates = listOf(AppData.userDateTime.local().date)
-            selectedTimeInDates = listOf(AppData.userDateTime.local().time)
+            selectedDateTimeRange = AppData.userDateTime.local().let {
+                LocalDateTime(it.date, LocalTime(it.hour, 0, 0))
+            }.let { it..it }
         }
 
         if (selectedTimeSelectionIndex == 1) {
-            selectedDates = listOf(AppData.userDateTime.local().date.minus(DatePeriod(days = 1)))
-            selectedTimeInDates = listOf(AppData.userDateTime.local().time)
+            selectedDateTimeRange = AppData.userDateTime.local().let {
+                LocalDateTime(it.date.minus(DatePeriod(days = 1)), LocalTime(it.hour, 0, 0))
+            }.let { it..it }
         }
     }
 
     if (rangeSelectionShow) {
-        val state = rememberSelectionCalendarState(selectedDates)
+        val state = rememberSelectionCalendarState(
+            initialSelectedDateTime = selectedDateTimeRange,
+            monthRange = EpicMonth.now(AppData.userDateTime.timeZone()).let {
+                it.addYears(-10).copy(month = Month.JANUARY)..it.copy(month = Month.DECEMBER)
+            }
+        )
 
         RangeSelectionCalendarDialog(
             state = state,
+            resources = RangeSelectionCalendarDialogResources(),
             onCancel = {
                 rangeSelectionShow = false
             },
             onConfirm = {
                 rangeSelectionShow = false
-                selectedDates = state.epicState.selectedDates
+                selectedTimeSelectionIndex = 2
+                selectedDateTimeRange = it
             }
         )
     }
@@ -122,14 +141,12 @@ fun HabitTrackCreation(habitId: Int) {
 
         Spacer(Modifier.height(4.dp))
 
-        habit?.let {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = habitTrackCreationStrings.habitNameLabel(it.name),
-                type = Text.Type.Description,
-                priority = Text.Priority.Low
-            )
-        }
+        Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = habitTrackCreationStrings.habitNameLabel(habit.name),
+            type = Text.Type.Description,
+            priority = Text.Priority.Low
+        )
 
         Spacer(Modifier.height(16.dp))
 
@@ -184,25 +201,11 @@ fun HabitTrackCreation(habitId: Int) {
             onClick = {
                 rangeSelectionShow = true
             },
-            text = selectedDates.let {
-                if (it.size == 1) {
-                    val start = LocalDateTime(
-                        date = it.first(),
-                        time = selectedTimeInDates.first()
-                    ).let(PlatformDateTimeFormatter::localDateTime)
-                    "Дата и время: $start"
-                } else if (it.size == 2) {
-                    val start = LocalDateTime(
-                        date = it.first(),
-                        time = selectedTimeInDates.first()
-                    ).let(PlatformDateTimeFormatter::localDateTime)
-                    val end = LocalDateTime(
-                        date = it.last(),
-                        time = selectedTimeInDates.last()
-                    ).let(PlatformDateTimeFormatter::localDateTime)
+            text = selectedDateTimeRange.let {
+                selectedDateTimeRange.let {
+                    val start = PlatformDateTimeFormatter.localDateTime(it.start)
+                    val end = PlatformDateTimeFormatter.localDateTime(it.endInclusive)
                     "Первое событие: $start, последнее событие: $end"
-                } else {
-                    "select"
                 }
             }
         )
@@ -248,15 +251,9 @@ fun HabitTrackCreation(habitId: Int) {
                 if (eventCountValidation?.incorrectReason() != null) return@Button
 
                 habitTrackQueries.insert(
-                    habitId = habitId,
-                    startTime = LocalDateTime(
-                        date = selectedDates.first(),
-                        time = selectedTimeInDates.first()
-                    ).toInstant(AppData.userDateTime.timeZone()),
-                    endTime = LocalDateTime(
-                        date = selectedDates.last(),
-                        time = selectedTimeInDates.last()
-                    ).toInstant(AppData.userDateTime.timeZone()),
+                    habitId = habit.id,
+                    startTime = selectedDateTimeRange.start.toInstant(timeZone),
+                    endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone),
                     eventCount = eventCount,
                     comment = comment
                 )
