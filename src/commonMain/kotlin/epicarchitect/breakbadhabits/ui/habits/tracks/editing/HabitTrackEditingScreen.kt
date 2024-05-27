@@ -94,9 +94,10 @@ private fun Loaded(
     }
 
     var eventCount by rememberSaveable(habitTrack) {
-        val days = (habitTrack.endTime - habitTrack.startTime).onlyDays.toInt()
-        val eventCount = if (days == 0) habitTrack.eventCount else habitTrack.eventCount / days
-        mutableIntStateOf(eventCount)
+        val days = (habitTrack.endTime - habitTrack.startTime).onlyDays.toInt().let {
+            if (it > 0) it else 1
+        }
+        mutableIntStateOf(habitTrack.eventCount / days)
     }
     var eventCountValidation by remember {
         mutableStateOf<HabitTrackEventCountInputValidation?>(null)
@@ -290,7 +291,9 @@ private fun Loaded(
                 val startTime = selectedDateTimeRange.start.toInstant(timeZone)
                 val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
                 val duration = endTime - startTime
-                val allEventCount = duration.inWholeDays.toInt() * eventCount
+                val allEventCount = duration.inWholeDays.toInt().let {
+                    if (it > 0) it else 1
+                } * eventCount
 
                 AppData.database.habitTrackQueries.update(
                     id = habitTrack.id,

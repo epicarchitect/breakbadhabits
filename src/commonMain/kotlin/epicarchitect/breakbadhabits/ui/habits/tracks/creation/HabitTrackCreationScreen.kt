@@ -254,7 +254,9 @@ private fun Loaded(habit: Habit) {
                 val startTime = selectedDateTimeRange.start.toInstant(timeZone)
                 val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
                 val duration = endTime - startTime
-                val allEventCount = duration.onlyDays.toInt() * eventCount
+                val allEventCount = duration.onlyDays.toInt().let {
+                    if (it > 0) it else 1
+                } * eventCount
 
                 habitTrackQueries.insert(
                     habitId = habit.id,

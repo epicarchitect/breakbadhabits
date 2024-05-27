@@ -211,7 +211,9 @@ fun HabitCreation() {
                 val eventCountInDay = trackEventCount
                 val startTime = endTime - selectedHabitTime.offset
                 val duration = endTime - startTime
-                val allEventCount = duration.onlyDays.toInt() * eventCountInDay
+                val allEventCount = duration.onlyDays.toInt().let {
+                    if (it > 0) it else 1
+                } * eventCountInDay
                 habitQueries.insertWithTrack(
                     habitName = habitName,
                     habitIconId = selectedIconId,
