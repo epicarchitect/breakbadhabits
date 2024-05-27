@@ -29,6 +29,7 @@ import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
+import epicarchitect.breakbadhabits.entity.datetime.onlyDays
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
@@ -93,7 +94,7 @@ private fun Loaded(
     }
 
     var eventCount by rememberSaveable(habitTrack) {
-        val days = (habitTrack.endTime - habitTrack.startTime).inWholeDays.toInt()
+        val days = (habitTrack.endTime - habitTrack.startTime).onlyDays.toInt()
         val eventCount = if (days == 0) habitTrack.eventCount else habitTrack.eventCount / days
         mutableIntStateOf(eventCount)
     }
@@ -286,11 +287,16 @@ private fun Loaded(
                 eventCountValidation = HabitTrackEventCountInputValidation(eventCount)
                 if (eventCountValidation?.incorrectReason() != null) return@Button
 
+                val startTime = selectedDateTimeRange.start.toInstant(timeZone)
+                val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
+                val duration = endTime - startTime
+                val allEventCount = duration.inWholeDays.toInt() * eventCount
+
                 AppData.database.habitTrackQueries.update(
                     id = habitTrack.id,
                     startTime = selectedDateTimeRange.start.toInstant(timeZone),
                     endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone),
-                    eventCount = eventCount,
+                    eventCount = allEventCount,
                     comment = comment
                 )
                 navigator.pop()

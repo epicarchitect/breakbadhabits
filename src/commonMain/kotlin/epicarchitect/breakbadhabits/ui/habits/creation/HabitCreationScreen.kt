@@ -25,6 +25,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.entity.datetime.onlyDays
 import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidation
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.uikit.Icon
@@ -210,7 +211,7 @@ fun HabitCreation() {
                 val eventCountInDay = trackEventCount
                 val startTime = endTime - selectedHabitTime.offset
                 val duration = endTime - startTime
-                val allEventCount = duration.inWholeDays.toInt() * eventCountInDay
+                val allEventCount = duration.onlyDays.toInt() * eventCountInDay
                 habitQueries.insertWithTrack(
                     habitName = habitName,
                     habitIconId = selectedIconId,
