@@ -34,6 +34,7 @@ import epicarchitect.breakbadhabits.entity.datetime.monthOfYear
 import epicarchitect.breakbadhabits.entity.datetime.mountsBetween
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.editing.HabitTrackEditingScreen
+import epicarchitect.breakbadhabits.ui.habits.tracks.editing.dailyHabitEventCount
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
@@ -208,14 +209,14 @@ fun HabitTracks(habitId: Int) {
                                     text = "Event count: " + track.eventCount
                                 )
 
-                                val days = (track.endTime - track.startTime).inWholeDays
-
-                                if (days > 0) {
-                                    Text(
-                                        modifier = Modifier.padding(2.dp),
-                                        text = "Daily event count: " + track.eventCount / days
+                                Text(
+                                    modifier = Modifier.padding(2.dp),
+                                    text = "Daily event count: " + dailyHabitEventCount(
+                                        eventCount = track.eventCount,
+                                        startTime = track.startTime,
+                                        endTime = track.endTime
                                     )
-                                }
+                                )
 
                                 if (track.comment.isNotBlank()) {
                                     Text(

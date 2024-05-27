@@ -27,8 +27,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
-import epicarchitect.breakbadhabits.entity.datetime.onlyDays
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
+import epicarchitect.breakbadhabits.ui.habits.tracks.editing.eventCountByDaily
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
@@ -253,16 +253,12 @@ private fun Loaded(habit: Habit) {
 
                 val startTime = selectedDateTimeRange.start.toInstant(timeZone)
                 val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
-                val duration = endTime - startTime
-                val allEventCount = duration.onlyDays.toInt().let {
-                    if (it > 0) it else 1
-                } * eventCount
 
                 habitTrackQueries.insert(
                     habitId = habit.id,
                     startTime = startTime,
                     endTime = endTime,
-                    eventCount = allEventCount,
+                    eventCount = eventCountByDaily(eventCount, startTime, endTime),
                     comment = comment
                 )
                 navigator.pop()

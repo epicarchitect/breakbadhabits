@@ -29,7 +29,6 @@ import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
-import epicarchitect.breakbadhabits.entity.datetime.onlyDays
 import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
@@ -44,9 +43,12 @@ import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.addYears
+import kotlinx.datetime.Instant
 import kotlinx.datetime.Month
+import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.roundToInt
 
 class HabitTrackEditingScreen(private val habitTrackId: Int) : Screen {
     @Composable
@@ -94,10 +96,7 @@ private fun Loaded(
     }
 
     var eventCount by rememberSaveable(habitTrack) {
-        val days = (habitTrack.endTime - habitTrack.startTime).onlyDays.toInt().let {
-            if (it > 0) it else 1
-        }
-        mutableIntStateOf(habitTrack.eventCount / days)
+        mutableIntStateOf(dailyHabitEventCount(habitTrack.eventCount, habitTrack.startTime, habitTrack.endTime))
     }
     var eventCountValidation by remember {
         mutableStateOf<HabitTrackEventCountInputValidation?>(null)
@@ -290,16 +289,12 @@ private fun Loaded(
 
                 val startTime = selectedDateTimeRange.start.toInstant(timeZone)
                 val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
-                val duration = endTime - startTime
-                val allEventCount = duration.inWholeDays.toInt().let {
-                    if (it > 0) it else 1
-                } * eventCount
 
                 AppData.database.habitTrackQueries.update(
                     id = habitTrack.id,
-                    startTime = selectedDateTimeRange.start.toInstant(timeZone),
-                    endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone),
-                    eventCount = allEventCount,
+                    startTime = startTime,
+                    endTime = endTime,
+                    eventCount = eventCountByDaily(eventCount, startTime, endTime),
                     comment = comment
                 )
                 navigator.pop()
@@ -308,4 +303,22 @@ private fun Loaded(
 
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+fun dailyHabitEventCount(
+    eventCount: Int,
+    startTime: Instant,
+    endTime: Instant
+): Int {
+    val days = startTime.daysUntil(endTime, AppData.userDateTime.timeZone()) + 1
+    return (eventCount.toFloat() / days).roundToInt()
+}
+
+fun eventCountByDaily(
+    dailyEventCount: Int,
+    startTime: Instant,
+    endTime: Instant
+): Int {
+    val days = startTime.daysUntil(endTime, AppData.userDateTime.timeZone()) + 1
+    return days * dailyEventCount
 }
