@@ -26,8 +26,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.entity.datetime.FormattedDuration
-import epicarchitect.breakbadhabits.entity.datetime.duration
+import epicarchitect.breakbadhabits.operation.datetime.DurationFormattingAccuracy
+import epicarchitect.breakbadhabits.operation.datetime.formatted
+import epicarchitect.breakbadhabits.operation.habits.abstinence
 import epicarchitect.breakbadhabits.ui.appSettings.AppSettingsScreen
 import epicarchitect.breakbadhabits.ui.habits.creation.HabitCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.details.HabitDetailsScreen
@@ -168,17 +169,14 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
                             AppData.database.habitTrackQueries.trackByHabitIdAndMaxEndTime(habit.id)
                         }
                     ) { track ->
-                        val appTime by AppData.userDateTime.collectAsState()
-                        val abstinence = track?.let { (it.endTime..appTime.instant()).duration() }
+                        val currentTime by AppData.dateTime.currentInstantState.collectAsState()
+                        val abstinence = track?.abstinence(currentTime)
 
                         Text(
                             modifier = Modifier.padding(start = 12.dp),
-                            text = abstinence?.let {
-                                FormattedDuration(
-                                    value = it,
-                                    accuracy = FormattedDuration.Accuracy.SECONDS
-                                ).toString()
-                            } ?: strings.dashboardStrings.habitHasNoEvents(),
+                            text = abstinence?.formatted(
+                                accuracy = DurationFormattingAccuracy.SECONDS
+                            ) ?: strings.dashboardStrings.habitHasNoEvents(),
                             type = Text.Type.Description,
                             priority = Text.Priority.Medium
                         )

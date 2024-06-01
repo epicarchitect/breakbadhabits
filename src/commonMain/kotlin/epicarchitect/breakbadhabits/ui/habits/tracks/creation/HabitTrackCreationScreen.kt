@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,9 +27,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
-import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
-import epicarchitect.breakbadhabits.ui.habits.tracks.editing.eventCountByDaily
+import epicarchitect.breakbadhabits.operation.datetime.formatted
+import epicarchitect.breakbadhabits.operation.habits.HabitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.eventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.habitTrackEventCountIncorrectReason
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
@@ -48,6 +50,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
 import kotlinx.datetime.minus
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
 class HabitTrackCreationScreen(private val habitId: Int) : Screen {
     @Composable
@@ -74,21 +77,22 @@ private fun Loaded(habit: Habit) {
     val habitTrackCreationStrings = AppData.resources.strings.habitTrackCreationStrings
     val habitTrackQueries = AppData.database.habitTrackQueries
     val navigator = LocalNavigator.currentOrThrow
-    val timeZone = AppData.userDateTime.timeZone()
+    val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
+    val currentTime by AppData.dateTime.currentInstantState.collectAsState()
 
     var rangeSelectionShow by rememberSaveable { mutableStateOf(false) }
     var selectedTimeSelectionIndex by remember { mutableIntStateOf(0) }
 
     var selectedDateTimeRange by remember {
         mutableStateOf(
-            AppData.userDateTime.local().let {
+            currentTime.toLocalDateTime(timeZone).let {
                 LocalDateTime(it.date, LocalTime(it.hour, 0, 0))
             }.let { it..it }
         )
     }
 
     var eventCount by rememberSaveable { mutableIntStateOf(0) }
-    var eventCountValidation by remember { mutableStateOf<HabitTrackEventCountInputValidation?>(null) }
+    var eventCountIncorrectReason by remember { mutableStateOf<HabitTrackEventCountIncorrectReason?>(null) }
 
     var comment by rememberSaveable {
         mutableStateOf("")
@@ -96,13 +100,13 @@ private fun Loaded(habit: Habit) {
 
     LaunchedEffect(selectedTimeSelectionIndex) {
         if (selectedTimeSelectionIndex == 0) {
-            selectedDateTimeRange = AppData.userDateTime.local().let {
+            selectedDateTimeRange = currentTime.toLocalDateTime(timeZone).let {
                 LocalDateTime(it.date, LocalTime(it.hour, 0, 0))
             }.let { it..it }
         }
 
         if (selectedTimeSelectionIndex == 1) {
-            selectedDateTimeRange = AppData.userDateTime.local().let {
+            selectedDateTimeRange = currentTime.toLocalDateTime(timeZone).let {
                 LocalDateTime(it.date.minus(DatePeriod(days = 1)), LocalTime(it.hour, 0, 0))
             }.let { it..it }
         }
@@ -111,7 +115,7 @@ private fun Loaded(habit: Habit) {
     if (rangeSelectionShow) {
         val state = rememberSelectionCalendarState(
             initialSelectedDateTime = selectedDateTimeRange,
-            monthRange = EpicMonth.now(AppData.userDateTime.timeZone()).let {
+            monthRange = EpicMonth.now(timeZone).let {
                 it.addYears(-10).copy(month = Month.JANUARY)..it.copy(month = Month.DECEMBER)
             }
         )
@@ -165,14 +169,14 @@ private fun Loaded(habit: Habit) {
             value = eventCount.toString(),
             onValueChange = {
                 eventCount = it.toIntOrNull() ?: 0
-                eventCountValidation = null
+                eventCountIncorrectReason = null
             },
             label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
             regex = Regexps.integersOrEmpty(maxCharCount = 4),
-            error = eventCountValidation?.incorrectReason()?.let(habitTrackCreationStrings::trackEventCountError),
+            error = eventCountIncorrectReason?.let(habitTrackCreationStrings::trackEventCountError),
         )
 
         Spacer(Modifier.height(24.dp))
@@ -204,8 +208,8 @@ private fun Loaded(habit: Habit) {
             },
             text = selectedDateTimeRange.let {
                 selectedDateTimeRange.let {
-                    val start = PlatformDateTimeFormatter.localDateTime(it.start)
-                    val end = PlatformDateTimeFormatter.localDateTime(it.endInclusive)
+                    val start = it.start.formatted()
+                    val end = it.endInclusive.formatted()
                     "Первое событие: $start, последнее событие: $end"
                 }
             }
@@ -248,8 +252,8 @@ private fun Loaded(habit: Habit) {
             text = habitTrackCreationStrings.finishButton(),
             type = Button.Type.Main,
             onClick = {
-                eventCountValidation = HabitTrackEventCountInputValidation(eventCount)
-                if (eventCountValidation?.incorrectReason() != null) return@Button
+                eventCountIncorrectReason = habitTrackEventCountIncorrectReason(eventCount)
+                if (eventCountIncorrectReason != null) return@Button
 
                 val startTime = selectedDateTimeRange.start.toInstant(timeZone)
                 val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
@@ -258,7 +262,7 @@ private fun Loaded(habit: Habit) {
                     habitId = habit.id,
                     startTime = startTime,
                     endTime = endTime,
-                    eventCount = eventCountByDaily(eventCount, startTime, endTime),
+                    eventCount = eventCountByDaily(eventCount, startTime, endTime, timeZone),
                     comment = comment
                 )
                 navigator.pop()

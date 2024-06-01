@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -27,14 +29,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.data.HabitTrack
-import epicarchitect.breakbadhabits.entity.datetime.MonthOfYear
-import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
-import epicarchitect.breakbadhabits.entity.datetime.monthOfYear
-import epicarchitect.breakbadhabits.entity.datetime.mountsBetween
+import epicarchitect.breakbadhabits.operation.datetime.formatted
+import epicarchitect.breakbadhabits.operation.datetime.fromEpic
+import epicarchitect.breakbadhabits.operation.habits.dailyHabitEventCount
+import epicarchitect.breakbadhabits.operation.habits.groupByMonth
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.editing.HabitTrackEditingScreen
-import epicarchitect.breakbadhabits.ui.habits.tracks.editing.dailyHabitEventCount
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
@@ -43,14 +43,12 @@ import epicarchitect.breakbadhabits.uikit.stateOfList
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.theme.AppTheme
-import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 class HabitTracksScreen(private val habitId: Int) : Screen {
@@ -74,7 +72,7 @@ fun HabitTracks(habitId: Int) {
         state1 = stateOfOneOrNull { habitQueries.habitById(habitId) },
         state2 = stateOfList { habitTrackQueries.tracksByHabitId(habitId) }
     ) { habit, tracks ->
-        val timeZone = AppData.userDateTime.timeZone()
+        val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
 
         val groupedByMonthTracks = remember(tracks) {
             tracks.groupByMonth(timeZone)
@@ -125,7 +123,7 @@ fun HabitTracks(habitId: Int) {
 
                         Text(
                             modifier = Modifier.defaultMinSize(minWidth = 110.dp),
-                            text = PlatformDateTimeFormatter.monthOfYear(epicCalendarState.currentMonth.fromEpic()),
+                            text = epicCalendarState.currentMonth.fromEpic().formatted(),
                             type = Text.Type.Title,
                             textAlign = TextAlign.Center,
                             priority = Text.Priority.Low
@@ -196,11 +194,7 @@ fun HabitTracks(habitId: Int) {
                             ) {
                                 Text(
                                     modifier = Modifier.padding(2.dp),
-                                    text = track.startTime.let {
-                                        PlatformDateTimeFormatter.localDateTime(it.toLocalDateTime(timeZone))
-                                    } + " – " + track.endTime.let {
-                                        PlatformDateTimeFormatter.localDateTime(it.toLocalDateTime(timeZone))
-                                    },
+                                    text = track.startTime.formatted(timeZone) + " – " + track.endTime.formatted(timeZone),
                                     type = Text.Type.Title
                                 )
 
@@ -214,7 +208,8 @@ fun HabitTracks(habitId: Int) {
                                     text = "Daily event count: " + dailyHabitEventCount(
                                         eventCount = track.eventCount,
                                         startTime = track.startTime,
-                                        endTime = track.endTime
+                                        endTime = track.endTime,
+                                        timeZone = timeZone
                                     )
                                 )
 
@@ -243,20 +238,3 @@ fun HabitTracks(habitId: Int) {
         }
     }
 }
-
-private fun List<HabitTrack>.groupByMonth(timeZone: TimeZone): Map<MonthOfYear, Collection<HabitTrack>> {
-    val map = mutableMapOf<MonthOfYear, MutableSet<HabitTrack>>()
-    forEach { track ->
-        val startMonth = track.startTime.monthOfYear(timeZone)
-        val endMonth = track.endTime.monthOfYear(timeZone)
-        val monthRange = startMonth..endMonth
-        map.getOrPut(startMonth, ::mutableSetOf).add(track)
-        map.getOrPut(endMonth, ::mutableSetOf).add(track)
-        monthRange.mountsBetween().forEach {
-            map.getOrPut(it, ::mutableSetOf).add(track)
-        }
-    }
-    return map
-}
-
-fun EpicMonth.fromEpic() = MonthOfYear(year, month)

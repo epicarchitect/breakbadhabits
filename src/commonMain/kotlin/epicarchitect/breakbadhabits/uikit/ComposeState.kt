@@ -12,8 +12,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import app.cash.sqldelight.Query
-import epicarchitect.breakbadhabits.entity.util.flowOfList
-import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfList
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 import kotlinx.coroutines.flow.map
 
 sealed class FlowState<out T> {

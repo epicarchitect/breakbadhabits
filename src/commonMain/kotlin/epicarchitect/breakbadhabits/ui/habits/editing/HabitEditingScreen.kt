@@ -26,8 +26,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
-import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidation
+import epicarchitect.breakbadhabits.operation.habits.HabitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.habitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 import epicarchitect.breakbadhabits.ui.dashboard.DashboardScreen
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.Icon
@@ -54,7 +55,7 @@ fun HabitEditing(habitId: Int) {
     val initialHabit by remember(habitId) { habitQueries.habitById(habitId).flowOfOneOrNull() }.collectAsState(null)
 
     var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit?.name ?: "") }
-    var habitNameValidation by remember { mutableStateOf<HabitNewNameValidation?>(null) }
+    var habitNameIncorrectReason by remember { mutableStateOf<HabitNewNameIncorrectReason?>(null) }
     var selectedIconId by rememberSaveable(initialHabit) { mutableIntStateOf(initialHabit?.iconId ?: 0) }
 
     var deletionShow by remember { mutableStateOf(false) }
@@ -122,10 +123,10 @@ fun HabitEditing(habitId: Int) {
             value = habitName,
             onValueChange = {
                 habitName = it
-                habitNameValidation = null
+                habitNameIncorrectReason = null
             },
             label = habitEditingStrings.habitNameLabel(),
-            error = habitNameValidation?.incorrectReason()?.let(habitEditingStrings::habitNameValidationError),
+            error = habitNameIncorrectReason?.let(habitEditingStrings::habitNameValidationError),
             description = habitEditingStrings.habitNameDescription()
         )
 
@@ -182,11 +183,13 @@ fun HabitEditing(habitId: Int) {
                 .padding(16.dp)
                 .align(Alignment.End),
             onClick = {
-                habitNameValidation = HabitNewNameValidation(
+                habitNameIncorrectReason = habitNewNameIncorrectReason(
                     input = habitName,
-                    initialInput = initialHabit!!.name
+                    initialInput = initialHabit!!.name,
+                    maxLength = AppData.habitsConfig.maxHabitNameLength,
+                    nameIsExists = { AppData.database.habitQueries.countWithName(it).executeAsOne() > 0L }
                 )
-                if (habitNameValidation?.incorrectReason() != null) return@Button
+                if (habitNameIncorrectReason != null) return@Button
 
                 habitQueries.update(
                     id = habitId,

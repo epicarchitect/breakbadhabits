@@ -31,7 +31,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.entity.util.flowOfList
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfList
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.button.Button

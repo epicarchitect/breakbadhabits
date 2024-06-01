@@ -33,8 +33,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.entity.util.flowOfList
-import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfList
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.Dialog
@@ -135,7 +135,7 @@ fun HabitWidgetEditing(widgetId: Int) {
                 label = habitWidgetEditingStrings.title(),
                 value = widgetTitle,
                 onValueChange = {
-                    widgetTitle = it.toString()
+                    widgetTitle = it
                 }
             )
 

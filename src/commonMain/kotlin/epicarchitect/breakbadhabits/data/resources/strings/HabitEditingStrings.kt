@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidation
+import epicarchitect.breakbadhabits.operation.habits.HabitNewNameIncorrectReason
 
 interface HabitEditingStrings {
     fun titleText(): String
@@ -8,7 +8,7 @@ interface HabitEditingStrings {
     fun habitNameLabel(): String
     fun habitIconDescription(): String
     fun finishButtonText(): String
-    fun habitNameValidationError(reason: HabitNewNameValidation.IncorrectReason): String
+    fun habitNameValidationError(reason: HabitNewNameIncorrectReason): String
     fun deleteConfirmation(): String
     fun cancel(): String
     fun yes(): String
@@ -22,10 +22,10 @@ class RussianHabitEditingStrings : HabitEditingStrings {
     override fun habitNameLabel() = "Название привычки"
     override fun habitIconDescription() = "Выберите подходящую иконку для привычки."
     override fun finishButtonText() = "Сохранить изменения"
-    override fun habitNameValidationError(reason: HabitNewNameValidation.IncorrectReason) = when (reason) {
-        HabitNewNameValidation.IncorrectReason.AlreadyUsed -> "Это название уже используется."
-        HabitNewNameValidation.IncorrectReason.Empty       -> "Название не может быть пустым."
-        is HabitNewNameValidation.IncorrectReason.TooLong  -> {
+    override fun habitNameValidationError(reason: HabitNewNameIncorrectReason) = when (reason) {
+        HabitNewNameIncorrectReason.AlreadyUsed -> "Это название уже используется."
+        HabitNewNameIncorrectReason.Empty       -> "Название не может быть пустым."
+        is HabitNewNameIncorrectReason.TooLong  -> {
             "Название не может быть длиннее чем ${reason.maxLength} символов."
         }
     }
@@ -43,10 +43,10 @@ class EnglishHabitEditingStrings : HabitEditingStrings {
     override fun habitNameLabel() = "Habit name"
     override fun habitIconDescription() = "Choose the appropriate icon for the habit."
     override fun finishButtonText() = "Save changes"
-    override fun habitNameValidationError(reason: HabitNewNameValidation.IncorrectReason) = when (reason) {
-        HabitNewNameValidation.IncorrectReason.AlreadyUsed -> "This name has already been used."
-        HabitNewNameValidation.IncorrectReason.Empty       -> "The title cannot be empty."
-        is HabitNewNameValidation.IncorrectReason.TooLong  -> {
+    override fun habitNameValidationError(reason: HabitNewNameIncorrectReason) = when (reason) {
+        HabitNewNameIncorrectReason.AlreadyUsed -> "This name has already been used."
+        HabitNewNameIncorrectReason.Empty       -> "The title cannot be empty."
+        is HabitNewNameIncorrectReason.TooLong  -> {
             "The name cannot be longer than ${reason.maxLength} characters."
         }
     }

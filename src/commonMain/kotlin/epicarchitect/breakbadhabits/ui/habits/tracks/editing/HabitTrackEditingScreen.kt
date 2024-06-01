@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,8 +29,11 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.data.HabitTrack
-import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
-import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
+import epicarchitect.breakbadhabits.operation.datetime.formatted
+import epicarchitect.breakbadhabits.operation.habits.HabitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.dailyHabitEventCount
+import epicarchitect.breakbadhabits.operation.habits.eventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.habitTrackEventCountIncorrectReason
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
@@ -43,12 +47,9 @@ import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextField
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.addYears
-import kotlinx.datetime.Instant
 import kotlinx.datetime.Month
-import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.math.roundToInt
 
 class HabitTrackEditingScreen(private val habitTrackId: Int) : Screen {
     @Composable
@@ -89,17 +90,17 @@ private fun Loaded(
     val navigator = LocalNavigator.currentOrThrow
 
     var rangeSelectionShow by rememberSaveable { mutableStateOf(false) }
-    val timeZone = AppData.userDateTime.timeZone()
+    val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
 
     var selectedDateTimeRange by remember(habitTrack) {
         mutableStateOf(habitTrack.startTime.toLocalDateTime(timeZone)..habitTrack.endTime.toLocalDateTime(timeZone))
     }
 
     var eventCount by rememberSaveable(habitTrack) {
-        mutableIntStateOf(dailyHabitEventCount(habitTrack.eventCount, habitTrack.startTime, habitTrack.endTime))
+        mutableIntStateOf(dailyHabitEventCount(habitTrack.eventCount, habitTrack.startTime, habitTrack.endTime, timeZone))
     }
-    var eventCountValidation by remember {
-        mutableStateOf<HabitTrackEventCountInputValidation?>(null)
+    var eventCountIncorrectReason by remember {
+        mutableStateOf<HabitTrackEventCountIncorrectReason?>(null)
     }
     var comment by rememberSaveable(habitTrack) {
         mutableStateOf(habitTrack.comment)
@@ -108,7 +109,7 @@ private fun Loaded(
     if (rangeSelectionShow) {
         val state = rememberSelectionCalendarState(
             initialSelectedDateTime = selectedDateTimeRange,
-            monthRange = EpicMonth.now(AppData.userDateTime.timeZone()).let {
+            monthRange = EpicMonth.now(timeZone).let {
                 it.addYears(-10).copy(month = Month.JANUARY)..it.copy(month = Month.DECEMBER)
             }
         )
@@ -200,14 +201,14 @@ private fun Loaded(
             value = eventCount.toString(),
             onValueChange = {
                 eventCount = it.toIntOrNull() ?: 0
-                eventCountValidation = null
+                eventCountIncorrectReason = null
             },
             label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
             regex = Regexps.integersOrEmpty(maxCharCount = 4),
-            error = eventCountValidation?.incorrectReason()?.let(habitTrackEditingStrings::trackEventCountError),
+            error = eventCountIncorrectReason?.let(habitTrackEditingStrings::trackEventCountError),
         )
 
         Spacer(Modifier.height(12.dp))
@@ -225,8 +226,8 @@ private fun Loaded(
                 rangeSelectionShow = true
             },
             text = selectedDateTimeRange.let {
-                val start = PlatformDateTimeFormatter.localDateTime(it.start)
-                val end = PlatformDateTimeFormatter.localDateTime(it.endInclusive)
+                val start = it.start.formatted()
+                val end = it.endInclusive.formatted()
                 "Первое событие: $start, последнее событие: $end"
             }
         )
@@ -284,17 +285,17 @@ private fun Loaded(
             text = habitTrackEditingStrings.finishButton(),
             type = Button.Type.Main,
             onClick = {
-                eventCountValidation = HabitTrackEventCountInputValidation(eventCount)
-                if (eventCountValidation?.incorrectReason() != null) return@Button
+                eventCountIncorrectReason = habitTrackEventCountIncorrectReason(eventCount)
+                if (eventCountIncorrectReason != null) return@Button
 
                 val startTime = selectedDateTimeRange.start.toInstant(timeZone)
                 val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
 
-                AppData.database.habitTrackQueries.update(
+                habitTrackQueries.update(
                     id = habitTrack.id,
                     startTime = startTime,
                     endTime = endTime,
-                    eventCount = eventCountByDaily(eventCount, startTime, endTime),
+                    eventCount = eventCountByDaily(eventCount, startTime, endTime, timeZone),
                     comment = comment
                 )
                 navigator.pop()
@@ -303,22 +304,4 @@ private fun Loaded(
 
         Spacer(modifier = Modifier.height(16.dp))
     }
-}
-
-fun dailyHabitEventCount(
-    eventCount: Int,
-    startTime: Instant,
-    endTime: Instant
-): Int {
-    val days = startTime.daysUntil(endTime, AppData.userDateTime.timeZone()) + 1
-    return (eventCount.toFloat() / days).roundToInt()
-}
-
-fun eventCountByDaily(
-    dailyEventCount: Int,
-    startTime: Instant,
-    endTime: Instant
-): Int {
-    val days = startTime.daysUntil(endTime, AppData.userDateTime.timeZone()) + 1
-    return days * dailyEventCount
 }

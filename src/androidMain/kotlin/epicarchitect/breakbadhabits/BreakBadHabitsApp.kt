@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.database.SqlDriverFactory
 import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme
-import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn

@@ -26,22 +26,27 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.data.resources.strings.HabitDetailsStrings
-import epicarchitect.breakbadhabits.entity.datetime.FormattedDuration
-import epicarchitect.breakbadhabits.entity.datetime.PlatformDateTimeFormatter
-import epicarchitect.breakbadhabits.entity.datetime.duration
-import epicarchitect.breakbadhabits.entity.habits.CachedHabitAbstinenceHistory
-import epicarchitect.breakbadhabits.entity.habits.CachedHabitAbstinenceStatistics
-import epicarchitect.breakbadhabits.entity.habits.CachedHabitEventAmountStatistics
-import epicarchitect.breakbadhabits.entity.habits.DefaultHabitAbstinenceHistory
-import epicarchitect.breakbadhabits.entity.habits.DefaultHabitAbstinenceStatistics
-import epicarchitect.breakbadhabits.entity.habits.DefaultHabitEventAmountStatistics
-import epicarchitect.breakbadhabits.entity.habits.HabitAbstinenceStatistics
-import epicarchitect.breakbadhabits.entity.habits.HabitEventAmountStatistics
+import epicarchitect.breakbadhabits.operation.datetime.DurationFormattingAccuracy
+import epicarchitect.breakbadhabits.operation.datetime.averageDuration
+import epicarchitect.breakbadhabits.operation.datetime.formatted
+import epicarchitect.breakbadhabits.operation.datetime.fromEpic
+import epicarchitect.breakbadhabits.operation.datetime.maxDuration
+import epicarchitect.breakbadhabits.operation.datetime.minDuration
+import epicarchitect.breakbadhabits.operation.datetime.monthOfYear
+import epicarchitect.breakbadhabits.operation.datetime.orZero
+import epicarchitect.breakbadhabits.operation.datetime.previous
+import epicarchitect.breakbadhabits.operation.habits.abstinence
+import epicarchitect.breakbadhabits.operation.habits.abstinenceDurationsInSeconds
+import epicarchitect.breakbadhabits.operation.habits.abstinenceRangesByFailedRanges
+import epicarchitect.breakbadhabits.operation.habits.countEvents
+import epicarchitect.breakbadhabits.operation.habits.countEventsInMonth
+import epicarchitect.breakbadhabits.operation.habits.failedRanges
+import epicarchitect.breakbadhabits.operation.habits.habitAbstinenceDurationSinceFirstTrack
 import epicarchitect.breakbadhabits.ui.habits.editing.HabitEditingScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.habits.tracks.list.HabitTracksScreen
-import epicarchitect.breakbadhabits.ui.habits.tracks.list.fromEpic
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Histogram
@@ -59,8 +64,9 @@ import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class HabitDetailsScreen(private val habitId: Int) : Screen {
@@ -72,8 +78,8 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
 
 @Composable
 fun HabitDetails(habitId: Int) {
-    val appTime by AppData.userDateTime.collectAsState()
-    val timeZone = appTime.timeZone()
+    val currentTime by AppData.dateTime.currentInstantState.collectAsState()
+    val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
     val habitDetailsStrings = AppData.resources.strings.habitDetailsStrings
     val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
@@ -85,34 +91,14 @@ fun HabitDetails(habitId: Int) {
         state2 = stateOfList { habitTrackQueries.tracksByHabitId(habitId) },
         state3 = stateOfOneOrNull { habitTrackQueries.trackByHabitIdAndMaxEndTime(habitId) }
     ) { habit, habitTracks, lastTrack ->
-        val abstinenceHistory = remember(habitTracks, appTime) {
-            CachedHabitAbstinenceHistory(
-                DefaultHabitAbstinenceHistory(
-                    habitTracks,
-                    appTime
-                )
-            )
+        val failedRanges = remember(habitTracks) {
+            habitTracks.failedRanges()
+        }
+        val abstinenceRanges = remember(failedRanges, habitTracks, currentTime) {
+            abstinenceRangesByFailedRanges(failedRanges, currentTime)
         }
 
-        val abstinenceStatistics = remember(appTime, abstinenceHistory) {
-            CachedHabitAbstinenceStatistics(
-                DefaultHabitAbstinenceStatistics(
-                    abstinenceHistory,
-                    appTime
-                )
-            )
-        }
-
-        val habitEventAmountStatistics = remember(habitTracks, appTime) {
-            CachedHabitEventAmountStatistics(
-                DefaultHabitEventAmountStatistics(
-                    habitTracks,
-                    appTime
-                )
-            )
-        }
-
-        val abstinence = lastTrack?.let { (it.endTime..appTime.instant()).duration() }
+        val abstinence = lastTrack?.abstinence(currentTime)
 
         Column(
             modifier = Modifier
@@ -160,12 +146,9 @@ fun HabitDetails(habitId: Int) {
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
-                text = abstinence?.let {
-                    FormattedDuration(
-                        value = it,
-                        accuracy = FormattedDuration.Accuracy.SECONDS
-                    )
-                }?.toString() ?: habitDetailsStrings.habitHasNoEvents(),
+                text = abstinence?.formatted(
+                    accuracy = DurationFormattingAccuracy.SECONDS
+                ) ?: habitDetailsStrings.habitHasNoEvents(),
                 type = Text.Type.Description,
                 priority = Text.Priority.Medium
             )
@@ -197,7 +180,7 @@ fun HabitDetails(habitId: Int) {
                         bottom = 12.dp,
                         top = 16.dp
                     ),
-                    text = PlatformDateTimeFormatter.monthOfYear(calendarState.currentMonth.fromEpic()),
+                    text = calendarState.currentMonth.fromEpic().formatted(),
                     type = Text.Type.Title
                 )
 
@@ -246,10 +229,8 @@ fun HabitDetails(habitId: Int) {
                 }
             }
 
-            val abstinenceDurationsInSeconds = remember(abstinenceHistory) {
-                abstinenceHistory.abstinenceRanges().map {
-                    it.duration().inWholeSeconds
-                }
+            val abstinenceDurationsInSeconds = remember(abstinenceRanges) {
+                abstinenceDurationsInSeconds(abstinenceRanges)
             }
 
             if (abstinenceDurationsInSeconds.size > 2) {
@@ -272,10 +253,7 @@ fun HabitDetails(habitId: Int) {
                                 .height(300.dp),
                             values = abstinenceDurationsInSeconds,
                             valueFormatter = {
-                                FormattedDuration(
-                                    value = it.seconds,
-                                    accuracy = FormattedDuration.Accuracy.DAYS
-                                ).toString()
+                                it.seconds.formatted(accuracy = DurationFormattingAccuracy.DAYS)
                             }
                         )
                     }
@@ -308,8 +286,11 @@ fun HabitDetails(habitId: Int) {
                     Statistics(
                         modifier = Modifier.fillMaxWidth(),
                         statistics = buildStatisticsData(
-                            abstinenceStatistics = abstinenceStatistics,
-                            eventAmountStatistics = habitEventAmountStatistics,
+                            habitTracks = habitTracks,
+                            abstinenceRanges = abstinenceRanges,
+                            failedRanges = failedRanges,
+                            currentTime = currentTime,
+                            timeZone = timeZone,
                             strings = habitDetailsStrings
                         )
                     )
@@ -320,48 +301,46 @@ fun HabitDetails(habitId: Int) {
 }
 
 private fun buildStatisticsData(
-    abstinenceStatistics: HabitAbstinenceStatistics,
-    eventAmountStatistics: HabitEventAmountStatistics,
+    habitTracks: List<HabitTrack>,
+    abstinenceRanges: List<ClosedRange<Instant>>,
+    failedRanges: List<ClosedRange<Instant>>,
+    currentTime: Instant,
+    timeZone: TimeZone,
     strings: HabitDetailsStrings
 ) = listOf(
     StatisticData(
         name = strings.statisticsAverageAbstinenceTime(),
-        value = FormattedDuration(
-            value = abstinenceStatistics.averageDuration() ?: Duration.ZERO,
-            accuracy = FormattedDuration.Accuracy.HOURS
-        ).toString()
+        value = abstinenceRanges.averageDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
     ),
     StatisticData(
         name = strings.statisticsMaxAbstinenceTime(),
-        value = FormattedDuration(
-            value = abstinenceStatistics.maxDuration() ?: Duration.ZERO,
-            accuracy = FormattedDuration.Accuracy.HOURS
-        ).toString()
+        value = abstinenceRanges.maxDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
     ),
     StatisticData(
         name = strings.statisticsMinAbstinenceTime(),
-        value = FormattedDuration(
-            value = abstinenceStatistics.minDuration() ?: Duration.ZERO,
-            accuracy = FormattedDuration.Accuracy.HOURS
-        ).toString()
+        value = abstinenceRanges.minDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
     ),
     StatisticData(
         name = strings.statisticsDurationSinceFirstTrack(),
-        value = FormattedDuration(
-            value = abstinenceStatistics.durationSinceFirstTrack() ?: Duration.ZERO,
-            accuracy = FormattedDuration.Accuracy.HOURS
-        ).toString()
+        value = habitAbstinenceDurationSinceFirstTrack(failedRanges, currentTime).orZero()
+            .formatted(DurationFormattingAccuracy.HOURS)
     ),
     StatisticData(
         name = strings.statisticsCountEventsInCurrentMonth(),
-        value = eventAmountStatistics.currentMonthCount().toString()
+        value = habitTracks.countEventsInMonth(
+            monthOfYear = currentTime.monthOfYear(timeZone),
+            timeZone = timeZone
+        ).toString()
     ),
     StatisticData(
         name = strings.statisticsCountEventsInPreviousMonth(),
-        value = eventAmountStatistics.previousMonthCount().toString()
+        value = habitTracks.countEventsInMonth(
+            monthOfYear = currentTime.monthOfYear(timeZone).previous(),
+            timeZone = timeZone
+        ).toString()
     ),
     StatisticData(
         name = strings.statisticsTotalCountEvents(),
-        value = eventAmountStatistics.totalCount().toString()
+        value = habitTracks.countEvents().toString()
     )
 )

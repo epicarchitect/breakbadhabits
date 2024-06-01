@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import cafe.adriel.voyager.navigator.Navigator
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme
-import epicarchitect.breakbadhabits.entity.util.flowOfOneOrNull
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 import epicarchitect.breakbadhabits.ui.dashboard.DashboardScreen
 import epicarchitect.breakbadhabits.uikit.theme.AppColorsSchemes
 import epicarchitect.breakbadhabits.uikit.theme.AppTheme

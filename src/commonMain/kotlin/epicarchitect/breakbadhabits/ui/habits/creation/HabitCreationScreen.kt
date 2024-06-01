@@ -25,9 +25,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.entity.validator.HabitNewNameValidation
-import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
-import epicarchitect.breakbadhabits.ui.habits.tracks.editing.eventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.HabitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.HabitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.eventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.habitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.habitTrackEventCountIncorrectReason
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
@@ -70,18 +72,21 @@ fun HabitCreation() {
     val navigator = LocalNavigator.currentOrThrow
 
     var habitName by rememberSaveable { mutableStateOf("") }
-    var habitNameValidation by remember { mutableStateOf<HabitNewNameValidation?>(null) }
-
-    var selectedIconId by rememberSaveable { mutableIntStateOf(0) }
-    val selectedIcon = remember(selectedIconId) { icons.habitIcons.getById(selectedIconId) }
-
-    var selectedHabitTimeIndex by rememberSaveable { mutableIntStateOf(0) }
-    val selectedHabitTime = remember(selectedHabitTimeIndex) {
-        HabitCreationTime.entries[selectedHabitTimeIndex]
+    var habitNameIncorrectReason by remember {
+        mutableStateOf<HabitNewNameIncorrectReason?>(null)
     }
 
+    var selectedIconId by rememberSaveable { mutableIntStateOf(0) }
+    val selectedIcon = remember(selectedIconId) {
+        icons.habitIcons.getById(selectedIconId)
+    }
+
+    var selectedHabitTimeIndex by rememberSaveable { mutableIntStateOf(0) }
+
     var trackEventCount by rememberSaveable { mutableIntStateOf(0) }
-    var trackEventCountValidation by remember { mutableStateOf<HabitTrackEventCountInputValidation?>(null) }
+    var trackEventCountIncorrectReason by remember {
+        mutableStateOf<HabitTrackEventCountIncorrectReason?>(null)
+    }
 
     Column(
         modifier = Modifier
@@ -111,10 +116,10 @@ fun HabitCreation() {
             value = habitName,
             onValueChange = {
                 habitName = it
-                habitNameValidation = null
+                habitNameIncorrectReason = null
             },
             label = habitCreationStrings.habitNameLabel(),
-            error = habitNameValidation?.incorrectReason()?.let(habitCreationStrings::habitNameValidationError),
+            error = habitNameIncorrectReason?.let(habitCreationStrings::habitNameValidationError),
             description = habitCreationStrings.habitNameDescription()
         )
 
@@ -182,9 +187,9 @@ fun HabitCreation() {
             value = trackEventCount.toString(),
             onValueChange = {
                 trackEventCount = it.toIntOrNull() ?: 0
-                trackEventCountValidation = null
+                trackEventCountIncorrectReason = null
             },
-            error = trackEventCountValidation?.incorrectReason()?.let(habitCreationStrings::trackEventCountError),
+            error = trackEventCountIncorrectReason?.let(habitCreationStrings::trackEventCountError),
             label = "Число событий в день",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
@@ -201,19 +206,30 @@ fun HabitCreation() {
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
             onClick = {
-                habitNameValidation = HabitNewNameValidation(habitName)
-                if (habitNameValidation?.incorrectReason() != null) return@Button
+                habitNameIncorrectReason = habitNewNameIncorrectReason(
+                    input = habitName,
+                    maxLength = AppData.habitsConfig.maxHabitNameLength,
+                    nameIsExists = { AppData.database.habitQueries.countWithName(it).executeAsOne() > 0L }
+                )
+                if (habitNameIncorrectReason != null) return@Button
 
-                trackEventCountValidation = HabitTrackEventCountInputValidation(trackEventCount)
-                if (trackEventCountValidation?.incorrectReason() != null) return@Button
+                trackEventCountIncorrectReason = habitTrackEventCountIncorrectReason(trackEventCount)
+                if (trackEventCountIncorrectReason != null) return@Button
 
-                val endTime = AppData.userDateTime.instant()
+                val selectedHabitTime = HabitCreationTime.entries[selectedHabitTimeIndex]
+                val endTime = AppData.dateTime.currentInstantState.value
+                val timeZone = AppData.dateTime.currentTimeZoneState.value
                 val startTime = endTime - selectedHabitTime.offset + 1.days // fix offset
 
                 habitQueries.insertWithTrack(
                     habitName = habitName,
                     habitIconId = selectedIconId,
-                    trackEventCount = eventCountByDaily(trackEventCount, startTime, endTime),
+                    trackEventCount = eventCountByDaily(
+                        dailyEventCount = trackEventCount,
+                        startTime = startTime,
+                        endTime = endTime,
+                        timeZone = timeZone
+                    ),
                     trackStartTime = startTime,
                     trackEndTime = endTime
                 )

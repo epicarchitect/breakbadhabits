@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-import epicarchitect.breakbadhabits.entity.validator.HabitTrackEventCountInputValidation
+import epicarchitect.breakbadhabits.operation.habits.HabitTrackEventCountIncorrectReason
 
 interface HabitTrackCreationStrings {
     fun titleText(): String
@@ -9,7 +9,7 @@ interface HabitTrackCreationStrings {
     fun finishDescription(): String
     fun finishButton(): String
     fun habitNameLabel(habitName: String): String
-    fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason): String
+    fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason): String
 }
 
 class RussianHabitTrackCreationStrings : HabitTrackCreationStrings {
@@ -19,8 +19,8 @@ class RussianHabitTrackCreationStrings : HabitTrackCreationStrings {
     override fun finishDescription() = "Вы всегда сможете изменить или удалить это событие."
     override fun finishButton() = "Записать событие"
     override fun habitNameLabel(habitName: String) = "Привычка: $habitName"
-    override fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason) = when (reason) {
-        HabitTrackEventCountInputValidation.IncorrectReason.Empty -> {
+    override fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason) = when (reason) {
+        HabitTrackEventCountIncorrectReason.Empty -> {
             "Поле не может быть пустым"
         }
     }
@@ -33,8 +33,8 @@ class EnglishHabitTrackCreationStrings : HabitTrackCreationStrings {
     override fun finishDescription() = "You can always change or delete this event."
     override fun finishButton() = "Save event"
     override fun habitNameLabel(habitName: String) = "Habit: $habitName"
-    override fun trackEventCountError(reason: HabitTrackEventCountInputValidation.IncorrectReason) = when (reason) {
-        HabitTrackEventCountInputValidation.IncorrectReason.Empty -> {
+    override fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason) = when (reason) {
+        HabitTrackEventCountIncorrectReason.Empty -> {
             "Cant be empty"
         }
     }
