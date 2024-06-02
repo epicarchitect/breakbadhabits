@@ -1,30 +1,17 @@
 package epicarchitect.breakbadhabits
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
-import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.data.database.SqlDriverFactory
-import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme
-import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class BreakBadHabitsApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        SqlDriverFactory.context = this
-        AppData.database.appSettingsQueries.settings().flowOfOneOrNull().onEach {
-            AppCompatDelegate.setDefaultNightMode(
-                when (it?.theme) {
-                    AppSettingsTheme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-                    AppSettingsTheme.DARK  -> AppCompatDelegate.MODE_NIGHT_YES
-                    else                   -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                }
-            )
-        }.launchIn(CoroutineScope(Dispatchers.Main))
+        CoroutineScope(Dispatchers.Main).launch {
+            handleDarkMode()
+        }
     }
 
     companion object {

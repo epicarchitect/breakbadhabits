@@ -39,7 +39,7 @@ import androidx.compose.material.icons.filled.VideogameAsset
 import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.WineBar
-import epicarchitect.breakbadhabits.uikit.VectorIcon
+import epicarchitect.breakbadhabits.ui.component.VectorIcon
 import androidx.compose.material.icons.Icons as MaterialIcons
 
 class CommonIcons {

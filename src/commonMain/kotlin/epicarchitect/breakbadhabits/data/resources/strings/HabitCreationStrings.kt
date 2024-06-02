@@ -2,7 +2,7 @@ package epicarchitect.breakbadhabits.data.resources.strings
 
 import epicarchitect.breakbadhabits.operation.habits.HabitNewNameIncorrectReason
 import epicarchitect.breakbadhabits.operation.habits.HabitTrackEventCountIncorrectReason
-import epicarchitect.breakbadhabits.ui.habits.creation.HabitCreationTime
+import epicarchitect.breakbadhabits.ui.screen.habits.creation.HabitCreationTime
 
 interface HabitCreationStrings {
     fun titleText(): String

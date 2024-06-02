@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -14,6 +13,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.R
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.isSystemDarkModeEnabled
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -45,9 +45,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
     }
 
     private fun updateAppWidget(context: Context, manager: AppWidgetManager, widgetSystemId: Int) = runBlocking {
-        val isDarkModeEnabled = context.resources.configuration.let {
-            it.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        }
+        val isDarkModeEnabled = isSystemDarkModeEnabled()
 
         val widget = AppData.database.habitWidgetQueries
             .widgetBySystemId(widgetSystemId)

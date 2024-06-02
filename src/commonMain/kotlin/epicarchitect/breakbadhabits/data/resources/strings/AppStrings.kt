@@ -14,6 +14,7 @@ interface AppStrings {
     val habitWidgetsStrings: HabitWidgetsStrings
     val habitWidgetCreationStrings: HabitWidgetCreationStrings
     val habitWidgetEditingStrings: HabitWidgetEditingStrings
+    val durationFormattingStrings: DurationFormattingStrings
 }
 
 class RussianAppStrings : AppStrings {
@@ -28,6 +29,7 @@ class RussianAppStrings : AppStrings {
     override val habitWidgetsStrings = RussianHabitWidgetsStrings()
     override val habitWidgetCreationStrings = RussianHabitWidgetCreationStrings()
     override val habitWidgetEditingStrings = RussianHabitWidgetEditingStrings()
+    override val durationFormattingStrings = RussianDurationFormattingStrings()
 }
 
 class EnglishAppStrings : AppStrings {
@@ -42,6 +44,7 @@ class EnglishAppStrings : AppStrings {
     override val habitWidgetsStrings = EnglishHabitWidgetsStrings()
     override val habitWidgetCreationStrings = EnglishHabitWidgetCreationStrings()
     override val habitWidgetEditingStrings = EnglishHabitWidgetEditingStrings()
+    override val durationFormattingStrings = EnglishDurationFormattingStrings()
 }
 
 class LocalizedAppStrings(locale: Locale) : AppStrings by resolve(locale)

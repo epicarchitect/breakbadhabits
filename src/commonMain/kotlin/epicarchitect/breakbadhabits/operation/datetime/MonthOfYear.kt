@@ -13,7 +13,7 @@ import kotlinx.datetime.toLocalDateTime
 import kotlin.math.abs
 import kotlin.math.floor
 
-fun EpicMonth.fromEpic() = MonthOfYear(year, month)
+fun EpicMonth.toMonthOfYear() = MonthOfYear(year, month)
 
 fun MonthOfYear.previous(): MonthOfYear = addMonths(-1)
 

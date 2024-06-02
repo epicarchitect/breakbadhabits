@@ -1,18 +1,10 @@
 package epicarchitect.breakbadhabits.operation.datetime
 
-import epicarchitect.breakbadhabits.operation.math.ranges.ascended
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
 import kotlin.math.roundToLong
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
-
-fun ClosedRange<LocalDateTime>.duration(timeZone: TimeZone) = ascended().let {
-    it.endInclusive.toInstant(timeZone) - it.start.toInstant(timeZone)
-}
 
 // copied from IsoChronology
 

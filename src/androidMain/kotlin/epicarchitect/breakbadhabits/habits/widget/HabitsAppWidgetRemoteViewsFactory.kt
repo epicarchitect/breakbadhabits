@@ -6,9 +6,9 @@ import android.widget.RemoteViewsService
 import epicarchitect.breakbadhabits.R
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.operation.datetime.DurationFormattingAccuracy
-import epicarchitect.breakbadhabits.operation.datetime.formatted
 import epicarchitect.breakbadhabits.operation.habits.abstinence
+import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
+import epicarchitect.breakbadhabits.ui.format.formatted
 import kotlinx.coroutines.runBlocking
 
 class HabitsAppWidgetRemoteViewsFactory(
@@ -29,7 +29,7 @@ class HabitsAppWidgetRemoteViewsFactory(
                     .trackByHabitIdAndMaxEndTime(it.id)
                     .executeAsOneOrNull()
 
-                val abstinence = lastTrack?.abstinence(AppData.dateTime.currentInstantState.value)
+                val abstinence = lastTrack?.abstinence(AppData.dateTime.currentTimeState.value)
                     ?.formatted(DurationFormattingAccuracy.HOURS)
 
 

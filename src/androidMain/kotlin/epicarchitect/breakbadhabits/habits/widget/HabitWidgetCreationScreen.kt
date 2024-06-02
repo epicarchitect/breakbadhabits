@@ -26,13 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.uikit.Card
-import epicarchitect.breakbadhabits.uikit.Checkbox
-import epicarchitect.breakbadhabits.uikit.FlowStateContainer
-import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.stateOfList
-import epicarchitect.breakbadhabits.uikit.text.Text
-import epicarchitect.breakbadhabits.uikit.text.TextField
+import epicarchitect.breakbadhabits.ui.component.Card
+import epicarchitect.breakbadhabits.ui.component.Checkbox
+import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
+import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.stateOfList
+import epicarchitect.breakbadhabits.ui.component.text.Text
+import epicarchitect.breakbadhabits.ui.component.text.TextField
 
 @Composable
 fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {

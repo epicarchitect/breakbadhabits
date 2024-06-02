@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import epicarchitect.breakbadhabits.BaseActivity
-import epicarchitect.breakbadhabits.uikit.theme.AppColorsSchemes
-import epicarchitect.breakbadhabits.uikit.theme.AppTheme
+import epicarchitect.breakbadhabits.ui.component.theme.AppColorsSchemes
+import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 
 class HabitsAppWidgetConfigCreationActivity : BaseActivity() {
 

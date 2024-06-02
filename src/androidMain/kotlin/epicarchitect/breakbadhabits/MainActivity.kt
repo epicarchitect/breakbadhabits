@@ -3,7 +3,7 @@ package epicarchitect.breakbadhabits
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import epicarchitect.breakbadhabits.habits.widget.HabitsAppWidgetProvider
-import epicarchitect.breakbadhabits.ui.Root
+import epicarchitect.breakbadhabits.ui.screen.Root
 
 class MainActivity : BaseActivity() {
 

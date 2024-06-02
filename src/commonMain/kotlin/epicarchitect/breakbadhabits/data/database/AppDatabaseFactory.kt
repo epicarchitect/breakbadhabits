@@ -9,7 +9,7 @@ import epicarchitect.breakbadhabits.data.HabitWidget
 import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsThemeAdapter
 
 operator fun AppDatabase.Companion.invoke(name: String) = AppDatabase(
-    driver = SqlDriverFactory.create(
+    driver = createSqlDriverFactory(
         schema = Schema,
         databaseName = name
     ),
