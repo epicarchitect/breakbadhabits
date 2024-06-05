@@ -5,12 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -24,13 +21,12 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.data.HabitWidget
-import epicarchitect.breakbadhabits.ui.screen.habits.widgets.editing.HabitWidgetEditingScreen
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
-import epicarchitect.breakbadhabits.ui.component.Icon
-import epicarchitect.breakbadhabits.ui.component.IconButton
+import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.text.Text
+import epicarchitect.breakbadhabits.ui.screen.habits.widgets.editing.HabitWidgetEditingScreen
 
 class HabitWidgetsScreen : Screen {
     @Composable
@@ -42,28 +38,15 @@ class HabitWidgetsScreen : Screen {
 @Composable
 fun HabitAppWidgets() {
     val navigator = LocalNavigator.currentOrThrow
-    val icons = AppData.resources.icons
     val habitWidgetsStrings = AppData.resources.strings.habitWidgetsStrings
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = navigator::pop) {
-                Icon(icons.commonIcons.arrowLeft)
-            }
-
-            Spacer(Modifier.width(8.dp))
-
-            Text(
-                text = habitWidgetsStrings.title(),
-                type = Text.Type.Title,
-                priority = Text.Priority.High
-            )
-        }
+        SimpleTopAppBar(
+            title = habitWidgetsStrings.title(),
+            onBackClick = navigator::pop,
+        )
 
         FlowStateContainer(
             state1 = stateOfList { AppData.database.habitWidgetQueries.widgets() },

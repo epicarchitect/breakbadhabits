@@ -9,34 +9,32 @@ import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.operation.habits.abstinence
 import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
 import epicarchitect.breakbadhabits.ui.format.formatted
-import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration
 
 class HabitsAppWidgetRemoteViewsFactory(
     private val context: Context,
     private val widgetSystemId: Int
 ) : RemoteViewsService.RemoteViewsFactory {
 
-    private fun loadItems() = runBlocking {
-        val config = AppData.database.habitWidgetQueries.widgetById(widgetSystemId).executeAsOneOrNull()
+    private fun loadItems(): List<Item> {
+        val config = AppData.database.habitWidgetQueries.widgetBySystemId(widgetSystemId).executeAsOneOrNull()
 
-        if (config == null) {
+        return if (config == null) {
             emptyList()
         } else {
-            AppData.database.habitQueries.habits().executeAsList().filter {
-                config.habitIds.contains(it.id)
-            }.map {
-                val lastTrack = AppData.database.habitTrackQueries
-                    .trackByHabitIdAndMaxEndTime(it.id)
-                    .executeAsOneOrNull()
-
-                val abstinence = lastTrack?.abstinence(AppData.dateTime.currentTimeState.value)
-                    ?.formatted(DurationFormattingAccuracy.HOURS)
-
-
-                Item(
-                    habit = it,
-                    abstinence = abstinence
-                )
+            val currentTime = AppData.dateTime.currentTimeState.value
+            AppData.database.habitQueries.habits().executeAsList().mapNotNull {
+                if (config.habitIds.contains(it.id)) {
+                    Item(
+                        habit = it,
+                        abstinence = AppData.database.habitTrackQueries
+                            .trackByHabitIdAndMaxEndTime(it.id)
+                            .executeAsOneOrNull()
+                            ?.abstinence(currentTime)
+                    )
+                } else {
+                    null
+                }
             }
         }
     }
@@ -63,7 +61,8 @@ class HabitsAppWidgetRemoteViewsFactory(
         setTextViewText(R.id.habitName_textView, item.habit.name)
         setTextViewText(
             R.id.abstinenceTime_textView,
-            item.abstinence ?: context.getString(R.string.habitsAppWidget_noAbstinenceTime)
+            item.abstinence?.formatted(DurationFormattingAccuracy.HOURS)
+                ?: context.getString(R.string.habitsAppWidget_noAbstinenceTime)
         )
     }
 
@@ -75,8 +74,8 @@ class HabitsAppWidgetRemoteViewsFactory(
 
     override fun hasStableIds() = true
 
-    data class Item(
+    private data class Item(
         val habit: Habit,
-        val abstinence: String?
+        val abstinence: Duration?
     )
 }

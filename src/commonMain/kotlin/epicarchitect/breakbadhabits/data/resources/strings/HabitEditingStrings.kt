@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-import epicarchitect.breakbadhabits.operation.habits.HabitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
 
 interface HabitEditingStrings {
     fun titleText(): String
@@ -17,7 +17,7 @@ interface HabitEditingStrings {
 }
 
 class RussianHabitEditingStrings : HabitEditingStrings {
-    override fun titleText() = "Новая привычка"
+    override fun titleText() = "Редактирование привычки"
     override fun habitNameDescription() = "Введите название привычки, например курение."
     override fun habitNameLabel() = "Название привычки"
     override fun habitIconDescription() = "Выберите подходящую иконку для привычки."

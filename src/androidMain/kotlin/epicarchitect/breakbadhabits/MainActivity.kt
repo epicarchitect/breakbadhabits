@@ -16,6 +16,6 @@ class MainActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
-        HabitsAppWidgetProvider.sendUpdateIntent(this)
+        HabitsAppWidgetProvider.sendUpdateBroadcast(this)
     }
 }

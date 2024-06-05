@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-import epicarchitect.breakbadhabits.operation.habits.HabitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.HabitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitTrackEventCountIncorrectReason
 import epicarchitect.breakbadhabits.ui.screen.habits.creation.HabitCreationTime
 
 interface HabitCreationStrings {
@@ -11,8 +11,11 @@ interface HabitCreationStrings {
     fun habitIconDescription(): String
     fun finishButtonText(): String
     fun habitNameValidationError(reason: HabitNewNameIncorrectReason): String
-    fun habitTime(time: HabitCreationTime): String
+    fun habitTime(time: HabitCreationTime): String // move to duration formatting?
+    fun habitTimeDescription(): String
     fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason): String
+    fun trackEventCountDescription(): String
+    fun trackEventCountLabel(): String
 }
 
 class RussianHabitCreationStrings : HabitCreationStrings {
@@ -20,7 +23,7 @@ class RussianHabitCreationStrings : HabitCreationStrings {
     override fun habitNameDescription() = "Введите название привычки, например курение."
     override fun habitNameLabel() = "Название привычки"
     override fun habitIconDescription() = "Выберите подходящую иконку для привычки."
-    override fun finishButtonText() = "Создать привычку"
+    override fun finishButtonText() = "Готово"
     override fun habitNameValidationError(reason: HabitNewNameIncorrectReason) = when (reason) {
         HabitNewNameIncorrectReason.AlreadyUsed -> "Это название уже используется."
         HabitNewNameIncorrectReason.Empty       -> "Название не может быть пустым."
@@ -45,11 +48,16 @@ class RussianHabitCreationStrings : HabitCreationStrings {
         HabitCreationTime.YEAR_10 -> "10 лет"
     }
 
+    override fun habitTimeDescription() = "Укажите примерно как давно у вас эта привычка:"
+
     override fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason) = when (reason) {
         HabitTrackEventCountIncorrectReason.Empty -> {
             "Поле не может быть пустым"
         }
     }
+
+    override fun trackEventCountDescription() = "Укажите сколько примерно было событий привычки в день:"
+    override fun trackEventCountLabel() = "Число событий в день"
 }
 
 class EnglishHabitCreationStrings : HabitCreationStrings {
@@ -57,7 +65,7 @@ class EnglishHabitCreationStrings : HabitCreationStrings {
     override fun habitNameDescription() = "Enter a name for the habit, such as smoking."
     override fun habitNameLabel() = "Habit name"
     override fun habitIconDescription() = "Choose the appropriate icon for the habit."
-    override fun finishButtonText() = "Create a habit"
+    override fun finishButtonText() = "Done"
     override fun habitNameValidationError(reason: HabitNewNameIncorrectReason) = when (reason) {
         HabitNewNameIncorrectReason.AlreadyUsed -> "This name has already been used."
         HabitNewNameIncorrectReason.Empty       -> "The title cannot be empty."
@@ -82,9 +90,14 @@ class EnglishHabitCreationStrings : HabitCreationStrings {
         HabitCreationTime.YEAR_10 -> "10 years"
     }
 
+    override fun habitTimeDescription() = "Please indicate approximately how long you have had this habit:"
+
     override fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason) = when (reason) {
         HabitTrackEventCountIncorrectReason.Empty -> {
             "Cant be empty"
         }
     }
+
+    override fun trackEventCountDescription() = "Please indicate approximately how many habit events occurred per day:"
+    override fun trackEventCountLabel() = "Number of events per day"
 }

@@ -1,6 +1,7 @@
 package epicarchitect.breakbadhabits.data.datetime
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,7 +13,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlin.time.Duration.Companion.seconds
 
-class AppDateTime(coroutineScope: CoroutineScope) {
+class AppDateTime {
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
     val currentTimeState = flow {
         while (currentCoroutineContext().isActive) {
             delay(1.seconds)

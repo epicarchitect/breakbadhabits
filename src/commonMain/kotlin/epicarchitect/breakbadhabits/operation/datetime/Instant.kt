@@ -1,16 +1,15 @@
 package epicarchitect.breakbadhabits.operation.datetime
 
 import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToLong
-import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-// copied from IsoChronology
-
-fun isLeapYear(year: Long): Boolean {
-    return year and 3L == 0L && (year % 100 != 0L || year % 400 == 0L)
-}
+fun ClosedRange<Instant>.toLocalDateTimeRange(
+    timeZone: TimeZone
+) = start.toLocalDateTime(timeZone)..endInclusive.toLocalDateTime(timeZone)
 
 fun List<ClosedRange<Instant>>.averageDuration() = map {
     it.endInclusive.epochSeconds - it.start.epochSeconds
@@ -29,5 +28,3 @@ fun List<ClosedRange<Instant>>.maxDuration() = maxOfOrNull { it.endInclusive - i
 fun List<ClosedRange<Instant>>.minDuration() = minOfOrNull { it.endInclusive - it.start }
 
 fun ClosedRange<Instant>.duration() = endInclusive - start
-
-fun Duration?.orZero() = this ?: Duration.ZERO

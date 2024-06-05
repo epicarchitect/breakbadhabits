@@ -26,9 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.operation.sqldelight.flowOfList
@@ -38,17 +35,9 @@ import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.text.TextField
 
-class HabitWidgetCreationScreen(private val systemWidgetId: Int) : Screen {
-    @Composable
-    override fun Content() {
-        HabitWidgetCreation(systemWidgetId)
-    }
-}
-
 @Composable
-fun HabitWidgetCreation(systemWidgetId: Int) {
+fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
     val habitWidgetCreationStrings = AppData.resources.strings.habitWidgetCreationStrings
-    val navigator = LocalNavigator.currentOrThrow
     val habitQueries = AppData.database.habitQueries
     val habitWidgetQueries = AppData.database.habitWidgetQueries
 
@@ -56,7 +45,7 @@ fun HabitWidgetCreation(systemWidgetId: Int) {
         habitQueries.habits().flowOfList()
     }.collectAsState(emptyList())
 
-    val selectedHabitIds = rememberSaveable {
+    val selectedHabitIds = remember {
         mutableStateListOf<Int>()
     }
     var widgetTitle by rememberSaveable {
@@ -83,10 +72,11 @@ fun HabitWidgetCreation(systemWidgetId: Int) {
         Spacer(modifier = Modifier.height(12.dp))
 
         TextField(
+            modifier = Modifier.fillMaxWidth(),
             label = habitWidgetCreationStrings.title(),
             value = widgetTitle,
             onValueChange = {
-                widgetTitle = it.toString()
+                widgetTitle = it
             }
         )
 
@@ -129,11 +119,10 @@ fun HabitWidgetCreation(systemWidgetId: Int) {
                     habitIds = selectedHabitIds,
                     systemId = systemWidgetId
                 )
-                navigator.pop()
+                onDone()
             }
         )
     }
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -158,7 +147,7 @@ private fun LazyItemScope.HabitItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked,
+                    checked = checked,
                     onCheckedChange = { onClick() }
                 )
 

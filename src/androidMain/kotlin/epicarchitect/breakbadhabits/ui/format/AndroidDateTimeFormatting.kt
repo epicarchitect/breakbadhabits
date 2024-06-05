@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.ui.format
 
+import android.annotation.SuppressLint
 import android.text.format.DateFormat
 import epicarchitect.breakbadhabits.BreakBadHabitsApp
 import kotlinx.datetime.LocalDate
@@ -16,9 +17,10 @@ actual fun Month.formatted(): String = getDisplayName(
     Locale.getDefault()
 ).replaceFirstChar(Char::uppercase)
 
-actual fun LocalDate.formatted(): String = dateFormatter().format(toJavaLocalDate())
-actual fun LocalTime.formatted(): String = timeFormatter().format(toJavaLocalTime())
+actual fun LocalDate.formatted(): String = dateFormatter.format(toJavaLocalDate())
+actual fun LocalTime.formatted(): String = timeFormatter.format(toJavaLocalTime())
 
-private fun dateFormatter() = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.getDefault())
-private fun timeFormatter() = DateTimeFormatter.ofPattern(timePattern())
-private fun timePattern() = if (DateFormat.is24HourFormat(BreakBadHabitsApp.instance)) "HH:mm" else "hh:mm a"
+@SuppressLint("ConstantLocale")
+private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.getDefault())
+private val timePattern = if (DateFormat.is24HourFormat(BreakBadHabitsApp.instance)) "HH:mm" else "hh:mm a"
+private val timeFormatter = DateTimeFormatter.ofPattern(timePattern)

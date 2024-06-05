@@ -32,7 +32,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
@@ -41,13 +40,13 @@ import androidx.compose.ui.unit.sp
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.operation.datetime.toMonthOfYear
 import epicarchitect.breakbadhabits.operation.math.ranges.ascended
-import epicarchitect.breakbadhabits.ui.format.formatted
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.IconButton
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
+import epicarchitect.breakbadhabits.ui.format.formatted
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.epicMonth
 import epicarchitect.calendar.compose.basis.getByIndex
@@ -99,46 +98,14 @@ fun rememberSelectionCalendarState(
 @OptIn(ExperimentalFoundationApi::class)
 val EpicCalendarPagerState.targetMonth get() = monthRange.getByIndex(pagerState.targetPage)
 
-class RangeSelectionCalendarDialogResources {
-    val strings = LocalizedRangeSelectionCalendarDialogStrings(Locale.current)
-}
-
-interface RangeSelectionCalendarDialogStrings {
-    fun start(): String
-    fun end(): String
-    fun cancel(): String
-    fun apply(): String
-}
-
-class RussianRangeSelectionCalendarDialogStrings : RangeSelectionCalendarDialogStrings {
-    override fun start() = "Начало"
-    override fun end() = "Конец"
-    override fun cancel() = "Отмена"
-    override fun apply() = "Применить"
-}
-
-class EnglishRangeSelectionCalendarDialogStrings : RangeSelectionCalendarDialogStrings {
-    override fun start() = "Start"
-    override fun end() = "End"
-    override fun cancel() = "Cancel"
-    override fun apply() = "Apply"
-}
-
-class LocalizedRangeSelectionCalendarDialogStrings(locale: Locale) : RangeSelectionCalendarDialogStrings by (
-    when (locale.language) {
-        "ru" -> RussianRangeSelectionCalendarDialogStrings()
-        else -> EnglishRangeSelectionCalendarDialogStrings()
-    }
-    )
-
 @Composable
 fun RangeSelectionCalendarDialog(
     state: SelectionCalendarState,
-    resources: RangeSelectionCalendarDialogResources,
     onCancel: () -> Unit,
     onConfirm: (ClosedRange<LocalDateTime>) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val strings = AppData.resources.strings.rangeSelectionCalendarDialogStrings
 
     Dialog(
         onDismiss = onCancel
@@ -403,7 +370,7 @@ fun RangeSelectionCalendarDialog(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 androidx.compose.material3.Text(
-                                    text = resources.strings.start(),
+                                    text = strings.start(),
                                     fontWeight = FontWeight.Bold,
                                     color = AppTheme.colorScheme.onSurface
                                 )
@@ -440,7 +407,7 @@ fun RangeSelectionCalendarDialog(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 androidx.compose.material3.Text(
-                                    text = resources.strings.end(),
+                                    text = strings.end(),
                                     fontWeight = FontWeight.Bold,
                                     color = AppTheme.colorScheme.onSurface
                                 )
@@ -484,7 +451,7 @@ fun RangeSelectionCalendarDialog(
                         contentColor = AppTheme.colorScheme.onSurface
                     ),
                 ) {
-                    androidx.compose.material3.Text(resources.strings.cancel())
+                    androidx.compose.material3.Text(strings.cancel())
                 }
                 Spacer(Modifier.weight(1f))
                 AnimatedVisibility(visible = !state.showYearMonthSelection && state.epicState.selectedDates.isNotEmpty()) {
@@ -505,7 +472,7 @@ fun RangeSelectionCalendarDialog(
                         ),
                         elevation = ButtonDefaults.buttonElevation(0.dp)
                     ) {
-                        androidx.compose.material3.Text(resources.strings.apply())
+                        androidx.compose.material3.Text(strings.apply())
                     }
                 }
             }

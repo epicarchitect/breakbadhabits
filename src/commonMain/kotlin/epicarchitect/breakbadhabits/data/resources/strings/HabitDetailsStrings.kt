@@ -18,7 +18,7 @@ interface HabitDetailsStrings {
 class RussianHabitDetailsStrings : HabitDetailsStrings {
     override fun habitHasNoEvents() = "События отсутствуют"
     override fun showAllTracks() = "Перейти к событиям"
-    override fun addHabitTrack() = "Добавить событие"
+    override fun addHabitTrack() = "Добавить события"
     override fun abstinenceChartTitle() = "График воздержания"
     override fun statisticsTitle() = "Статистика"
     override fun statisticsAverageAbstinenceTime() = "Среднее время воздержания"
@@ -33,7 +33,7 @@ class RussianHabitDetailsStrings : HabitDetailsStrings {
 class EnglishHabitDetailsStrings : HabitDetailsStrings {
     override fun habitHasNoEvents() = "No events"
     override fun showAllTracks() = "Show all events"
-    override fun addHabitTrack() = "Add event"
+    override fun addHabitTrack() = "Add events"
     override fun abstinenceChartTitle() = "Abstinence chart"
     override fun statisticsTitle() = "Statistics"
     override fun statisticsAverageAbstinenceTime() = "Average time of abstinence"

@@ -29,27 +29,35 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.data.HabitTrack
-import epicarchitect.breakbadhabits.operation.habits.HabitTrackEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.dailyHabitEventCount
-import epicarchitect.breakbadhabits.operation.habits.eventCountByDaily
-import epicarchitect.breakbadhabits.operation.habits.habitTrackEventCountIncorrectReason
-import epicarchitect.breakbadhabits.ui.format.formatted
+import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
+import epicarchitect.breakbadhabits.operation.habits.dailyEventCount
+import epicarchitect.breakbadhabits.operation.habits.timeRange
+import epicarchitect.breakbadhabits.operation.habits.totalHabitTrackEventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitTrackTimeRangeIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.habitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.habitTrackTimeRangeIncorrectReason
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.calendar.RangeSelectionCalendarDialog
-import epicarchitect.breakbadhabits.ui.component.calendar.RangeSelectionCalendarDialogResources
 import epicarchitect.breakbadhabits.ui.component.calendar.rememberSelectionCalendarState
 import epicarchitect.breakbadhabits.ui.component.regex.Regexps
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
+import epicarchitect.breakbadhabits.ui.component.text.ErrorText
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.text.TextField
+import epicarchitect.breakbadhabits.ui.format.formatted
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.addYears
 import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
+
+fun dateSelectionMonthRange(timeZone: TimeZone) = EpicMonth.now(timeZone).let {
+    it.addYears(-10).copy(month = Month.JANUARY)..it.copy(month = Month.DECEMBER)
+}
 
 class HabitTrackEditingScreen(private val habitTrackId: Int) : Screen {
     @Composable
@@ -68,7 +76,6 @@ fun HabitTrackEditing(habitTrackId: Int) {
         if (habitTrack != null) {
             FlowStateContainer(
                 state = stateOfOneOrNull(habitTrack) {
-                    // TODO maybe sql??
                     AppData.database.habitQueries.habitById(habitTrack.habitId)
                 }
             ) { habit ->
@@ -93,11 +100,14 @@ private fun Loaded(
     val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
 
     var selectedDateTimeRange by remember(habitTrack) {
-        mutableStateOf(habitTrack.startTime.toLocalDateTime(timeZone)..habitTrack.endTime.toLocalDateTime(timeZone))
+        mutableStateOf(habitTrack.timeRange.toLocalDateTimeRange(timeZone))
+    }
+    var timeRangeIncorrectReason by remember(selectedDateTimeRange) {
+        mutableStateOf<HabitTrackTimeRangeIncorrectReason?>(null)
     }
 
     var eventCount by rememberSaveable(habitTrack) {
-        mutableIntStateOf(dailyHabitEventCount(habitTrack.eventCount, habitTrack.startTime, habitTrack.endTime, timeZone))
+        mutableIntStateOf(habitTrack.dailyEventCount(timeZone))
     }
     var eventCountIncorrectReason by remember {
         mutableStateOf<HabitTrackEventCountIncorrectReason?>(null)
@@ -109,14 +119,11 @@ private fun Loaded(
     if (rangeSelectionShow) {
         val state = rememberSelectionCalendarState(
             initialSelectedDateTime = selectedDateTimeRange,
-            monthRange = EpicMonth.now(timeZone).let {
-                it.addYears(-10).copy(month = Month.JANUARY)..it.copy(month = Month.DECEMBER)
-            }
+            monthRange = dateSelectionMonthRange(timeZone)
         )
 
         RangeSelectionCalendarDialog(
             state = state,
-            resources = RangeSelectionCalendarDialogResources(),
             onCancel = {
                 rangeSelectionShow = false
             },
@@ -129,12 +136,16 @@ private fun Loaded(
 
     var deletionShow by remember { mutableStateOf(false) }
     if (deletionShow) {
-        Dialog(onDismiss = { deletionShow = false }) {
+        Dialog(
+            onDismiss = {
+                deletionShow = false
+            }
+        ) {
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "habitTrackEditingStrings.deleteConfirmation()",
+                    text = habitTrackEditingStrings.deleteConfirmation(),
                     type = Text.Type.Description,
                     priority = Text.Priority.High
                 )
@@ -145,7 +156,7 @@ private fun Loaded(
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Button(
-                        text = "habitTrackEditingStrings.cancel()",
+                        text = habitTrackEditingStrings.cancel(),
                         onClick = {
                             deletionShow = false
                         }
@@ -154,7 +165,7 @@ private fun Loaded(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Button(
-                        text = "habitTrackEditingStrings.yes()",
+                        text = habitTrackEditingStrings.yes(),
                         type = Button.Type.Main,
                         onClick = {
                             habitTrackQueries.deleteById(habitTrack.id)
@@ -172,24 +183,15 @@ private fun Loaded(
             .verticalScroll(rememberScrollState())
     ) {
         SimpleTopAppBar(
-            title = habitTrackEditingStrings.titleText(),
+            title = habitTrackEditingStrings.titleText(habit.name),
             onBackClick = navigator::pop
         )
 
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(12.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitTrackEditingStrings.habitNameLabel(habit.name),
-            type = Text.Type.Description,
-            priority = Text.Priority.Low
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = "Укажите сколько примерно было событий привычки каждый день"
+            text = habitTrackEditingStrings.trackEventCountDescription()
         )
 
         Spacer(Modifier.height(12.dp))
@@ -203,7 +205,7 @@ private fun Loaded(
                 eventCount = it.toIntOrNull() ?: 0
                 eventCountIncorrectReason = null
             },
-            label = "Число событий в день",
+            label = habitTrackEditingStrings.trackEventCountLabel(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
@@ -215,7 +217,7 @@ private fun Loaded(
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "Укажите когда произошло событие:"
+            text = habitTrackEditingStrings.trackTimeDescription()
         )
 
         Spacer(Modifier.height(12.dp))
@@ -225,12 +227,17 @@ private fun Loaded(
             onClick = {
                 rangeSelectionShow = true
             },
-            text = selectedDateTimeRange.let {
-                val start = it.start.formatted()
-                val end = it.endInclusive.formatted()
-                "Первое событие: $start, последнее событие: $end"
-            }
+            text = selectedDateTimeRange.formatted()
         )
+
+        Spacer(Modifier.height(12.dp))
+
+        timeRangeIncorrectReason?.let {
+            ErrorText(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = habitTrackEditingStrings.trackTimeRangeError(it)
+            )
+        }
 
         Spacer(Modifier.height(24.dp))
 
@@ -248,17 +255,17 @@ private fun Loaded(
                 comment = it
             }
         )
+
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "habitTrackEditingStrings.deleteDescription()"
+            text = habitTrackEditingStrings.deleteDescription()
         )
-
 
         Button(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "habitTrackEditingStrings.deleteButton()",
+            text = habitTrackEditingStrings.deleteButton(),
             type = Button.Type.Dangerous,
             onClick = {
                 deletionShow = true
@@ -285,8 +292,14 @@ private fun Loaded(
             text = habitTrackEditingStrings.finishButton(),
             type = Button.Type.Main,
             onClick = {
-                eventCountIncorrectReason = habitTrackEventCountIncorrectReason(eventCount)
+                eventCountIncorrectReason = eventCount.habitTrackEventCountIncorrectReason()
                 if (eventCountIncorrectReason != null) return@Button
+
+                timeRangeIncorrectReason = selectedDateTimeRange.habitTrackTimeRangeIncorrectReason(
+                    currentTime = AppData.dateTime.currentTimeState.value,
+                    timeZone = timeZone
+                )
+                if (timeRangeIncorrectReason != null) return@Button
 
                 val startTime = selectedDateTimeRange.start.toInstant(timeZone)
                 val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
@@ -295,7 +308,7 @@ private fun Loaded(
                     id = habitTrack.id,
                     startTime = startTime,
                     endTime = endTime,
-                    eventCount = eventCountByDaily(eventCount, startTime, endTime, timeZone),
+                    eventCount = totalHabitTrackEventCountByDaily(eventCount, startTime, endTime, timeZone),
                     comment = comment
                 )
                 navigator.pop()

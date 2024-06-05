@@ -9,3 +9,5 @@ val Duration.onlyMinutes get() = inWholeSeconds / 60 % 60
 val Duration.onlyHours get() = inWholeSeconds / 60 / 60 % 24
 
 val Duration.onlyDays get() = inWholeSeconds / 60 / 60 / 24
+
+fun Duration?.orZero() = this ?: Duration.ZERO

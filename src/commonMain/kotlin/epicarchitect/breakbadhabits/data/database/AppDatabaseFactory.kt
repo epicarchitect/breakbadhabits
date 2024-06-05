@@ -8,10 +8,10 @@ import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.data.HabitWidget
 import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsThemeAdapter
 
-operator fun AppDatabase.Companion.invoke(name: String) = AppDatabase(
+operator fun AppDatabase.Companion.invoke() = AppDatabase(
     driver = createSqlDriverFactory(
         schema = Schema,
-        databaseName = name
+        databaseName = "breakbadhabits.db"
     ),
     HabitAdapter = Habit.Adapter(
         idAdapter = IntColumnAdapter,

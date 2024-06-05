@@ -15,4 +15,5 @@ expect fun LocalTime.formatted(): String
 
 fun MonthOfYear.formatted() = "${month.formatted()} $year"
 fun LocalDateTime.formatted() = time.formatted() + ", " + date.formatted()
+fun ClosedRange<LocalDateTime>.formatted() = start.formatted() + " — " + endInclusive.formatted()
 fun Instant.formatted(timeZone: TimeZone) = toLocalDateTime(timeZone).formatted()

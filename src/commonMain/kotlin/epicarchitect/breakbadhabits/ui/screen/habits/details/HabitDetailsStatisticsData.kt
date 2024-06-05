@@ -11,9 +11,9 @@ import epicarchitect.breakbadhabits.operation.datetime.previous
 import epicarchitect.breakbadhabits.operation.habits.countEvents
 import epicarchitect.breakbadhabits.operation.habits.countEventsInMonth
 import epicarchitect.breakbadhabits.operation.habits.habitAbstinenceDurationSinceFirstTrack
+import epicarchitect.breakbadhabits.ui.component.StatisticData
 import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
 import epicarchitect.breakbadhabits.ui.format.formatted
-import epicarchitect.breakbadhabits.ui.component.StatisticData
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
@@ -24,40 +24,44 @@ fun habitDetailsStatisticsData(
     currentTime: Instant,
     timeZone: TimeZone,
     strings: HabitDetailsStrings
-) = listOf(
-    StatisticData(
-        name = strings.statisticsAverageAbstinenceTime(),
-        value = abstinenceRanges.averageDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
-    ),
-    StatisticData(
-        name = strings.statisticsMaxAbstinenceTime(),
-        value = abstinenceRanges.maxDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
-    ),
-    StatisticData(
-        name = strings.statisticsMinAbstinenceTime(),
-        value = abstinenceRanges.minDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
-    ),
-    StatisticData(
-        name = strings.statisticsDurationSinceFirstTrack(),
-        value = habitAbstinenceDurationSinceFirstTrack(failedRanges, currentTime).orZero()
-            .formatted(DurationFormattingAccuracy.HOURS)
-    ),
-    StatisticData(
-        name = strings.statisticsCountEventsInCurrentMonth(),
-        value = habitTracks.countEventsInMonth(
-            monthOfYear = currentTime.monthOfYear(timeZone),
-            timeZone = timeZone
-        ).toString()
-    ),
-    StatisticData(
-        name = strings.statisticsCountEventsInPreviousMonth(),
-        value = habitTracks.countEventsInMonth(
-            monthOfYear = currentTime.monthOfYear(timeZone).previous(),
-            timeZone = timeZone
-        ).toString()
-    ),
-    StatisticData(
-        name = strings.statisticsTotalCountEvents(),
-        value = habitTracks.countEvents().toString()
+) = if (habitTracks.isNotEmpty()) {
+    listOf(
+        StatisticData(
+            name = strings.statisticsAverageAbstinenceTime(),
+            value = abstinenceRanges.averageDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
+        ),
+        StatisticData(
+            name = strings.statisticsMaxAbstinenceTime(),
+            value = abstinenceRanges.maxDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
+        ),
+        StatisticData(
+            name = strings.statisticsMinAbstinenceTime(),
+            value = abstinenceRanges.minDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
+        ),
+        StatisticData(
+            name = strings.statisticsDurationSinceFirstTrack(),
+            value = habitAbstinenceDurationSinceFirstTrack(failedRanges, currentTime).orZero()
+                .formatted(DurationFormattingAccuracy.HOURS)
+        ),
+        StatisticData(
+            name = strings.statisticsCountEventsInCurrentMonth(),
+            value = habitTracks.countEventsInMonth(
+                monthOfYear = currentTime.monthOfYear(timeZone),
+                timeZone = timeZone
+            ).toString()
+        ),
+        StatisticData(
+            name = strings.statisticsCountEventsInPreviousMonth(),
+            value = habitTracks.countEventsInMonth(
+                monthOfYear = currentTime.monthOfYear(timeZone).previous(),
+                timeZone = timeZone
+            ).toString()
+        ),
+        StatisticData(
+            name = strings.statisticsTotalCountEvents(),
+            value = habitTracks.countEvents().toString()
+        )
     )
-)
+} else {
+    emptyList()
+}

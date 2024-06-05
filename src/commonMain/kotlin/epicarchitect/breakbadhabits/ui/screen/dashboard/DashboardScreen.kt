@@ -27,12 +27,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.operation.habits.abstinence
-import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
-import epicarchitect.breakbadhabits.ui.format.formatted
-import epicarchitect.breakbadhabits.ui.screen.appSettings.AppSettingsScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.creation.HabitCreationScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.details.HabitDetailsScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.Icon
@@ -42,6 +36,12 @@ import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.Text
+import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
+import epicarchitect.breakbadhabits.ui.format.formatted
+import epicarchitect.breakbadhabits.ui.screen.appSettings.AppSettingsScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.creation.HabitCreationScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.details.HabitDetailsScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
 
 class DashboardScreen : Screen {
     @Composable

@@ -66,7 +66,7 @@ fun HabitWidgetEditing(widgetId: Int) {
     }.collectAsState(null)
 
     val initialWidget = initialWidgetState.value
-    val selectedHabitIds = rememberSaveable(initialWidget) {
+    val selectedHabitIds = remember(initialWidget) {
         initialWidget?.habitIds?.toMutableStateList() ?: mutableStateListOf()
     }
     var widgetTitle by rememberSaveable(initialWidget) {
@@ -132,6 +132,7 @@ fun HabitWidgetEditing(widgetId: Int) {
             Spacer(modifier = Modifier.height(12.dp))
 
             TextField(
+                modifier = Modifier.fillMaxWidth(),
                 label = habitWidgetEditingStrings.title(),
                 value = widgetTitle,
                 onValueChange = {

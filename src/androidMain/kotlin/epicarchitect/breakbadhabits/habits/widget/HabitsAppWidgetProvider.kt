@@ -34,7 +34,7 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, widgetSystemId, newOptions)
-        sendUpdateIntent(context)
+        sendUpdateBroadcast(context)
     }
 
     override fun onDeleted(context: Context, widgetSystemIds: IntArray) {
@@ -58,7 +58,11 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
                 widgetSystemId,
                 RemoteViews(
                     context.packageName,
-                    R.layout.habits_app_widget_light
+                    if (isDarkModeEnabled) {
+                        R.layout.habits_app_widget_dark
+                    } else {
+                        R.layout.habits_app_widget_light
+                    }
                 ).apply {
                     setTextViewText(R.id.title_textView, "Not found")
                     setViewVisibility(R.id.title_textView, View.VISIBLE)
@@ -98,17 +102,12 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
-        fun sendUpdateIntent(context: Context) = context.sendBroadcast(
+        fun sendUpdateBroadcast(context: Context) = context.sendBroadcast(
             Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE).apply {
                 component = ComponentName(context, HabitsAppWidgetProvider::class.java)
                 putExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_IDS,
-                    AppWidgetManager.getInstance(context).getAppWidgetIds(
-                        ComponentName(
-                            context,
-                            HabitsAppWidgetProvider::class.java
-                        )
-                    )
+                    AppWidgetManager.getInstance(context).getAppWidgetIds(component)
                 )
             }
         )

@@ -29,13 +29,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.operation.datetime.toLocalDateRange
+import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
 import epicarchitect.breakbadhabits.operation.datetime.toMonthOfYear
-import epicarchitect.breakbadhabits.operation.habits.dailyHabitEventCount
+import epicarchitect.breakbadhabits.operation.habits.dailyEventCount
 import epicarchitect.breakbadhabits.operation.habits.groupByMonth
+import epicarchitect.breakbadhabits.operation.habits.timeRange
 import epicarchitect.breakbadhabits.operation.math.ranges.ascended
-import epicarchitect.breakbadhabits.ui.format.formatted
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.editing.HabitTrackEditingScreen
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.IconButton
@@ -44,13 +44,15 @@ import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
+import epicarchitect.breakbadhabits.ui.format.formatted
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.editing.HabitTrackEditingScreen
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
 import kotlinx.coroutines.launch
-import kotlinx.datetime.toLocalDateTime
 
 class HabitTracksScreen(private val habitId: Int) : Screen {
     @Composable
@@ -84,6 +86,7 @@ fun HabitTracks(habitId: Int) {
         val currentTracks = remember(epicCalendarState.currentMonth, groupedByMonthTracks) {
             groupedByMonthTracks[epicCalendarState.currentMonth.toMonthOfYear()]?.toList() ?: emptyList()
         }
+
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -144,9 +147,7 @@ fun HabitTracks(habitId: Int) {
 
                 val rangeColor = AppTheme.colorScheme.primary
                 val ranges = tracks.map {
-                    it.startTime.toLocalDateTime(timeZone).date..it.endTime.toLocalDateTime(timeZone).date
-                }.map {
-                    it.ascended()
+                    it.timeRange.toLocalDateTimeRange(timeZone).toLocalDateRange().ascended()
                 }
 
                 EpicCalendarPager(
@@ -155,9 +156,7 @@ fun HabitTracks(habitId: Int) {
                     },
                     dayOfMonthContent = { date ->
                         val basisState = LocalBasisEpicCalendarState.current!!
-
                         val isSelected = ranges.any { date in it }
-
                         androidx.compose.material3.Text(
                             modifier = Modifier.alpha(
                                 if (date in basisState.currentMonth) 1.0f
@@ -197,23 +196,18 @@ fun HabitTracks(habitId: Int) {
                             ) {
                                 Text(
                                     modifier = Modifier.padding(2.dp),
-                                    text = track.startTime.formatted(timeZone) + " – " + track.endTime.formatted(timeZone),
+                                    text = track.timeRange.toLocalDateTimeRange(timeZone).formatted(),
                                     type = Text.Type.Title
                                 )
 
                                 Text(
                                     modifier = Modifier.padding(2.dp),
-                                    text = "Event count: " + track.eventCount
+                                    text = habitTracksStrings.eventCount(track.eventCount)
                                 )
 
                                 Text(
                                     modifier = Modifier.padding(2.dp),
-                                    text = "Daily event count: " + dailyHabitEventCount(
-                                        eventCount = track.eventCount,
-                                        startTime = track.startTime,
-                                        endTime = track.endTime,
-                                        timeZone = timeZone
-                                    )
+                                    text = habitTracksStrings.dailyEventCount(track.dailyEventCount(timeZone))
                                 )
 
                                 if (track.comment.isNotBlank()) {
@@ -235,7 +229,7 @@ fun HabitTracks(habitId: Int) {
                 onClick = {
                     navigator += HabitTrackCreationScreen(habitId)
                 },
-                text = habitTracksStrings.newEventButton(),
+                text = habitTracksStrings.newTrackButton(),
                 type = Button.Type.Main
             )
         }

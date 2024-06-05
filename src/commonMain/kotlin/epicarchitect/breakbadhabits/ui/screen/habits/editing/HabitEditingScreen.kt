@@ -26,10 +26,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.operation.habits.HabitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.habitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.habitNewNameIncorrectReason
 import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
-import epicarchitect.breakbadhabits.ui.screen.dashboard.DashboardScreen
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
@@ -37,6 +36,7 @@ import epicarchitect.breakbadhabits.ui.component.SingleSelectionGrid
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.text.TextField
+import epicarchitect.breakbadhabits.ui.screen.dashboard.DashboardScreen
 
 class HabitEditingScreen(private val habitId: Int) : Screen {
     @Composable
@@ -163,7 +163,7 @@ fun HabitEditing(habitId: Int) {
             text = habitEditingStrings.deleteDescription()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Button(
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -183,9 +183,8 @@ fun HabitEditing(habitId: Int) {
                 .padding(16.dp)
                 .align(Alignment.End),
             onClick = {
-                habitNameIncorrectReason = habitNewNameIncorrectReason(
-                    input = habitName,
-                    initialInput = initialHabit!!.name,
+                habitNameIncorrectReason = habitName.habitNewNameIncorrectReason(
+                    initialName = initialHabit!!.name,
                     maxLength = AppData.habitsConfig.maxHabitNameLength,
                     nameIsExists = { AppData.database.habitQueries.countWithName(it).executeAsOne() > 0L }
                 )

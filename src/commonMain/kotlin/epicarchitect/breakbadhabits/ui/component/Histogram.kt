@@ -31,8 +31,8 @@ import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 @Composable
 fun Histogram(
     modifier: Modifier = Modifier,
-    values: List<Long>,
-    valueFormatter: (Long) -> CharSequence,
+    values: List<Float>,
+    valueFormatter: (Float) -> CharSequence,
     barPadding: Dp = 12.dp,
     startPadding: Dp = 12.dp,
     endPadding: Dp = 12.dp,

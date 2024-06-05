@@ -28,11 +28,6 @@ import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.operation.datetime.toMonthOfYear
-import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
-import epicarchitect.breakbadhabits.ui.format.formatted
-import epicarchitect.breakbadhabits.ui.screen.habits.editing.HabitEditingScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.list.HabitTracksScreen
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.Histogram
@@ -44,6 +39,11 @@ import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
+import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
+import epicarchitect.breakbadhabits.ui.format.formatted
+import epicarchitect.breakbadhabits.ui.screen.habits.editing.HabitEditingScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.list.HabitTracksScreen
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
@@ -110,8 +110,8 @@ private fun LoadedHabitDetails(
 
         CalendarCard(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(16.dp)
+                .fillMaxWidth(),
             habit = habit,
             state = state
         )
@@ -119,19 +119,20 @@ private fun LoadedHabitDetails(
         if (state.abstinenceHistogramValues.size > 2) {
             HistogramCard(
                 modifier = Modifier
-                    .padding(top = 24.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(16.dp)
                     .fillMaxWidth(),
                 state = state
             )
         }
 
-        StatisticsCard(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            state = state
-        )
+        if (state.statisticData.isNotEmpty()) {
+            StatisticsCard(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                state = state
+            )
+        }
     }
 }
 
@@ -236,9 +237,7 @@ private fun CalendarCard(
             },
             dayOfMonthContent = { date ->
                 val basisState = LocalBasisEpicCalendarState.current!!
-
                 val isSelected = state.calendarRanges.any { date in it }
-
                 androidx.compose.material3.Text(
                     modifier = Modifier.alpha(
                         if (date in basisState.currentMonth) 1.0f
@@ -259,9 +258,9 @@ private fun CalendarCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(44.dp)
-                .clickable(onClick = {
+                .clickable {
                     navigator += HabitTracksScreen(habit.id)
-                })
+                }
         ) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
@@ -323,7 +322,7 @@ private fun HistogramCard(
                     .height(300.dp),
                 values = state.abstinenceHistogramValues,
                 valueFormatter = {
-                    it.seconds.formatted(accuracy = DurationFormattingAccuracy.DAYS)
+                    it.toInt().seconds.formatted(DurationFormattingAccuracy.DAYS)
                 }
             )
         }

@@ -25,11 +25,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.operation.habits.HabitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.HabitTrackEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.eventCountByDaily
-import epicarchitect.breakbadhabits.operation.habits.habitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.habitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.totalHabitTrackEventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.habitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.habitTrackEventCountIncorrectReason
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionChipRow
@@ -153,7 +153,7 @@ fun HabitCreation() {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "Укажите примерно как давно у вас эта привычка:",
+            text = habitCreationStrings.habitTimeDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -173,7 +173,7 @@ fun HabitCreation() {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "Укажите сколько примерно было событий привычки каждый день:",
+            text = habitCreationStrings.trackEventCountDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -190,7 +190,7 @@ fun HabitCreation() {
                 trackEventCountIncorrectReason = null
             },
             error = trackEventCountIncorrectReason?.let(habitCreationStrings::trackEventCountError),
-            label = "Число событий в день",
+            label = habitCreationStrings.trackEventCountLabel(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
@@ -206,14 +206,13 @@ fun HabitCreation() {
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
             onClick = {
-                habitNameIncorrectReason = habitNewNameIncorrectReason(
-                    input = habitName,
+                habitNameIncorrectReason = habitName.habitNewNameIncorrectReason(
                     maxLength = AppData.habitsConfig.maxHabitNameLength,
-                    nameIsExists = { AppData.database.habitQueries.countWithName(it).executeAsOne() > 0L }
+                    nameIsExists = { habitQueries.countWithName(it).executeAsOne() > 0L }
                 )
                 if (habitNameIncorrectReason != null) return@Button
 
-                trackEventCountIncorrectReason = habitTrackEventCountIncorrectReason(trackEventCount)
+                trackEventCountIncorrectReason = trackEventCount.habitTrackEventCountIncorrectReason()
                 if (trackEventCountIncorrectReason != null) return@Button
 
                 val selectedHabitTime = HabitCreationTime.entries[selectedHabitTimeIndex]
@@ -224,7 +223,7 @@ fun HabitCreation() {
                 habitQueries.insertWithTrack(
                     habitName = habitName,
                     habitIconId = selectedIconId,
-                    trackEventCount = eventCountByDaily(
+                    trackEventCount = totalHabitTrackEventCountByDaily(
                         dailyEventCount = trackEventCount,
                         startTime = startTime,
                         endTime = endTime,

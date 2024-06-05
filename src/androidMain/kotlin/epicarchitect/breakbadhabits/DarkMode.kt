@@ -11,7 +11,6 @@ import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 fun isSystemDarkModeEnabled() = Resources.getSystem().configuration
     .uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
-
 suspend fun handleDarkMode() {
     AppData.database.appSettingsQueries.settings().flowOfOneOrNull().collect {
         AppCompatDelegate.setDefaultNightMode(
