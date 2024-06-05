@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.operation.habits
 
-import epicarchitect.breakbadhabits.data.HabitTrack
+import epicarchitect.breakbadhabits.data.HabitEventRecord
 import epicarchitect.breakbadhabits.data.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.operation.datetime.duration
 import epicarchitect.breakbadhabits.operation.datetime.monthOfYear
@@ -13,7 +13,7 @@ import kotlinx.datetime.daysUntil
 import kotlin.math.roundToInt
 
 
-fun List<HabitTrack>.failedRanges() = map {
+fun List<HabitEventRecord>.failedRanges() = map {
     it.startTime..it.endTime
 }.combineIntersections()
 
@@ -37,30 +37,30 @@ fun habitAbstinenceDurationSinceFirstTrack(
     (it..currentTime).duration()
 }
 
-fun List<HabitTrack>.countEventsInMonth(
+fun List<HabitEventRecord>.countEventsInMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ) = filterByMonth(monthOfYear, timeZone).countEvents()
 
-fun List<HabitTrack>.countEvents() = fold(0) { total, track ->
+fun List<HabitEventRecord>.countEvents() = fold(0) { total, track ->
     total + track.eventCount
 }
 
-fun List<HabitTrack>.filterByMonth(
+fun List<HabitEventRecord>.filterByMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ) = filter {
     monthOfYear in it.timeRange.monthOfYearRange(timeZone)
 }
 
-val HabitTrack.timeRange get() = startTime..endTime
+val HabitEventRecord.timeRange get() = startTime..endTime
 
-fun HabitTrack.dailyEventCount(timeZone: TimeZone): Int {
+fun HabitEventRecord.dailyEventCount(timeZone: TimeZone): Int {
     val days = startTime.daysUntil(endTime, timeZone) + 1
     return (eventCount.toFloat() / days).roundToInt()
 }
 
-fun totalHabitTrackEventCountByDaily(
+fun totalHabitEventRecordEventCountByDaily(
     dailyEventCount: Int,
     startTime: Instant,
     endTime: Instant,
@@ -70,8 +70,8 @@ fun totalHabitTrackEventCountByDaily(
     return days * dailyEventCount
 }
 
-fun List<HabitTrack>.groupByMonth(timeZone: TimeZone): Map<MonthOfYear, Collection<HabitTrack>> {
-    val map = mutableMapOf<MonthOfYear, MutableSet<HabitTrack>>()
+fun List<HabitEventRecord>.groupByMonth(timeZone: TimeZone): Map<MonthOfYear, Collection<HabitEventRecord>> {
+    val map = mutableMapOf<MonthOfYear, MutableSet<HabitEventRecord>>()
     forEach { track ->
         val startMonth = track.startTime.monthOfYear(timeZone)
         val endMonth = track.endTime.monthOfYear(timeZone)
@@ -85,4 +85,4 @@ fun List<HabitTrack>.groupByMonth(timeZone: TimeZone): Map<MonthOfYear, Collecti
     return map
 }
 
-fun HabitTrack.abstinence(currentTime: Instant) = (endTime..currentTime).duration()
+fun HabitEventRecord.abstinence(currentTime: Instant) = (endTime..currentTime).duration()

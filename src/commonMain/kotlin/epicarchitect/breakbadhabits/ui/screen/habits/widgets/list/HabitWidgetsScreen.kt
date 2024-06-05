@@ -38,13 +38,13 @@ class HabitWidgetsScreen : Screen {
 @Composable
 fun HabitAppWidgets() {
     val navigator = LocalNavigator.currentOrThrow
-    val habitWidgetsStrings = AppData.resources.strings.habitWidgetsStrings
+    val strings = AppData.resources.strings.habitWidgetsStrings
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         SimpleTopAppBar(
-            title = habitWidgetsStrings.title(),
+            title = strings.title(),
             onBackClick = navigator::pop,
         )
 
@@ -60,7 +60,7 @@ fun HabitAppWidgets() {
                     Text(
                         modifier = Modifier.padding(16.dp),
                         textAlign = TextAlign.Center,
-                        text = habitWidgetsStrings.emptyList()
+                        text = strings.emptyList()
                     )
                 }
             } else {

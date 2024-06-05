@@ -45,8 +45,8 @@ import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 import epicarchitect.breakbadhabits.ui.format.formatted
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.editing.HabitTrackEditingScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitEventRecordCreationScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.editing.HabitEventRecordEditingScreen
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
@@ -54,37 +54,37 @@ import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
 import kotlinx.coroutines.launch
 
-class HabitTracksScreen(private val habitId: Int) : Screen {
+class HabitEventRecordsScreen(private val habitId: Int) : Screen {
     @Composable
     override fun Content() {
-        HabitTracks(habitId)
+        HabitEventRecords(habitId)
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HabitTracks(habitId: Int) {
+fun HabitEventRecords(habitId: Int) {
     val navigator = LocalNavigator.currentOrThrow
     val coroutineScope = rememberCoroutineScope()
     val habitQueries = AppData.database.habitQueries
-    val habitTrackQueries = AppData.database.habitTrackQueries
-    val habitTracksStrings = AppData.resources.strings.habitTracksStrings
+    val habitEventRecordQueries = AppData.database.habitEventRecordQueries
+    val strings = AppData.resources.strings.habitEventRecordsStrings
     val icons = AppData.resources.icons
 
     FlowStateContainer(
         state1 = stateOfOneOrNull { habitQueries.habitById(habitId) },
-        state2 = stateOfList { habitTrackQueries.tracksByHabitId(habitId) }
-    ) { habit, tracks ->
+        state2 = stateOfList { habitEventRecordQueries.recordsByHabitId(habitId) }
+    ) { habit, records ->
         val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
 
-        val groupedByMonthTracks = remember(tracks) {
-            tracks.groupByMonth(timeZone)
+        val groupedByMonthRecords = remember(records) {
+            records.groupByMonth(timeZone)
         }
 
         val epicCalendarState = rememberEpicCalendarPagerState()
 
-        val currentTracks = remember(epicCalendarState.currentMonth, groupedByMonthTracks) {
-            groupedByMonthTracks[epicCalendarState.currentMonth.toMonthOfYear()]?.toList() ?: emptyList()
+        val currentMonthRecords = remember(epicCalendarState.currentMonth, groupedByMonthRecords) {
+            groupedByMonthRecords[epicCalendarState.currentMonth.toMonthOfYear()]?.toList() ?: emptyList()
         }
 
         Box(
@@ -146,7 +146,7 @@ fun HabitTracks(habitId: Int) {
                 }
 
                 val rangeColor = AppTheme.colorScheme.primary
-                val ranges = tracks.map {
+                val ranges = records.map {
                     it.timeRange.toLocalDateTimeRange(timeZone).toLocalDateRange().ascended()
                 }
 
@@ -177,13 +177,13 @@ fun HabitTracks(habitId: Int) {
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(bottom = 100.dp)
                 ) {
-                    items(currentTracks, key = { it.id }) { track ->
+                    items(currentMonthRecords, key = { it.id }) { record ->
                         Box(
                             modifier = Modifier
                                 .animateItemPlacement()
                                 .fillMaxWidth()
                                 .clickable {
-                                    navigator += HabitTrackEditingScreen(track.id)
+                                    navigator += HabitEventRecordEditingScreen(record.id)
                                 }
                         ) {
                             Column(
@@ -196,24 +196,24 @@ fun HabitTracks(habitId: Int) {
                             ) {
                                 Text(
                                     modifier = Modifier.padding(2.dp),
-                                    text = track.timeRange.toLocalDateTimeRange(timeZone).formatted(),
+                                    text = record.timeRange.toLocalDateTimeRange(timeZone).formatted(),
                                     type = Text.Type.Title
                                 )
 
                                 Text(
                                     modifier = Modifier.padding(2.dp),
-                                    text = habitTracksStrings.eventCount(track.eventCount)
+                                    text = strings.eventCount(record.eventCount)
                                 )
 
                                 Text(
                                     modifier = Modifier.padding(2.dp),
-                                    text = habitTracksStrings.dailyEventCount(track.dailyEventCount(timeZone))
+                                    text = strings.dailyEventCount(record.dailyEventCount(timeZone))
                                 )
 
-                                if (track.comment.isNotBlank()) {
+                                if (record.comment.isNotBlank()) {
                                     Text(
                                         modifier = Modifier.padding(2.dp),
-                                        text = track.comment
+                                        text = record.comment
                                     )
                                 }
                             }
@@ -227,9 +227,9 @@ fun HabitTracks(habitId: Int) {
                     .align(Alignment.BottomEnd)
                     .padding(16.dp),
                 onClick = {
-                    navigator += HabitTrackCreationScreen(habitId)
+                    navigator += HabitEventRecordCreationScreen(habitId)
                 },
-                text = habitTracksStrings.newTrackButton(),
+                text = strings.newTrackButton(),
                 type = Button.Type.Main
             )
         }

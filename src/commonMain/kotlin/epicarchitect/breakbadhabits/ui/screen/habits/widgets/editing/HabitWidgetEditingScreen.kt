@@ -53,7 +53,7 @@ class HabitWidgetEditingScreen(private val widgetId: Int) : Screen {
 @Composable
 fun HabitWidgetEditing(widgetId: Int) {
     val navigator = LocalNavigator.currentOrThrow
-    val habitWidgetEditingStrings = AppData.resources.strings.habitWidgetEditingStrings
+    val strings = AppData.resources.strings.habitWidgetEditingStrings
     val habitQueries = AppData.database.habitQueries
     val habitWidgetQueries = AppData.database.habitWidgetQueries
 
@@ -83,7 +83,7 @@ fun HabitWidgetEditing(widgetId: Int) {
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = habitWidgetEditingStrings.deleteConfirmation(),
+                        text = strings.deleteConfirmation(),
                         type = Text.Type.Description,
                         priority = Text.Priority.High
                     )
@@ -94,7 +94,7 @@ fun HabitWidgetEditing(widgetId: Int) {
                         modifier = Modifier.align(Alignment.End)
                     ) {
                         Button(
-                            text = habitWidgetEditingStrings.cancel(),
+                            text = strings.cancel(),
                             onClick = {
                                 deletionShow = false
                             }
@@ -103,7 +103,7 @@ fun HabitWidgetEditing(widgetId: Int) {
                         Spacer(modifier = Modifier.width(16.dp))
 
                         Button(
-                            text = habitWidgetEditingStrings.yes(),
+                            text = strings.yes(),
                             type = Button.Type.Main,
                             onClick = { habitWidgetQueries.deleteById(widgetId) }
                         )
@@ -118,7 +118,7 @@ fun HabitWidgetEditing(widgetId: Int) {
                 .padding(16.dp)
         ) {
             Text(
-                text = habitWidgetEditingStrings.title(),
+                text = strings.title(),
                 type = Text.Type.Title,
                 priority = Text.Priority.High
             )
@@ -126,14 +126,14 @@ fun HabitWidgetEditing(widgetId: Int) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = habitWidgetEditingStrings.nameDescription()
+                text = strings.nameDescription()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             TextField(
                 modifier = Modifier.fillMaxWidth(),
-                label = habitWidgetEditingStrings.title(),
+                label = strings.title(),
                 value = widgetTitle,
                 onValueChange = {
                     widgetTitle = it
@@ -143,7 +143,7 @@ fun HabitWidgetEditing(widgetId: Int) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = habitWidgetEditingStrings.habitsDescription()
+                text = strings.habitsDescription()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -170,13 +170,13 @@ fun HabitWidgetEditing(widgetId: Int) {
             Spacer(Modifier.height(16.dp))
 
             Text(
-                text = habitWidgetEditingStrings.deleteDescription()
+                text = strings.deleteDescription()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                text = habitWidgetEditingStrings.deleteButtonText(),
+                text = strings.deleteButtonText(),
                 type = Button.Type.Dangerous,
                 onClick = {
                     deletionShow = true
@@ -187,7 +187,7 @@ fun HabitWidgetEditing(widgetId: Int) {
 
             Button(
                 modifier = Modifier.align(Alignment.End),
-                text = habitWidgetEditingStrings.finishButton(),
+                text = strings.finishButton(),
                 type = Button.Type.Main,
                 onClick = {
                     habitWidgetQueries.update(

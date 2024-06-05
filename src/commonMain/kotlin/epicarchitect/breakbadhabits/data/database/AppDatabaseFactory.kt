@@ -4,7 +4,7 @@ import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import epicarchitect.breakbadhabits.data.AppDatabase
 import epicarchitect.breakbadhabits.data.AppSettings
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.data.HabitTrack
+import epicarchitect.breakbadhabits.data.HabitEventRecord
 import epicarchitect.breakbadhabits.data.HabitWidget
 import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsThemeAdapter
 
@@ -22,7 +22,7 @@ operator fun AppDatabase.Companion.invoke() = AppDatabase(
         systemIdAdapter = IntColumnAdapter,
         habitIdsAdapter = ListOfIntAdapter
     ),
-    HabitTrackAdapter = HabitTrack.Adapter(
+    HabitEventRecordAdapter = HabitEventRecord.Adapter(
         idAdapter = IntColumnAdapter,
         habitIdAdapter = IntColumnAdapter,
         startTimeAdapter = InstantAdapter,

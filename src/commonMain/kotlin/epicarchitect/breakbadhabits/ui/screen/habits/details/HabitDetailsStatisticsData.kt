@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.ui.screen.habits.details
 
-import epicarchitect.breakbadhabits.data.HabitTrack
+import epicarchitect.breakbadhabits.data.HabitEventRecord
 import epicarchitect.breakbadhabits.data.resources.strings.HabitDetailsStrings
 import epicarchitect.breakbadhabits.operation.datetime.averageDuration
 import epicarchitect.breakbadhabits.operation.datetime.maxDuration
@@ -18,13 +18,13 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
 fun habitDetailsStatisticsData(
-    habitTracks: List<HabitTrack>,
+    habitEventRecords: List<HabitEventRecord>,
     abstinenceRanges: List<ClosedRange<Instant>>,
     failedRanges: List<ClosedRange<Instant>>,
     currentTime: Instant,
     timeZone: TimeZone,
     strings: HabitDetailsStrings
-) = if (habitTracks.isNotEmpty()) {
+) = if (habitEventRecords.isNotEmpty()) {
     listOf(
         StatisticData(
             name = strings.statisticsAverageAbstinenceTime(),
@@ -45,21 +45,21 @@ fun habitDetailsStatisticsData(
         ),
         StatisticData(
             name = strings.statisticsCountEventsInCurrentMonth(),
-            value = habitTracks.countEventsInMonth(
+            value = habitEventRecords.countEventsInMonth(
                 monthOfYear = currentTime.monthOfYear(timeZone),
                 timeZone = timeZone
             ).toString()
         ),
         StatisticData(
             name = strings.statisticsCountEventsInPreviousMonth(),
-            value = habitTracks.countEventsInMonth(
+            value = habitEventRecords.countEventsInMonth(
                 monthOfYear = currentTime.monthOfYear(timeZone).previous(),
                 timeZone = timeZone
             ).toString()
         ),
         StatisticData(
             name = strings.statisticsTotalCountEvents(),
-            value = habitTracks.countEvents().toString()
+            value = habitEventRecords.countEvents().toString()
         )
     )
 } else {

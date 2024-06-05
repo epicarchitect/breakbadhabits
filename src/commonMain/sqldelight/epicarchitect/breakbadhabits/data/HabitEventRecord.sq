@@ -1,0 +1,38 @@
+import kotlin.Int;
+import kotlinx.datetime.Instant;
+
+CREATE TABLE IF NOT EXISTS HabitEventRecord (
+  id         INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
+  habitId    INTEGER AS Int NOT NULL,
+  startTime  INTEGER AS Instant NOT NULL,
+  endTime    INTEGER AS Instant NOT NULL,
+  eventCount INTEGER AS Int NOT NULL,
+  comment    TEXT NOT NULL
+);
+
+insert:
+INSERT INTO HabitEventRecord VALUES (NULL, ?, ?, ?, ?, ?);
+
+update:
+UPDATE HabitEventRecord SET startTime = ?, endTime = ?, eventCount = ?, comment = ? WHERE id = ?;
+
+deleteById:
+DELETE FROM HabitEventRecord WHERE id = ?;
+
+deleteByHabitId:
+DELETE FROM HabitEventRecord WHERE habitId = ?;
+
+records:
+SELECT * FROM HabitEventRecord;
+
+recordById:
+SELECT * FROM HabitEventRecord WHERE id = ?;
+
+recordsByHabitId:
+SELECT * FROM HabitEventRecord WHERE habitId = ?;
+
+recordByHabitIdAndMaxEndTime:
+SELECT * FROM HabitEventRecord WHERE habitId = :habitId AND endTime = (SELECT max(endTime) FROM HabitEventRecord WHERE habitId = :habitId) LIMIT 1;
+
+recordsByRange:
+SELECT * FROM HabitEventRecord WHERE habitId = :habitId AND ((startTime BETWEEN :startTime AND :endTime) OR (endTime BETWEEN :startTime AND :endTime));

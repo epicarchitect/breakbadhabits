@@ -49,7 +49,7 @@ class HabitEditingScreen(private val habitId: Int) : Screen {
 fun HabitEditing(habitId: Int) {
     val navigator = LocalNavigator.currentOrThrow
     val habitQueries = AppData.database.habitQueries
-    val habitEditingStrings = AppData.resources.strings.habitEditingStrings
+    val strings = AppData.resources.strings.habitEditingStrings
     val icons = AppData.resources.icons
 
     val initialHabit by remember(habitId) { habitQueries.habitById(habitId).flowOfOneOrNull() }.collectAsState(null)
@@ -65,7 +65,7 @@ fun HabitEditing(habitId: Int) {
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = habitEditingStrings.deleteConfirmation(),
+                    text = strings.deleteConfirmation(),
                     type = Text.Type.Description,
                     priority = Text.Priority.High
                 )
@@ -76,7 +76,7 @@ fun HabitEditing(habitId: Int) {
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Button(
-                        text = habitEditingStrings.cancel(),
+                        text = strings.cancel(),
                         onClick = {
                             deletionShow = false
                         }
@@ -85,7 +85,7 @@ fun HabitEditing(habitId: Int) {
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Button(
-                        text = habitEditingStrings.yes(),
+                        text = strings.yes(),
                         type = Button.Type.Main,
                         onClick = {
                             habitQueries.deleteById(habitId)
@@ -103,7 +103,7 @@ fun HabitEditing(habitId: Int) {
             .verticalScroll(rememberScrollState())
     ) {
         SimpleTopAppBar(
-            title = habitEditingStrings.titleText(),
+            title = strings.titleText(),
             onBackClick = navigator::pop,
         )
 
@@ -111,7 +111,7 @@ fun HabitEditing(habitId: Int) {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitEditingStrings.habitNameDescription()
+            text = strings.habitNameDescription()
         )
 
         Spacer(Modifier.height(16.dp))
@@ -125,16 +125,16 @@ fun HabitEditing(habitId: Int) {
                 habitName = it
                 habitNameIncorrectReason = null
             },
-            label = habitEditingStrings.habitNameLabel(),
-            error = habitNameIncorrectReason?.let(habitEditingStrings::habitNameValidationError),
-            description = habitEditingStrings.habitNameDescription()
+            label = strings.habitNameLabel(),
+            error = habitNameIncorrectReason?.let(strings::habitNameValidationError),
+            description = strings.habitNameDescription()
         )
 
         Spacer(Modifier.height(24.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitEditingStrings.habitIconDescription(),
+            text = strings.habitIconDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -160,14 +160,14 @@ fun HabitEditing(habitId: Int) {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitEditingStrings.deleteDescription()
+            text = strings.deleteDescription()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitEditingStrings.deleteButton(),
+            text = strings.deleteButton(),
             type = Button.Type.Dangerous,
             onClick = {
                 deletionShow = true
@@ -197,7 +197,7 @@ fun HabitEditing(habitId: Int) {
                 )
                 navigator.pop()
             },
-            text = habitEditingStrings.finishButtonText(),
+            text = strings.finishButtonText(),
             type = Button.Type.Main,
             icon = { Icon(icons.commonIcons.done) }
         )

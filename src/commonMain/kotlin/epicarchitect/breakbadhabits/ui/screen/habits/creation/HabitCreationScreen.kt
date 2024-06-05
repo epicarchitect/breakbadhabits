@@ -25,11 +25,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.operation.habits.totalHabitTrackEventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.totalHabitEventRecordEventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordDailyEventCountIncorrectReason
 import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.habitEventRecordDailyEventCountIncorrectReason
 import epicarchitect.breakbadhabits.operation.habits.validation.habitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.habitTrackEventCountIncorrectReason
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionChipRow
@@ -66,7 +66,7 @@ class HabitCreationScreen : Screen {
 
 @Composable
 fun HabitCreation() {
-    val habitCreationStrings = AppData.resources.strings.habitCreationStrings
+    val strings = AppData.resources.strings.habitCreationStrings
     val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
@@ -83,9 +83,9 @@ fun HabitCreation() {
 
     var selectedHabitTimeIndex by rememberSaveable { mutableIntStateOf(0) }
 
-    var trackEventCount by rememberSaveable { mutableIntStateOf(0) }
-    var trackEventCountIncorrectReason by remember {
-        mutableStateOf<HabitTrackEventCountIncorrectReason?>(null)
+    var dailyEventCount by rememberSaveable { mutableIntStateOf(0) }
+    var dailyEventCountIncorrectReason by remember {
+        mutableStateOf<HabitEventRecordDailyEventCountIncorrectReason?>(null)
     }
 
     Column(
@@ -94,7 +94,7 @@ fun HabitCreation() {
             .verticalScroll(rememberScrollState())
     ) {
         SimpleTopAppBar(
-            title = habitCreationStrings.titleText(),
+            title = strings.titleText(),
             onBackClick = navigator::pop
         )
 
@@ -102,7 +102,7 @@ fun HabitCreation() {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitCreationStrings.habitNameDescription(),
+            text = strings.habitNameDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -118,16 +118,16 @@ fun HabitCreation() {
                 habitName = it
                 habitNameIncorrectReason = null
             },
-            label = habitCreationStrings.habitNameLabel(),
-            error = habitNameIncorrectReason?.let(habitCreationStrings::habitNameValidationError),
-            description = habitCreationStrings.habitNameDescription()
+            label = strings.habitNameLabel(),
+            error = habitNameIncorrectReason?.let(strings::habitNameValidationError),
+            description = strings.habitNameDescription()
         )
 
         Spacer(Modifier.height(24.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitCreationStrings.habitIconDescription(),
+            text = strings.habitIconDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -153,7 +153,7 @@ fun HabitCreation() {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitCreationStrings.habitTimeDescription(),
+            text = strings.habitTimeDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -161,7 +161,7 @@ fun HabitCreation() {
         Spacer(Modifier.height(12.dp))
 
         SingleSelectionChipRow(
-            items = HabitCreationTime.entries.map(habitCreationStrings::habitTime),
+            items = HabitCreationTime.entries.map(strings::habitTime),
             onClick = {
                 selectedHabitTimeIndex = it
             },
@@ -173,7 +173,7 @@ fun HabitCreation() {
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitCreationStrings.trackEventCountDescription(),
+            text = strings.trackEventCountDescription(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -184,13 +184,13 @@ fun HabitCreation() {
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
-            value = trackEventCount.toString(),
+            value = dailyEventCount.toString(),
             onValueChange = {
-                trackEventCount = it.toIntOrNull() ?: 0
-                trackEventCountIncorrectReason = null
+                dailyEventCount = it.toIntOrNull() ?: 0
+                dailyEventCountIncorrectReason = null
             },
-            error = trackEventCountIncorrectReason?.let(habitCreationStrings::trackEventCountError),
-            label = habitCreationStrings.trackEventCountLabel(),
+            error = dailyEventCountIncorrectReason?.let(strings::trackEventCountError),
+            label = strings.trackEventCountLabel(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
@@ -212,19 +212,19 @@ fun HabitCreation() {
                 )
                 if (habitNameIncorrectReason != null) return@Button
 
-                trackEventCountIncorrectReason = trackEventCount.habitTrackEventCountIncorrectReason()
-                if (trackEventCountIncorrectReason != null) return@Button
+                dailyEventCountIncorrectReason = dailyEventCount.habitEventRecordDailyEventCountIncorrectReason()
+                if (dailyEventCountIncorrectReason != null) return@Button
 
                 val selectedHabitTime = HabitCreationTime.entries[selectedHabitTimeIndex]
                 val endTime = AppData.dateTime.currentTimeState.value
                 val timeZone = AppData.dateTime.currentTimeZoneState.value
                 val startTime = endTime - selectedHabitTime.offset + 1.days // fix offset
 
-                habitQueries.insertWithTrack(
+                habitQueries.insertWithEventRecord(
                     habitName = habitName,
                     habitIconId = selectedIconId,
-                    trackEventCount = totalHabitTrackEventCountByDaily(
-                        dailyEventCount = trackEventCount,
+                    trackEventCount = totalHabitEventRecordEventCountByDaily(
+                        dailyEventCount = dailyEventCount,
                         startTime = startTime,
                         endTime = endTime,
                         timeZone = timeZone
@@ -234,7 +234,7 @@ fun HabitCreation() {
                 )
                 navigator.pop()
             },
-            text = habitCreationStrings.finishButtonText(),
+            text = strings.finishButtonText(),
             type = Button.Type.Main,
             icon = { Icon(icons.commonIcons.done) }
         )

@@ -26,7 +26,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.data.HabitTrack
+import epicarchitect.breakbadhabits.data.HabitEventRecord
 import epicarchitect.breakbadhabits.operation.datetime.toMonthOfYear
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
@@ -42,8 +42,8 @@ import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
 import epicarchitect.breakbadhabits.ui.format.formatted
 import epicarchitect.breakbadhabits.ui.screen.habits.editing.HabitEditingScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.list.HabitTracksScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitEventRecordCreationScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.list.HabitEventRecordsScreen
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
@@ -61,21 +61,21 @@ class HabitDetailsScreen(private val habitId: Int) : Screen {
 @Composable
 fun HabitDetails(habitId: Int) {
     val habitQueries = AppData.database.habitQueries
-    val habitTrackQueries = AppData.database.habitTrackQueries
+    val habitEventRecordQueries = AppData.database.habitEventRecordQueries
 
     FlowStateContainer(
         state1 = stateOfOneOrNull { habitQueries.habitById(habitId) },
-        state2 = stateOfList { habitTrackQueries.tracksByHabitId(habitId) },
-        state3 = stateOfOneOrNull { habitTrackQueries.trackByHabitIdAndMaxEndTime(habitId) }
-    ) { habit, habitTracks, lastHabitTrack ->
+        state2 = stateOfList { habitEventRecordQueries.recordsByHabitId(habitId) },
+        state3 = stateOfOneOrNull { habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habitId) }
+    ) { habit, habitEventRecords, lastHabitEventRecord ->
         if (habit != null) {
             LoadedHabitDetails(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
                 habit = habit,
-                habitTracks = habitTracks,
-                lastHabitTrack = lastHabitTrack
+                habitEventRecords = habitEventRecords,
+                lastHabitEventRecord = lastHabitEventRecord
             )
         }
     }
@@ -84,19 +84,17 @@ fun HabitDetails(habitId: Int) {
 @Composable
 private fun LoadedHabitDetails(
     habit: Habit,
-    habitTracks: List<HabitTrack>,
-    lastHabitTrack: HabitTrack?,
+    habitEventRecords: List<HabitEventRecord>,
+    lastHabitEventRecord: HabitEventRecord?,
     modifier: Modifier = Modifier
 ) {
     val currentTime by AppData.dateTime.currentTimeState.collectAsState()
     val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
-    val habitDetailsStrings = AppData.resources.strings.habitDetailsStrings
     val state = rememberHabitDetailsState(
-        habitTracks = habitTracks,
-        lastTrack = lastHabitTrack,
+        habitEventRecords = habitEventRecords,
+        lastTrack = lastHabitEventRecord,
         currentTime = currentTime,
-        timeZone = timeZone,
-        strings = habitDetailsStrings
+        timeZone = timeZone
     )
 
     Column(modifier) {
@@ -142,7 +140,7 @@ private fun HabitSection(
     habit: Habit,
     modifier: Modifier = Modifier
 ) {
-    val habitDetailsStrings = AppData.resources.strings.habitDetailsStrings
+    val strings = AppData.resources.strings.habitDetailsStrings
     val icons = AppData.resources.icons
     val navigator = LocalNavigator.currentOrThrow
 
@@ -190,7 +188,7 @@ private fun HabitSection(
                 .align(Alignment.CenterHorizontally),
             text = state.abstinence?.formatted(
                 accuracy = DurationFormattingAccuracy.SECONDS
-            ) ?: habitDetailsStrings.habitHasNoEvents(),
+            ) ?: strings.habitHasNoEvents(),
             type = Text.Type.Description,
             priority = Text.Priority.Medium
         )
@@ -200,9 +198,9 @@ private fun HabitSection(
         Button(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             onClick = {
-                navigator += HabitTrackCreationScreen(habit.id)
+                navigator += HabitEventRecordCreationScreen(habit.id)
             },
-            text = habitDetailsStrings.addHabitTrack(),
+            text = strings.addHabitEventRecord(),
             type = Button.Type.Main
         )
     }
@@ -214,7 +212,7 @@ private fun CalendarCard(
     state: HabitDetailsState,
     modifier: Modifier = Modifier
 ) {
-    val habitDetailsStrings = AppData.resources.strings.habitDetailsStrings
+    val strings = AppData.resources.strings.habitDetailsStrings
     val navigator = LocalNavigator.currentOrThrow
     val calendarState = rememberEpicCalendarPagerState()
     val rangeColor = AppTheme.colorScheme.primary
@@ -259,12 +257,12 @@ private fun CalendarCard(
                 .fillMaxWidth()
                 .height(44.dp)
                 .clickable {
-                    navigator += HabitTracksScreen(habit.id)
+                    navigator += HabitEventRecordsScreen(habit.id)
                 }
         ) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
-                text = habitDetailsStrings.showAllTracks()
+                text = strings.showAllTracks()
             )
         }
     }
@@ -275,7 +273,7 @@ private fun StatisticsCard(
     state: HabitDetailsState,
     modifier: Modifier = Modifier
 ) {
-    val habitDetailsStrings = AppData.resources.strings.habitDetailsStrings
+    val strings = AppData.resources.strings.habitDetailsStrings
     Card(modifier) {
         Column(
             modifier = Modifier
@@ -288,7 +286,7 @@ private fun StatisticsCard(
                 .fillMaxWidth()
         ) {
             Text(
-                text = habitDetailsStrings.statisticsTitle(),
+                text = strings.statisticsTitle(),
                 type = Text.Type.Title
             )
 
@@ -307,12 +305,12 @@ private fun HistogramCard(
     modifier: Modifier = Modifier,
     state: HabitDetailsState
 ) {
-    val habitDetailsStrings = AppData.resources.strings.habitDetailsStrings
+    val strings = AppData.resources.strings.habitDetailsStrings
     Card(modifier) {
         Column {
             Text(
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                text = habitDetailsStrings.abstinenceChartTitle(),
+                text = strings.abstinenceChartTitle(),
                 type = Text.Type.Title
             )
 

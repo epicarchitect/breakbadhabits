@@ -37,7 +37,7 @@ import epicarchitect.breakbadhabits.ui.component.text.TextField
 
 @Composable
 fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
-    val habitWidgetCreationStrings = AppData.resources.strings.habitWidgetCreationStrings
+    val strings = AppData.resources.strings.habitWidgetCreationStrings
     val habitQueries = AppData.database.habitQueries
     val habitWidgetQueries = AppData.database.habitWidgetQueries
 
@@ -58,7 +58,7 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
             .padding(16.dp)
     ) {
         Text(
-            text = habitWidgetCreationStrings.title(),
+            text = strings.title(),
             type = Text.Type.Title,
             priority = Text.Priority.High
         )
@@ -66,14 +66,14 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = habitWidgetCreationStrings.nameDescription()
+            text = strings.nameDescription()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            label = habitWidgetCreationStrings.title(),
+            label = strings.title(),
             value = widgetTitle,
             onValueChange = {
                 widgetTitle = it
@@ -83,7 +83,7 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = habitWidgetCreationStrings.habitsDescription()
+            text = strings.habitsDescription()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -111,7 +111,7 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
 
         Button(
             modifier = Modifier.align(Alignment.End),
-            text = habitWidgetCreationStrings.finishButton(),
+            text = strings.finishButton(),
             type = Button.Type.Main,
             onClick = {
                 habitWidgetQueries.insert(

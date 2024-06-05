@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
 import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitTrackEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordDailyEventCountIncorrectReason
 import epicarchitect.breakbadhabits.ui.screen.habits.creation.HabitCreationTime
 
 interface HabitCreationStrings {
@@ -13,7 +13,7 @@ interface HabitCreationStrings {
     fun habitNameValidationError(reason: HabitNewNameIncorrectReason): String
     fun habitTime(time: HabitCreationTime): String // move to duration formatting?
     fun habitTimeDescription(): String
-    fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason): String
+    fun trackEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason): String
     fun trackEventCountDescription(): String
     fun trackEventCountLabel(): String
 }
@@ -50,8 +50,8 @@ class RussianHabitCreationStrings : HabitCreationStrings {
 
     override fun habitTimeDescription() = "Укажите примерно как давно у вас эта привычка:"
 
-    override fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason) = when (reason) {
-        HabitTrackEventCountIncorrectReason.Empty -> {
+    override fun trackEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason) = when (reason) {
+        HabitEventRecordDailyEventCountIncorrectReason.Empty -> {
             "Поле не может быть пустым"
         }
     }
@@ -92,8 +92,8 @@ class EnglishHabitCreationStrings : HabitCreationStrings {
 
     override fun habitTimeDescription() = "Please indicate approximately how long you have had this habit:"
 
-    override fun trackEventCountError(reason: HabitTrackEventCountIncorrectReason) = when (reason) {
-        HabitTrackEventCountIncorrectReason.Empty -> {
+    override fun trackEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason) = when (reason) {
+        HabitEventRecordDailyEventCountIncorrectReason.Empty -> {
             "Cant be empty"
         }
     }

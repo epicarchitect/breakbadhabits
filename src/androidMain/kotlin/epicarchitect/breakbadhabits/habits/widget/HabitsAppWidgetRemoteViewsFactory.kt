@@ -27,8 +27,8 @@ class HabitsAppWidgetRemoteViewsFactory(
                 if (config.habitIds.contains(it.id)) {
                     Item(
                         habit = it,
-                        abstinence = AppData.database.habitTrackQueries
-                            .trackByHabitIdAndMaxEndTime(it.id)
+                        abstinence = AppData.database.habitEventRecordQueries
+                            .recordByHabitIdAndMaxEndTime(it.id)
                             .executeAsOneOrNull()
                             ?.abstinence(currentTime)
                     )

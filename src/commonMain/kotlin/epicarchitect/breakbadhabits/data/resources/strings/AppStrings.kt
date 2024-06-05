@@ -8,9 +8,9 @@ interface AppStrings {
     val habitDetailsStrings: HabitDetailsStrings
     val habitCreationStrings: HabitCreationStrings
     val habitEditingStrings: HabitEditingStrings
-    val habitTracksStrings: HabitTracksStrings
-    val habitTrackCreationStrings: HabitTrackCreationStrings
-    val habitTrackEditingStrings: HabitTrackEditingStrings
+    val habitEventRecordsStrings: HabitEventRecordsStrings
+    val habitEventRecordCreationStrings: HabitEventRecordCreationStrings
+    val habitEventRecordEditingStrings: HabitEventRecordEditingStrings
     val habitWidgetsStrings: HabitWidgetsStrings
     val habitWidgetCreationStrings: HabitWidgetCreationStrings
     val habitWidgetEditingStrings: HabitWidgetEditingStrings
@@ -24,9 +24,9 @@ class RussianAppStrings : AppStrings {
     override val habitDetailsStrings = RussianHabitDetailsStrings()
     override val habitCreationStrings = RussianHabitCreationStrings()
     override val habitEditingStrings = RussianHabitEditingStrings()
-    override val habitTracksStrings = RussianHabitTracksStrings()
-    override val habitTrackCreationStrings = RussianHabitTrackCreationStrings()
-    override val habitTrackEditingStrings = RussianHabitTrackEditingStrings()
+    override val habitEventRecordsStrings = RussianHabitEventRecordsStrings()
+    override val habitEventRecordCreationStrings = RussianHabitEventRecordCreationStrings()
+    override val habitEventRecordEditingStrings = RussianHabitEventRecordEditingStrings()
     override val habitWidgetsStrings = RussianHabitWidgetsStrings()
     override val habitWidgetCreationStrings = RussianHabitWidgetCreationStrings()
     override val habitWidgetEditingStrings = RussianHabitWidgetEditingStrings()
@@ -40,9 +40,9 @@ class EnglishAppStrings : AppStrings {
     override val habitDetailsStrings = EnglishHabitDetailsStrings()
     override val habitCreationStrings = EnglishHabitCreationStrings()
     override val habitEditingStrings = EnglishHabitEditingStrings()
-    override val habitTracksStrings = EnglishHabitTracksStrings()
-    override val habitTrackCreationStrings = EnglishHabitTrackCreationStrings()
-    override val habitTrackEditingStrings = EnglishHabitTrackEditingStrings()
+    override val habitEventRecordsStrings = EnglishHabitEventRecordsStrings()
+    override val habitEventRecordCreationStrings = EnglishHabitEventRecordCreationStrings()
+    override val habitEventRecordEditingStrings = EnglishHabitEventRecordEditingStrings()
     override val habitWidgetsStrings = EnglishHabitWidgetsStrings()
     override val habitWidgetCreationStrings = EnglishHabitWidgetCreationStrings()
     override val habitWidgetEditingStrings = EnglishHabitWidgetEditingStrings()

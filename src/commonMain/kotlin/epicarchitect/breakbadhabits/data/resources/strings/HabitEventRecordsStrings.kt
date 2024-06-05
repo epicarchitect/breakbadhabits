@@ -1,19 +1,19 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-interface HabitTracksStrings {
+interface HabitEventRecordsStrings {
     fun newTrackButton(): String
     fun dailyEventCount(count: Int): String
     fun eventCount(count: Int): String
 }
 
-class RussianHabitTracksStrings : HabitTracksStrings {
-    override fun newTrackButton() = "Добавить события"
+class RussianHabitEventRecordsStrings : HabitEventRecordsStrings {
+    override fun newTrackButton() = "Добавить запись"
     override fun dailyEventCount(count: Int) = "Ежедневное количество событий: $count"
     override fun eventCount(count: Int) = "Всего событий: $count"
 }
 
-class EnglishHabitTracksStrings : HabitTracksStrings {
-    override fun newTrackButton() = "Add events"
+class EnglishHabitEventRecordsStrings : HabitEventRecordsStrings {
+    override fun newTrackButton() = "Add record"
     override fun dailyEventCount(count: Int) = "Daily event count: $count"
     override fun eventCount(count: Int) = "Total events: $count"
 }

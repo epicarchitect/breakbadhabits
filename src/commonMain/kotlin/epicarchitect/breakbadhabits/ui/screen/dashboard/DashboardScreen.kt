@@ -41,7 +41,7 @@ import epicarchitect.breakbadhabits.ui.format.formatted
 import epicarchitect.breakbadhabits.ui.screen.appSettings.AppSettingsScreen
 import epicarchitect.breakbadhabits.ui.screen.habits.creation.HabitCreationScreen
 import epicarchitect.breakbadhabits.ui.screen.habits.details.HabitDetailsScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitTrackCreationScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitEventRecordCreationScreen
 
 class DashboardScreen : Screen {
     @Composable
@@ -53,7 +53,7 @@ class DashboardScreen : Screen {
 @Composable
 fun Dashboard() {
     val navigator = LocalNavigator.currentOrThrow
-    val dashboardStrings = AppData.resources.strings.dashboardStrings
+    val strings = AppData.resources.strings.dashboardStrings
     val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
 
@@ -63,7 +63,7 @@ fun Dashboard() {
         Column {
             SimpleTopAppBar(
                 modifier = Modifier.fillMaxWidth(),
-                title = dashboardStrings.titleText(),
+                title = strings.titleText(),
                 actions = {
                     IconButton(
                         onClick = { navigator += AppSettingsScreen() },
@@ -84,7 +84,7 @@ fun Dashboard() {
                         Text(
                             modifier = Modifier.padding(16.dp),
                             textAlign = TextAlign.Center,
-                            text = dashboardStrings.emptyHabitsText()
+                            text = strings.emptyHabitsText()
                         )
                     }
                 } else {
@@ -113,7 +113,7 @@ fun Dashboard() {
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
             onClick = { navigator += HabitCreationScreen() },
-            text = dashboardStrings.newHabitButtonText(),
+            text = strings.newHabitButtonText(),
             icon = { Icon(icons.commonIcons.add) },
             type = Button.Type.Main
         )
@@ -124,7 +124,7 @@ fun Dashboard() {
 @Composable
 private fun LazyItemScope.HabitCard(habit: Habit) {
     val navigator = LocalNavigator.currentOrThrow
-    val strings = AppData.resources.strings
+    val strings = AppData.resources.strings.dashboardStrings
     val icons = AppData.resources.icons
     Card(
         modifier = Modifier
@@ -166,17 +166,17 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
 
                     FlowStateContainer(
                         state = stateOfOneOrNull {
-                            AppData.database.habitTrackQueries.trackByHabitIdAndMaxEndTime(habit.id)
+                            AppData.database.habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habit.id)
                         }
-                    ) { track ->
+                    ) { record ->
                         val currentTime by AppData.dateTime.currentTimeState.collectAsState()
-                        val abstinence = track?.abstinence(currentTime)
+                        val abstinence = record?.abstinence(currentTime)
 
                         Text(
                             modifier = Modifier.padding(start = 12.dp),
                             text = abstinence?.formatted(
                                 accuracy = DurationFormattingAccuracy.SECONDS
-                            ) ?: strings.dashboardStrings.habitHasNoEvents(),
+                            ) ?: strings.habitHasNoEvents(),
                             type = Text.Type.Description,
                             priority = Text.Priority.Medium
                         )
@@ -189,7 +189,7 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
                     .align(Alignment.BottomEnd)
                     .padding(4.dp),
                 onClick = {
-                    navigator += HabitTrackCreationScreen(habit.id)
+                    navigator += HabitEventRecordCreationScreen(habit.id)
                 },
                 icon = icons.commonIcons.replay
             )

@@ -13,13 +13,13 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme
-import epicarchitect.breakbadhabits.ui.screen.habits.widgets.list.HabitWidgetsScreen
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.button.RadioButton
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.Text
+import epicarchitect.breakbadhabits.ui.screen.habits.widgets.list.HabitWidgetsScreen
 
 class AppSettingsScreen : Screen {
     @Composable
@@ -31,7 +31,7 @@ class AppSettingsScreen : Screen {
 @Composable
 fun AppSettings() {
     val navigator = LocalNavigator.currentOrThrow
-    val appSettingsStrings = AppData.resources.strings.appSettingsStrings
+    val strings = AppData.resources.strings.appSettingsStrings
     val appSettingsQueries = AppData.database.appSettingsQueries
 
     FlowStateContainer(
@@ -42,7 +42,7 @@ fun AppSettings() {
         ) {
             SimpleTopAppBar(
                 modifier = Modifier.fillMaxWidth(),
-                title = appSettingsStrings.titleText(),
+                title = strings.titleText(),
                 onBackClick = navigator::pop,
             )
 
@@ -53,23 +53,23 @@ fun AppSettings() {
                     end = 8.dp,
                     bottom = 4.dp
                 ),
-                text = appSettingsStrings.themeSelectionDescription()
+                text = strings.themeSelectionDescription()
             )
 
             RadioButton(
-                text = appSettingsStrings.themeSelectionSystemTheme(),
+                text = strings.themeSelectionSystemTheme(),
                 selected = settings?.theme == AppSettingsTheme.SYSTEM,
                 onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.SYSTEM) }
             )
 
             RadioButton(
-                text = appSettingsStrings.themeSelectionLightTheme(),
+                text = strings.themeSelectionLightTheme(),
                 selected = settings?.theme == AppSettingsTheme.LIGHT,
                 onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.LIGHT) }
             )
 
             RadioButton(
-                text = appSettingsStrings.themeSelectionDarkTheme(),
+                text = strings.themeSelectionDarkTheme(),
                 selected = settings?.theme == AppSettingsTheme.DARK,
                 onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.DARK) }
             )
@@ -81,7 +81,7 @@ fun AppSettings() {
                     end = 8.dp,
                     bottom = 4.dp
                 ),
-                text = appSettingsStrings.widgetsDescription()
+                text = strings.widgetsDescription()
             )
 
             Button(
@@ -92,7 +92,7 @@ fun AppSettings() {
                     bottom = 16.dp
                 ),
                 onClick = { navigator += HabitWidgetsScreen() },
-                text = appSettingsStrings.widgetsButton()
+                text = strings.widgetsButton()
             )
         }
     }

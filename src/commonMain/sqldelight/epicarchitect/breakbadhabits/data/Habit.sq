@@ -21,14 +21,14 @@ SELECT * FROM Habit WHERE id = ?;
 countWithName:
 SELECT count(*) FROM Habit WHERE name = ?;
 
-insertWithTrack {
+insertWithEventRecord {
     INSERT INTO Habit(id, name, iconId) VALUES (
         NULL,
         :habitName,
         :habitIconId
     );
 
-    INSERT INTO HabitTrack(id, habitId, startTime, endTime, eventCount, comment) VALUES (
+    INSERT INTO HabitEventRecord(id, habitId, startTime, endTime, eventCount, comment) VALUES (
         NULL,
         (SELECT last_insert_rowid()),
         :trackStartTime,

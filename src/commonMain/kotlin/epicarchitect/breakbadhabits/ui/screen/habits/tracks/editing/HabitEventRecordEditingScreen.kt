@@ -28,15 +28,15 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.data.HabitTrack
+import epicarchitect.breakbadhabits.data.HabitEventRecord
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
 import epicarchitect.breakbadhabits.operation.habits.dailyEventCount
 import epicarchitect.breakbadhabits.operation.habits.timeRange
-import epicarchitect.breakbadhabits.operation.habits.totalHabitTrackEventCountByDaily
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitTrackEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitTrackTimeRangeIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.habitTrackEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.habitTrackTimeRangeIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.totalHabitEventRecordEventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordDailyEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.habitEventRecordDailyEventCountIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.habitEventRecordTimeRangeIncorrectReason
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
@@ -59,28 +59,28 @@ fun dateSelectionMonthRange(timeZone: TimeZone) = EpicMonth.now(timeZone).let {
     it.addYears(-10).copy(month = Month.JANUARY)..it.copy(month = Month.DECEMBER)
 }
 
-class HabitTrackEditingScreen(private val habitTrackId: Int) : Screen {
+class HabitEventRecordEditingScreen(private val HabitEventRecordId: Int) : Screen {
     @Composable
     override fun Content() {
-        HabitTrackEditing(habitTrackId)
+        HabitEventRecordEditing(HabitEventRecordId)
     }
 }
 
 @Composable
-fun HabitTrackEditing(habitTrackId: Int) {
+fun HabitEventRecordEditing(HabitEventRecordId: Int) {
     FlowStateContainer(
         state = stateOfOneOrNull {
-            AppData.database.habitTrackQueries.trackById(habitTrackId)
+            AppData.database.habitEventRecordQueries.recordById(HabitEventRecordId)
         }
-    ) { habitTrack ->
-        if (habitTrack != null) {
+    ) { habitEventRecord ->
+        if (habitEventRecord != null) {
             FlowStateContainer(
-                state = stateOfOneOrNull(habitTrack) {
-                    AppData.database.habitQueries.habitById(habitTrack.habitId)
+                state = stateOfOneOrNull(habitEventRecord) {
+                    AppData.database.habitQueries.habitById(habitEventRecord.habitId)
                 }
             ) { habit ->
                 if (habit != null) {
-                    Loaded(habit, habitTrack)
+                    Loaded(habit, habitEventRecord)
                 }
             }
         }
@@ -90,10 +90,10 @@ fun HabitTrackEditing(habitTrackId: Int) {
 @Composable
 private fun Loaded(
     habit: Habit,
-    habitTrack: HabitTrack,
+    habitTrack: HabitEventRecord,
 ) {
-    val habitTrackEditingStrings = AppData.resources.strings.habitTrackEditingStrings
-    val habitTrackQueries = AppData.database.habitTrackQueries
+    val strings = AppData.resources.strings.habitEventRecordEditingStrings
+    val habitEventRecordQueries = AppData.database.habitEventRecordQueries
     val navigator = LocalNavigator.currentOrThrow
 
     var rangeSelectionShow by rememberSaveable { mutableStateOf(false) }
@@ -103,14 +103,14 @@ private fun Loaded(
         mutableStateOf(habitTrack.timeRange.toLocalDateTimeRange(timeZone))
     }
     var timeRangeIncorrectReason by remember(selectedDateTimeRange) {
-        mutableStateOf<HabitTrackTimeRangeIncorrectReason?>(null)
+        mutableStateOf<HabitEventRecordTimeRangeIncorrectReason?>(null)
     }
 
-    var eventCount by rememberSaveable(habitTrack) {
+    var dailyEventCount by rememberSaveable(habitTrack) {
         mutableIntStateOf(habitTrack.dailyEventCount(timeZone))
     }
-    var eventCountIncorrectReason by remember {
-        mutableStateOf<HabitTrackEventCountIncorrectReason?>(null)
+    var dailyEventCountIncorrectReason by remember {
+        mutableStateOf<HabitEventRecordDailyEventCountIncorrectReason?>(null)
     }
     var comment by rememberSaveable(habitTrack) {
         mutableStateOf(habitTrack.comment)
@@ -145,7 +145,7 @@ private fun Loaded(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = habitTrackEditingStrings.deleteConfirmation(),
+                    text = strings.deleteConfirmation(),
                     type = Text.Type.Description,
                     priority = Text.Priority.High
                 )
@@ -156,7 +156,7 @@ private fun Loaded(
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Button(
-                        text = habitTrackEditingStrings.cancel(),
+                        text = strings.cancel(),
                         onClick = {
                             deletionShow = false
                         }
@@ -165,10 +165,10 @@ private fun Loaded(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Button(
-                        text = habitTrackEditingStrings.yes(),
+                        text = strings.yes(),
                         type = Button.Type.Main,
                         onClick = {
-                            habitTrackQueries.deleteById(habitTrack.id)
+                            habitEventRecordQueries.deleteById(habitTrack.id)
                             navigator.pop()
                         }
                     )
@@ -183,7 +183,7 @@ private fun Loaded(
             .verticalScroll(rememberScrollState())
     ) {
         SimpleTopAppBar(
-            title = habitTrackEditingStrings.titleText(habit.name),
+            title = strings.titleText(habit.name),
             onBackClick = navigator::pop
         )
 
@@ -191,7 +191,7 @@ private fun Loaded(
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitTrackEditingStrings.trackEventCountDescription()
+            text = strings.dailyEventCountDescription()
         )
 
         Spacer(Modifier.height(12.dp))
@@ -200,24 +200,24 @@ private fun Loaded(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            value = eventCount.toString(),
+            value = dailyEventCount.toString(),
             onValueChange = {
-                eventCount = it.toIntOrNull() ?: 0
-                eventCountIncorrectReason = null
+                dailyEventCount = it.toIntOrNull() ?: 0
+                dailyEventCountIncorrectReason = null
             },
-            label = habitTrackEditingStrings.trackEventCountLabel(),
+            label = strings.dailyEventCountLabel(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
             regex = Regexps.integersOrEmpty(maxCharCount = 4),
-            error = eventCountIncorrectReason?.let(habitTrackEditingStrings::trackEventCountError),
+            error = dailyEventCountIncorrectReason?.let(strings::dailyEventCountError),
         )
 
         Spacer(Modifier.height(12.dp))
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitTrackEditingStrings.trackTimeDescription()
+            text = strings.timeRangeDescription()
         )
 
         Spacer(Modifier.height(12.dp))
@@ -235,7 +235,7 @@ private fun Loaded(
         timeRangeIncorrectReason?.let {
             ErrorText(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                text = habitTrackEditingStrings.trackTimeRangeError(it)
+                text = strings.timeRangeError(it)
             )
         }
 
@@ -243,7 +243,7 @@ private fun Loaded(
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitTrackEditingStrings.commentDescription()
+            text = strings.commentDescription()
         )
 
         Spacer(Modifier.height(12.dp))
@@ -260,12 +260,12 @@ private fun Loaded(
 
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitTrackEditingStrings.deleteDescription()
+            text = strings.deleteDescription()
         )
 
         Button(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = habitTrackEditingStrings.deleteButton(),
+            text = strings.deleteButton(),
             type = Button.Type.Dangerous,
             onClick = {
                 deletionShow = true
@@ -280,7 +280,7 @@ private fun Loaded(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .align(Alignment.End),
-            text = habitTrackEditingStrings.finishDescription()
+            text = strings.finishDescription()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -289,13 +289,13 @@ private fun Loaded(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.End),
-            text = habitTrackEditingStrings.finishButton(),
+            text = strings.finishButton(),
             type = Button.Type.Main,
             onClick = {
-                eventCountIncorrectReason = eventCount.habitTrackEventCountIncorrectReason()
-                if (eventCountIncorrectReason != null) return@Button
+                dailyEventCountIncorrectReason = dailyEventCount.habitEventRecordDailyEventCountIncorrectReason()
+                if (dailyEventCountIncorrectReason != null) return@Button
 
-                timeRangeIncorrectReason = selectedDateTimeRange.habitTrackTimeRangeIncorrectReason(
+                timeRangeIncorrectReason = selectedDateTimeRange.habitEventRecordTimeRangeIncorrectReason(
                     currentTime = AppData.dateTime.currentTimeState.value,
                     timeZone = timeZone
                 )
@@ -304,11 +304,11 @@ private fun Loaded(
                 val startTime = selectedDateTimeRange.start.toInstant(timeZone)
                 val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
 
-                habitTrackQueries.update(
+                habitEventRecordQueries.update(
                     id = habitTrack.id,
                     startTime = startTime,
                     endTime = endTime,
-                    eventCount = totalHabitTrackEventCountByDaily(eventCount, startTime, endTime, timeZone),
+                    eventCount = totalHabitEventRecordEventCountByDaily(dailyEventCount, startTime, endTime, timeZone),
                     comment = comment
                 )
                 navigator.pop()

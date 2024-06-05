@@ -2,8 +2,8 @@ package epicarchitect.breakbadhabits.ui.screen.habits.details
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import epicarchitect.breakbadhabits.data.HabitTrack
-import epicarchitect.breakbadhabits.data.resources.strings.HabitDetailsStrings
+import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.HabitEventRecord
 import epicarchitect.breakbadhabits.operation.datetime.duration
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateRange
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
@@ -28,23 +28,22 @@ data class HabitDetailsState(
 
 @Composable
 fun rememberHabitDetailsState(
-    habitTracks: List<HabitTrack>,
-    lastTrack: HabitTrack?,
+    habitEventRecords: List<HabitEventRecord>,
+    lastTrack: HabitEventRecord?,
     currentTime: Instant,
-    timeZone: TimeZone,
-    strings: HabitDetailsStrings
+    timeZone: TimeZone
 ): HabitDetailsState {
-    val failedRanges = remember(habitTracks) {
-        habitTracks.failedRanges()
+    val failedRanges = remember(habitEventRecords) {
+        habitEventRecords.failedRanges()
     }
-    val abstinenceRanges = remember(failedRanges, habitTracks, currentTime) {
+    val abstinenceRanges = remember(failedRanges, habitEventRecords, currentTime) {
         abstinenceRangesByFailedRanges(failedRanges, currentTime)
     }
     val abstinence = remember(lastTrack, currentTime) {
         lastTrack?.abstinence(currentTime)
     }
-    val calendarRanges = remember(habitTracks, timeZone) {
-        habitTracks.map {
+    val calendarRanges = remember(habitEventRecords, timeZone) {
+        habitEventRecords.map {
             it.timeRange.toLocalDateTimeRange(timeZone).toLocalDateRange().ascended()
         }
     }
@@ -52,20 +51,19 @@ fun rememberHabitDetailsState(
         abstinenceRanges.map { it.duration().inWholeSeconds.toFloat() }
     }
     val statisticsData = remember(
-        habitTracks,
+        habitEventRecords,
         abstinenceRanges,
         failedRanges,
         currentTime,
-        timeZone,
-        strings
+        timeZone
     ) {
         habitDetailsStatisticsData(
-            habitTracks = habitTracks,
+            habitEventRecords = habitEventRecords,
             abstinenceRanges = abstinenceRanges,
             failedRanges = failedRanges,
             currentTime = currentTime,
             timeZone = timeZone,
-            strings = strings
+            strings = AppData.resources.strings.habitDetailsStrings
         )
     }
 
