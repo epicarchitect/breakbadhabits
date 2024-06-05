@@ -4,6 +4,7 @@ import epicarchitect.breakbadhabits.data.HabitTrack
 import epicarchitect.breakbadhabits.data.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.operation.datetime.duration
 import epicarchitect.breakbadhabits.operation.datetime.monthOfYear
+import epicarchitect.breakbadhabits.operation.datetime.monthOfYearRange
 import epicarchitect.breakbadhabits.operation.datetime.mountsBetween
 import epicarchitect.breakbadhabits.operation.math.ranges.combineIntersections
 import kotlinx.datetime.Instant
@@ -49,22 +50,17 @@ fun List<HabitTrack>.filterByMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ) = filter {
-    monthOfYear in it.let {
-        it.startTime.monthOfYear(timeZone)..it.endTime.monthOfYear(timeZone)
-    }
+    monthOfYear in it.timeRange.monthOfYearRange(timeZone)
 }
 
-fun dailyHabitEventCount(
-    eventCount: Int,
-    startTime: Instant,
-    endTime: Instant,
-    timeZone: TimeZone
-): Int {
+val HabitTrack.timeRange get() = startTime..endTime
+
+fun HabitTrack.dailyEventCount(timeZone: TimeZone): Int {
     val days = startTime.daysUntil(endTime, timeZone) + 1
     return (eventCount.toFloat() / days).roundToInt()
 }
 
-fun eventCountByDaily(
+fun totalHabitTrackEventCountByDaily(
     dailyEventCount: Int,
     startTime: Instant,
     endTime: Instant,
@@ -90,7 +86,3 @@ fun List<HabitTrack>.groupByMonth(timeZone: TimeZone): Map<MonthOfYear, Collecti
 }
 
 fun HabitTrack.abstinence(currentTime: Instant) = (endTime..currentTime).duration()
-
-fun abstinenceDurationsInSeconds(
-    abstinenceRanges: List<ClosedRange<Instant>>
-) = abstinenceRanges.map { it.duration().inWholeSeconds }
