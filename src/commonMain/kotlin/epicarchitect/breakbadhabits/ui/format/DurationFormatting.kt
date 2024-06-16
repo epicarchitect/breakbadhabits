@@ -1,10 +1,10 @@
 package epicarchitect.breakbadhabits.ui.format
 
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.operation.datetime.onlyDays
-import epicarchitect.breakbadhabits.operation.datetime.onlyHours
-import epicarchitect.breakbadhabits.operation.datetime.onlyMinutes
-import epicarchitect.breakbadhabits.operation.datetime.onlySeconds
+import epicarchitect.breakbadhabits.operation.datetime.daysPart
+import epicarchitect.breakbadhabits.operation.datetime.hoursPart
+import epicarchitect.breakbadhabits.operation.datetime.minutesPart
+import epicarchitect.breakbadhabits.operation.datetime.secondsPart
 import kotlin.time.Duration
 
 enum class DurationFormattingAccuracy(val order: Int) {
@@ -15,36 +15,41 @@ enum class DurationFormattingAccuracy(val order: Int) {
 }
 
 fun Duration.formatted(
-    accuracy: DurationFormattingAccuracy
+    accuracy: DurationFormattingAccuracy = DurationFormattingAccuracy.DAYS
 ): String {
     val strings = AppData.resources.strings.durationFormattingStrings
     var result = ""
 
-    val appendDays = onlyDays != 0L
-    val appendHours = onlyHours != 0L && (!appendDays || accuracy.order > 1)
-    val appendMinutes = onlyMinutes != 0L && (!appendDays && !appendHours || accuracy.order > 2)
+    val daysPart = daysPart()
+    val hoursPart = hoursPart()
+    val minutesPart = minutesPart()
+    val secondsPart = secondsPart()
+
+    val appendDays = daysPart != 0L
+    val appendHours = hoursPart != 0L && (!appendDays || accuracy.order > 1)
+    val appendMinutes = minutesPart != 0L && (!appendDays && !appendHours || accuracy.order > 2)
     val appendSeconds = !appendDays && !appendHours && !appendMinutes || accuracy.order > 3
 
     if (appendDays) {
-        result += onlyDays
+        result += daysPart
         result += strings.daysText()
     }
 
     if (appendHours) {
         if (appendDays) result += " "
-        result += onlyHours
+        result += hoursPart
         result += strings.hoursText()
     }
 
     if (appendMinutes) {
         if (appendHours || appendDays) result += " "
-        result += onlyMinutes
+        result += minutesPart
         result += strings.minutesText()
     }
 
     if (appendSeconds) {
         if (appendMinutes || appendHours || appendDays) result += " "
-        result += onlySeconds
+        result += secondsPart
         result += strings.secondsText()
     }
 

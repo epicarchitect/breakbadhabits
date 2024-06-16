@@ -34,7 +34,7 @@ fun SingleSelectionChipRow(
         items.forEachIndexed { index, item ->
             val isSelected = selectedIndex == index
             Card(
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier.padding(horizontal = 4.dp),
                 backgroundColor = if (isSelected) {
                     AppTheme.colorScheme.primary
                 } else {

@@ -1,24 +1,23 @@
 package epicarchitect.breakbadhabits.ui.screen.habits.details
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -33,6 +32,7 @@ import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.Histogram
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.IconButton
+import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.Statistics
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.stateOfList
@@ -42,8 +42,8 @@ import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
 import epicarchitect.breakbadhabits.ui.format.formatted
 import epicarchitect.breakbadhabits.ui.screen.habits.editing.HabitEditingScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitEventRecordCreationScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.list.HabitEventRecordsScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.records.creation.HabitEventRecordCreationScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.records.list.HabitEventRecordsScreen
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
@@ -68,25 +68,47 @@ fun HabitDetails(habitId: Int) {
         state2 = stateOfList { habitEventRecordQueries.recordsByHabitId(habitId) },
         state3 = stateOfOneOrNull { habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habitId) }
     ) { habit, habitEventRecords, lastHabitEventRecord ->
-        if (habit != null) {
-            LoadedHabitDetails(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                habit = habit,
-                habitEventRecords = habitEventRecords,
-                lastHabitEventRecord = lastHabitEventRecord
-            )
+        val icons = AppData.resources.icons
+        val navigator = LocalNavigator.currentOrThrow
+        val scrollState = rememberScrollState()
+        val density = LocalDensity.current
+        val showNameInAppBar by remember {
+            derivedStateOf {
+                with(density) {
+                    scrollState.value.toDp() > 80.dp
+                }
+            }
+        }
+
+        SimpleScrollableScreen(
+            title = if (showNameInAppBar) habit?.name.orEmpty() else "",
+            scrollState = scrollState,
+            onBackClick = navigator::pop,
+            actions = {
+                if (habit != null) {
+                    IconButton(
+                        onClick = { navigator += HabitEditingScreen(habit.id) },
+                        icon = icons.commonIcons.settings
+                    )
+                }
+            }
+        ) {
+            if (habit != null) {
+                Content(
+                    habit = habit,
+                    habitEventRecords = habitEventRecords,
+                    lastHabitEventRecord = lastHabitEventRecord
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun LoadedHabitDetails(
+private fun Content(
     habit: Habit,
     habitEventRecords: List<HabitEventRecord>,
-    lastHabitEventRecord: HabitEventRecord?,
-    modifier: Modifier = Modifier
+    lastHabitEventRecord: HabitEventRecord?
 ) {
     val currentTime by AppData.dateTime.currentTimeState.collectAsState()
     val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
@@ -97,41 +119,47 @@ private fun LoadedHabitDetails(
         timeZone = timeZone
     )
 
-    Column(modifier) {
-        HabitSection(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            habit = habit,
-            state = state
-        )
+    Spacer(Modifier.height(16.dp))
 
-        CalendarCard(
+    HabitSection(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        habit = habit,
+        state = state
+    )
+
+    Spacer(Modifier.height(16.dp))
+
+    CalendarCard(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        habit = habit,
+        state = state
+    )
+
+    if (state.abstinenceHistogramValues.size > 2) {
+        Spacer(Modifier.height(16.dp))
+        HistogramCard(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
-            habit = habit,
             state = state
         )
-
-        if (state.abstinenceHistogramValues.size > 2) {
-            HistogramCard(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                state = state
-            )
-        }
-
-        if (state.statisticData.isNotEmpty()) {
-            StatisticsCard(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                state = state
-            )
-        }
     }
+
+    if (state.statisticData.isNotEmpty()) {
+        Spacer(Modifier.height(16.dp))
+        StatisticsCard(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
+            state = state
+        )
+    }
+
+    Spacer(Modifier.height(16.dp))
 }
 
 @Composable
@@ -145,27 +173,6 @@ private fun HabitSection(
     val navigator = LocalNavigator.currentOrThrow
 
     Column(modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth().height(40.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = navigator::pop
-            ) {
-                Icon(icons.commonIcons.navigationBack)
-            }
-
-            IconButton(
-                modifier = Modifier.padding(end = 8.dp),
-                onClick = {
-                    navigator += HabitEditingScreen(habit.id)
-                }
-            ) {
-                Icon(icons.commonIcons.settings)
-            }
-        }
-
         Icon(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)

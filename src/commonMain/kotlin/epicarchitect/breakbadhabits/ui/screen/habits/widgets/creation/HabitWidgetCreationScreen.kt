@@ -1,22 +1,16 @@
 package epicarchitect.breakbadhabits.ui.screen.habits.widgets.creation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,22 +22,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.operation.sqldelight.flowOfList
-import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.Checkbox
+import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
+import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.stateOfList
+import epicarchitect.breakbadhabits.ui.component.text.InputCard
 import epicarchitect.breakbadhabits.ui.component.text.Text
-import epicarchitect.breakbadhabits.ui.component.text.TextField
+import epicarchitect.breakbadhabits.ui.component.text.TextInputCard
 
 @Composable
-fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
+fun HabitWidgetCreation(
+    systemWidgetId: Int,
+    onDone: () -> Unit
+) {
     val strings = AppData.resources.strings.habitWidgetCreationStrings
-    val habitQueries = AppData.database.habitQueries
-    val habitWidgetQueries = AppData.database.habitWidgetQueries
 
-    val habits by remember {
-        habitQueries.habits().flowOfList()
-    }.collectAsState(emptyList())
+    FlowStateContainer(
+        state = stateOfList { AppData.database.habitQueries.habits() }
+    ) {
+        Column {
+            SimpleTopAppBar(title = strings.title())
+            Content(
+                habits = it,
+                systemWidgetId = systemWidgetId,
+                onDone = onDone
+            )
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.Content(
+    habits: List<Habit>,
+    systemWidgetId: Int,
+    onDone: () -> Unit
+) {
+    val strings = AppData.resources.strings.habitWidgetCreationStrings
+    val habitWidgetQueries = AppData.database.habitWidgetQueries
 
     val selectedHabitIds = remember {
         mutableStateListOf<Int>()
@@ -52,46 +68,31 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
         mutableStateOf("")
     }
 
-    Column(
+    Spacer(modifier = Modifier.height(16.dp))
+
+    TextInputCard(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        title = strings.nameTitle(),
+        description = strings.nameDescription(),
+        value = widgetTitle,
+        onValueChange = {
+            widgetTitle = it
+        }
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    InputCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f, fill = false)
+            .padding(horizontal = 16.dp),
+        title = "Habits",
+        description = strings.habitsDescription()
     ) {
-        Text(
-            text = strings.title(),
-            type = Text.Type.Title,
-            priority = Text.Priority.High
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = strings.nameDescription()
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = strings.title(),
-            value = widgetTitle,
-            onValueChange = {
-                widgetTitle = it
-            }
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = strings.habitsDescription()
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(bottom = 16.dp)
-        ) {
+        LazyColumn {
             items(habits, key = { it.id }) { habit ->
                 HabitItem(
                     habit = habit,
@@ -106,56 +107,47 @@ fun HabitWidgetCreation(systemWidgetId: Int, onDone: () -> Unit) {
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            modifier = Modifier.align(Alignment.End),
-            text = strings.finishButton(),
-            type = Button.Type.Main,
-            onClick = {
-                habitWidgetQueries.insert(
-                    title = widgetTitle,
-                    habitIds = selectedHabitIds,
-                    systemId = systemWidgetId
-                )
-                onDone()
-            }
-        )
     }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+        modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.End),
+        text = strings.finishButton(),
+        type = Button.Type.Main,
+        onClick = {
+            habitWidgetQueries.insert(
+                title = widgetTitle,
+                habitIds = selectedHabitIds,
+                systemId = systemWidgetId
+            )
+            onDone()
+        }
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun LazyItemScope.HabitItem(
+private fun HabitItem(
     habit: Habit,
     checked: Boolean,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateItemPlacement()
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(4.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onClick)
-        ) {
-            Row(
-                modifier = Modifier.padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = checked,
-                    onCheckedChange = { onClick() }
-                )
+        Checkbox(
+            checked = checked,
+            onCheckedChange = { onClick() }
+        )
 
-                Text(
-                    modifier = Modifier.padding(start = 4.dp),
-                    text = habit.name
-                )
-            }
-        }
+        Text(
+            modifier = Modifier.padding(start = 4.dp),
+            text = habit.name
+        )
     }
 }

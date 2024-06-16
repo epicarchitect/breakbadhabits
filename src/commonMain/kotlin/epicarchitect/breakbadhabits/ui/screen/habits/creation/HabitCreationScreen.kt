@@ -1,15 +1,12 @@
 package epicarchitect.breakbadhabits.ui.screen.habits.creation
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -31,17 +28,17 @@ import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameInco
 import epicarchitect.breakbadhabits.operation.habits.validation.habitEventRecordDailyEventCountIncorrectReason
 import epicarchitect.breakbadhabits.operation.habits.validation.habitNewNameIncorrectReason
 import epicarchitect.breakbadhabits.ui.component.Icon
-import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
+import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionGrid
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.regex.Regexps
-import epicarchitect.breakbadhabits.ui.component.text.Text
-import epicarchitect.breakbadhabits.ui.component.text.TextField
+import epicarchitect.breakbadhabits.ui.component.text.InputCard
+import epicarchitect.breakbadhabits.ui.component.text.TextInputCard
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
-enum class HabitCreationTime(val offset: Duration) {
+enum class HabitDuration(val duration: Duration) {
     MONTH_1(30.days),
     MONTH_3(90.days),
     MONTH_6(180.days),
@@ -67,6 +64,19 @@ class HabitCreationScreen : Screen {
 @Composable
 fun HabitCreation() {
     val strings = AppData.resources.strings.habitCreationStrings
+    val navigator = LocalNavigator.currentOrThrow
+
+    SimpleScrollableScreen(
+        title = strings.titleText(),
+        onBackClick = navigator::pop
+    ) {
+        Content()
+    }
+}
+
+@Composable
+private fun ColumnScope.Content() {
+    val strings = AppData.resources.strings.habitCreationStrings
     val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
@@ -81,61 +91,40 @@ fun HabitCreation() {
         icons.habitIcons.getById(selectedIconId)
     }
 
-    var selectedHabitTimeIndex by rememberSaveable { mutableIntStateOf(0) }
+    var selectedHabitDurationIndex by rememberSaveable { mutableIntStateOf(0) }
 
     var dailyEventCount by rememberSaveable { mutableIntStateOf(0) }
     var dailyEventCountIncorrectReason by remember {
         mutableStateOf<HabitEventRecordDailyEventCountIncorrectReason?>(null)
     }
 
-    Column(
+    Spacer(Modifier.height(16.dp))
+
+    TextInputCard(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        title = strings.habitNameTitle(),
+        value = habitName,
+        onValueChange = {
+            habitName = it
+            habitNameIncorrectReason = null
+        },
+        error = habitNameIncorrectReason?.let(strings::habitNameValidationError),
+        description = strings.habitNameDescription()
+    )
+
+    Spacer(Modifier.height(16.dp))
+
+    InputCard(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        title = strings.habitIconTitle(),
+        description = strings.habitIconDescription()
     ) {
-        SimpleTopAppBar(
-            title = strings.titleText(),
-            onBackClick = navigator::pop
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = strings.habitNameDescription(),
-            type = Text.Type.Description,
-            priority = Text.Priority.Medium
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        TextField(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            value = habitName,
-            onValueChange = {
-                habitName = it
-                habitNameIncorrectReason = null
-            },
-            label = strings.habitNameLabel(),
-            error = habitNameIncorrectReason?.let(strings::habitNameValidationError),
-            description = strings.habitNameDescription()
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = strings.habitIconDescription(),
-            type = Text.Type.Description,
-            priority = Text.Priority.Medium
-        )
-
-        Spacer(Modifier.height(12.dp))
-
         SingleSelectionGrid(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(it),
             items = icons.habitIcons,
             selectedItem = selectedIcon,
             cell = { icon ->
@@ -148,97 +137,85 @@ fun HabitCreation() {
                 selectedIconId = it.id
             }
         )
-
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = strings.habitTimeDescription(),
-            type = Text.Type.Description,
-            priority = Text.Priority.Medium
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        SingleSelectionChipRow(
-            items = HabitCreationTime.entries.map(strings::habitTime),
-            onClick = {
-                selectedHabitTimeIndex = it
-            },
-            selectedIndex = selectedHabitTimeIndex,
-            edgePadding = 16.dp
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = strings.trackEventCountDescription(),
-            type = Text.Type.Description,
-            priority = Text.Priority.Medium
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        TextField(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            value = dailyEventCount.toString(),
-            onValueChange = {
-                dailyEventCount = it.toIntOrNull() ?: 0
-                dailyEventCountIncorrectReason = null
-            },
-            error = dailyEventCountIncorrectReason?.let(strings::trackEventCountError),
-            label = strings.trackEventCountLabel(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            ),
-            regex = Regexps.integersOrEmpty(maxCharCount = 4)
-        )
-
-        Spacer(modifier = Modifier.weight(1.0f))
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .align(Alignment.End),
-            onClick = {
-                habitNameIncorrectReason = habitName.habitNewNameIncorrectReason(
-                    maxLength = AppData.habitsConfig.maxHabitNameLength,
-                    nameIsExists = { habitQueries.countWithName(it).executeAsOne() > 0L }
-                )
-                if (habitNameIncorrectReason != null) return@Button
-
-                dailyEventCountIncorrectReason = dailyEventCount.habitEventRecordDailyEventCountIncorrectReason()
-                if (dailyEventCountIncorrectReason != null) return@Button
-
-                val selectedHabitTime = HabitCreationTime.entries[selectedHabitTimeIndex]
-                val endTime = AppData.dateTime.currentTimeState.value
-                val timeZone = AppData.dateTime.currentTimeZoneState.value
-                val startTime = endTime - selectedHabitTime.offset + 1.days // fix offset
-
-                habitQueries.insertWithEventRecord(
-                    habitName = habitName,
-                    habitIconId = selectedIconId,
-                    trackEventCount = totalHabitEventRecordEventCountByDaily(
-                        dailyEventCount = dailyEventCount,
-                        startTime = startTime,
-                        endTime = endTime,
-                        timeZone = timeZone
-                    ),
-                    trackStartTime = startTime,
-                    trackEndTime = endTime
-                )
-                navigator.pop()
-            },
-            text = strings.finishButtonText(),
-            type = Button.Type.Main,
-            icon = { Icon(icons.commonIcons.done) }
-        )
-
-        Spacer(Modifier.height(16.dp))
     }
+
+    Spacer(Modifier.height(16.dp))
+
+    InputCard(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        title = strings.habitDurationTitle(),
+        description = strings.habitDurationDescription()
+    ) {
+        SingleSelectionChipRow(
+            items = HabitDuration.entries.map(strings::habitDuration),
+            onClick = { selectedHabitDurationIndex = it },
+            selectedIndex = selectedHabitDurationIndex
+        )
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    TextInputCard(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        title = strings.habitEventCountTitle(),
+        description = strings.trackEventCountDescription(),
+        error = dailyEventCountIncorrectReason?.let(strings::trackEventCountError),
+        value = dailyEventCount.toString(),
+        onValueChange = {
+            dailyEventCount = it.toIntOrNull() ?: 0
+            dailyEventCountIncorrectReason = null
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number
+        ),
+        regex = Regexps.integersOrEmpty(maxCharCount = 4)
+    )
+
+    Spacer(modifier = Modifier.weight(1.0f))
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .align(Alignment.End),
+        onClick = {
+            habitNameIncorrectReason = habitName.habitNewNameIncorrectReason(
+                maxLength = AppData.habitsConfig.maxHabitNameLength,
+                nameIsExists = { habitQueries.countWithName(it).executeAsOne() > 0L }
+            )
+            if (habitNameIncorrectReason != null) return@Button
+
+            dailyEventCountIncorrectReason = dailyEventCount.habitEventRecordDailyEventCountIncorrectReason()
+            if (dailyEventCountIncorrectReason != null) return@Button
+
+            val selectedHabitTime = HabitDuration.entries[selectedHabitDurationIndex]
+            val timeZone = AppData.dateTime.currentTimeZoneState.value
+            val endTime = AppData.dateTime.currentTimeState.value
+            val startTime = (endTime - selectedHabitTime.duration + 1.days)
+
+            habitQueries.insertWithEventRecord(
+                habitName = habitName,
+                habitIconId = selectedIconId,
+                trackEventCount = totalHabitEventRecordEventCountByDaily(
+                    dailyEventCount = dailyEventCount,
+                    startTime = startTime,
+                    endTime = endTime,
+                    timeZone = timeZone
+                ),
+                trackStartTime = startTime,
+                trackEndTime = endTime
+            )
+            navigator.pop()
+        },
+        text = strings.finishButtonText(),
+        type = Button.Type.Main,
+        icon = { Icon(icons.commonIcons.done) }
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
 }

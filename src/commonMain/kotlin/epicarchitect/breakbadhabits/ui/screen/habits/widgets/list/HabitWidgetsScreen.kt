@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -24,6 +26,7 @@ import epicarchitect.breakbadhabits.data.HabitWidget
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
+import epicarchitect.breakbadhabits.ui.component.animatedShadowElevation
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.screen.habits.widgets.editing.HabitWidgetEditingScreen
@@ -43,9 +46,12 @@ fun HabitAppWidgets() {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        val listState = rememberLazyListState()
+        val shadowElevation by listState.animatedShadowElevation()
         SimpleTopAppBar(
             title = strings.title(),
             onBackClick = navigator::pop,
+            shadowElevation = shadowElevation
         )
 
         FlowStateContainer(
@@ -65,6 +71,7 @@ fun HabitAppWidgets() {
                 }
             } else {
                 LazyColumn(
+                    state = listState,
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,

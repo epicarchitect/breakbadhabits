@@ -7,11 +7,6 @@ plugins {
 }
 
 kotlin {
-//    @Suppress("OPT_IN_USAGE")
-//    compilerOptions {
-//        freeCompilerArgs = listOf("-Xexpect-actual-classes")
-//    }
-
     jvmToolchain(17)
 
     androidTarget()

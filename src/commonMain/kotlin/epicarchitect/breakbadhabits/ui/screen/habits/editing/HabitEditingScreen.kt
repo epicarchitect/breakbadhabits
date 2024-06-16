@@ -1,18 +1,15 @@
 package epicarchitect.breakbadhabits.ui.screen.habits.editing
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,16 +23,19 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.data.Habit
 import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
 import epicarchitect.breakbadhabits.operation.habits.validation.habitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.Dialog
+import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.Icon
-import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
+import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionGrid
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
+import epicarchitect.breakbadhabits.ui.component.text.InputCard
 import epicarchitect.breakbadhabits.ui.component.text.Text
-import epicarchitect.breakbadhabits.ui.component.text.TextField
+import epicarchitect.breakbadhabits.ui.component.text.TextInputCard
 import epicarchitect.breakbadhabits.ui.screen.dashboard.DashboardScreen
 
 class HabitEditingScreen(private val habitId: Int) : Screen {
@@ -50,99 +50,68 @@ fun HabitEditing(habitId: Int) {
     val navigator = LocalNavigator.currentOrThrow
     val habitQueries = AppData.database.habitQueries
     val strings = AppData.resources.strings.habitEditingStrings
-    val icons = AppData.resources.icons
 
-    val initialHabit by remember(habitId) { habitQueries.habitById(habitId).flowOfOneOrNull() }.collectAsState(null)
-
-    var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit?.name ?: "") }
-    var habitNameIncorrectReason by remember { mutableStateOf<HabitNewNameIncorrectReason?>(null) }
-    var selectedIconId by rememberSaveable(initialHabit) { mutableIntStateOf(initialHabit?.iconId ?: 0) }
-
-    var deletionShow by remember { mutableStateOf(false) }
-    if (deletionShow) {
-        Dialog(onDismiss = { deletionShow = false }) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = strings.deleteConfirmation(),
-                    type = Text.Type.Description,
-                    priority = Text.Priority.High
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.align(Alignment.End)
-                ) {
-                    Button(
-                        text = strings.cancel(),
-                        onClick = {
-                            deletionShow = false
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Button(
-                        text = strings.yes(),
-                        type = Button.Type.Main,
-                        onClick = {
-                            habitQueries.deleteById(habitId)
-                            navigator.popUntil { it is DashboardScreen }
-                        }
-                    )
-                }
+    FlowStateContainer(
+        state = stateOfOneOrNull { habitQueries.habitById(habitId) }
+    ) { habit ->
+        SimpleScrollableScreen(
+            title = strings.titleText(),
+            onBackClick = navigator::pop
+        ) {
+            if (habit != null) {
+                Content(habit)
             }
         }
     }
+}
 
-    Column(
+
+@Composable
+private fun ColumnScope.Content(initialHabit: Habit) {
+    val navigator = LocalNavigator.currentOrThrow
+    val habitQueries = AppData.database.habitQueries
+    val strings = AppData.resources.strings.habitEditingStrings
+    val icons = AppData.resources.icons
+
+    var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit.name) }
+    var habitNameIncorrectReason by remember { mutableStateOf<HabitNewNameIncorrectReason?>(null) }
+    var selectedIconId by rememberSaveable(initialHabit) { mutableIntStateOf(initialHabit.iconId) }
+
+    var deletionShow by remember { mutableStateOf(false) }
+    if (deletionShow) {
+        DeletionDialog(
+            habit = initialHabit,
+            onDismiss = { deletionShow = false }
+        )
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    TextInputCard(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        value = habitName,
+        onValueChange = {
+            habitName = it
+            habitNameIncorrectReason = null
+        },
+        title = strings.habitNameTitle(),
+        description = strings.habitNameDescription(),
+        error = habitNameIncorrectReason?.let(strings::habitNameValidationError)
+    )
+
+    Spacer(Modifier.height(16.dp))
+
+    InputCard(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        title = "Icon",
+        description = strings.habitIconDescription()
     ) {
-        SimpleTopAppBar(
-            title = strings.titleText(),
-            onBackClick = navigator::pop,
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = strings.habitNameDescription()
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        TextField(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            value = habitName,
-            onValueChange = {
-                habitName = it
-                habitNameIncorrectReason = null
-            },
-            label = strings.habitNameLabel(),
-            error = habitNameIncorrectReason?.let(strings::habitNameValidationError),
-            description = strings.habitNameDescription()
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = strings.habitIconDescription(),
-            type = Text.Type.Description,
-            priority = Text.Priority.Medium
-        )
-
-        Spacer(Modifier.height(12.dp))
-
         SingleSelectionGrid(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(it),
             items = icons.habitIcons,
             selectedItem = icons.habitIcons.getById(selectedIconId),
             cell = { icon ->
@@ -155,53 +124,90 @@ fun HabitEditing(habitId: Int) {
                 selectedIconId = it.id
             }
         )
+    }
 
-        Spacer(Modifier.height(24.dp))
+    Spacer(Modifier.height(16.dp))
 
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = strings.deleteDescription()
-        )
+    Button(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        text = strings.deleteButton(),
+        type = Button.Type.Dangerous,
+        onClick = {
+            deletionShow = true
+        }
+    )
 
-        Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.weight(1.0f))
 
-        Button(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = strings.deleteButton(),
-            type = Button.Type.Dangerous,
-            onClick = {
-                deletionShow = true
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .align(Alignment.End),
+        onClick = {
+            habitNameIncorrectReason = habitName.habitNewNameIncorrectReason(
+                initialName = initialHabit.name,
+                maxLength = AppData.habitsConfig.maxHabitNameLength,
+                nameIsExists = { AppData.database.habitQueries.countWithName(it).executeAsOne() > 0L }
+            )
+            if (habitNameIncorrectReason != null) return@Button
+
+            habitQueries.update(
+                id = initialHabit.id,
+                name = habitName,
+                iconId = selectedIconId
+            )
+            navigator.pop()
+        },
+        text = strings.finishButtonText(),
+        type = Button.Type.Main,
+        icon = { Icon(icons.commonIcons.done) }
+    )
+
+    Spacer(Modifier.height(16.dp))
+}
+
+@Composable
+private fun DeletionDialog(
+    habit: Habit,
+    onDismiss: () -> Unit
+) {
+    val navigator = LocalNavigator.currentOrThrow
+    val habitQueries = AppData.database.habitQueries
+    val strings = AppData.resources.strings.habitEditingStrings
+
+    Dialog(onDismiss) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = strings.deleteConfirmation(),
+                type = Text.Type.Description,
+                priority = Text.Priority.High
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Button(
+                    text = strings.cancel(),
+                    onClick = onDismiss
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Button(
+                    text = strings.yes(),
+                    type = Button.Type.Main,
+                    onClick = {
+                        habitQueries.deleteById(habit.id)
+                        navigator.popUntil { it is DashboardScreen }
+                    }
+                )
             }
-        )
-
-        Spacer(modifier = Modifier.weight(1.0f))
-
-        Spacer(modifier = Modifier.height(48.dp))
-
-        Button(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.End),
-            onClick = {
-                habitNameIncorrectReason = habitName.habitNewNameIncorrectReason(
-                    initialName = initialHabit!!.name,
-                    maxLength = AppData.habitsConfig.maxHabitNameLength,
-                    nameIsExists = { AppData.database.habitQueries.countWithName(it).executeAsOne() > 0L }
-                )
-                if (habitNameIncorrectReason != null) return@Button
-
-                habitQueries.update(
-                    id = habitId,
-                    name = habitName,
-                    iconId = selectedIconId
-                )
-                navigator.pop()
-            },
-            text = strings.finishButtonText(),
-            type = Button.Type.Main,
-            icon = { Icon(icons.commonIcons.done) }
-        )
-
-        Spacer(Modifier.height(16.dp))
+        }
     }
 }

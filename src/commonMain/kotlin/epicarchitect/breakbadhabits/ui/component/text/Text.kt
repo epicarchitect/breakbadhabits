@@ -3,6 +3,7 @@ package epicarchitect.breakbadhabits.ui.component.text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material3.Text as MaterialText
@@ -37,10 +38,12 @@ fun Text(
     priority: Text.Priority = Text.Priority.Default,
     textAlign: TextAlign? = null,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
+    color: Color = Color.Unspecified
 ) {
     MaterialText(
         modifier = modifier,
+        color = color,
         text = text.toString(),
         style = when (type) {
             Text.Type.Title -> when (priority) {

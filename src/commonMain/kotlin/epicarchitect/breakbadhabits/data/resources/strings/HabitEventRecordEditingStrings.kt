@@ -7,7 +7,7 @@ interface HabitEventRecordEditingStrings {
     fun dailyEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason): String
     fun titleText(habitName: String): String
     fun commentDescription(): String
-    fun commentLabel(): String
+    fun commentTitle(): String
     fun finishDescription(): String
     fun finishButton(): String
     fun deleteConfirmation(): String
@@ -19,12 +19,13 @@ interface HabitEventRecordEditingStrings {
     fun dailyEventCountLabel(): String
     fun timeRangeDescription(): String
     fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason): String
+    fun timeRangeTitle(): String
 }
 
 class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
-    override fun titleText(habitName: String) = "Редактирование записи (${habitName})"
+    override fun titleText(habitName: String) = "Редактирование записи — ${habitName}"
     override fun commentDescription() = "Вы можете написать комментарий, но это не обязательно."
-    override fun commentLabel() = "Комментарий"
+    override fun commentTitle() = "Комментарий"
     override fun finishDescription() = "Вы всегда сможете изменить или удалить эту запись."
     override fun finishButton() = "Сохранить изменения"
     override fun deleteConfirmation() = "Вы уверены, что хотите удалить эту запись?"
@@ -40,15 +41,18 @@ class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
     override fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason) = when (reason) {
         HabitEventRecordTimeRangeIncorrectReason.BiggestThenCurrentTime -> "Дата и время не могут быть больше текущего времени."
     }
+
+    override fun timeRangeTitle() = "Временной диапазон"
+
     override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки каждый день"
     override fun dailyEventCountLabel() = "Число событий в день"
     override fun timeRangeDescription() = "Укажите когда произошло событие"
 }
 
 class EnglishHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
-    override fun titleText(habitName: String) = "Editing a record ($habitName)"
+    override fun titleText(habitName: String) = "Editing a record — $habitName"
     override fun commentDescription() = "You can write a comment, but you don't have to."
-    override fun commentLabel() = "Comment"
+    override fun commentTitle() = "Comment"
     override fun finishDescription() = "You can always change or delete this record."
     override fun finishButton() = "Save changes"
     override fun deleteConfirmation() = "Are you sure you want to delete this record?"
@@ -64,6 +68,7 @@ class EnglishHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
     override fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason) = when (reason) {
         HabitEventRecordTimeRangeIncorrectReason.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
     }
+    override fun timeRangeTitle() = "Time range"
     override fun dailyEventCountDescription() = "Indicate approximately how many habit events there were each day"
     override fun dailyEventCountLabel() = "Number of events per day"
     override fun timeRangeDescription() = "Indicate when the event occurred"

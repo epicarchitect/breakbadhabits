@@ -5,7 +5,7 @@ import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameInco
 interface HabitEditingStrings {
     fun titleText(): String
     fun habitNameDescription(): String
-    fun habitNameLabel(): String
+    fun habitNameTitle(): String
     fun habitIconDescription(): String
     fun finishButtonText(): String
     fun habitNameValidationError(reason: HabitNewNameIncorrectReason): String
@@ -19,7 +19,7 @@ interface HabitEditingStrings {
 class RussianHabitEditingStrings : HabitEditingStrings {
     override fun titleText() = "Редактирование привычки"
     override fun habitNameDescription() = "Введите название привычки, например курение."
-    override fun habitNameLabel() = "Название привычки"
+    override fun habitNameTitle() = "Название привычки"
     override fun habitIconDescription() = "Выберите подходящую иконку для привычки."
     override fun finishButtonText() = "Сохранить изменения"
     override fun habitNameValidationError(reason: HabitNewNameIncorrectReason) = when (reason) {
@@ -40,7 +40,7 @@ class RussianHabitEditingStrings : HabitEditingStrings {
 class EnglishHabitEditingStrings : HabitEditingStrings {
     override fun titleText() = "Editing a habit"
     override fun habitNameDescription() = "Enter a name for the habit, such as smoking."
-    override fun habitNameLabel() = "Habit name"
+    override fun habitNameTitle() = "Habit name"
     override fun habitIconDescription() = "Choose the appropriate icon for the habit."
     override fun finishButtonText() = "Save changes"
     override fun habitNameValidationError(reason: HabitNewNameIncorrectReason) = when (reason) {

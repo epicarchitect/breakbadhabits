@@ -7,13 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,6 +33,7 @@ import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.IconButton
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
+import epicarchitect.breakbadhabits.ui.component.animatedShadowElevation
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
@@ -41,7 +43,7 @@ import epicarchitect.breakbadhabits.ui.format.formatted
 import epicarchitect.breakbadhabits.ui.screen.appSettings.AppSettingsScreen
 import epicarchitect.breakbadhabits.ui.screen.habits.creation.HabitCreationScreen
 import epicarchitect.breakbadhabits.ui.screen.habits.details.HabitDetailsScreen
-import epicarchitect.breakbadhabits.ui.screen.habits.tracks.creation.HabitEventRecordCreationScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.records.creation.HabitEventRecordCreationScreen
 
 class DashboardScreen : Screen {
     @Composable
@@ -57,53 +59,65 @@ fun Dashboard() {
     val icons = AppData.resources.icons
     val habitQueries = AppData.database.habitQueries
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-    ) {
+    FlowStateContainer(
+        state = stateOfList { habitQueries.habits() }
+    ) { items ->
         Column {
+            val listState = rememberLazyListState()
+            val shadowElevation by listState.animatedShadowElevation()
+
             SimpleTopAppBar(
                 modifier = Modifier.fillMaxWidth(),
                 title = strings.titleText(),
+                shadowElevation = shadowElevation,
                 actions = {
                     IconButton(
                         onClick = { navigator += AppSettingsScreen() },
                         icon = icons.commonIcons.settings
                     )
-                    Spacer(modifier = Modifier.padding(start = 8.dp))
                 }
             )
+            Content(listState, items)
+        }
+    }
+}
 
-            FlowStateContainer(
-                state = stateOfList { habitQueries.habits() }
-            ) { items ->
-                if (items.isEmpty()) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(16.dp),
-                            textAlign = TextAlign.Center,
-                            text = strings.emptyHabitsText()
-                        )
-                    }
-                } else {
-                    LazyColumn(
-                        contentPadding = PaddingValues(
-                            start = 16.dp,
-                            end = 16.dp,
-                            top = 8.dp,
-                            bottom = 100.dp
-                        ),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(
-                            items = items,
-                            key = { it.id }
-                        ) { item ->
-                            HabitCard(item)
-                        }
-                    }
+@Composable
+private fun Content(
+    listState: LazyListState,
+    items: List<Habit>
+) {
+    val navigator = LocalNavigator.currentOrThrow
+    val strings = AppData.resources.strings.dashboardStrings
+    val icons = AppData.resources.icons
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        if (items.isEmpty()) {
+            Text(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.Center),
+                textAlign = TextAlign.Center,
+                text = strings.emptyHabitsText()
+            )
+        } else {
+            LazyColumn(
+                state = listState,
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 16.dp,
+                    bottom = 100.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(
+                    items = items,
+                    key = { it.id }
+                ) { item ->
+                    HabitCard(item)
                 }
             }
         }
@@ -126,6 +140,7 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
     val navigator = LocalNavigator.currentOrThrow
     val strings = AppData.resources.strings.dashboardStrings
     val icons = AppData.resources.icons
+
     Card(
         modifier = Modifier
             .fillMaxWidth()

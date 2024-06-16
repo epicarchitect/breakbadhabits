@@ -120,7 +120,7 @@ fun <T> SingleSelectionGrid(
                                     AppTheme.colorScheme.surface
                                 }
                             ),
-                            elevation = CardDefaults.cardElevation(0.5f.dp)
+                            elevation = CardDefaults.cardElevation(0.dp)
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),

@@ -42,16 +42,7 @@ fun Button(
         modifier = modifier,
         enabled = enabled,
         shape = CircleShape,
-        elevation = when (type) {
-            Button.Type.Main -> ButtonDefaults.buttonElevation(
-                defaultElevation = 3.dp,
-                pressedElevation = 1.dp,
-                focusedElevation = 1.dp,
-                hoveredElevation = 1.dp
-            )
-
-            else -> ButtonDefaults.buttonElevation(1.dp)
-        },
+        elevation = ButtonDefaults.buttonElevation(1.dp),
         border = if (type == Button.Type.Dangerous) {
             BorderStroke(
                 width = 0.5f.dp,

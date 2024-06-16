@@ -1,223 +1,146 @@
 package epicarchitect.breakbadhabits.ui.component
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.data.resources.icons.Icon
-import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.text.Text
-
-object ScreenBasis {
-
-    sealed interface ActionButton {
-        @Composable
-        fun Content()
-    }
-
-    data class FloatingActionButton(
-        private val icon: Icon?,
-        private val title: String,
-        private val onClick: () -> Unit
-    ) : ActionButton {
-        @Composable
-        override fun Content() {
-            Button(
-                onClick = onClick,
-                text = title,
-                type = Button.Type.Main,
-                icon = icon?.let {
-                    {
-                        Icon(it)
-                    }
-                }
-            )
-        }
-    }
-
-    data class IconActionButton(
-        private val icon: Icon,
-        private val onClick: () -> Unit
-    ) : ActionButton {
-        @Composable
-        override fun Content() {
-            IconButton(
-                icon = icon,
-                onClick = onClick
-            )
-        }
-    }
-
-    data class BackActionButton(
-        private val onClick: () -> Unit
-    ) : ActionButton {
-        @Composable
-        override fun Content() {
-            IconButton(
-                icon = AppData.resources.icons.commonIcons.arrowLeft,
-                onClick = onClick
-            )
-        }
-    }
-
-    sealed interface TopBar {
-        @Composable
-        fun Content()
-    }
-
-    data class TitleTopBar(
-        private val title: String,
-        private val rightActionButton: ActionButton? = null,
-        private val leftActionButton: ActionButton? = null,
-    ) : TopBar {
-
-        @Composable
-        override fun Content() {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                content = {
-                    leftActionButton?.Content()
-                    Text(
-                        text = title,
-                        type = Text.Type.Title,
-                        priority = Text.Priority.High
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    rightActionButton?.Content()
-                }
-            )
-        }
-    }
-
-    data class CustomTopBar(
-        private val content: @Composable RowScope.() -> Unit,
-        private val rightActionButton: ActionButton? = null,
-        private val leftActionButton: ActionButton? = null,
-    ) : TopBar {
-
-        @Composable
-        override fun Content() {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                content = {
-                    leftActionButton?.Content()
-                    content()
-                    Spacer(modifier = Modifier.weight(1f))
-                    rightActionButton?.Content()
-                }
-            )
-        }
-    }
-}
+import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 
 @Composable
 fun SimpleTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
+    shadowElevation: Dp = 0.dp,
     onBackClick: (() -> Unit)? = null,
     actions: @Composable () -> Unit = {}
 ) {
-    Row(
-        modifier = modifier.height(40.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        modifier = Modifier.zIndex(2f).then(modifier),
+        shadowElevation = shadowElevation,
+        color = AppTheme.colorScheme.background
     ) {
-        if (onBackClick != null) {
-            IconButton(
-                icon = AppData.resources.icons.commonIcons.navigationBack,
-                onClick = onBackClick
-            )
-        } else {
-            Spacer(modifier = Modifier.padding(start = 24.dp))
+        Row(
+            modifier = Modifier.height(46.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (onBackClick != null) {
+                IconButton(
+                    icon = AppData.resources.icons.commonIcons.navigationBack,
+                    onClick = onBackClick
+                )
+            } else {
+                Spacer(modifier = Modifier.padding(start = 24.dp))
+            }
+
+            AnimatedContent(
+                targetState = title,
+                transitionSpec = {
+                    fadeIn(tween(220)).togetherWith(fadeOut(tween(220)))
+                }
+            ) {
+                Text(
+                    text = it,
+                    type = Text.Type.Title
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            actions()
         }
-
-        Text(
-            text = title,
-            type = Text.Type.Title
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        actions()
     }
 }
 
 @Composable
-fun ScreenBasis(
-    modifier: Modifier = Modifier,
-    contentModifier: Modifier = Modifier,
-    topBar: ScreenBasis.TopBar? = null,
-    floatingActionButton: ScreenBasis.ActionButton? = null,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Scaffold(
-        modifier = modifier,
-        floatingActionButton = {
-            floatingActionButton?.Content()
-        },
-        topBar = {
-            topBar?.Content()
-        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .then(contentModifier),
-                content = content
-            )
+fun ScrollState.animatedShadowElevation(
+    triggerScrollValue: Dp = 16.dp,
+    targetValue: Dp = 2.dp
+): State<Dp> {
+    val density = LocalDensity.current
+
+    val showShadow by remember {
+        derivedStateOf {
+            with(density) {
+                value.toDp() >= triggerScrollValue
+            }
         }
+    }
+    return animateDpAsState(
+        targetValue = if (showShadow) targetValue else 0.dp
     )
 }
 
-data class FloatingActionButtonConfig(
-    val text: String,
-    val onClick: () -> Unit
-)
+@Composable
+fun LazyListState.animatedShadowElevation(
+    triggerScrollValue: Dp = 16.dp,
+    shadowElevation: Dp = 2.dp
+): State<Dp> {
+    val density = LocalDensity.current
+
+    val showShadow by remember {
+        derivedStateOf {
+            with(density) {
+                firstVisibleItemIndex > 0 ||
+                    -(layoutInfo.visibleItemsInfo.firstOrNull()?.offset?.toDp() ?: 0.dp) > triggerScrollValue
+            }
+        }
+    }
+    return animateDpAsState(
+        targetValue = if (showShadow) shadowElevation else 0.dp
+    )
+}
 
 @Composable
-fun ScreenBasis(
+fun SimpleScrollableScreen(
+    title: String,
     modifier: Modifier = Modifier,
-    contentModifier: Modifier = Modifier,
-    topBar: ScreenBasis.TopBar? = null,
-    floatingActionButtonConfig: FloatingActionButtonConfig? = null,
-    content: @Composable (PaddingValues) -> Unit
+    scrollState: ScrollState = rememberScrollState(),
+    onBackClick: (() -> Unit)? = null,
+    actions: @Composable () -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    Scaffold(
-        modifier = modifier,
-        floatingActionButton = {
-            if (floatingActionButtonConfig != null) {
-                Button(
-                    onClick = floatingActionButtonConfig.onClick,
-                    text = floatingActionButtonConfig.text
-                )
-            }
-        },
-        topBar = {
-            topBar?.Content()
-        },
-        content = content
-    )
+    Column(modifier) {
+        val shadowElevation by scrollState.animatedShadowElevation()
+
+        SimpleTopAppBar(
+            title = title,
+            shadowElevation = shadowElevation,
+            onBackClick = onBackClick,
+            actions = actions
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState),
+            content = content
+        )
+    }
 }
