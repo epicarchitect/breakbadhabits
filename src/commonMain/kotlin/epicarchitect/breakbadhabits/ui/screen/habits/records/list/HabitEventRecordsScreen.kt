@@ -44,6 +44,7 @@ import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.IconButton
 import epicarchitect.breakbadhabits.ui.component.animatedShadowElevation
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.Text
@@ -91,21 +92,21 @@ private fun Content(
     val icons = AppData.resources.icons
     val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
 
-    val groupedByMonthRecords = remember(records) {
-        records.groupByMonth(timeZone)
-    }
-
     val epicCalendarState = rememberEpicCalendarPagerState()
-
-    val currentMonthRecords = remember(epicCalendarState.currentMonth, groupedByMonthRecords) {
-        groupedByMonthRecords[epicCalendarState.currentMonth.toMonthOfYear()]?.toList() ?: emptyList()
+    val groupedByMonthRecords = remember(records) { records.groupByMonth(timeZone) }
+    val currentMonthRecords = remember(
+        epicCalendarState.currentMonth,
+        groupedByMonthRecords
+    ) {
+        val monthIndex = epicCalendarState.currentMonth.toMonthOfYear()
+        groupedByMonthRecords[monthIndex]?.toList() ?: emptyList()
     }
 
     val listState = rememberLazyListState()
     val calendarShadowElevation by listState.animatedShadowElevation(triggerScrollValue = 8.dp)
     val rangeColor = AppTheme.colorScheme.primary
     val ranges = records.map {
-        it.timeRange.toLocalDateTimeRange(timeZone).toLocalDateRange().ascended()
+        it.timeRange().toLocalDateTimeRange(timeZone).toLocalDateRange().ascended()
     }
 
     Box(
@@ -213,7 +214,7 @@ private fun Content(
                 navigator += HabitEventRecordCreationScreen(habit.id)
             },
             text = strings.newTrackButton(),
-            type = Button.Type.Main
+            style = ButtonStyles.primary
         )
     }
 }
@@ -243,7 +244,7 @@ private fun LazyItemScope.RecordItem(record: HabitEventRecord) {
         ) {
             Text(
                 modifier = Modifier.padding(2.dp),
-                text = record.timeRange.toLocalDateTimeRange(timeZone).formatted(),
+                text = record.timeRange().toLocalDateTimeRange(timeZone).formatted(),
                 type = Text.Type.Title
             )
 

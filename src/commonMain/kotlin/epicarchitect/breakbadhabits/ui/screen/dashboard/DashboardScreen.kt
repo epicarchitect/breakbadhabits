@@ -35,6 +35,7 @@ import epicarchitect.breakbadhabits.ui.component.IconButton
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.animatedShadowElevation
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.Text
@@ -128,8 +129,8 @@ private fun Content(
                 .padding(16.dp),
             onClick = { navigator += HabitCreationScreen() },
             text = strings.newHabitButtonText(),
-            icon = { Icon(icons.commonIcons.add) },
-            type = Button.Type.Main
+            icon = icons.commonIcons.add,
+            style = ButtonStyles.primary
         )
     }
 }

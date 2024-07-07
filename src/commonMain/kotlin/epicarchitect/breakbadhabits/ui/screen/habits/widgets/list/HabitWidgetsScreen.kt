@@ -95,7 +95,10 @@ fun HabitAppWidgets() {
 }
 
 @Composable
-private fun WidgetConfigItem(item: HabitWidget, habits: List<Habit>) {
+private fun WidgetConfigItem(
+    item: HabitWidget,
+    habits: List<Habit>
+) {
     val navigator = LocalNavigator.currentOrThrow
 
     Card(

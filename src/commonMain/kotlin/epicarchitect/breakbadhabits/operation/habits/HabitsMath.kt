@@ -17,7 +17,7 @@ fun List<HabitEventRecord>.failedRanges() = map {
     it.startTime..it.endTime
 }.combineIntersections()
 
-fun abstinenceRangesByFailedRanges(
+fun habitAbstinenceRangesByFailedRanges(
     failedRanges: List<ClosedRange<Instant>>,
     currentTime: Instant
 ): List<ClosedRange<Instant>> {
@@ -50,23 +50,22 @@ fun List<HabitEventRecord>.filterByMonth(
     monthOfYear: MonthOfYear,
     timeZone: TimeZone
 ) = filter {
-    monthOfYear in it.timeRange.monthOfYearRange(timeZone)
+    monthOfYear in it.timeRange().monthOfYearRange(timeZone)
 }
 
-val HabitEventRecord.timeRange get() = startTime..endTime
+fun HabitEventRecord.timeRange() = startTime..endTime
 
 fun HabitEventRecord.dailyEventCount(timeZone: TimeZone): Int {
     val days = startTime.daysUntil(endTime, timeZone) + 1
     return (eventCount.toFloat() / days).roundToInt()
 }
 
-fun totalHabitEventRecordEventCountByDaily(
+fun totalHabitEventCountByDaily(
     dailyEventCount: Int,
-    startTime: Instant,
-    endTime: Instant,
+    timeRange: ClosedRange<Instant>,
     timeZone: TimeZone
 ): Int {
-    val days = startTime.daysUntil(endTime, timeZone) + 1
+    val days = timeRange.start.daysUntil(timeRange.endInclusive, timeZone) + 1
     return days * dailyEventCount
 }
 

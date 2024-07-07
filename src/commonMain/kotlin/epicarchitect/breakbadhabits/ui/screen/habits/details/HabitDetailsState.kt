@@ -8,8 +8,8 @@ import epicarchitect.breakbadhabits.operation.datetime.duration
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateRange
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
 import epicarchitect.breakbadhabits.operation.habits.abstinence
-import epicarchitect.breakbadhabits.operation.habits.abstinenceRangesByFailedRanges
 import epicarchitect.breakbadhabits.operation.habits.failedRanges
+import epicarchitect.breakbadhabits.operation.habits.habitAbstinenceRangesByFailedRanges
 import epicarchitect.breakbadhabits.operation.habits.timeRange
 import epicarchitect.breakbadhabits.operation.math.ranges.ascended
 import epicarchitect.breakbadhabits.ui.component.StatisticData
@@ -37,14 +37,14 @@ fun rememberHabitDetailsState(
         habitEventRecords.failedRanges()
     }
     val abstinenceRanges = remember(failedRanges, habitEventRecords, currentTime) {
-        abstinenceRangesByFailedRanges(failedRanges, currentTime)
+        habitAbstinenceRangesByFailedRanges(failedRanges, currentTime)
     }
     val abstinence = remember(lastTrack, currentTime) {
         lastTrack?.abstinence(currentTime)
     }
     val calendarRanges = remember(habitEventRecords, timeZone) {
         habitEventRecords.map {
-            it.timeRange.toLocalDateTimeRange(timeZone).toLocalDateRange().ascended()
+            it.timeRange().toLocalDateTimeRange(timeZone).toLocalDateRange().ascended()
         }
     }
     val abstinenceHistogramValues = remember(abstinenceRanges) {

@@ -26,6 +26,7 @@ import epicarchitect.breakbadhabits.ui.component.Checkbox
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.text.InputCard
 import epicarchitect.breakbadhabits.ui.component.text.Text
@@ -37,9 +38,10 @@ fun HabitWidgetCreation(
     onDone: () -> Unit
 ) {
     val strings = AppData.resources.strings.habitWidgetCreationStrings
+    val habitQueries = AppData.database.habitQueries
 
     FlowStateContainer(
-        state = stateOfList { AppData.database.habitQueries.habits() }
+        state = stateOfList { habitQueries.habits() }
     ) {
         Column {
             SimpleTopAppBar(title = strings.title())
@@ -61,12 +63,8 @@ private fun ColumnScope.Content(
     val strings = AppData.resources.strings.habitWidgetCreationStrings
     val habitWidgetQueries = AppData.database.habitWidgetQueries
 
-    val selectedHabitIds = remember {
-        mutableStateListOf<Int>()
-    }
-    var widgetTitle by rememberSaveable {
-        mutableStateOf("")
-    }
+    val selectedHabitIds = remember { mutableStateListOf<Int>() }
+    var widgetTitle by rememberSaveable { mutableStateOf("") }
 
     Spacer(modifier = Modifier.height(16.dp))
 
@@ -114,7 +112,7 @@ private fun ColumnScope.Content(
     Button(
         modifier = Modifier.padding(horizontal = 16.dp).align(Alignment.End),
         text = strings.finishButton(),
-        type = Button.Type.Main,
+        style = ButtonStyles.primary,
         onClick = {
             habitWidgetQueries.insert(
                 title = widgetTitle,

@@ -35,6 +35,7 @@ import epicarchitect.breakbadhabits.ui.component.IconButton
 import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.Statistics
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.Text
@@ -208,7 +209,7 @@ private fun HabitSection(
                 navigator += HabitEventRecordCreationScreen(habit.id)
             },
             text = strings.addHabitEventRecord(),
-            type = Button.Type.Main
+            style = ButtonStyles.primary
         )
     }
 }

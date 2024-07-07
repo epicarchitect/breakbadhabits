@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordDailyEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeError
 
 interface HabitEventRecordCreationStrings {
     fun titleText(habitName: String): String
@@ -11,10 +11,10 @@ interface HabitEventRecordCreationStrings {
     fun finishButton(): String
     fun dailyEventCountTitle(): String
     fun dailyEventCountDescription(): String
-    fun dailyEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason): String
+    fun dailyEventCountError(error: DailyHabitEventCountError): String
     fun timeRangeTitle(): String
     fun timeRangeDescription(): String
-    fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason): String
+    fun timeRangeError(error: HabitEventRecordTimeRangeError): String
     fun now(): String
     fun yesterday(): String
     fun yourTimeRange(): String
@@ -26,14 +26,14 @@ class RussianHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     override fun commentTitle() = "Комментарий"
     override fun finishDescription() = "Вы всегда сможете изменить или удалить эту запись."
     override fun finishButton() = "Готово"
-    override fun dailyEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason) = when (reason) {
-        HabitEventRecordDailyEventCountIncorrectReason.Empty -> {
+    override fun dailyEventCountError(error: DailyHabitEventCountError) = when (error) {
+        DailyHabitEventCountError.Empty -> {
             "Поле не может быть пустым"
         }
     }
     override fun timeRangeTitle() = "Временной диапазон"
-    override fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason) = when (reason) {
-        HabitEventRecordTimeRangeIncorrectReason.BiggestThenCurrentTime -> "Дата и время не могут быть больше текущего времени."
+    override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
+        HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "Дата и время не могут быть больше текущего времени."
     }
     override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки в день"
     override fun dailyEventCountTitle() = "Частота"
@@ -49,14 +49,14 @@ class EnglishHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     override fun commentTitle() = "Comment"
     override fun finishDescription() = "You can always change or delete this record."
     override fun finishButton() = "Done"
-    override fun dailyEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason) = when (reason) {
-        HabitEventRecordDailyEventCountIncorrectReason.Empty -> {
+    override fun dailyEventCountError(error: DailyHabitEventCountError) = when (error) {
+        DailyHabitEventCountError.Empty -> {
             "Cant be empty"
         }
     }
     override fun timeRangeTitle() = "Time range"
-    override fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason) = when (reason) {
-        HabitEventRecordTimeRangeIncorrectReason.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
+    override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
+        HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
     }
     override fun dailyEventCountDescription() = "Indicate approximately how many habit events per day"
     override fun dailyEventCountTitle() = "Frequency"

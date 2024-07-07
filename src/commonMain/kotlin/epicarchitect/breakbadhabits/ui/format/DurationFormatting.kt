@@ -14,9 +14,7 @@ enum class DurationFormattingAccuracy(val order: Int) {
     SECONDS(4)
 }
 
-fun Duration.formatted(
-    accuracy: DurationFormattingAccuracy = DurationFormattingAccuracy.DAYS
-): String {
+fun Duration.formatted(accuracy: DurationFormattingAccuracy): String {
     val strings = AppData.resources.strings.durationFormattingStrings
     var result = ""
 

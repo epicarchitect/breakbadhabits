@@ -1,10 +1,10 @@
 package epicarchitect.breakbadhabits.data.resources.strings
 
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordDailyEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeError
 
 interface HabitEventRecordEditingStrings {
-    fun dailyEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason): String
+    fun dailyEventCountError(error: DailyHabitEventCountError): String
     fun titleText(habitName: String): String
     fun commentDescription(): String
     fun commentTitle(): String
@@ -18,12 +18,12 @@ interface HabitEventRecordEditingStrings {
     fun dailyEventCountDescription(): String
     fun dailyEventCountLabel(): String
     fun timeRangeDescription(): String
-    fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason): String
+    fun timeRangeError(error: HabitEventRecordTimeRangeError): String
     fun timeRangeTitle(): String
 }
 
 class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
-    override fun titleText(habitName: String) = "Редактирование записи — ${habitName}"
+    override fun titleText(habitName: String) = "Редактирование записи — $habitName"
     override fun commentDescription() = "Вы можете написать комментарий, но это не обязательно."
     override fun commentTitle() = "Комментарий"
     override fun finishDescription() = "Вы всегда сможете изменить или удалить эту запись."
@@ -33,13 +33,13 @@ class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
     override fun cancel() = "Отмена"
     override fun deleteDescription() = "Вы можете удалить эту запись."
     override fun deleteButton() = "Удалить запись"
-    override fun dailyEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason) = when (reason) {
-        HabitEventRecordDailyEventCountIncorrectReason.Empty -> {
+    override fun dailyEventCountError(error: DailyHabitEventCountError) = when (error) {
+        DailyHabitEventCountError.Empty -> {
             "Поле не может быть пустым"
         }
     }
-    override fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason) = when (reason) {
-        HabitEventRecordTimeRangeIncorrectReason.BiggestThenCurrentTime -> "Дата и время не могут быть больше текущего времени."
+    override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
+        HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "Дата и время не могут быть больше текущего времени."
     }
 
     override fun timeRangeTitle() = "Временной диапазон"
@@ -60,13 +60,13 @@ class EnglishHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
     override fun deleteButton() = "Delete this record"
     override fun yes() = "Yes"
     override fun cancel() = "Cancel"
-    override fun dailyEventCountError(reason: HabitEventRecordDailyEventCountIncorrectReason) = when (reason) {
-        HabitEventRecordDailyEventCountIncorrectReason.Empty -> {
+    override fun dailyEventCountError(error: DailyHabitEventCountError) = when (error) {
+        DailyHabitEventCountError.Empty -> {
             "Cant be empty"
         }
     }
-    override fun timeRangeError(reason: HabitEventRecordTimeRangeIncorrectReason) = when (reason) {
-        HabitEventRecordTimeRangeIncorrectReason.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
+    override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
+        HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
     }
     override fun timeRangeTitle() = "Time range"
     override fun dailyEventCountDescription() = "Indicate approximately how many habit events there were each day"

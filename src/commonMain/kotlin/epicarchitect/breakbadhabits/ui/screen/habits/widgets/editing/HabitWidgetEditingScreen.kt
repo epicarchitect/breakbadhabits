@@ -32,6 +32,7 @@ import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
 import epicarchitect.breakbadhabits.ui.component.stateOfList
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.InputCard
@@ -72,18 +73,14 @@ private fun ColumnScope.Content(
     val strings = AppData.resources.strings.habitWidgetEditingStrings
     val habitWidgetQueries = AppData.database.habitWidgetQueries
 
-    val selectedHabitIds = remember(initialWidget) {
-        initialWidget.habitIds.toMutableStateList()
-    }
-    var widgetTitle by rememberSaveable(initialWidget) {
-        mutableStateOf(initialWidget.title)
-    }
+    val selectedHabitIds = remember(initialWidget) { initialWidget.habitIds.toMutableStateList() }
+    var widgetTitle by rememberSaveable(initialWidget) { mutableStateOf(initialWidget.title) }
 
-    var deletionShow by remember { mutableStateOf(false) }
-    if (deletionShow) {
+    var showDeletion by remember { mutableStateOf(false) }
+    if (showDeletion) {
         DeletionDialog(
             widget = initialWidget,
-            onDismiss = { deletionShow = false }
+            onDismiss = { showDeletion = false }
         )
     }
 
@@ -134,9 +131,9 @@ private fun ColumnScope.Content(
         modifier = Modifier
             .padding(horizontal = 16.dp),
         text = strings.deleteButtonText(),
-        type = Button.Type.Dangerous,
+        style = ButtonStyles.dangerous,
         onClick = {
-            deletionShow = true
+            showDeletion = true
         }
     )
 
@@ -147,7 +144,7 @@ private fun ColumnScope.Content(
             .padding(horizontal = 16.dp)
             .align(Alignment.End),
         text = strings.finishButton(),
-        type = Button.Type.Main,
+        style = ButtonStyles.primary,
         onClick = {
             habitWidgetQueries.update(
                 id = initialWidget.id,
@@ -218,7 +215,7 @@ private fun DeletionDialog(
 
                 Button(
                     text = strings.yes(),
-                    type = Button.Type.Main,
+                    style = ButtonStyles.primary,
                     onClick = { habitWidgetQueries.deleteById(widget.id) }
                 )
             }

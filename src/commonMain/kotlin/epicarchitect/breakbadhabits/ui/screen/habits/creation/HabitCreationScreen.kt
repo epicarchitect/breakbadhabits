@@ -22,16 +22,17 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.operation.habits.totalHabitEventRecordEventCountByDaily
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordDailyEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.habitEventRecordDailyEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.habitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.totalHabitEventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameError
+import epicarchitect.breakbadhabits.operation.habits.validation.checkDailyHabitEventCount
+import epicarchitect.breakbadhabits.operation.habits.validation.checkHabitNewName
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionGrid
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
 import epicarchitect.breakbadhabits.ui.component.regex.Regexps
 import epicarchitect.breakbadhabits.ui.component.text.InputCard
 import epicarchitect.breakbadhabits.ui.component.text.TextInputCard
@@ -82,21 +83,18 @@ private fun ColumnScope.Content() {
     val navigator = LocalNavigator.currentOrThrow
 
     var habitName by rememberSaveable { mutableStateOf("") }
-    var habitNameIncorrectReason by remember {
-        mutableStateOf<HabitNewNameIncorrectReason?>(null)
-    }
+    var habitNameError by remember { mutableStateOf<HabitNewNameError?>(null) }
 
     var selectedIconId by rememberSaveable { mutableIntStateOf(0) }
-    val selectedIcon = remember(selectedIconId) {
-        icons.habitIcons.getById(selectedIconId)
-    }
+    val selectedIcon = remember(selectedIconId) { icons.habitIcons.getById(selectedIconId) }
 
-    var selectedHabitDurationIndex by rememberSaveable { mutableIntStateOf(0) }
+    var selectedDurationIndex by rememberSaveable { mutableIntStateOf(0) }
+    val selectedHabitDuration = remember(selectedDurationIndex) {
+        HabitDuration.entries[selectedDurationIndex].duration + 1.days
+    }
 
     var dailyEventCount by rememberSaveable { mutableIntStateOf(0) }
-    var dailyEventCountIncorrectReason by remember {
-        mutableStateOf<HabitEventRecordDailyEventCountIncorrectReason?>(null)
-    }
+    var dailyEventCountError by remember { mutableStateOf<DailyHabitEventCountError?>(null) }
 
     Spacer(Modifier.height(16.dp))
 
@@ -108,9 +106,9 @@ private fun ColumnScope.Content() {
         value = habitName,
         onValueChange = {
             habitName = it
-            habitNameIncorrectReason = null
+            habitNameError = null
         },
-        error = habitNameIncorrectReason?.let(strings::habitNameValidationError),
+        error = habitNameError?.let(strings::habitNameError),
         description = strings.habitNameDescription()
     )
 
@@ -150,8 +148,8 @@ private fun ColumnScope.Content() {
     ) {
         SingleSelectionChipRow(
             items = HabitDuration.entries.map(strings::habitDuration),
-            onClick = { selectedHabitDurationIndex = it },
-            selectedIndex = selectedHabitDurationIndex
+            onClick = { selectedDurationIndex = it },
+            selectedIndex = selectedDurationIndex
         )
     }
 
@@ -163,11 +161,11 @@ private fun ColumnScope.Content() {
             .fillMaxWidth(),
         title = strings.habitEventCountTitle(),
         description = strings.trackEventCountDescription(),
-        error = dailyEventCountIncorrectReason?.let(strings::trackEventCountError),
+        error = dailyEventCountError?.let(strings::trackEventCountError),
         value = dailyEventCount.toString(),
         onValueChange = {
             dailyEventCount = it.toIntOrNull() ?: 0
-            dailyEventCountIncorrectReason = null
+            dailyEventCountError = null
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
@@ -184,28 +182,26 @@ private fun ColumnScope.Content() {
             .padding(horizontal = 16.dp)
             .align(Alignment.End),
         onClick = {
-            habitNameIncorrectReason = habitName.habitNewNameIncorrectReason(
+            habitNameError = checkHabitNewName(
+                newName = habitName,
                 maxLength = AppData.habitsConfig.maxHabitNameLength,
                 nameIsExists = { habitQueries.countWithName(it).executeAsOne() > 0L }
             )
-            if (habitNameIncorrectReason != null) return@Button
+            if (habitNameError != null) return@Button
 
-            dailyEventCountIncorrectReason = dailyEventCount.habitEventRecordDailyEventCountIncorrectReason()
-            if (dailyEventCountIncorrectReason != null) return@Button
+            dailyEventCountError = checkDailyHabitEventCount(dailyEventCount)
+            if (dailyEventCountError != null) return@Button
 
-            val selectedHabitTime = HabitDuration.entries[selectedHabitDurationIndex]
-            val timeZone = AppData.dateTime.currentTimeZoneState.value
             val endTime = AppData.dateTime.currentTimeState.value
-            val startTime = (endTime - selectedHabitTime.duration + 1.days)
+            val startTime = endTime - selectedHabitDuration
 
             habitQueries.insertWithEventRecord(
                 habitName = habitName,
                 habitIconId = selectedIconId,
-                trackEventCount = totalHabitEventRecordEventCountByDaily(
+                trackEventCount = totalHabitEventCountByDaily(
                     dailyEventCount = dailyEventCount,
-                    startTime = startTime,
-                    endTime = endTime,
-                    timeZone = timeZone
+                    timeRange = startTime..endTime,
+                    timeZone = AppData.dateTime.currentTimeZoneState.value
                 ),
                 trackStartTime = startTime,
                 trackEndTime = endTime
@@ -213,8 +209,8 @@ private fun ColumnScope.Content() {
             navigator.pop()
         },
         text = strings.finishButtonText(),
-        type = Button.Type.Main,
-        icon = { Icon(icons.commonIcons.done) }
+        style = ButtonStyles.primary,
+        icon = icons.commonIcons.done
     )
 
     Spacer(modifier = Modifier.height(16.dp))

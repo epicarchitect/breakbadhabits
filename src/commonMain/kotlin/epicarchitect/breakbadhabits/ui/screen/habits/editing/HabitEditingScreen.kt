@@ -24,14 +24,15 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.habitNewNameIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameError
+import epicarchitect.breakbadhabits.operation.habits.validation.checkHabitNewName
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionGrid
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.InputCard
 import epicarchitect.breakbadhabits.ui.component.text.Text
@@ -74,14 +75,15 @@ private fun ColumnScope.Content(initialHabit: Habit) {
     val icons = AppData.resources.icons
 
     var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit.name) }
-    var habitNameIncorrectReason by remember { mutableStateOf<HabitNewNameIncorrectReason?>(null) }
+    var habitNameError by remember { mutableStateOf<HabitNewNameError?>(null) }
     var selectedIconId by rememberSaveable(initialHabit) { mutableIntStateOf(initialHabit.iconId) }
+    val selectedIcon = remember(selectedIconId) { icons.habitIcons.getById(selectedIconId) }
 
-    var deletionShow by remember { mutableStateOf(false) }
-    if (deletionShow) {
+    var showDeletion by remember { mutableStateOf(false) }
+    if (showDeletion) {
         DeletionDialog(
             habit = initialHabit,
-            onDismiss = { deletionShow = false }
+            onDismiss = { showDeletion = false }
         )
     }
 
@@ -94,11 +96,11 @@ private fun ColumnScope.Content(initialHabit: Habit) {
         value = habitName,
         onValueChange = {
             habitName = it
-            habitNameIncorrectReason = null
+            habitNameError = null
         },
         title = strings.habitNameTitle(),
         description = strings.habitNameDescription(),
-        error = habitNameIncorrectReason?.let(strings::habitNameValidationError)
+        error = habitNameError?.let(strings::habitNameError)
     )
 
     Spacer(Modifier.height(16.dp))
@@ -113,7 +115,7 @@ private fun ColumnScope.Content(initialHabit: Habit) {
         SingleSelectionGrid(
             modifier = Modifier.padding(it),
             items = icons.habitIcons,
-            selectedItem = icons.habitIcons.getById(selectedIconId),
+            selectedItem = selectedIcon,
             cell = { icon ->
                 Icon(
                     modifier = Modifier.size(24.dp),
@@ -131,9 +133,9 @@ private fun ColumnScope.Content(initialHabit: Habit) {
     Button(
         modifier = Modifier.padding(horizontal = 16.dp),
         text = strings.deleteButton(),
-        type = Button.Type.Dangerous,
+        style = ButtonStyles.dangerous,
         onClick = {
-            deletionShow = true
+            showDeletion = true
         }
     )
 
@@ -146,12 +148,13 @@ private fun ColumnScope.Content(initialHabit: Habit) {
             .padding(horizontal = 16.dp)
             .align(Alignment.End),
         onClick = {
-            habitNameIncorrectReason = habitName.habitNewNameIncorrectReason(
+            habitNameError = checkHabitNewName(
+                newName = habitName,
                 initialName = initialHabit.name,
                 maxLength = AppData.habitsConfig.maxHabitNameLength,
                 nameIsExists = { AppData.database.habitQueries.countWithName(it).executeAsOne() > 0L }
             )
-            if (habitNameIncorrectReason != null) return@Button
+            if (habitNameError != null) return@Button
 
             habitQueries.update(
                 id = initialHabit.id,
@@ -161,8 +164,8 @@ private fun ColumnScope.Content(initialHabit: Habit) {
             navigator.pop()
         },
         text = strings.finishButtonText(),
-        type = Button.Type.Main,
-        icon = { Icon(icons.commonIcons.done) }
+        style = ButtonStyles.primary,
+        icon = icons.commonIcons.done
     )
 
     Spacer(Modifier.height(16.dp))
@@ -201,7 +204,7 @@ private fun DeletionDialog(
 
                 Button(
                     text = strings.yes(),
-                    type = Button.Type.Main,
+                    style = ButtonStyles.primary,
                     onClick = {
                         habitQueries.deleteById(habit.id)
                         navigator.popUntil { it is DashboardScreen }

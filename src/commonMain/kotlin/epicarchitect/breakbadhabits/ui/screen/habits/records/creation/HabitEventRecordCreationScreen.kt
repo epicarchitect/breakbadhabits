@@ -26,16 +26,19 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.operation.datetime.toInstantRange
+import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
 import epicarchitect.breakbadhabits.operation.datetime.yesterday
-import epicarchitect.breakbadhabits.operation.habits.totalHabitEventRecordEventCountByDaily
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordDailyEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.habitEventRecordDailyEventCountIncorrectReason
-import epicarchitect.breakbadhabits.operation.habits.validation.habitEventRecordTimeRangeIncorrectReason
+import epicarchitect.breakbadhabits.operation.habits.totalHabitEventCountByDaily
+import epicarchitect.breakbadhabits.operation.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeError
+import epicarchitect.breakbadhabits.operation.habits.validation.checkDailyHabitEventCount
+import epicarchitect.breakbadhabits.operation.habits.validation.checkHabitEventRecordTimeRange
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.SingleSelectionChipRow
 import epicarchitect.breakbadhabits.ui.component.button.Button
+import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
 import epicarchitect.breakbadhabits.ui.component.calendar.RangeSelectionCalendarDialog
 import epicarchitect.breakbadhabits.ui.component.calendar.rememberSelectionCalendarState
 import epicarchitect.breakbadhabits.ui.component.regex.Regexps
@@ -45,8 +48,6 @@ import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.text.TextInputCard
 import epicarchitect.breakbadhabits.ui.format.formatted
 import epicarchitect.breakbadhabits.ui.screen.habits.records.editing.dateSelectionMonthRange
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 
 class HabitEventRecordCreationScreen(private val habitId: Int) : Screen {
     @Composable
@@ -83,48 +84,40 @@ private fun ColumnScope.Content(habit: Habit) {
     val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
     val currentTime by AppData.dateTime.currentTimeState.collectAsState()
 
-    var rangeSelectionShow by rememberSaveable { mutableStateOf(false) }
+    var showRangeSelection by rememberSaveable { mutableStateOf(false) }
     var selectedTimeSelectionIndex by remember { mutableIntStateOf(0) }
 
-    var selectedDateTimeRange by remember {
-        mutableStateOf(currentTime.toLocalDateTime(timeZone).let { it..it })
-    }
-    var timeRangeIncorrectReason by remember(selectedDateTimeRange) {
-        mutableStateOf<HabitEventRecordTimeRangeIncorrectReason?>(null)
-    }
+    var selectedTimeRange by remember { mutableStateOf(currentTime.let { it..it }) }
+    var timeRangeError by remember(selectedTimeRange) { mutableStateOf<HabitEventRecordTimeRangeError?>(null) }
 
     var dailyEventCount by rememberSaveable { mutableIntStateOf(0) }
-    var dailyEventCountIncorrectReason by remember {
-        mutableStateOf<HabitEventRecordDailyEventCountIncorrectReason?>(null)
-    }
+    var dailyEventCountError by remember { mutableStateOf<DailyHabitEventCountError?>(null) }
 
-    var comment by rememberSaveable {
-        mutableStateOf("")
-    }
+    var comment by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(selectedTimeSelectionIndex) {
         if (selectedTimeSelectionIndex == 0) {
-            selectedDateTimeRange = currentTime.toLocalDateTime(timeZone).let { it..it }
+            selectedTimeRange = currentTime.let { it..it }
         }
 
         if (selectedTimeSelectionIndex == 1) {
-            selectedDateTimeRange = currentTime.toLocalDateTime(timeZone).yesterday().let { it..it }
+            selectedTimeRange = currentTime.yesterday().let { it..it }
         }
     }
 
-    if (rangeSelectionShow) {
+    if (showRangeSelection) {
         RangeSelectionCalendarDialog(
             state = rememberSelectionCalendarState(
-                initialSelectedDateTime = selectedDateTimeRange,
+                initialSelectedDateTime = selectedTimeRange.toLocalDateTimeRange(timeZone),
                 monthRange = dateSelectionMonthRange(timeZone)
             ),
             onCancel = {
-                rangeSelectionShow = false
+                showRangeSelection = false
             },
             onConfirm = {
-                rangeSelectionShow = false
+                showRangeSelection = false
                 selectedTimeSelectionIndex = 2
-                selectedDateTimeRange = it
+                selectedTimeRange = it.toInstantRange(timeZone)
             }
         )
     }
@@ -140,13 +133,13 @@ private fun ColumnScope.Content(habit: Habit) {
         value = dailyEventCount.toString(),
         onValueChange = {
             dailyEventCount = it.toIntOrNull() ?: 0
-            dailyEventCountIncorrectReason = null
+            dailyEventCountError = null
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
         regex = Regexps.integersOrEmpty(maxCharCount = 4),
-        error = dailyEventCountIncorrectReason?.let(strings::dailyEventCountError),
+        error = dailyEventCountError?.let(strings::dailyEventCountError),
     )
 
     Spacer(Modifier.height(16.dp))
@@ -157,13 +150,13 @@ private fun ColumnScope.Content(habit: Habit) {
             .padding(horizontal = 16.dp),
         title = strings.timeRangeTitle(),
         description = strings.timeRangeDescription(),
-        error = timeRangeIncorrectReason?.let(strings::timeRangeError)
+        error = timeRangeError?.let(strings::timeRangeError)
     ) {
         Text(
             modifier = Modifier.padding(
                 horizontal = it.calculateStartPadding(LocalLayoutDirection.current)
             ),
-            text = selectedDateTimeRange.formatted()
+            text = selectedTimeRange.formatted(timeZone)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -176,7 +169,7 @@ private fun ColumnScope.Content(habit: Habit) {
             ),
             onClick = { index ->
                 if (index == 2) {
-                    rangeSelectionShow = true
+                    showRangeSelection = true
                 }
                 selectedTimeSelectionIndex = index
             },
@@ -208,25 +201,26 @@ private fun ColumnScope.Content(habit: Habit) {
             .padding(horizontal = 16.dp)
             .align(Alignment.End),
         text = strings.finishButton(),
-        type = Button.Type.Main,
+        style = ButtonStyles.primary,
         onClick = {
-            dailyEventCountIncorrectReason = dailyEventCount.habitEventRecordDailyEventCountIncorrectReason()
-            if (dailyEventCountIncorrectReason != null) return@Button
+            dailyEventCountError = checkDailyHabitEventCount(dailyEventCount)
+            if (dailyEventCountError != null) return@Button
 
-            timeRangeIncorrectReason = selectedDateTimeRange.habitEventRecordTimeRangeIncorrectReason(
-                currentTime = currentTime,
-                timeZone = timeZone
+            timeRangeError = checkHabitEventRecordTimeRange(
+                timeRange = selectedTimeRange,
+                currentTime = currentTime
             )
-            if (timeRangeIncorrectReason != null) return@Button
-
-            val startTime = selectedDateTimeRange.start.toInstant(timeZone)
-            val endTime = selectedDateTimeRange.endInclusive.toInstant(timeZone)
+            if (timeRangeError != null) return@Button
 
             habitEventRecordQueries.insert(
                 habitId = habit.id,
-                startTime = startTime,
-                endTime = endTime,
-                eventCount = totalHabitEventRecordEventCountByDaily(dailyEventCount, startTime, endTime, timeZone),
+                startTime = selectedTimeRange.start,
+                endTime = selectedTimeRange.endInclusive,
+                eventCount = totalHabitEventCountByDaily(
+                    dailyEventCount = dailyEventCount,
+                    timeRange = selectedTimeRange,
+                    timeZone = timeZone
+                ),
                 comment = comment
             )
             navigator.pop()

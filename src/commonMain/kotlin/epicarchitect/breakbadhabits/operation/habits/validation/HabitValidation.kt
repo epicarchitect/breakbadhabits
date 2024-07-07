@@ -1,19 +1,20 @@
 package epicarchitect.breakbadhabits.operation.habits.validation
 
-fun String.habitNewNameIncorrectReason(
+fun checkHabitNewName(
+    newName: String,
     initialName: String? = null,
     maxLength: Int,
     nameIsExists: (String) -> Boolean
 ) = when {
-    initialName == this -> null
-    isEmpty()           -> HabitNewNameIncorrectReason.Empty
-    length > maxLength  -> HabitNewNameIncorrectReason.TooLong(maxLength)
-    nameIsExists(this)  -> HabitNewNameIncorrectReason.AlreadyUsed
-    else                -> null
+    initialName == newName     -> null
+    newName.isEmpty()          -> HabitNewNameError.Empty
+    newName.length > maxLength -> HabitNewNameError.TooLong(maxLength)
+    nameIsExists(newName)      -> HabitNewNameError.AlreadyUsed
+    else                       -> null
 }
 
-sealed interface HabitNewNameIncorrectReason {
-    object Empty : HabitNewNameIncorrectReason
-    object AlreadyUsed : HabitNewNameIncorrectReason
-    class TooLong(val maxLength: Int) : HabitNewNameIncorrectReason
+sealed interface HabitNewNameError {
+    object Empty : HabitNewNameError
+    object AlreadyUsed : HabitNewNameError
+    class TooLong(val maxLength: Int) : HabitNewNameError
 }
