@@ -20,6 +20,9 @@ interface HabitEventRecordEditingStrings {
     fun timeRangeDescription(): String
     fun timeRangeError(error: HabitEventRecordTimeRangeError): String
     fun timeRangeTitle(): String
+    fun startDateTimeLabel(): String
+    fun endDateTimeLabel(): String
+    fun done(): String
 }
 
 class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
@@ -43,6 +46,9 @@ class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
     }
 
     override fun timeRangeTitle() = "Временной диапазон"
+    override fun startDateTimeLabel() = "Начало"
+    override fun endDateTimeLabel() = "Конец"
+    override fun done() = "Готово"
 
     override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки каждый день"
     override fun dailyEventCountLabel() = "Число событий в день"
@@ -72,4 +78,7 @@ class EnglishHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
     override fun dailyEventCountDescription() = "Indicate approximately how many habit events there were each day"
     override fun dailyEventCountLabel() = "Number of events per day"
     override fun timeRangeDescription() = "Indicate when the event occurred"
+    override fun startDateTimeLabel() = "Start"
+    override fun endDateTimeLabel() = "End"
+    override fun done() = "Done"
 }

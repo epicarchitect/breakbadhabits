@@ -18,6 +18,9 @@ interface HabitEventRecordCreationStrings {
     fun now(): String
     fun yesterday(): String
     fun yourTimeRange(): String
+    fun startDateTimeLabel(): String
+    fun endDateTimeLabel(): String
+    fun done(): String
 }
 
 class RussianHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
@@ -37,10 +40,13 @@ class RussianHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     }
     override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки в день"
     override fun dailyEventCountTitle() = "Частота"
-    override fun timeRangeDescription() = "Укажите когда произошло событие"
+    override fun timeRangeDescription() = "Укажите время первого и последнего события привычки"
     override fun now() = "Сейчас"
     override fun yesterday() = "Вчера"
     override fun yourTimeRange() = "Свой интервал"
+    override fun startDateTimeLabel() = "Начало"
+    override fun endDateTimeLabel() = "Конец"
+    override fun done() = "Готово"
 }
 
 class EnglishHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
@@ -60,8 +66,11 @@ class EnglishHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     }
     override fun dailyEventCountDescription() = "Indicate approximately how many habit events per day"
     override fun dailyEventCountTitle() = "Frequency"
-    override fun timeRangeDescription() = "Indicate when the event occurred"
+    override fun timeRangeDescription() = "Select the time of the first and last habit event"
     override fun now() = "Now"
     override fun yesterday() = "Yesterday"
     override fun yourTimeRange() = "Your interval"
+    override fun startDateTimeLabel() = "Start"
+    override fun endDateTimeLabel() = "End"
+    override fun done() = "Done"
 }

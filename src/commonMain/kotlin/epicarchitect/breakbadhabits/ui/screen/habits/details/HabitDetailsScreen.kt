@@ -111,7 +111,7 @@ private fun Content(
     habitEventRecords: List<HabitEventRecord>,
     lastHabitEventRecord: HabitEventRecord?
 ) {
-    val currentTime by AppData.dateTime.currentTimeState.collectAsState()
+    val currentTime by AppData.dateTime.currentInstantState.collectAsState()
     val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
     val state = rememberHabitDetailsState(
         habitEventRecords = habitEventRecords,

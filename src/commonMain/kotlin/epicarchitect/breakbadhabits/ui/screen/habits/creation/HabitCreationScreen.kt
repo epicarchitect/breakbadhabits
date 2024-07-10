@@ -192,7 +192,7 @@ private fun ColumnScope.Content() {
             dailyEventCountError = checkDailyHabitEventCount(dailyEventCount)
             if (dailyEventCountError != null) return@Button
 
-            val endTime = AppData.dateTime.currentTimeState.value
+            val endTime = AppData.dateTime.currentInstantState.value
             val startTime = endTime - selectedHabitDuration
 
             habitQueries.insertWithEventRecord(

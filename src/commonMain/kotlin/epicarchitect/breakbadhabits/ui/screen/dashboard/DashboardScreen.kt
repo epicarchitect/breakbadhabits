@@ -185,7 +185,7 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
                             AppData.database.habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habit.id)
                         }
                     ) { record ->
-                        val currentTime by AppData.dateTime.currentTimeState.collectAsState()
+                        val currentTime by AppData.dateTime.currentInstantState.collectAsState()
                         val abstinence = record?.abstinence(currentTime)
 
                         Text(

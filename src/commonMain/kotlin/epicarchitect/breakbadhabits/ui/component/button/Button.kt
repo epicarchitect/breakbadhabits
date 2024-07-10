@@ -80,7 +80,7 @@ fun Button(
         modifier = modifier,
         enabled = enabled,
         shape = CircleShape,
-        elevation = ButtonDefaults.buttonElevation(1.dp),
+        elevation = ButtonDefaults.buttonElevation(style.elevation),
         border = style.border,
         colors = ButtonDefaults.buttonColors(
             containerColor = style.containerColor,

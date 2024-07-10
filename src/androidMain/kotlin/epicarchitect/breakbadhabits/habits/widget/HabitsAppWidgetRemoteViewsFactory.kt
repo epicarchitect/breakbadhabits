@@ -22,7 +22,7 @@ class HabitsAppWidgetRemoteViewsFactory(
         return if (config == null) {
             emptyList()
         } else {
-            val currentTime = AppData.dateTime.currentTimeState.value
+            val currentTime = AppData.dateTime.currentInstantState.value
             AppData.database.habitQueries.habits().executeAsList().mapNotNull {
                 if (config.habitIds.contains(it.id)) {
                     Item(

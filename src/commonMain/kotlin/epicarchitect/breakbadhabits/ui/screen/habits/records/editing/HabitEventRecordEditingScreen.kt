@@ -9,6 +9,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,36 +31,30 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.data.AppData
 import epicarchitect.breakbadhabits.data.HabitEventRecord
-import epicarchitect.breakbadhabits.operation.datetime.toInstantRange
-import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
 import epicarchitect.breakbadhabits.operation.habits.dailyEventCount
-import epicarchitect.breakbadhabits.operation.habits.timeRange
 import epicarchitect.breakbadhabits.operation.habits.totalHabitEventCountByDaily
 import epicarchitect.breakbadhabits.operation.habits.validation.DailyHabitEventCountError
 import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeError
 import epicarchitect.breakbadhabits.operation.habits.validation.checkDailyHabitEventCount
 import epicarchitect.breakbadhabits.operation.habits.validation.checkHabitEventRecordTimeRange
+import epicarchitect.breakbadhabits.operation.math.ranges.ascended
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
-import epicarchitect.breakbadhabits.ui.component.calendar.RangeSelectionCalendarDialog
-import epicarchitect.breakbadhabits.ui.component.calendar.rememberSelectionCalendarState
 import epicarchitect.breakbadhabits.ui.component.regex.Regexps
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.InputCard
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.text.TextInputCard
 import epicarchitect.breakbadhabits.ui.format.formatted
-import epicarchitect.calendar.compose.basis.EpicMonth
-import epicarchitect.calendar.compose.basis.addYears
-import kotlinx.datetime.Month
-import kotlinx.datetime.TimeZone
-
-fun dateSelectionMonthRange(timeZone: TimeZone) = EpicMonth.now(timeZone).let {
-    it.addYears(-10).copy(month = Month.JANUARY)..it.copy(month = Month.DECEMBER)
-}
+import epicarchitect.breakbadhabits.ui.screen.habits.records.creation.toEpochMillis
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
 class HabitEventRecordEditingScreen(private val habitEventRecordId: Int) : Screen {
     @Composable
@@ -63,6 +62,10 @@ class HabitEventRecordEditingScreen(private val habitEventRecordId: Int) : Scree
         HabitEventRecordEditing(habitEventRecordId)
     }
 }
+
+private const val HIDE_PICKER = 0
+private const val SHOW_PICKER_START = 1
+private const val SHOW_PICKER_END = 2
 
 @Composable
 fun HabitEventRecordEditing(habitEventRecordId: Int) {
@@ -93,6 +96,7 @@ fun HabitEventRecordEditing(habitEventRecordId: Int) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ColumnScope.Content(record: HabitEventRecord) {
     val strings = AppData.resources.strings.habitEventRecordEditingStrings
@@ -101,34 +105,95 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
 
     val timeZone by AppData.dateTime.currentTimeZoneState.collectAsState()
 
-    var showRangeSelectionShow by rememberSaveable { mutableStateOf(false) }
     var showDeletion by remember { mutableStateOf(false) }
 
-    var selectedTimeRange by remember(record) { mutableStateOf(record.timeRange()) }
-    var timeRangeError by remember(selectedTimeRange) { mutableStateOf<HabitEventRecordTimeRangeError?>(null) }
+    var dateSelectionState by rememberSaveable { mutableStateOf(HIDE_PICKER) }
+    var timeSelectionState by rememberSaveable { mutableStateOf(HIDE_PICKER) }
 
+    val initialStartDate = record.startTime.toLocalDateTime(timeZone)
+    val initialEndDate = record.endTime.toLocalDateTime(timeZone)
+
+    var selectedStartDate by remember { mutableStateOf(initialStartDate.date) }
+    var selectedStartTime by remember { mutableStateOf(initialStartDate.time) }
+
+    var selectedEndDate by remember { mutableStateOf(initialEndDate.date) }
+    var selectedEndTime by remember { mutableStateOf(initialEndDate.time) }
+
+    var timeRangeError by remember(
+        selectedStartTime,
+        selectedStartDate,
+        selectedEndDate,
+        selectedEndTime
+    ) { mutableStateOf<HabitEventRecordTimeRangeError?>(null) }
     var dailyEventCount by rememberSaveable(record) { mutableIntStateOf(record.dailyEventCount(timeZone)) }
     var dailyHabitEventCountError by remember { mutableStateOf<DailyHabitEventCountError?>(null) }
 
     var comment by rememberSaveable(record) { mutableStateOf(record.comment) }
 
-    if (showRangeSelectionShow) {
-        val state = rememberSelectionCalendarState(
-            initialSelectedDateTime = selectedTimeRange.toLocalDateTimeRange(timeZone),
-            monthRange = dateSelectionMonthRange(timeZone)
+    if (dateSelectionState != HIDE_PICKER) {
+        val date = if (dateSelectionState == SHOW_PICKER_START) selectedStartDate else selectedEndDate
+        val state = rememberDatePickerState(
+            initialSelectedDateMillis = date.toEpochMillis()
         )
-
-        RangeSelectionCalendarDialog(
-            state = state,
-            onCancel = {
-                showRangeSelectionShow = false
-            },
-            onConfirm = {
-                showRangeSelectionShow = false
-                selectedTimeRange = it.toInstantRange(timeZone)
+        Dialog(
+            onDismiss = {
+                dateSelectionState = HIDE_PICKER
             }
-        )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                DatePicker(state)
+
+                Button(
+                    modifier = Modifier.align(Alignment.End),
+                    text = strings.done(),
+                    onClick = {
+                        val newDate = Instant.fromEpochMilliseconds(state.selectedDateMillis!!)
+                            .toLocalDateTime(timeZone).date
+
+                        if (dateSelectionState == SHOW_PICKER_START) selectedStartDate = newDate
+                        else selectedEndDate = newDate
+
+                        dateSelectionState = HIDE_PICKER
+                    }
+                )
+            }
+        }
     }
+
+    if (timeSelectionState != HIDE_PICKER) {
+        val time = if (timeSelectionState == SHOW_PICKER_START) selectedStartTime else selectedEndTime
+        val state = rememberTimePickerState(
+            initialHour = time.hour,
+            initialMinute = time.minute
+        )
+        Dialog(
+            onDismiss = {
+                timeSelectionState = HIDE_PICKER
+            }
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                TimePicker(state)
+
+                Button(
+                    modifier = Modifier.align(Alignment.End),
+                    text = strings.done(),
+                    onClick = {
+                        val newTime = LocalTime(state.hour, state.minute, 0)
+
+                        if (timeSelectionState == SHOW_PICKER_START) selectedStartTime = newTime
+                        else selectedEndTime = newTime
+
+                        timeSelectionState = HIDE_PICKER
+                    }
+                )
+            }
+        }
+    }
+
 
     if (showDeletion) {
         DeletionDialog(
@@ -167,13 +232,47 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
         description = strings.timeRangeDescription(),
         error = timeRangeError?.let(strings::timeRangeError)
     ) {
-        Button(
-            modifier = Modifier.padding(it),
-            onClick = {
-                showRangeSelectionShow = true
-            },
-            text = selectedTimeRange.formatted(timeZone)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = strings.startDateTimeLabel())
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                text = selectedStartDate.formatted(),
+                onClick = {
+                    dateSelectionState = SHOW_PICKER_START
+                }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                text = selectedStartTime.formatted(),
+                onClick = {
+                    timeSelectionState = SHOW_PICKER_START
+                }
+            )
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = strings.endDateTimeLabel())
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                text = selectedEndDate.formatted(),
+                onClick = {
+                    dateSelectionState = SHOW_PICKER_END
+                }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                text = selectedEndTime.formatted(),
+                onClick = {
+                    timeSelectionState = SHOW_PICKER_END
+                }
+            )
+        }
     }
 
     Spacer(Modifier.height(16.dp))
@@ -216,9 +315,17 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
             dailyHabitEventCountError = checkDailyHabitEventCount(dailyEventCount)
             if (dailyHabitEventCountError != null) return@Button
 
+            val selectedTimeRange = (LocalDateTime(
+                date = selectedStartDate,
+                time = selectedStartTime
+            ).toInstant(timeZone)..LocalDateTime(
+                date = selectedEndDate,
+                time = selectedEndTime
+            ).toInstant(timeZone)).ascended()
+
             timeRangeError = checkHabitEventRecordTimeRange(
                 timeRange = selectedTimeRange,
-                currentTime = AppData.dateTime.currentTimeState.value
+                currentTime = AppData.dateTime.currentInstantState.value
             )
             if (timeRangeError != null) return@Button
 

@@ -15,12 +15,12 @@ import kotlin.time.Duration.Companion.seconds
 
 class AppDateTime {
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
-    val currentTimeState = flow {
+    val currentInstantState = flow {
         while (currentCoroutineContext().isActive) {
             delay(1.seconds)
-            emit(currentTime())
+            emit(currentInstant())
         }
-    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), currentTime())
+    }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), currentInstant())
 
     val currentTimeZoneState = flow {
         while (currentCoroutineContext().isActive) {
@@ -29,7 +29,7 @@ class AppDateTime {
         }
     }.stateIn(coroutineScope, SharingStarted.WhileSubscribed(), currentTimeZone())
 
-    private fun currentTime() = Instant.fromEpochSeconds(Clock.System.now().epochSeconds)
+    private fun currentInstant() = Instant.fromEpochSeconds(Clock.System.now().epochSeconds)
 
     private fun currentTimeZone() = TimeZone.currentSystemDefault()
 }
