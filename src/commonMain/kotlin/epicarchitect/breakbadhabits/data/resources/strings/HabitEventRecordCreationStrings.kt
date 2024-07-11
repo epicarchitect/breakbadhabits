@@ -44,8 +44,8 @@ class RussianHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     override fun now() = "Сейчас"
     override fun yesterday() = "Вчера"
     override fun yourTimeRange() = "Свой интервал"
-    override fun startDateTimeLabel() = "Начало"
-    override fun endDateTimeLabel() = "Конец"
+    override fun startDateTimeLabel() = "Первое событие"
+    override fun endDateTimeLabel() = "Последнее событие"
     override fun done() = "Готово"
 }
 
@@ -70,7 +70,7 @@ class EnglishHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     override fun now() = "Now"
     override fun yesterday() = "Yesterday"
     override fun yourTimeRange() = "Your interval"
-    override fun startDateTimeLabel() = "Start"
-    override fun endDateTimeLabel() = "End"
+    override fun startDateTimeLabel() = "First event"
+    override fun endDateTimeLabel() = "Last event"
     override fun done() = "Done"
 }

@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.ui.screen.habits.records.creation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -7,10 +8,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -24,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -39,6 +43,7 @@ import epicarchitect.breakbadhabits.operation.habits.validation.checkHabitEventR
 import epicarchitect.breakbadhabits.operation.math.ranges.ascended
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
+import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.button.ButtonStyles
@@ -47,6 +52,7 @@ import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.InputCard
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.text.TextInputCard
+import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 import epicarchitect.breakbadhabits.ui.format.formatted
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -138,6 +144,7 @@ private fun ColumnScope.Content(habit: Habit) {
                 Button(
                     modifier = Modifier.align(Alignment.End),
                     text = strings.done(),
+                    style = ButtonStyles.regular.copy(elevation = 0.dp),
                     onClick = {
                         val newDate = Instant.fromEpochMilliseconds(state.selectedDateMillis!!)
                             .toLocalDateTime(timeZone).date
@@ -170,6 +177,7 @@ private fun ColumnScope.Content(habit: Habit) {
 
                 Button(
                     modifier = Modifier.align(Alignment.End),
+                    style = ButtonStyles.regular.copy(elevation = 0.dp),
                     text = strings.done(),
                     onClick = {
                         val newTime = LocalTime(state.hour, state.minute, 0)
@@ -214,46 +222,123 @@ private fun ColumnScope.Content(habit: Habit) {
         description = strings.timeRangeDescription(),
         error = timeRangeError?.let(strings::timeRangeError)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = strings.startDateTimeLabel())
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                text = selectedStartDate.formatted(),
-                onClick = {
-                    dateSelectionState = SHOW_PICKER_START
-                }
+        Column {
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = strings.startDateTimeLabel(),
+                type = Text.Type.Title,
+                priority = Text.Priority.Low
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                text = selectedStartTime.formatted(),
-                onClick = {
-                    timeSelectionState = SHOW_PICKER_START
-                }
-            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .padding(start = 14.dp, end = 7.dp)
+                        .weight(0.8f)
+                        .clickable {
+                            dateSelectionState = SHOW_PICKER_START
+                        },
+                    value = selectedStartDate.formatted(),
+                    onValueChange = {},
+                    readOnly = true,
+                    enabled = false,
+                    colors = TextFieldDefaults.colors(
+                        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledContainerColor = Color.Transparent,
+                        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    ),
+                    leadingIcon = {
+                        Icon(AppData.resources.icons.commonIcons.calendar)
+                    },
+                    shape = MaterialTheme.shapes.small,
+                )
+                OutlinedTextField(
+                    modifier = Modifier
+                        .padding(start = 7.dp, end = 14.dp)
+                        .weight(0.5f)
+                        .clickable {
+                            timeSelectionState = SHOW_PICKER_START
+                        },
+                    value = selectedStartTime.formatted(),
+                    onValueChange = {},
+                    readOnly = true,
+                    enabled = false,
+                    colors = TextFieldDefaults.colors(
+                        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledContainerColor = Color.Transparent,
+                        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    ),
+                    leadingIcon = {
+                        Icon(AppData.resources.icons.commonIcons.time)
+                    },
+                    shape = MaterialTheme.shapes.small,
+                )
+            }
         }
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = strings.endDateTimeLabel())
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                text = selectedEndDate.formatted(),
-                onClick = {
-                    dateSelectionState = SHOW_PICKER_END
-                }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Column {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = strings.endDateTimeLabel(),
+                type = Text.Type.Title,
+                priority = Text.Priority.Low
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                text = selectedEndTime.formatted(),
-                onClick = {
-                    timeSelectionState = SHOW_PICKER_END
-                }
-            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .padding(start = 14.dp, end = 7.dp)
+                        .weight(0.8f)
+                        .clickable {
+                            dateSelectionState = SHOW_PICKER_END
+                        },
+                    value = selectedEndDate.formatted(),
+                    onValueChange = {},
+                    readOnly = true,
+                    enabled = false,
+                    colors = TextFieldDefaults.colors(
+                        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledContainerColor = Color.Transparent,
+                        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    ),
+                    leadingIcon = {
+                        Icon(AppData.resources.icons.commonIcons.calendar)
+                    },
+                    shape = MaterialTheme.shapes.small,
+                )
+                OutlinedTextField(
+                    modifier = Modifier
+                        .padding(start = 7.dp, end = 14.dp)
+                        .weight(0.5f)
+                        .clickable {
+                            timeSelectionState = SHOW_PICKER_END
+                        },
+                    value = selectedEndTime.formatted(),
+                    onValueChange = {},
+                    readOnly = true,
+                    enabled = false,
+                    colors = TextFieldDefaults.colors(
+                        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledContainerColor = Color.Transparent,
+                        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    ),
+                    leadingIcon = {
+                        Icon(AppData.resources.icons.commonIcons.time)
+                    },
+                    shape = MaterialTheme.shapes.small,
+                )
+            }
         }
     }
 

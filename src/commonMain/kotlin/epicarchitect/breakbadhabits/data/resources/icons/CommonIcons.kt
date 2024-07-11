@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Cake
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.DinnerDining
@@ -82,4 +83,5 @@ class CommonIcons {
     val arrowRight = VectorIcon(36, MaterialIcons.AutoMirrored.Filled.KeyboardArrowRight)
     val arrowUp = VectorIcon(37, MaterialIcons.Filled.KeyboardArrowUp)
     val arrowDown = VectorIcon(38, MaterialIcons.Filled.KeyboardArrowDown)
+    val calendar = VectorIcon(39, MaterialIcons.Filled.CalendarToday)
 }
