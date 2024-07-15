@@ -23,9 +23,9 @@ class EnglishHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
         HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
     }
     override fun timeRangeTitle() = "Time range"
-    override fun dailyEventCountDescription() = "Indicate approximately how many habit events there were each day"
+    override fun dailyEventCountDescription() = "Indicate approximately how many habit events there were each day."
     override fun dailyEventCountLabel() = "Number of events per day"
-    override fun timeRangeDescription() = "Select the time of the first and last habit event"
+    override fun timeRangeDescription() = "Select the time of the first and last habit event."
     override fun startDateTimeLabel() = "First event"
     override fun endDateTimeLabel() = "Last event"
     override fun done() = "Done"

@@ -28,7 +28,7 @@ class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
     override fun endDateTimeLabel() = "Последнее событие"
     override fun done() = "Готово"
 
-    override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки каждый день"
+    override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки каждый день."
     override fun dailyEventCountLabel() = "Число событий в день"
-    override fun timeRangeDescription() = "Укажите время первого и последнего события привычки"
+    override fun timeRangeDescription() = "Укажите время первого и последнего события привычки."
 }

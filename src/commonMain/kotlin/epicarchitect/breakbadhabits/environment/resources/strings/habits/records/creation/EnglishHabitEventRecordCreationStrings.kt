@@ -20,9 +20,9 @@ class EnglishHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
         HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
     }
 
-    override fun dailyEventCountDescription() = "Indicate approximately how many habit events per day"
+    override fun dailyEventCountDescription() = "Indicate approximately how many habit events per day."
     override fun dailyEventCountTitle() = "Frequency"
-    override fun timeRangeDescription() = "Select the time of the first and last habit event"
+    override fun timeRangeDescription() = "Select the time of the first and last habit event."
     override fun now() = "Now"
     override fun yesterday() = "Yesterday"
     override fun yourTimeRange() = "Your interval"
