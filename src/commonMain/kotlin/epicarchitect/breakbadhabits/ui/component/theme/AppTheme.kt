@@ -27,6 +27,8 @@ private fun AppColorScheme.toMaterial() = if (isDark) {
     darkColorScheme(
         primary = primary,
         onPrimary = onPrimary,
+        primaryContainer = primary.copy(alpha = 0.1f),
+        onPrimaryContainer = onSurface,
         error = error,
         onError = onError,
         background = background,
@@ -38,6 +40,8 @@ private fun AppColorScheme.toMaterial() = if (isDark) {
     lightColorScheme(
         primary = primary,
         onPrimary = onPrimary,
+        primaryContainer = primary.copy(alpha = 0.1f),
+        onPrimaryContainer = onSurface,
         error = error,
         onError = onError,
         background = background,
