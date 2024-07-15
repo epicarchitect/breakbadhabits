@@ -3,8 +3,8 @@ package epicarchitect.breakbadhabits.ui.component.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import epicarchitect.breakbadhabits.data.AppSettings
-import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme
+import epicarchitect.breakbadhabits.environment.database.AppSettings
+import epicarchitect.breakbadhabits.environment.database.AppSettingsTheme
 
 object AppColorsSchemes {
     val dark = AppColorScheme(

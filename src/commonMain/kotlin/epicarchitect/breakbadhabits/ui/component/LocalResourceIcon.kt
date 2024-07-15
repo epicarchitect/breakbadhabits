@@ -6,7 +6,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import epicarchitect.breakbadhabits.data.resources.icons.Icon
+import epicarchitect.breakbadhabits.environment.resources.icons.Icon
 import androidx.compose.material3.Icon as MaterialIcon
 
 @Immutable

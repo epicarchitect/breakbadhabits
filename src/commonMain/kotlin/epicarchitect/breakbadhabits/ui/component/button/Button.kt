@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.data.resources.icons.Icon
+import epicarchitect.breakbadhabits.environment.resources.icons.Icon
 import epicarchitect.breakbadhabits.ui.component.Icon
 import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 import androidx.compose.material3.Button as MaterialButton

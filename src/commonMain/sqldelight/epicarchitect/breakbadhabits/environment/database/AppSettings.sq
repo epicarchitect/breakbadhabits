@@ -1,0 +1,17 @@
+import epicarchitect.breakbadhabits.environment.database.AppSettingsTheme;
+import epicarchitect.breakbadhabits.environment.database.AppSettingsLanguage;
+import kotlin.Int;
+
+CREATE TABLE IF NOT EXISTS AppSettings (
+  id       INTEGER AS Int NOT NULL PRIMARY KEY,
+  theme    INTEGER AS AppSettingsTheme NOT NULL,
+  language INTEGER AS AppSettingsLanguage NOT NULL
+);
+
+INSERT OR IGNORE INTO AppSettings VALUES (0, 0, 0);
+
+update:
+UPDATE AppSettings SET theme = ?, language = ? WHERE id = 0;
+
+settings:
+SELECT * FROM AppSettings LIMIT 1;

@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits
 
 import androidx.compose.ui.window.ComposeUIViewController
-import epicarchitect.breakbadhabits.ui.screen.Root
+import epicarchitect.breakbadhabits.ui.screen.app.App
 
 @Suppress("FunctionName", "unused")
-fun AppViewController() = ComposeUIViewController { Root() }
+fun AppViewController() = ComposeUIViewController { App() }

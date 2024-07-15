@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -22,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.environment.Environment
+import epicarchitect.breakbadhabits.environment.database.Habit
 import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameError
 import epicarchitect.breakbadhabits.operation.habits.validation.checkHabitNewName
 import epicarchitect.breakbadhabits.ui.component.Dialog
@@ -37,7 +38,7 @@ import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.InputCard
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.text.TextInputCard
-import epicarchitect.breakbadhabits.ui.screen.dashboard.DashboardScreen
+import epicarchitect.breakbadhabits.ui.screen.appDashboard.AppDashboardScreen
 
 class HabitEditingScreen(private val habitId: Int) : Screen {
     @Composable
@@ -49,8 +50,9 @@ class HabitEditingScreen(private val habitId: Int) : Screen {
 @Composable
 fun HabitEditing(habitId: Int) {
     val navigator = LocalNavigator.currentOrThrow
-    val habitQueries = AppData.database.habitQueries
-    val strings = AppData.resources.strings.habitEditingStrings
+    val habitQueries = Environment.database.habitQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitEditingStrings
 
     FlowStateContainer(
         state = stateOfOneOrNull { habitQueries.habitById(habitId) }
@@ -70,9 +72,10 @@ fun HabitEditing(habitId: Int) {
 @Composable
 private fun ColumnScope.Content(initialHabit: Habit) {
     val navigator = LocalNavigator.currentOrThrow
-    val habitQueries = AppData.database.habitQueries
-    val strings = AppData.resources.strings.habitEditingStrings
-    val icons = AppData.resources.icons
+    val habitQueries = Environment.database.habitQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitEditingStrings
+    val icons = Environment.resources.icons
 
     var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit.name) }
     var habitNameError by remember { mutableStateOf<HabitNewNameError?>(null) }
@@ -151,8 +154,8 @@ private fun ColumnScope.Content(initialHabit: Habit) {
             habitNameError = checkHabitNewName(
                 newName = habitName,
                 initialName = initialHabit.name,
-                maxLength = AppData.habitsConfig.maxHabitNameLength,
-                nameIsExists = { AppData.database.habitQueries.countWithName(it).executeAsOne() > 0L }
+                maxLength = Environment.habitsConfig.maxHabitNameLength,
+                nameIsExists = { Environment.database.habitQueries.countWithName(it).executeAsOne() > 0L }
             )
             if (habitNameError != null) return@Button
 
@@ -177,8 +180,9 @@ private fun DeletionDialog(
     onDismiss: () -> Unit
 ) {
     val navigator = LocalNavigator.currentOrThrow
-    val habitQueries = AppData.database.habitQueries
-    val strings = AppData.resources.strings.habitEditingStrings
+    val habitQueries = Environment.database.habitQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitEditingStrings
 
     Dialog(onDismiss) {
         Column(
@@ -207,7 +211,7 @@ private fun DeletionDialog(
                     style = ButtonStyles.primary,
                     onClick = {
                         habitQueries.deleteById(habit.id)
-                        navigator.popUntil { it is DashboardScreen }
+                        navigator.popUntil { it is AppDashboardScreen }
                     }
                 )
             }

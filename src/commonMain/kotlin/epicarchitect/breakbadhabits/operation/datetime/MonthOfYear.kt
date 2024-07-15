@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.operation.datetime
 
-import epicarchitect.breakbadhabits.data.datetime.MonthOfYear
+import epicarchitect.breakbadhabits.environment.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.operation.math.ranges.ascended
 import epicarchitect.breakbadhabits.operation.math.ranges.isAscended
 import epicarchitect.calendar.compose.basis.EpicMonth

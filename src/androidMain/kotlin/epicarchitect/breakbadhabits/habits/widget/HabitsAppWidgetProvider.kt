@@ -12,8 +12,8 @@ import android.widget.RemoteViews
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.R
-import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.isSystemDarkModeEnabled
+import epicarchitect.breakbadhabits.environment.Environment
+import epicarchitect.breakbadhabits.ui.theme.isSystemDarkModeEnabled
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -40,14 +40,14 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
     override fun onDeleted(context: Context, widgetSystemIds: IntArray) {
         super.onDeleted(context, widgetSystemIds)
         widgetSystemIds.forEach {
-            AppData.database.habitWidgetQueries.deleteBySystemId(it)
+            Environment.database.habitWidgetQueries.deleteBySystemId(it)
         }
     }
 
     private fun updateAppWidget(context: Context, manager: AppWidgetManager, widgetSystemId: Int) = runBlocking {
         val isDarkModeEnabled = isSystemDarkModeEnabled()
 
-        val widget = AppData.database.habitWidgetQueries
+        val widget = Environment.database.habitWidgetQueries
             .widgetBySystemId(widgetSystemId)
             .asFlow()
             .mapToOneOrNull(Dispatchers.IO)

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,8 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.environment.Environment
+import epicarchitect.breakbadhabits.environment.database.Habit
 import epicarchitect.breakbadhabits.ui.component.Checkbox
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
@@ -37,8 +38,9 @@ fun HabitWidgetCreation(
     systemWidgetId: Int,
     onDone: () -> Unit
 ) {
-    val strings = AppData.resources.strings.habitWidgetCreationStrings
-    val habitQueries = AppData.database.habitQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitWidgetCreationStrings
+    val habitQueries = Environment.database.habitQueries
 
     FlowStateContainer(
         state = stateOfList { habitQueries.habits() }
@@ -60,8 +62,9 @@ private fun ColumnScope.Content(
     systemWidgetId: Int,
     onDone: () -> Unit
 ) {
-    val strings = AppData.resources.strings.habitWidgetCreationStrings
-    val habitWidgetQueries = AppData.database.habitWidgetQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitWidgetCreationStrings
+    val habitWidgetQueries = Environment.database.habitWidgetQueries
 
     val selectedHabitIds = remember { mutableStateListOf<Int>() }
     var widgetTitle by rememberSaveable { mutableStateOf("") }

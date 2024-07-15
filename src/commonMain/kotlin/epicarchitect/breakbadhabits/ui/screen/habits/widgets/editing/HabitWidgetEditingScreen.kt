@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.data.Habit
-import epicarchitect.breakbadhabits.data.HabitWidget
+import epicarchitect.breakbadhabits.environment.Environment
+import epicarchitect.breakbadhabits.environment.database.Habit
+import epicarchitect.breakbadhabits.environment.database.HabitWidget
 import epicarchitect.breakbadhabits.ui.component.Checkbox
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
@@ -48,12 +49,13 @@ class HabitWidgetEditingScreen(private val widgetId: Int) : Screen {
 
 @Composable
 fun HabitWidgetEditing(widgetId: Int) {
-    val strings = AppData.resources.strings.habitWidgetEditingStrings
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitWidgetEditingStrings
     val navigator = LocalNavigator.currentOrThrow
 
     FlowStateContainer(
-        state1 = stateOfOneOrNull { AppData.database.habitWidgetQueries.widgetById(widgetId) },
-        state2 = stateOfList { AppData.database.habitQueries.habits() }
+        state1 = stateOfOneOrNull { Environment.database.habitWidgetQueries.widgetById(widgetId) },
+        state2 = stateOfList { Environment.database.habitQueries.habits() }
     ) { widget, habits ->
         Column {
             SimpleTopAppBar(title = strings.title(), onBackClick = navigator::pop)
@@ -70,8 +72,9 @@ private fun ColumnScope.Content(
     habits: List<Habit>,
 ) {
     val navigator = LocalNavigator.currentOrThrow
-    val strings = AppData.resources.strings.habitWidgetEditingStrings
-    val habitWidgetQueries = AppData.database.habitWidgetQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitWidgetEditingStrings
+    val habitWidgetQueries = Environment.database.habitWidgetQueries
 
     val selectedHabitIds = remember(initialWidget) { initialWidget.habitIds.toMutableStateList() }
     var widgetTitle by rememberSaveable(initialWidget) { mutableStateOf(initialWidget.title) }
@@ -188,8 +191,9 @@ private fun DeletionDialog(
     widget: HabitWidget,
     onDismiss: () -> Unit
 ) {
-    val strings = AppData.resources.strings.habitWidgetEditingStrings
-    val habitWidgetQueries = AppData.database.habitWidgetQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitWidgetEditingStrings
+    val habitWidgetQueries = Environment.database.habitWidgetQueries
 
     Dialog(onDismiss = onDismiss) {
         Column(

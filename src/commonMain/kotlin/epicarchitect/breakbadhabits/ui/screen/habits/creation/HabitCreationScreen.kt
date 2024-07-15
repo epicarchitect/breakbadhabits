@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.environment.Environment
 import epicarchitect.breakbadhabits.operation.habits.totalHabitEventCountByDaily
 import epicarchitect.breakbadhabits.operation.habits.validation.DailyHabitEventCountError
 import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameError
@@ -64,7 +65,8 @@ class HabitCreationScreen : Screen {
 
 @Composable
 fun HabitCreation() {
-    val strings = AppData.resources.strings.habitCreationStrings
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitCreationStrings
     val navigator = LocalNavigator.currentOrThrow
 
     SimpleScrollableScreen(
@@ -77,9 +79,10 @@ fun HabitCreation() {
 
 @Composable
 private fun ColumnScope.Content() {
-    val strings = AppData.resources.strings.habitCreationStrings
-    val icons = AppData.resources.icons
-    val habitQueries = AppData.database.habitQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.habitCreationStrings
+    val icons = Environment.resources.icons
+    val habitQueries = Environment.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
 
     var habitName by rememberSaveable { mutableStateOf("") }
@@ -184,7 +187,7 @@ private fun ColumnScope.Content() {
         onClick = {
             habitNameError = checkHabitNewName(
                 newName = habitName,
-                maxLength = AppData.habitsConfig.maxHabitNameLength,
+                maxLength = Environment.habitsConfig.maxHabitNameLength,
                 nameIsExists = { habitQueries.countWithName(it).executeAsOne() > 0L }
             )
             if (habitNameError != null) return@Button
@@ -192,7 +195,7 @@ private fun ColumnScope.Content() {
             dailyEventCountError = checkDailyHabitEventCount(dailyEventCount)
             if (dailyEventCountError != null) return@Button
 
-            val endTime = AppData.dateTime.currentInstantState.value
+            val endTime = Environment.dateTime.currentInstantState.value
             val startTime = endTime - selectedHabitDuration
 
             habitQueries.insertWithEventRecord(
@@ -201,7 +204,7 @@ private fun ColumnScope.Content() {
                 trackEventCount = totalHabitEventCountByDaily(
                     dailyEventCount = dailyEventCount,
                     timeRange = startTime..endTime,
-                    timeZone = AppData.dateTime.currentTimeZoneState.value
+                    timeZone = Environment.dateTime.currentTimeZoneState.value
                 ),
                 trackStartTime = startTime,
                 trackEndTime = endTime

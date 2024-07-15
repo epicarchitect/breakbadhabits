@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.ui.format
 
-import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.environment.resources.strings.durationFormat.DurationFormattingStrings
 import epicarchitect.breakbadhabits.operation.datetime.daysPart
 import epicarchitect.breakbadhabits.operation.datetime.hoursPart
 import epicarchitect.breakbadhabits.operation.datetime.minutesPart
@@ -14,8 +14,10 @@ enum class DurationFormattingAccuracy(val order: Int) {
     SECONDS(4)
 }
 
-fun Duration.formatted(accuracy: DurationFormattingAccuracy): String {
-    val strings = AppData.resources.strings.durationFormattingStrings
+fun Duration.formatted(
+    strings: DurationFormattingStrings,
+    accuracy: DurationFormattingAccuracy
+): String {
     var result = ""
 
     val daysPart = daysPart()

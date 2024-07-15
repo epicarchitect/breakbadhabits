@@ -5,20 +5,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.data.database.appSettings.AppSettingsTheme
+import epicarchitect.breakbadhabits.environment.Environment
+import epicarchitect.breakbadhabits.environment.database.AppSettings
+import epicarchitect.breakbadhabits.environment.database.AppSettingsLanguage
+import epicarchitect.breakbadhabits.environment.database.AppSettingsTheme
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.ui.component.button.Button
 import epicarchitect.breakbadhabits.ui.component.button.RadioButton
 import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
 import epicarchitect.breakbadhabits.ui.component.text.InputCard
-import epicarchitect.breakbadhabits.ui.screen.habits.widgets.list.HabitWidgetsScreen
+import epicarchitect.breakbadhabits.ui.screen.habits.widgets.dashboard.HabitWidgetsDashboardScreen
 
 class AppSettingsScreen : Screen {
     @Composable
@@ -30,8 +34,9 @@ class AppSettingsScreen : Screen {
 @Composable
 fun AppSettings() {
     val navigator = LocalNavigator.currentOrThrow
-    val strings = AppData.resources.strings.appSettingsStrings
-    val appSettingsQueries = AppData.database.appSettingsQueries
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.appSettingsStrings
+    val appSettingsQueries = Environment.database.appSettingsQueries
 
     FlowStateContainer(
         state = stateOfOneOrNull { appSettingsQueries.settings() }
@@ -40,43 +45,113 @@ fun AppSettings() {
             title = strings.titleText(),
             onBackClick = navigator::pop,
         ) {
-            Spacer(Modifier.height(16.dp))
-
-            InputCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                title = "Theme",
-                description = strings.themeSelectionDescription()
-            ) {
-                RadioButton(
-                    text = strings.themeSelectionSystemTheme(),
-                    selected = settings?.theme == AppSettingsTheme.SYSTEM,
-                    onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.SYSTEM) }
-                )
-
-                RadioButton(
-                    text = strings.themeSelectionLightTheme(),
-                    selected = settings?.theme == AppSettingsTheme.LIGHT,
-                    onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.LIGHT) }
-                )
-
-                RadioButton(
-                    text = strings.themeSelectionDarkTheme(),
-                    selected = settings?.theme == AppSettingsTheme.DARK,
-                    onSelect = { appSettingsQueries.update(theme = AppSettingsTheme.DARK) }
-                )
+            if (settings != null) {
+                Loaded(settings)
             }
-
-            Spacer(Modifier.height(16.dp))
-
-            Button(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                onClick = { navigator += HabitWidgetsScreen() },
-                text = strings.widgetsButton()
-            )
-
-            Spacer(Modifier.height(16.dp))
         }
     }
+}
+
+@Composable
+private fun Loaded(settings: AppSettings) {
+    val navigator = LocalNavigator.currentOrThrow
+    val appStrings by Environment.resources.strings.state.collectAsState()
+    val strings = appStrings.appSettingsStrings
+    val appSettingsQueries = Environment.database.appSettingsQueries
+
+    Spacer(Modifier.height(16.dp))
+
+    InputCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        title = strings.themeTitle(),
+        description = strings.themeDescription()
+    ) {
+        RadioButton(
+            text = strings.themeSystem(),
+            selected = settings.theme == AppSettingsTheme.SYSTEM,
+            onSelect = {
+                appSettingsQueries.update(
+                    theme = AppSettingsTheme.SYSTEM,
+                    language = settings.language
+                )
+            }
+        )
+
+        RadioButton(
+            text = strings.themeLight(),
+            selected = settings.theme == AppSettingsTheme.LIGHT,
+            onSelect = {
+                appSettingsQueries.update(
+                    theme = AppSettingsTheme.LIGHT,
+                    language = settings.language
+                )
+            }
+        )
+
+        RadioButton(
+            text = strings.themeDark(),
+            selected = settings.theme == AppSettingsTheme.DARK,
+            onSelect = {
+                appSettingsQueries.update(
+                    theme = AppSettingsTheme.DARK,
+                    language = settings.language
+                )
+            }
+        )
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    InputCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        title = strings.languageTitle(),
+        description = strings.languageDescription()
+    ) {
+        RadioButton(
+            text = strings.languageSystem(),
+            selected = settings.language == AppSettingsLanguage.SYSTEM,
+            onSelect = {
+                appSettingsQueries.update(
+                    theme = settings.theme,
+                    language = AppSettingsLanguage.SYSTEM
+                )
+            }
+        )
+
+        RadioButton(
+            text = strings.languageEnglish(),
+            selected = settings.language == AppSettingsLanguage.ENGLISH,
+            onSelect = {
+                appSettingsQueries.update(
+                    theme = settings.theme,
+                    language = AppSettingsLanguage.ENGLISH
+                )
+            }
+        )
+
+        RadioButton(
+            text = strings.languageRussian(),
+            selected = settings.language == AppSettingsLanguage.RUSSIAN,
+            onSelect = {
+                appSettingsQueries.update(
+                    theme = settings.theme,
+                    language = AppSettingsLanguage.RUSSIAN
+                )
+            }
+        )
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    Button(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        onClick = { navigator += HabitWidgetsDashboardScreen() },
+        text = strings.widgetsButton()
+    )
+
+    Spacer(Modifier.height(16.dp))
 }

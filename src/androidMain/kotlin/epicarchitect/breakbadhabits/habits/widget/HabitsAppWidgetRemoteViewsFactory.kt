@@ -4,8 +4,8 @@ import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import epicarchitect.breakbadhabits.R
-import epicarchitect.breakbadhabits.data.AppData
-import epicarchitect.breakbadhabits.data.Habit
+import epicarchitect.breakbadhabits.environment.Environment
+import epicarchitect.breakbadhabits.environment.database.Habit
 import epicarchitect.breakbadhabits.operation.habits.abstinence
 import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
 import epicarchitect.breakbadhabits.ui.format.formatted
@@ -17,17 +17,17 @@ class HabitsAppWidgetRemoteViewsFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private fun loadItems(): List<Item> {
-        val config = AppData.database.habitWidgetQueries.widgetBySystemId(widgetSystemId).executeAsOneOrNull()
+        val config = Environment.database.habitWidgetQueries.widgetBySystemId(widgetSystemId).executeAsOneOrNull()
 
         return if (config == null) {
             emptyList()
         } else {
-            val currentTime = AppData.dateTime.currentInstantState.value
-            AppData.database.habitQueries.habits().executeAsList().mapNotNull {
+            val currentTime = Environment.dateTime.currentInstantState.value
+            Environment.database.habitQueries.habits().executeAsList().mapNotNull {
                 if (config.habitIds.contains(it.id)) {
                     Item(
                         habit = it,
-                        abstinence = AppData.database.habitEventRecordQueries
+                        abstinence = Environment.database.habitEventRecordQueries
                             .recordByHabitIdAndMaxEndTime(it.id)
                             .executeAsOneOrNull()
                             ?.abstinence(currentTime)
@@ -61,8 +61,10 @@ class HabitsAppWidgetRemoteViewsFactory(
         setTextViewText(R.id.habitName_textView, item.habit.name)
         setTextViewText(
             R.id.abstinenceTime_textView,
-            item.abstinence?.formatted(DurationFormattingAccuracy.HOURS)
-                ?: context.getString(R.string.habitsAppWidget_noAbstinenceTime)
+            item.abstinence?.formatted(
+                strings = Environment.resources.strings.state.value.durationFormattingStrings,
+                accuracy = DurationFormattingAccuracy.HOURS
+            ) ?: context.getString(R.string.habitsAppWidget_noAbstinenceTime)
         )
     }
 

@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import epicarchitect.breakbadhabits.data.AppData
+import epicarchitect.breakbadhabits.environment.Environment
 import epicarchitect.breakbadhabits.ui.component.text.Text
 import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
 
@@ -52,7 +52,7 @@ fun SimpleTopAppBar(
         ) {
             if (onBackClick != null) {
                 IconButton(
-                    icon = AppData.resources.icons.commonIcons.navigationBack,
+                    icon = Environment.resources.icons.commonIcons.navigationBack,
                     onClick = onBackClick
                 )
             } else {
