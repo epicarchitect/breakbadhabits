@@ -194,7 +194,7 @@ fun DateTimeRangeInputCard(
         Column {
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                text = startTimeLabel,
+                text = startTimeLabel + " — " + startDateTime.formatted(withYear = true),
                 type = Text.Type.Title,
                 priority = Text.Priority.Low
             )
@@ -204,8 +204,8 @@ fun DateTimeRangeInputCard(
             ) {
                 OutlinedTextField(
                     modifier = Modifier
-                        .padding(start = 14.dp, end = 7.dp)
-                        .weight(0.8f)
+                        .padding(start = 14.dp, end = 4.dp)
+                        .weight(0.6f)
                         .clip(MaterialTheme.shapes.small)
                         .clickable {
                             dateSelectionState = SHOW_PICKER_START
@@ -222,7 +222,7 @@ fun DateTimeRangeInputCard(
                 )
                 OutlinedTextField(
                     modifier = Modifier
-                        .padding(start = 7.dp, end = 14.dp)
+                        .padding(start = 4.dp, end = 14.dp)
                         .weight(0.5f)
                         .clip(MaterialTheme.shapes.small)
                         .clickable {
@@ -247,7 +247,7 @@ fun DateTimeRangeInputCard(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                text = endTimeLabel,
+                text = endTimeLabel + " — " + endDateTime.formatted(withYear = true),
                 type = Text.Type.Title,
                 priority = Text.Priority.Low
             )
@@ -257,8 +257,8 @@ fun DateTimeRangeInputCard(
             ) {
                 OutlinedTextField(
                     modifier = Modifier
-                        .padding(start = 14.dp, end = 7.dp)
-                        .weight(0.8f)
+                        .padding(start = 14.dp, end = 4.dp)
+                        .weight(0.6f)
                         .clip(MaterialTheme.shapes.small)
                         .clickable {
                             dateSelectionState = SHOW_PICKER_END
@@ -275,7 +275,7 @@ fun DateTimeRangeInputCard(
                 )
                 OutlinedTextField(
                     modifier = Modifier
-                        .padding(start = 7.dp, end = 14.dp)
+                        .padding(start = 4.dp, end = 14.dp)
                         .weight(0.5f)
                         .clip(MaterialTheme.shapes.small)
                         .clickable {
