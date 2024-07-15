@@ -246,7 +246,7 @@ private fun LazyItemScope.RecordItem(record: HabitEventRecord) {
         ) {
             Text(
                 modifier = Modifier.padding(2.dp),
-                text = record.timeRange().toLocalDateTimeRange(timeZone).formatted(),
+                text = record.timeRange().toLocalDateTimeRange(timeZone).formatted(withYear = true),
                 type = Text.Type.Title
             )
 

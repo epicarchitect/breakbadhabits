@@ -11,21 +11,23 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 expect fun Month.formatted(): String
-expect fun LocalDate.formatted(): String
+expect fun LocalDate.formatted(withYear: Boolean = false): String
 expect fun LocalTime.formatted(): String
 
 fun MonthOfYear.formatted() = "${month.formatted()} $year"
 
-fun LocalDateTime.formatted() = time.formatted() + ", " + date.formatted()
+fun LocalDateTime.formatted(withYear: Boolean = false) = date.formatted(withYear) + ", " + time.formatted()
 
-fun Instant.formatted(timeZone: TimeZone) = toLocalDateTime(timeZone).formatted()
+fun Instant.formatted(timeZone: TimeZone, withYear: Boolean = false) = toLocalDateTime(timeZone).formatted(withYear)
 
-fun ClosedRange<LocalDateTime>.formatted() = when {
-    start == endInclusive           -> start.formatted()
+fun ClosedRange<LocalDateTime>.formatted(withYear: Boolean = false) = when {
+    start == endInclusive -> start.formatted(withYear)
     start.date == endInclusive.date -> {
-        start.time.formatted() + " — " + endInclusive.time.formatted() + ", " + start.date.formatted()
+        start.date.formatted(withYear) + ", " + start.time.formatted() + " — " + endInclusive.time.formatted()
     }
-    else                            -> start.formatted() + " — " + endInclusive.formatted()
+
+    else -> start.formatted(withYear) + " — " + endInclusive.formatted(withYear)
 }
 
-fun ClosedRange<Instant>.formatted(timeZone: TimeZone) = toLocalDateTimeRange(timeZone).formatted()
+fun ClosedRange<Instant>.formatted(timeZone: TimeZone, withYear: Boolean = false) =
+    toLocalDateTimeRange(timeZone).formatted(withYear)
