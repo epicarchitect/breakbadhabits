@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.environment.Environment
@@ -70,6 +72,14 @@ fun DateTimeRangeInputCard(
     var selectedEndDate = endDateTime.date
     var selectedEndTime = endDateTime.time
 
+    val textFieldColors = TextFieldDefaults.colors(
+        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.9f),
+        disabledContainerColor = Color.Transparent,
+        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+        selectionColors = TextSelectionColors(Color.Transparent, Color.Transparent)
+    )
+
     if (dateSelectionState != HIDE_PICKER) {
         val date = if (dateSelectionState == SHOW_PICKER_START) selectedStartDate else selectedEndDate
         val state = rememberDatePickerState(
@@ -108,8 +118,12 @@ fun DateTimeRangeInputCard(
                         val newDate = Instant.fromEpochMilliseconds(state.selectedDateMillis!!)
                             .toLocalDateTime(timeZone).date
 
-                        if (dateSelectionState == SHOW_PICKER_START) selectedStartDate = newDate
-                        else selectedEndDate = newDate
+                        if (dateSelectionState == SHOW_PICKER_START) {
+                            selectedStartDate = newDate
+                            if (newDate > selectedEndDate) selectedEndDate = newDate
+                        } else {
+                            selectedEndDate = newDate
+                        }
 
                         dateSelectionState = HIDE_PICKER
 
@@ -192,6 +206,7 @@ fun DateTimeRangeInputCard(
                     modifier = Modifier
                         .padding(start = 14.dp, end = 7.dp)
                         .weight(0.8f)
+                        .clip(MaterialTheme.shapes.small)
                         .clickable {
                             dateSelectionState = SHOW_PICKER_START
                         },
@@ -199,12 +214,7 @@ fun DateTimeRangeInputCard(
                     onValueChange = {},
                     readOnly = true,
                     enabled = false,
-                    colors = TextFieldDefaults.colors(
-                        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledContainerColor = Color.Transparent,
-                        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    ),
+                    colors = textFieldColors,
                     leadingIcon = {
                         Icon(Environment.resources.icons.commonIcons.calendar)
                     },
@@ -214,6 +224,7 @@ fun DateTimeRangeInputCard(
                     modifier = Modifier
                         .padding(start = 7.dp, end = 14.dp)
                         .weight(0.5f)
+                        .clip(MaterialTheme.shapes.small)
                         .clickable {
                             timeSelectionState = SHOW_PICKER_START
                         },
@@ -221,16 +232,11 @@ fun DateTimeRangeInputCard(
                     onValueChange = {},
                     readOnly = true,
                     enabled = false,
-                    colors = TextFieldDefaults.colors(
-                        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledContainerColor = Color.Transparent,
-                        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    ),
+                    colors = textFieldColors,
                     leadingIcon = {
                         Icon(Environment.resources.icons.commonIcons.time)
                     },
-                    shape = MaterialTheme.shapes.small,
+                    shape = MaterialTheme.shapes.small
                 )
             }
         }
@@ -253,6 +259,7 @@ fun DateTimeRangeInputCard(
                     modifier = Modifier
                         .padding(start = 14.dp, end = 7.dp)
                         .weight(0.8f)
+                        .clip(MaterialTheme.shapes.small)
                         .clickable {
                             dateSelectionState = SHOW_PICKER_END
                         },
@@ -260,12 +267,7 @@ fun DateTimeRangeInputCard(
                     onValueChange = {},
                     readOnly = true,
                     enabled = false,
-                    colors = TextFieldDefaults.colors(
-                        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledContainerColor = Color.Transparent,
-                        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    ),
+                    colors = textFieldColors,
                     leadingIcon = {
                         Icon(Environment.resources.icons.commonIcons.calendar)
                     },
@@ -275,6 +277,7 @@ fun DateTimeRangeInputCard(
                     modifier = Modifier
                         .padding(start = 7.dp, end = 14.dp)
                         .weight(0.5f)
+                        .clip(MaterialTheme.shapes.small)
                         .clickable {
                             timeSelectionState = SHOW_PICKER_END
                         },
@@ -282,12 +285,7 @@ fun DateTimeRangeInputCard(
                     onValueChange = {},
                     readOnly = true,
                     enabled = false,
-                    colors = TextFieldDefaults.colors(
-                        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledContainerColor = Color.Transparent,
-                        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    ),
+                    colors = textFieldColors,
                     leadingIcon = {
                         Icon(Environment.resources.icons.commonIcons.time)
                     },
