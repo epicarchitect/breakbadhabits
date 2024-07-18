@@ -1,32 +1,3 @@
 <resources>
     <string name="app_name">Сломай Плохие Привычки</string>
-    <string name="app_updated">Обновление приложения скачано</string>
-    <string name="app_install_update">Установить</string>
-    <string name="s">с</string>
-    <string name="m">м</string>
-    <string name="h">ч</string>
-    <string name="d">д</string>
-    <string name="done">Готово</string>
-    <string name="habits_app_widget_name">Виджет с привычками</string>
-    <string name="edit">Редактировать</string>
-    <string name="delete">Удалить</string>
-    <string name="yes">Да</string>
-    <string name="ok">ОК</string>
-    <string name="cancel">Отмена</string>
-    <string name="select_date">Выберите дату</string>
-    <string name="select_time">Выберите время</string>
-    <string-array name="months">
-        <item>Январь</item>
-        <item>Февраль</item>
-        <item>Март</item>
-        <item>Апрель</item>
-        <item>Май</item>
-        <item>Июнь</item>
-        <item>Июль</item>
-        <item>Август</item>
-        <item>Сентябрь</item>
-        <item>Октябрь</item>
-        <item>Ноябрь</item>
-        <item>Декабрь</item>
-    </string-array>
 </resources>

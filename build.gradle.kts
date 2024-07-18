@@ -56,7 +56,7 @@ android {
         resourceConfigurations += setOf("en", "ru")
         minSdk = 30
         targetSdk = 34
-        versionCode = 70
+        versionCode = 80
         versionName = "4.0.0"
         base.archivesName.set("breakbadhabits-$versionName")
     }
@@ -67,6 +67,13 @@ android {
     }
 
     signingConfigs {
+        getByName("debug") {
+            storeFile = file("src/androidMain/signing/debug.jks")
+            storePassword = "epicdebug"
+            keyAlias = "epicdebug"
+            keyPassword = "epicdebug"
+        }
+
         register("release") {
             storeFile = rootProject.file("src/androidMain/signing/release.jks")
             storePassword = "epicdebug"
@@ -87,6 +94,7 @@ android {
         }
 
         debug {
+            signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
         }
     }

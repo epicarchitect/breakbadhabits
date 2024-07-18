@@ -64,7 +64,7 @@ class HabitsAppWidgetRemoteViewsFactory(
             item.abstinence?.formatted(
                 strings = Environment.resources.strings.state.value.durationFormattingStrings,
                 accuracy = DurationFormattingAccuracy.HOURS
-            ) ?: context.getString(R.string.habitsAppWidget_noAbstinenceTime)
+            ) ?: Environment.resources.strings.state.value.appDashboardStrings.habitHasNoEvents()
         )
     }
 

@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.App_Theme)
+        MigrationToV4(this).executeIfNeeded()
         setContent {
             App()
         }

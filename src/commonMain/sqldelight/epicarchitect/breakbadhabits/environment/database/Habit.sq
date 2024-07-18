@@ -21,6 +21,9 @@ SELECT * FROM Habit WHERE id = ?;
 countWithName:
 SELECT count(*) FROM Habit WHERE name = ?;
 
+insert:
+INSERT INTO Habit(id, name, iconId) VALUES (?, ?, ?);
+
 insertWithEventRecord {
     INSERT INTO Habit(id, name, iconId) VALUES (
         NULL,
