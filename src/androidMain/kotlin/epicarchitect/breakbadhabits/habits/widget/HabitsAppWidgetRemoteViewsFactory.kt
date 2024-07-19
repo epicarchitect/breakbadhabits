@@ -3,12 +3,12 @@ package epicarchitect.breakbadhabits.habits.widget
 import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import epicarchitect.breakbadhabits.Environment
 import epicarchitect.breakbadhabits.R
-import epicarchitect.breakbadhabits.environment.Environment
 import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.operation.habits.abstinence
-import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
-import epicarchitect.breakbadhabits.ui.format.formatted
+import epicarchitect.breakbadhabits.datetime.format.DurationFormattingAccuracy
+import epicarchitect.breakbadhabits.datetime.format.formatted
+import epicarchitect.breakbadhabits.habits.abstinence
 import kotlin.time.Duration
 
 class HabitsAppWidgetRemoteViewsFactory(
@@ -17,8 +17,8 @@ class HabitsAppWidgetRemoteViewsFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private fun loadItems(): List<Item> {
-        val config = Environment.database.habitWidgetQueries.widgetBySystemId(widgetSystemId)
-            .executeAsOneOrNull()
+        val config = Environment.database.habitWidgetQueries
+            .widgetBySystemId(widgetSystemId).executeAsOneOrNull()
 
         return if (config == null) {
             emptyList()

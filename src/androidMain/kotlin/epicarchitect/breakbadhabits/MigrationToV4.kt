@@ -7,8 +7,7 @@ import androidx.core.content.edit
 import androidx.core.database.getStringOrNull
 import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
-import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.ListOfIntAdapter
+import epicarchitect.breakbadhabits.database.ListOfIntAdapter
 import kotlinx.datetime.Instant
 
 class MigrationToV4(private val context: Context) {
@@ -54,12 +53,10 @@ class MigrationToV4(private val context: Context) {
             while (it.moveToNext()) {
                 Environment.database.habitEventRecordQueries.insert(
                     habitId = it.getInt(it.getColumnIndexOrThrow("habitId")),
-                    startTime = it.getLong(it.getColumnIndexOrThrow("time")).let {
-                        Instant.fromEpochMilliseconds(it)
-                    },
-                    endTime = it.getLong(it.getColumnIndexOrThrow("time")).let {
-                        Instant.fromEpochMilliseconds(it)
-                    },
+                    startTime = it.getLong(it.getColumnIndexOrThrow("time"))
+                        .let(Instant::fromEpochMilliseconds),
+                    endTime = it.getLong(it.getColumnIndexOrThrow("time"))
+                        .let(Instant::fromEpochMilliseconds),
                     comment = it.getStringOrNull(it.getColumnIndexOrThrow("comment")).orEmpty(),
                     eventCount = 1
                 )
@@ -73,9 +70,8 @@ class MigrationToV4(private val context: Context) {
                 Environment.database.habitWidgetQueries.insert(
                     title = it.getString(it.getColumnIndexOrThrow("title")),
                     systemId = it.getInt(it.getColumnIndexOrThrow("appWidgetId")),
-                    habitIds = it.getString(it.getColumnIndexOrThrow("habitIdsJson")).let {
-                        ListOfIntAdapter.decode(it)
-                    }
+                    habitIds = it.getString(it.getColumnIndexOrThrow("habitIdsJson"))
+                        .let(ListOfIntAdapter::decode)
                 )
             }
         }

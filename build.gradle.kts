@@ -97,7 +97,7 @@ android {
 sqldelight {
     databases {
         create("AppDatabase") {
-            packageName.set("epicarchitect.breakbadhabits.environment.database")
+            packageName.set("epicarchitect.breakbadhabits.database")
         }
     }
 }

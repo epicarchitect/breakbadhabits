@@ -11,9 +11,9 @@ import android.view.View
 import android.widget.RemoteViews
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneOrNull
+import epicarchitect.breakbadhabits.Environment
 import epicarchitect.breakbadhabits.R
-import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.ui.theme.isSystemDarkModeEnabled
+import epicarchitect.breakbadhabits.isSystemDarkModeEnabled
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

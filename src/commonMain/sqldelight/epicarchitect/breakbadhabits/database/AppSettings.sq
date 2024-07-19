@@ -1,4 +1,4 @@
-import epicarchitect.breakbadhabits.environment.database.AppSettingsTheme;
+import epicarchitect.breakbadhabits.database.AppSettingsTheme;
 import kotlin.Int;
 
 CREATE TABLE IF NOT EXISTS AppSettings (

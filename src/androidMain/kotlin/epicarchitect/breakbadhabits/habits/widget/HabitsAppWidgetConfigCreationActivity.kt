@@ -5,13 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import epicarchitect.breakbadhabits.Environment
 import epicarchitect.breakbadhabits.R
-import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
-import epicarchitect.breakbadhabits.ui.component.stateOfOneOrNull
-import epicarchitect.breakbadhabits.ui.component.theme.AppColorsSchemes
-import epicarchitect.breakbadhabits.ui.component.theme.AppTheme
-import epicarchitect.breakbadhabits.ui.screen.habits.widgets.creation.HabitWidgetCreation
+import epicarchitect.breakbadhabits.screens.habits.widgets.creation.HabitWidgetCreation
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
+import epicarchitect.breakbadhabits.uikit.theme.AppColorsSchemes
+import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 
 class HabitsAppWidgetConfigCreationActivity : AppCompatActivity() {
 
