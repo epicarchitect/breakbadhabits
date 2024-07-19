@@ -24,6 +24,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.database.HabitEventRecord
+import epicarchitect.breakbadhabits.datetime.format.DurationFormattingAccuracy
+import epicarchitect.breakbadhabits.datetime.format.formatted
+import epicarchitect.breakbadhabits.datetime.toMonthOfYear
+import epicarchitect.breakbadhabits.screens.habits.editing.HabitEditingScreen
+import epicarchitect.breakbadhabits.screens.habits.records.creation.HabitEventRecordCreationScreen
+import epicarchitect.breakbadhabits.screens.habits.records.dashboard.HabitEventRecordsDashboardScreen
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Histogram
@@ -37,14 +45,6 @@ import epicarchitect.breakbadhabits.uikit.stateOfList
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.theme.AppTheme
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.database.HabitEventRecord
-import epicarchitect.breakbadhabits.datetime.format.DurationFormattingAccuracy
-import epicarchitect.breakbadhabits.datetime.format.formatted
-import epicarchitect.breakbadhabits.datetime.toMonthOfYear
-import epicarchitect.breakbadhabits.screens.habits.editing.HabitEditingScreen
-import epicarchitect.breakbadhabits.screens.habits.records.creation.HabitEventRecordCreationScreen
-import epicarchitect.breakbadhabits.screens.habits.records.dashboard.HabitEventRecordsDashboardScreen
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
@@ -111,7 +111,7 @@ private fun Content(
     habitEventRecords: List<HabitEventRecord>,
     lastHabitEventRecord: HabitEventRecord?
 ) {
-    val currentTime by Environment.habitsTimePulse.collectAsState()
+    val currentTime by Environment.habitsTimePulse.state.collectAsState()
     val timeZone = Environment.dateTime.currentTimeZone()
     val state = rememberHabitDetailsState(
         habitEventRecords = habitEventRecords,

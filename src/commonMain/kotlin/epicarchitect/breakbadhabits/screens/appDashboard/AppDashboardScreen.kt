@@ -26,6 +26,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.datetime.format.DurationFormattingAccuracy
+import epicarchitect.breakbadhabits.datetime.format.formatted
+import epicarchitect.breakbadhabits.habits.abstinence
+import epicarchitect.breakbadhabits.screens.appSettings.AppSettingsScreen
+import epicarchitect.breakbadhabits.screens.habits.creation.HabitCreationScreen
+import epicarchitect.breakbadhabits.screens.habits.dashboard.HabitDashboardScreen
+import epicarchitect.breakbadhabits.screens.habits.records.creation.HabitEventRecordCreationScreen
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Icon
@@ -37,14 +45,6 @@ import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
 import epicarchitect.breakbadhabits.uikit.stateOfList
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.datetime.format.DurationFormattingAccuracy
-import epicarchitect.breakbadhabits.datetime.format.formatted
-import epicarchitect.breakbadhabits.habits.abstinence
-import epicarchitect.breakbadhabits.screens.appSettings.AppSettingsScreen
-import epicarchitect.breakbadhabits.screens.habits.creation.HabitCreationScreen
-import epicarchitect.breakbadhabits.screens.habits.dashboard.HabitDashboardScreen
-import epicarchitect.breakbadhabits.screens.habits.records.creation.HabitEventRecordCreationScreen
 
 class AppDashboardScreen : Screen {
     @Composable
@@ -185,7 +185,7 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
                             Environment.database.habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habit.id)
                         }
                     ) { record ->
-                        val currentTime by Environment.habitsTimePulse.collectAsState()
+                        val currentTime by Environment.habitsTimePulse.state.collectAsState()
                         val abstinence = record?.abstinence(currentTime)
 
                         Text(
