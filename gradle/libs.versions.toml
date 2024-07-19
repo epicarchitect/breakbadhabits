@@ -1,5 +1,5 @@
 [versions]
-android-gradlePlugin = "8.5.1"
+android-gradlePlugin = "8.3.2"
 firebaseBom = "33.1.2"
 jetbrains-kotlin = "2.0.0"
 jetbrains-coroutinesCore = "1.9.0-RC"
