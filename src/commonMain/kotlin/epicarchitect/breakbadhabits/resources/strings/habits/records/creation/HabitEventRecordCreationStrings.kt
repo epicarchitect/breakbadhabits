@@ -10,6 +10,8 @@ interface HabitEventRecordCreationStrings {
     fun finishDescription(): String
     fun finishButton(): String
     fun dailyEventCountTitle(): String
+    fun dailyEventCountPrefix(): String
+    fun dailyEventCountSuffix(count: Int): String
     fun dailyEventCountDescription(): String
     fun dailyEventCountError(error: DailyHabitEventCountError): String
     fun timeRangeTitle(): String

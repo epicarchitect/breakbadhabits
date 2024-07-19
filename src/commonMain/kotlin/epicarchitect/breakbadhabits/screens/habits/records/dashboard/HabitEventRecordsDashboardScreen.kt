@@ -29,16 +29,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
-import epicarchitect.breakbadhabits.uikit.FlowStateContainer
-import epicarchitect.breakbadhabits.uikit.Icon
-import epicarchitect.breakbadhabits.uikit.IconButton
-import epicarchitect.breakbadhabits.uikit.animatedShadowElevation
-import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
-import epicarchitect.breakbadhabits.uikit.stateOfList
-import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
-import epicarchitect.breakbadhabits.uikit.text.Text
-import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.datetime.format.formatted
@@ -51,12 +41,24 @@ import epicarchitect.breakbadhabits.habits.timeRange
 import epicarchitect.breakbadhabits.math.ranges.ascended
 import epicarchitect.breakbadhabits.screens.habits.records.creation.HabitEventRecordCreationScreen
 import epicarchitect.breakbadhabits.screens.habits.records.editing.HabitEventRecordEditingScreen
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
+import epicarchitect.breakbadhabits.uikit.Icon
+import epicarchitect.breakbadhabits.uikit.IconButton
+import epicarchitect.breakbadhabits.uikit.animatedShadowElevation
+import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
+import epicarchitect.breakbadhabits.uikit.stateOfList
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
+import epicarchitect.breakbadhabits.uikit.text.Text
+import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
 import kotlinx.coroutines.launch
+import kotlinx.datetime.daysUntil
+import kotlinx.datetime.toLocalDateTime
 
 class HabitEventRecordsDashboardScreen(private val habitId: Int) : Screen {
     @Composable
@@ -224,6 +226,8 @@ private fun LazyItemScope.RecordItem(record: HabitEventRecord) {
     val navigator = LocalNavigator.currentOrThrow
     val strings = Environment.resources.strings.habitEventRecordsDashboardStrings
     val timeZone = Environment.dateTime.currentTimeZone()
+    val startDate = record.startTime.toLocalDateTime(timeZone).date
+    val endDate = record.endTime.toLocalDateTime(timeZone).date
 
     Box(
         modifier = Modifier
@@ -252,10 +256,12 @@ private fun LazyItemScope.RecordItem(record: HabitEventRecord) {
                 text = strings.eventCount(record.eventCount)
             )
 
-            Text(
-                modifier = Modifier.padding(2.dp),
-                text = strings.dailyEventCount(record.dailyEventCount(timeZone))
-            )
+            if (startDate.daysUntil(endDate) > 0) {
+                Text(
+                    modifier = Modifier.padding(2.dp),
+                    text = strings.dailyEventCount(record.dailyEventCount(timeZone))
+                )
+            }
 
             if (record.comment.isNotBlank()) {
                 Text(

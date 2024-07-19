@@ -15,8 +15,11 @@ interface HabitEventRecordEditingStrings {
     fun cancel(): String
     fun deleteDescription(): String
     fun deleteButton(): String
+    fun dailyEventCountTitle(): String
+    fun dailyEventCountPrefix(): String
+    fun dailyEventCountSuffix(count: Int): String
     fun dailyEventCountDescription(): String
-    fun dailyEventCountLabel(): String
+    fun totalEventCount(count: Int): String
     fun timeRangeDescription(): String
     fun timeRangeError(error: HabitEventRecordTimeRangeError): String
     fun timeRangeTitle(): String

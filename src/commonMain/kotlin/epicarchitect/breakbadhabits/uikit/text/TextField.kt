@@ -171,7 +171,9 @@ fun TextInputCard(
     keyboardActions: KeyboardActions? = null,
     error: String? = null,
     readOnly: Boolean = false,
-    regex: Regex? = null
+    regex: Regex? = null,
+    prefixText: String? = null,
+    suffixText: String? = null,
 ) {
     InputCard(
         modifier = modifier,
@@ -216,6 +218,22 @@ fun TextInputCard(
             isError = error != null,
             readOnly = readOnly,
             shape = MaterialTheme.shapes.small,
+            prefix = prefixText?.let {
+                {
+                    Text(
+                        text = it,
+                        priority = Text.Priority.Low
+                    )
+                }
+            },
+            suffix = suffixText?.let {
+                {
+                    Text(
+                        text = it,
+                        priority = Text.Priority.Low
+                    )
+                }
+            }
         )
     }
 }

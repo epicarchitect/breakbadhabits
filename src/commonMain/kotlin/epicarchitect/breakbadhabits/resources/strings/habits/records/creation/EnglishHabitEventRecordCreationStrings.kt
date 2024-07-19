@@ -16,12 +16,16 @@ class EnglishHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     }
 
     override fun timeRangeTitle() = "Time range"
+    override fun dailyEventCountSuffix(count: Int) = "Total: $count"
+    override fun dailyEventCountPrefix() = "Events per day: "
     override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
         HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
     }
 
-    override fun dailyEventCountDescription() = "Indicate approximately how many habit events per day."
-    override fun dailyEventCountTitle() = "Frequency"
+    override fun dailyEventCountDescription() =
+        "Indicate approximately how many habit events per day."
+
+    override fun dailyEventCountTitle() = "Number of events per day"
     override fun timeRangeDescription() = "Select the time of the first and last habit event."
     override fun now() = "Now"
     override fun yesterday() = "Yesterday"

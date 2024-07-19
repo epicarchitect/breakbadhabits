@@ -18,8 +18,10 @@ class RussianHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
         HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "Дата и время не могут быть больше текущего времени."
     }
+    override fun dailyEventCountTitle() = "Число событий в день"
+    override fun dailyEventCountPrefix() = "Событий в день: "
+    override fun dailyEventCountSuffix(count: Int) = "Всего: $count"
     override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки в день."
-    override fun dailyEventCountTitle() = "Частота"
     override fun timeRangeDescription() = "Укажите время первого и последнего события привычки."
     override fun now() = "Сейчас"
     override fun yesterday() = "Вчера"

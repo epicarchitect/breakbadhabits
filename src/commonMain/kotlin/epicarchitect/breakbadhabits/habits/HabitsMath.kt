@@ -10,6 +10,7 @@ import epicarchitect.breakbadhabits.math.ranges.combineIntersections
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
+import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToInt
 
 
@@ -56,7 +57,11 @@ fun List<HabitEventRecord>.filterByMonth(
 fun HabitEventRecord.timeRange() = startTime..endTime
 
 fun HabitEventRecord.dailyEventCount(timeZone: TimeZone): Int {
-    val days = startTime.daysUntil(endTime, timeZone) + 1
+    val startDate = startTime.toLocalDateTime(timeZone).date
+    val endDate = endTime.toLocalDateTime(timeZone).date
+    val days = startDate.daysUntil(endDate) + 1
+
+    if (days < 1) return eventCount
     return (eventCount.toFloat() / days).roundToInt()
 }
 
@@ -65,7 +70,9 @@ fun totalHabitEventCountByDaily(
     timeRange: ClosedRange<Instant>,
     timeZone: TimeZone
 ): Int {
-    val days = timeRange.start.daysUntil(timeRange.endInclusive, timeZone) + 1
+    val startDate = timeRange.start.toLocalDateTime(timeZone).date
+    val endDate = timeRange.endInclusive.toLocalDateTime(timeZone).date
+    val days = startDate.daysUntil(endDate) + 1
     return days * dailyEventCount
 }
 

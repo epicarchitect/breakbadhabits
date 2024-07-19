@@ -24,6 +24,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.HabitEventRecord
+import epicarchitect.breakbadhabits.habits.dailyEventCount
+import epicarchitect.breakbadhabits.habits.timeRange
+import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
+import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
+import epicarchitect.breakbadhabits.habits.validation.checkDailyHabitEventCount
+import epicarchitect.breakbadhabits.habits.validation.checkHabitEventRecordTimeRange
 import epicarchitect.breakbadhabits.uikit.DateTimeRangeInputCard
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
@@ -34,14 +42,6 @@ import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextInputCard
-import epicarchitect.breakbadhabits.database.HabitEventRecord
-import epicarchitect.breakbadhabits.habits.dailyEventCount
-import epicarchitect.breakbadhabits.habits.timeRange
-import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
-import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
-import epicarchitect.breakbadhabits.habits.validation.checkDailyHabitEventCount
-import epicarchitect.breakbadhabits.habits.validation.checkHabitEventRecordTimeRange
 
 class HabitEventRecordEditingScreen(private val habitEventRecordId: Int) : Screen {
     @Composable
@@ -107,7 +107,7 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
     Spacer(Modifier.height(16.dp))
 
     TextInputCard(
-        title = strings.dailyEventCountLabel(),
+        title = strings.dailyEventCountTitle(),
         description = strings.dailyEventCountDescription(),
         modifier = Modifier
             .fillMaxWidth()
