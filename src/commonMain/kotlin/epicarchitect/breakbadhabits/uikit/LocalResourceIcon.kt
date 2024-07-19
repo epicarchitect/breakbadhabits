@@ -13,7 +13,7 @@ import androidx.compose.material3.Icon as MaterialIcon
 data class VectorIcon(
     override val id: Int,
     val vector: ImageVector
-) : epicarchitect.breakbadhabits.resources.icons.Icon
+) : Icon
 
 @Composable
 fun LocalResourceIcon(
@@ -45,7 +45,7 @@ fun LocalResourceIcon(
 
 @Composable
 fun Icon(
-    icon: epicarchitect.breakbadhabits.resources.icons.Icon,
+    icon: Icon,
     modifier: Modifier = Modifier
 ) {
     if (icon is VectorIcon) {

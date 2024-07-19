@@ -81,7 +81,6 @@ import kotlin.math.ceil
 //    }
 //}
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> SingleSelectionGrid(
     modifier: Modifier = Modifier,

@@ -52,7 +52,7 @@ fun SimpleTopAppBar(
         ) {
             if (onBackClick != null) {
                 IconButton(
-                    icon = epicarchitect.breakbadhabits.Environment.resources.icons.commonIcons.navigationBack,
+                    icon = Environment.resources.icons.commonIcons.navigationBack,
                     onClick = onBackClick
                 )
             } else {

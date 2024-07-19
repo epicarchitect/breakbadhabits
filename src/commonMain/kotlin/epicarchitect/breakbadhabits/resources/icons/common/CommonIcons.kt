@@ -81,7 +81,5 @@ class CommonIcons {
     val navigationBack = VectorIcon(34, MaterialIcons.AutoMirrored.Filled.ArrowBack)
     val arrowLeft = VectorIcon(35, MaterialIcons.AutoMirrored.Filled.KeyboardArrowLeft)
     val arrowRight = VectorIcon(36, MaterialIcons.AutoMirrored.Filled.KeyboardArrowRight)
-    val arrowUp = VectorIcon(37, MaterialIcons.Filled.KeyboardArrowUp)
-    val arrowDown = VectorIcon(38, MaterialIcons.Filled.KeyboardArrowDown)
-    val calendar = VectorIcon(39, MaterialIcons.Filled.CalendarToday)
+    val calendar = VectorIcon(37, MaterialIcons.Filled.CalendarToday)
 }

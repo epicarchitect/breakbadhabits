@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS HabitEventRecord (
   startTime  INTEGER AS Instant NOT NULL,
   endTime    INTEGER AS Instant NOT NULL,
   eventCount INTEGER AS Int NOT NULL,
-  comment    TEXT NOT NULL
+  comment    TEXT NOT NULL,
+  FOREIGN KEY(habitId) REFERENCES Habit(id) ON DELETE CASCADE
 );
 
 insert:

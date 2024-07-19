@@ -7,7 +7,7 @@ import epicarchitect.breakbadhabits.database.AppSettings
 import epicarchitect.breakbadhabits.database.AppSettingsTheme
 
 object AppColorsSchemes {
-    val dark = AppColorScheme(
+    private val dark = AppColorScheme(
         isDark = true,
         primary = Color(0xFFAF4448),
         onPrimary = Color(0xFFF1F1F1),
@@ -35,14 +35,14 @@ object AppColorsSchemes {
         onSurface = Color(0xFF2C2C2C)
     )
 
-    val system: AppColorScheme
+    private val system: AppColorScheme
         @Composable
         get() = if (isSystemInDarkTheme()) dark else light
 
     @Composable
     fun byAppSettings(appSettings: AppSettings) = when (appSettings.theme) {
-        epicarchitect.breakbadhabits.database.AppSettingsTheme.LIGHT  -> light
-        epicarchitect.breakbadhabits.database.AppSettingsTheme.DARK   -> dark
-        epicarchitect.breakbadhabits.database.AppSettingsTheme.SYSTEM -> system
+        AppSettingsTheme.LIGHT  -> light
+        AppSettingsTheme.DARK   -> dark
+        AppSettingsTheme.SYSTEM -> system
     }
 }
