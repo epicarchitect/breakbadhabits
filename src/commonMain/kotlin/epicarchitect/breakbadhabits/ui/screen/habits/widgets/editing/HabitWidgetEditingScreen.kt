@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,8 +25,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
-import epicarchitect.breakbadhabits.environment.database.HabitWidget
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.database.HabitWidget
 import epicarchitect.breakbadhabits.ui.component.Checkbox
 import epicarchitect.breakbadhabits.ui.component.Dialog
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
@@ -49,8 +48,7 @@ class HabitWidgetEditingScreen(private val widgetId: Int) : Screen {
 
 @Composable
 fun HabitWidgetEditing(widgetId: Int) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitWidgetEditingStrings
+    val strings = Environment.resources.strings.habitWidgetEditingStrings
     val navigator = LocalNavigator.currentOrThrow
 
     FlowStateContainer(
@@ -72,8 +70,7 @@ private fun ColumnScope.Content(
     habits: List<Habit>,
 ) {
     val navigator = LocalNavigator.currentOrThrow
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitWidgetEditingStrings
+    val strings = Environment.resources.strings.habitWidgetEditingStrings
     val habitWidgetQueries = Environment.database.habitWidgetQueries
 
     val selectedHabitIds = remember(initialWidget) { initialWidget.habitIds.toMutableStateList() }
@@ -108,7 +105,7 @@ private fun ColumnScope.Content(
             .fillMaxWidth()
             .weight(1f, fill = false)
             .padding(horizontal = 16.dp),
-        title = "Habits",
+        title = strings.habitsTitle(),
         description = strings.habitsDescription()
     ) {
         LazyColumn {
@@ -191,8 +188,7 @@ private fun DeletionDialog(
     widget: HabitWidget,
     onDismiss: () -> Unit
 ) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitWidgetEditingStrings
+    val strings = Environment.resources.strings.habitWidgetEditingStrings
     val habitWidgetQueries = Environment.database.habitWidgetQueries
 
     Dialog(onDismiss = onDismiss) {

@@ -1,6 +1,5 @@
 package epicarchitect.breakbadhabits.operation.datetime
 
-import epicarchitect.breakbadhabits.environment.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.operation.math.ranges.ascended
 import epicarchitect.breakbadhabits.operation.math.ranges.isAscended
 import epicarchitect.calendar.compose.basis.EpicMonth
@@ -64,3 +63,15 @@ val LocalDate.monthOfYear get() = MonthOfYear(year, month)
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
 
 fun ClosedRange<Instant>.monthOfYearRange(timeZone: TimeZone) = start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
+data class MonthOfYear(
+    val year: Int,
+    val month: Month
+) : Comparable<MonthOfYear> {
+    override fun compareTo(other: MonthOfYear): Int {
+        var cmp = year - other.year
+        if (cmp == 0) {
+            cmp = month.number - other.month.number
+        }
+        return cmp
+    }
+}

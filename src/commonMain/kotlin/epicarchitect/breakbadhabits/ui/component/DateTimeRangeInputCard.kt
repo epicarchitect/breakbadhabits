@@ -81,25 +81,26 @@ fun DateTimeRangeInputCard(
     )
 
     if (dateSelectionState != HIDE_PICKER) {
-        val date = if (dateSelectionState == SHOW_PICKER_START) selectedStartDate else selectedEndDate
+        val date =
+            if (dateSelectionState == SHOW_PICKER_START) selectedStartDate else selectedEndDate
         val state = rememberDatePickerState(
             initialSelectedDateMillis = date.toEpochMillis(),
             selectableDates = object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long): Boolean {
                     return if (dateSelectionState == SHOW_PICKER_START) {
-                        utcTimeMillis <= Environment.dateTime.currentInstantState.value
+                        utcTimeMillis <= Environment.dateTime.currentInstant()
                             .toLocalDateTime(timeZone)
                             .date
                             .toEpochMillis()
                     } else {
-                        utcTimeMillis >= selectedStartDate.toEpochMillis() && utcTimeMillis <= Environment.dateTime.currentInstantState.value
-                            .toLocalDateTime(timeZone)
-                            .date
-                            .toEpochMillis()
+                        utcTimeMillis >= selectedStartDate.toEpochMillis()
+                                && utcTimeMillis <= Environment.dateTime.currentInstant()
+                            .toLocalDateTime(timeZone).date.toEpochMillis()
                     }
                 }
             }
         )
+
         Dialog(
             onDismiss = {
                 dateSelectionState = HIDE_PICKER
@@ -143,7 +144,8 @@ fun DateTimeRangeInputCard(
     }
 
     if (timeSelectionState != HIDE_PICKER) {
-        val time = if (timeSelectionState == SHOW_PICKER_START) selectedStartTime else selectedEndTime
+        val time =
+            if (timeSelectionState == SHOW_PICKER_START) selectedStartTime else selectedEndTime
         val state = rememberTimePickerState(
             initialHour = time.hour,
             initialMinute = time.minute

@@ -24,8 +24,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
-import epicarchitect.breakbadhabits.environment.database.HabitEventRecord
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.operation.datetime.toMonthOfYear
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
@@ -111,8 +111,8 @@ private fun Content(
     habitEventRecords: List<HabitEventRecord>,
     lastHabitEventRecord: HabitEventRecord?
 ) {
-    val currentTime by Environment.dateTime.currentInstantState.collectAsState()
-    val timeZone by Environment.dateTime.currentTimeZoneState.collectAsState()
+    val currentTime by Environment.habits.timePulse.collectAsState()
+    val timeZone = Environment.dateTime.currentTimeZone()
     val state = rememberHabitDetailsState(
         habitEventRecords = habitEventRecords,
         lastTrack = lastHabitEventRecord,
@@ -169,8 +169,7 @@ private fun HabitSection(
     habit: Habit,
     modifier: Modifier = Modifier
 ) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitDashboardStrings
+    val strings = Environment.resources.strings.habitDashboardStrings
     val icons = Environment.resources.icons
     val navigator = LocalNavigator.currentOrThrow
 
@@ -196,7 +195,6 @@ private fun HabitSection(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             text = state.abstinence?.formatted(
-                strings = appStrings.durationFormattingStrings,
                 accuracy = DurationFormattingAccuracy.SECONDS
             ) ?: strings.habitHasNoEvents(),
             type = Text.Type.Description,
@@ -222,8 +220,7 @@ private fun CalendarCard(
     state: HabitDetailsState,
     modifier: Modifier = Modifier
 ) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitDashboardStrings
+    val strings = Environment.resources.strings.habitDashboardStrings
     val navigator = LocalNavigator.currentOrThrow
     val calendarState = rememberEpicCalendarPagerState()
     val rangeColor = AppTheme.colorScheme.primary
@@ -284,8 +281,7 @@ private fun StatisticsCard(
     state: HabitDetailsState,
     modifier: Modifier = Modifier
 ) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitDashboardStrings
+    val strings = Environment.resources.strings.habitDashboardStrings
     Card(modifier) {
         Column(
             modifier = Modifier
@@ -317,8 +313,7 @@ private fun HistogramCard(
     modifier: Modifier = Modifier,
     state: HabitDetailsState
 ) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitDashboardStrings
+    val strings = Environment.resources.strings.habitDashboardStrings
     Card(modifier) {
         Column {
             Text(
@@ -333,7 +328,9 @@ private fun HistogramCard(
                     .height(300.dp),
                 values = state.abstinenceHistogramValues,
                 valueFormatter = {
-                    it.toInt().seconds.formatted(appStrings.durationFormattingStrings, DurationFormattingAccuracy.DAYS)
+                    it.toInt().seconds.formatted(
+                        accuracy = DurationFormattingAccuracy.DAYS
+                    )
                 }
             )
         }

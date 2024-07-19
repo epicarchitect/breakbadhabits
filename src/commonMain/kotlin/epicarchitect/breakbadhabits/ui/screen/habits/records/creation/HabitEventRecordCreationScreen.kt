@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +21,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
+import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.operation.habits.totalHabitEventCountByDaily
 import epicarchitect.breakbadhabits.operation.habits.validation.DailyHabitEventCountError
 import epicarchitect.breakbadhabits.operation.habits.validation.HabitEventRecordTimeRangeError
@@ -47,8 +46,7 @@ class HabitEventRecordCreationScreen(private val habitId: Int) : Screen {
 
 @Composable
 fun HabitEventRecordCreation(habitId: Int) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEventRecordEditingStrings
+    val strings = Environment.resources.strings.habitEventRecordEditingStrings
     val habitQueries = Environment.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
 
@@ -68,14 +66,12 @@ fun HabitEventRecordCreation(habitId: Int) {
 
 @Composable
 private fun ColumnScope.Content(habit: Habit) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEventRecordCreationStrings
+    val strings = Environment.resources.strings.habitEventRecordCreationStrings
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
     val navigator = LocalNavigator.currentOrThrow
-    val timeZone by Environment.dateTime.currentTimeZoneState.collectAsState()
-    val currentInstant by Environment.dateTime.currentInstantState.collectAsState()
 
     var selectedTimeRange by remember {
+        val currentInstant = Environment.dateTime.currentInstant()
         mutableStateOf((currentInstant - 1.hours)..currentInstant)
     }
 
@@ -124,7 +120,7 @@ private fun ColumnScope.Content(habit: Habit) {
         },
         startTimeLabel = strings.startDateTimeLabel(),
         endTimeLabel = strings.endDateTimeLabel(),
-        timeZone = timeZone
+        timeZone = Environment.dateTime.currentTimeZone()
     )
 
     Spacer(Modifier.height(16.dp))
@@ -158,7 +154,7 @@ private fun ColumnScope.Content(habit: Habit) {
 
             timeRangeError = checkHabitEventRecordTimeRange(
                 timeRange = selectedTimeRange,
-                currentTime = currentInstant
+                currentTime = Environment.dateTime.currentInstant()
             )
             if (timeRangeError != null) return@Button
 
@@ -169,7 +165,7 @@ private fun ColumnScope.Content(habit: Habit) {
                 eventCount = totalHabitEventCountByDaily(
                     dailyEventCount = dailyEventCount,
                     timeRange = selectedTimeRange,
-                    timeZone = timeZone
+                    timeZone = Environment.dateTime.currentTimeZone()
                 ),
                 comment = comment
             )

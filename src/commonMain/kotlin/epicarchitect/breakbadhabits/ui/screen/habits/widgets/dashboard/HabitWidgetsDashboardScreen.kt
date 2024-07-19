@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,8 +21,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
-import epicarchitect.breakbadhabits.environment.database.HabitWidget
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.database.HabitWidget
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
@@ -42,8 +41,7 @@ class HabitWidgetsDashboardScreen : Screen {
 @Composable
 fun HabitWidgetsDashboard() {
     val navigator = LocalNavigator.currentOrThrow
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitWidgetsDashboardStrings
+    val strings = Environment.resources.strings.habitWidgetsDashboardStrings
 
     Column(
         modifier = Modifier.fillMaxSize()

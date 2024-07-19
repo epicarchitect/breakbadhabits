@@ -1,11 +1,8 @@
 package epicarchitect.breakbadhabits.ui.screen.habits.dashboard
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.HabitEventRecord
+import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.operation.datetime.duration
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateRange
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
@@ -52,7 +49,6 @@ fun rememberHabitDetailsState(
     val abstinenceHistogramValues = remember(abstinenceRanges) {
         abstinenceRanges.map { it.duration().inWholeSeconds.toFloat() }
     }
-    val appStrings by Environment.resources.strings.state.collectAsState()
 
     val statisticsData = remember(
         habitEventRecords,
@@ -66,8 +62,7 @@ fun rememberHabitDetailsState(
             abstinenceRanges = abstinenceRanges,
             failedRanges = failedRanges,
             currentTime = currentTime,
-            timeZone = timeZone,
-            appStrings = appStrings
+            timeZone = timeZone
         )
     }
 

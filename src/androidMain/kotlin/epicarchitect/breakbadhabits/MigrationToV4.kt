@@ -5,6 +5,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import androidx.core.content.edit
 import androidx.core.database.getStringOrNull
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 import epicarchitect.breakbadhabits.environment.Environment
 import epicarchitect.breakbadhabits.environment.database.ListOfIntAdapter
 import kotlinx.datetime.Instant
@@ -27,53 +29,51 @@ class MigrationToV4(private val context: Context) {
             database.migrateHabits()
             database.migrateHabitEventRecords()
             database.migrateHabitWidgets()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            Firebase.crashlytics.recordException(exception)
         } finally {
             database.close()
         }
     }
 
-    @SuppressLint("Range")
     private fun SQLiteDatabase.migrateHabits() {
         query("habits", null, null, null, null, null, null).use {
             while (it.moveToNext()) {
                 Environment.database.habitQueries.insert(
-                    id = it.getInt(it.getColumnIndex("id")),
-                    name = it.getString(it.getColumnIndex("name")),
-                    iconId = it.getInt(it.getColumnIndex("iconId"))
+                    id = it.getInt(it.getColumnIndexOrThrow("id")),
+                    name = it.getString(it.getColumnIndexOrThrow("name")),
+                    iconId = it.getInt(it.getColumnIndexOrThrow("iconId"))
                 )
             }
         }
     }
 
-    @SuppressLint("Range")
     private fun SQLiteDatabase.migrateHabitEventRecords() {
         query("habitEvents", null, null, null, null, null, null).use {
             while (it.moveToNext()) {
                 Environment.database.habitEventRecordQueries.insert(
-                    habitId = it.getInt(it.getColumnIndex("habitId")),
-                    startTime = it.getLong(it.getColumnIndex("time")).let {
+                    habitId = it.getInt(it.getColumnIndexOrThrow("habitId")),
+                    startTime = it.getLong(it.getColumnIndexOrThrow("time")).let {
                         Instant.fromEpochMilliseconds(it)
                     },
-                    endTime = it.getLong(it.getColumnIndex("time")).let {
+                    endTime = it.getLong(it.getColumnIndexOrThrow("time")).let {
                         Instant.fromEpochMilliseconds(it)
                     },
-                    comment = it.getStringOrNull(it.getColumnIndex("comment")).orEmpty(),
+                    comment = it.getStringOrNull(it.getColumnIndexOrThrow("comment")).orEmpty(),
                     eventCount = 1
                 )
             }
         }
     }
 
-    @SuppressLint("Range")
     private fun SQLiteDatabase.migrateHabitWidgets() {
         query("habitsAppWidgetConfigs", null, null, null, null, null, null).use {
             while (it.moveToNext()) {
                 Environment.database.habitWidgetQueries.insert(
-                    title = it.getString(it.getColumnIndex("title")),
-                    systemId = it.getInt(it.getColumnIndex("appWidgetId")),
-                    habitIds = it.getString(it.getColumnIndex("habitIdsJson")).let {
+                    title = it.getString(it.getColumnIndexOrThrow("title")),
+                    systemId = it.getInt(it.getColumnIndexOrThrow("appWidgetId")),
+                    habitIds = it.getString(it.getColumnIndexOrThrow("habitIdsJson")).let {
                         ListOfIntAdapter.decode(it)
                     }
                 )

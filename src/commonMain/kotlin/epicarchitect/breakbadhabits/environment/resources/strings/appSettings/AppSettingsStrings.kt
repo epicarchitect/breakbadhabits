@@ -7,11 +7,6 @@ interface AppSettingsStrings {
     fun themeSystem(): String
     fun themeDark(): String
     fun themeLight(): String
-    fun languageTitle(): String
-    fun languageDescription(): String
-    fun languageSystem(): String
-    fun languageEnglish(): String
-    fun languageRussian(): String
     fun widgetsDescription(): String
     fun widgetsButton(): String
 }

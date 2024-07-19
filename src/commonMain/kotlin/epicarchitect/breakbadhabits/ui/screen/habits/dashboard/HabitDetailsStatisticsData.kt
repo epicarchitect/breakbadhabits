@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.ui.screen.habits.dashboard
 
-import epicarchitect.breakbadhabits.environment.database.HabitEventRecord
-import epicarchitect.breakbadhabits.environment.resources.strings.app.AppStrings
+import epicarchitect.breakbadhabits.environment.Environment
+import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.operation.datetime.averageDuration
 import epicarchitect.breakbadhabits.operation.datetime.maxDuration
 import epicarchitect.breakbadhabits.operation.datetime.minDuration
@@ -22,43 +22,43 @@ fun habitDetailsStatisticsData(
     abstinenceRanges: List<ClosedRange<Instant>>,
     failedRanges: List<ClosedRange<Instant>>,
     currentTime: Instant,
-    timeZone: TimeZone,
-    appStrings: AppStrings
+    timeZone: TimeZone
 ) = if (habitEventRecords.isNotEmpty()) {
+    val strings = Environment.resources.strings.habitDashboardStrings
     listOf(
         StatisticData(
-            name = appStrings.habitDashboardStrings.statisticsAverageAbstinenceTime(),
-            value = abstinenceRanges.averageDuration().orZero().formatted(appStrings.durationFormattingStrings, DurationFormattingAccuracy.HOURS)
+            name = strings.statisticsAverageAbstinenceTime(),
+            value = abstinenceRanges.averageDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
         ),
         StatisticData(
-            name = appStrings.habitDashboardStrings.statisticsMaxAbstinenceTime(),
-            value = abstinenceRanges.maxDuration().orZero().formatted(appStrings.durationFormattingStrings, DurationFormattingAccuracy.HOURS)
+            name = strings.statisticsMaxAbstinenceTime(),
+            value = abstinenceRanges.maxDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
         ),
         StatisticData(
-            name = appStrings.habitDashboardStrings.statisticsMinAbstinenceTime(),
-            value = abstinenceRanges.minDuration().orZero().formatted(appStrings.durationFormattingStrings, DurationFormattingAccuracy.HOURS)
+            name = strings.statisticsMinAbstinenceTime(),
+            value = abstinenceRanges.minDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
         ),
         StatisticData(
-            name = appStrings.habitDashboardStrings.statisticsDurationSinceFirstTrack(),
+            name = strings.statisticsDurationSinceFirstTrack(),
             value = habitAbstinenceDurationSinceFirstTrack(failedRanges, currentTime).orZero()
-                .formatted(appStrings.durationFormattingStrings, DurationFormattingAccuracy.HOURS)
+                .formatted(DurationFormattingAccuracy.HOURS)
         ),
         StatisticData(
-            name = appStrings.habitDashboardStrings.statisticsCountEventsInCurrentMonth(),
+            name = strings.statisticsCountEventsInCurrentMonth(),
             value = habitEventRecords.countEventsInMonth(
                 monthOfYear = currentTime.monthOfYear(timeZone),
                 timeZone = timeZone
             ).toString()
         ),
         StatisticData(
-            name = appStrings.habitDashboardStrings.statisticsCountEventsInPreviousMonth(),
+            name = strings.statisticsCountEventsInPreviousMonth(),
             value = habitEventRecords.countEventsInMonth(
                 monthOfYear = currentTime.monthOfYear(timeZone).previous(),
                 timeZone = timeZone
             ).toString()
         ),
         StatisticData(
-            name = appStrings.habitDashboardStrings.statisticsTotalCountEvents(),
+            name = strings.statisticsTotalCountEvents(),
             value = habitEventRecords.countEvents().toString()
         )
     )

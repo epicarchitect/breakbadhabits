@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +23,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
+import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.operation.habits.validation.HabitNewNameError
 import epicarchitect.breakbadhabits.operation.habits.validation.checkHabitNewName
 import epicarchitect.breakbadhabits.ui.component.Dialog
@@ -51,8 +50,7 @@ class HabitEditingScreen(private val habitId: Int) : Screen {
 fun HabitEditing(habitId: Int) {
     val navigator = LocalNavigator.currentOrThrow
     val habitQueries = Environment.database.habitQueries
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEditingStrings
+    val strings = Environment.resources.strings.habitEditingStrings
 
     FlowStateContainer(
         state = stateOfOneOrNull { habitQueries.habitById(habitId) }
@@ -73,8 +71,7 @@ fun HabitEditing(habitId: Int) {
 private fun ColumnScope.Content(initialHabit: Habit) {
     val navigator = LocalNavigator.currentOrThrow
     val habitQueries = Environment.database.habitQueries
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEditingStrings
+    val strings = Environment.resources.strings.habitEditingStrings
     val icons = Environment.resources.icons
 
     var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit.name) }
@@ -112,7 +109,7 @@ private fun ColumnScope.Content(initialHabit: Habit) {
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth(),
-        title = "Icon",
+        title = strings.habitIconTitle(),
         description = strings.habitIconDescription()
     ) {
         SingleSelectionGrid(
@@ -154,8 +151,10 @@ private fun ColumnScope.Content(initialHabit: Habit) {
             habitNameError = checkHabitNewName(
                 newName = habitName,
                 initialName = initialHabit.name,
-                maxLength = Environment.habitsConfig.maxHabitNameLength,
-                nameIsExists = { Environment.database.habitQueries.countWithName(it).executeAsOne() > 0L }
+                maxLength = Environment.habits.maxHabitNameLength,
+                nameIsExists = {
+                    Environment.database.habitQueries.countWithName(it).executeAsOne() > 0L
+                }
             )
             if (habitNameError != null) return@Button
 
@@ -181,8 +180,7 @@ private fun DeletionDialog(
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val habitQueries = Environment.database.habitQueries
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEditingStrings
+    val strings = Environment.resources.strings.habitEditingStrings
 
     Dialog(onDismiss) {
         Column(

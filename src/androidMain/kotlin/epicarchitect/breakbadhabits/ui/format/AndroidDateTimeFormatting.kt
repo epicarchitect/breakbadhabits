@@ -1,7 +1,8 @@
 package epicarchitect.breakbadhabits.ui.format
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.text.format.DateFormat
+import epicarchitect.breakbadhabits.BreakBadHabitsApp
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
@@ -11,9 +12,17 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
+// похуй + поебать на смену конфигурации, мне то что
+@SuppressLint("ConstantLocale")
+private val locale = Locale.getDefault()
+private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM", locale)
+private val dateWithOutYearFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", locale)
+private val timePattern = if (DateFormat.is24HourFormat(BreakBadHabitsApp.instance)) "HH:mm" else "hh:mm a"
+private val timeFormatter = DateTimeFormatter.ofPattern(timePattern)
+
 actual fun Month.formatted(): String = getDisplayName(
     TextStyle.FULL_STANDALONE,
-    niceLocale
+    locale
 ).replaceFirstChar(Char::uppercase)
 
 actual fun LocalDate.formatted(withYear: Boolean): String = if (withYear) {
@@ -23,17 +32,3 @@ actual fun LocalDate.formatted(withYear: Boolean): String = if (withYear) {
 }
 
 actual fun LocalTime.formatted(): String = timeFormatter.format(toJavaLocalTime())
-
-private lateinit var niceLocale: Locale
-private lateinit var dateFormatter: DateTimeFormatter
-private lateinit var dateWithOutYearFormatter: DateTimeFormatter
-private lateinit var timePattern: String
-private lateinit var timeFormatter: DateTimeFormatter
-
-fun updateFormatters(context: Context, locale: Locale) {
-    niceLocale = locale
-    dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", locale)
-    dateWithOutYearFormatter = DateTimeFormatter.ofPattern("d MMMM", locale)
-    timePattern = if (DateFormat.is24HourFormat(context)) "HH:mm" else "hh:mm a"
-    timeFormatter = DateTimeFormatter.ofPattern(timePattern)
-}

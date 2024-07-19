@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -65,8 +64,7 @@ class HabitCreationScreen : Screen {
 
 @Composable
 fun HabitCreation() {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitCreationStrings
+    val strings = Environment.resources.strings.habitCreationStrings
     val navigator = LocalNavigator.currentOrThrow
 
     SimpleScrollableScreen(
@@ -79,8 +77,7 @@ fun HabitCreation() {
 
 @Composable
 private fun ColumnScope.Content() {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitCreationStrings
+    val strings = Environment.resources.strings.habitCreationStrings
     val icons = Environment.resources.icons
     val habitQueries = Environment.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
@@ -187,7 +184,7 @@ private fun ColumnScope.Content() {
         onClick = {
             habitNameError = checkHabitNewName(
                 newName = habitName,
-                maxLength = Environment.habitsConfig.maxHabitNameLength,
+                maxLength = Environment.habits.maxHabitNameLength,
                 nameIsExists = { habitQueries.countWithName(it).executeAsOne() > 0L }
             )
             if (habitNameError != null) return@Button
@@ -195,7 +192,7 @@ private fun ColumnScope.Content() {
             dailyEventCountError = checkDailyHabitEventCount(dailyEventCount)
             if (dailyEventCountError != null) return@Button
 
-            val endTime = Environment.dateTime.currentInstantState.value
+            val endTime = Environment.dateTime.currentInstant()
             val startTime = endTime - selectedHabitDuration
 
             habitQueries.insertWithEventRecord(
@@ -204,7 +201,7 @@ private fun ColumnScope.Content() {
                 trackEventCount = totalHabitEventCountByDaily(
                     dailyEventCount = dailyEventCount,
                     timeRange = startTime..endTime,
-                    timeZone = Environment.dateTime.currentTimeZoneState.value
+                    timeZone = Environment.dateTime.currentTimeZone()
                 ),
                 trackStartTime = startTime,
                 trackEndTime = endTime

@@ -10,7 +10,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MigrationToV4(this).executeIfNeeded()
         setContent {
             App()
         }

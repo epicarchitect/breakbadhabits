@@ -6,6 +6,7 @@ class RussianHabitEditingStrings : HabitEditingStrings {
     override fun titleText() = "Редактирование привычки"
     override fun habitNameDescription() = "Введите название привычки, например курение."
     override fun habitNameTitle() = "Название привычки"
+    override fun habitIconTitle() = "Иконка"
     override fun habitIconDescription() = "Выберите подходящую иконку для привычки."
     override fun finishButtonText() = "Сохранить изменения"
     override fun habitNameError(error: HabitNewNameError) = when (error) {

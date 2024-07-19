@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +24,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.HabitEventRecord
+import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.operation.habits.dailyEventCount
 import epicarchitect.breakbadhabits.operation.habits.timeRange
 import epicarchitect.breakbadhabits.operation.habits.totalHabitEventCountByDaily
@@ -53,8 +52,7 @@ class HabitEventRecordEditingScreen(private val habitEventRecordId: Int) : Scree
 
 @Composable
 fun HabitEventRecordEditing(habitEventRecordId: Int) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEventRecordEditingStrings
+    val strings = Environment.resources.strings.habitEventRecordEditingStrings
     val navigator = LocalNavigator.currentOrThrow
 
     FlowStateContainer(
@@ -83,12 +81,11 @@ fun HabitEventRecordEditing(habitEventRecordId: Int) {
 
 @Composable
 private fun ColumnScope.Content(record: HabitEventRecord) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEventRecordEditingStrings
+    val strings = Environment.resources.strings.habitEventRecordEditingStrings
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
     val navigator = LocalNavigator.currentOrThrow
 
-    val timeZone by Environment.dateTime.currentTimeZoneState.collectAsState()
+    val timeZone = Environment.dateTime.currentTimeZone()
     var showDeletion by remember { mutableStateOf(false) }
     var selectedTimeRange by remember { mutableStateOf(record.timeRange()) }
 
@@ -187,7 +184,7 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
 
             timeRangeError = checkHabitEventRecordTimeRange(
                 timeRange = selectedTimeRange,
-                currentTime = Environment.dateTime.currentInstantState.value
+                currentTime = Environment.dateTime.currentInstant()
             )
             if (timeRangeError != null) return@Button
 
@@ -214,8 +211,7 @@ private fun DeletionDialog(
     record: HabitEventRecord,
     onDismiss: () -> Unit
 ) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEventRecordEditingStrings
+    val strings = Environment.resources.strings.habitEventRecordEditingStrings
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
     val navigator = LocalNavigator.currentOrThrow
 

@@ -1,14 +1,14 @@
 package epicarchitect.breakbadhabits.environment.resources
 
-import epicarchitect.breakbadhabits.environment.language.ActualAppLanguage
+import androidx.compose.ui.text.intl.Locale
 import epicarchitect.breakbadhabits.environment.resources.icons.AppIcons
-import epicarchitect.breakbadhabits.environment.resources.strings.app.ActualAppStrings
-import kotlinx.coroutines.CoroutineScope
+import epicarchitect.breakbadhabits.environment.resources.strings.app.EnglishAppStrings
+import epicarchitect.breakbadhabits.environment.resources.strings.app.RussianAppStrings
 
-class AppResources(
-    coroutineScope: CoroutineScope,
-    actualAppLanguage: ActualAppLanguage
-) {
-    val strings = ActualAppStrings(coroutineScope, actualAppLanguage)
+class AppResources {
+    val strings = when (Locale.current.language) {
+        "ru" -> RussianAppStrings()
+        else -> EnglishAppStrings()
+    }
     val icons = AppIcons()
 }

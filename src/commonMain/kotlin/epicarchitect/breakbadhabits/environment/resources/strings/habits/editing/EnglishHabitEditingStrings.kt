@@ -6,6 +6,7 @@ class EnglishHabitEditingStrings : HabitEditingStrings {
     override fun titleText() = "Editing a habit"
     override fun habitNameDescription() = "Enter a name for the habit, such as smoking."
     override fun habitNameTitle() = "Habit name"
+    override fun habitIconTitle() = "Icon"
     override fun habitIconDescription() = "Choose the appropriate icon for the habit."
     override fun finishButtonText() = "Save changes"
     override fun habitNameError(error: HabitNewNameError) = when (error) {

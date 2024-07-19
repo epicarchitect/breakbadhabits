@@ -1,7 +1,7 @@
 package epicarchitect.breakbadhabits.operation.habits
 
-import epicarchitect.breakbadhabits.environment.database.HabitEventRecord
-import epicarchitect.breakbadhabits.environment.datetime.MonthOfYear
+import epicarchitect.breakbadhabits.database.HabitEventRecord
+import epicarchitect.breakbadhabits.operation.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.operation.datetime.duration
 import epicarchitect.breakbadhabits.operation.datetime.monthOfYear
 import epicarchitect.breakbadhabits.operation.datetime.monthOfYearRange

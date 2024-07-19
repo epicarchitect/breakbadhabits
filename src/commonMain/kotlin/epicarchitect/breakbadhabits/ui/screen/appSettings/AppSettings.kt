@@ -5,16 +5,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.AppSettings
-import epicarchitect.breakbadhabits.environment.database.AppSettingsLanguage
+import epicarchitect.breakbadhabits.database.AppSettings
 import epicarchitect.breakbadhabits.environment.database.AppSettingsTheme
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleScrollableScreen
@@ -34,8 +31,7 @@ class AppSettingsScreen : Screen {
 @Composable
 fun AppSettings() {
     val navigator = LocalNavigator.currentOrThrow
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.appSettingsStrings
+    val strings = Environment.resources.strings.appSettingsStrings
     val appSettingsQueries = Environment.database.appSettingsQueries
 
     FlowStateContainer(
@@ -55,8 +51,7 @@ fun AppSettings() {
 @Composable
 private fun Loaded(settings: AppSettings) {
     val navigator = LocalNavigator.currentOrThrow
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.appSettingsStrings
+    val strings = Environment.resources.strings.appSettingsStrings
     val appSettingsQueries = Environment.database.appSettingsQueries
 
     Spacer(Modifier.height(16.dp))
@@ -73,8 +68,7 @@ private fun Loaded(settings: AppSettings) {
             selected = settings.theme == AppSettingsTheme.SYSTEM,
             onSelect = {
                 appSettingsQueries.update(
-                    theme = AppSettingsTheme.SYSTEM,
-                    language = settings.language
+                    theme = AppSettingsTheme.SYSTEM
                 )
             }
         )
@@ -84,8 +78,7 @@ private fun Loaded(settings: AppSettings) {
             selected = settings.theme == AppSettingsTheme.LIGHT,
             onSelect = {
                 appSettingsQueries.update(
-                    theme = AppSettingsTheme.LIGHT,
-                    language = settings.language
+                    theme = AppSettingsTheme.LIGHT
                 )
             }
         )
@@ -95,51 +88,7 @@ private fun Loaded(settings: AppSettings) {
             selected = settings.theme == AppSettingsTheme.DARK,
             onSelect = {
                 appSettingsQueries.update(
-                    theme = AppSettingsTheme.DARK,
-                    language = settings.language
-                )
-            }
-        )
-    }
-
-    Spacer(Modifier.height(16.dp))
-
-    InputCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        title = strings.languageTitle(),
-        description = strings.languageDescription()
-    ) {
-        RadioButton(
-            text = strings.languageSystem(),
-            selected = settings.language == AppSettingsLanguage.SYSTEM,
-            onSelect = {
-                appSettingsQueries.update(
-                    theme = settings.theme,
-                    language = AppSettingsLanguage.SYSTEM
-                )
-            }
-        )
-
-        RadioButton(
-            text = strings.languageEnglish(),
-            selected = settings.language == AppSettingsLanguage.ENGLISH,
-            onSelect = {
-                appSettingsQueries.update(
-                    theme = settings.theme,
-                    language = AppSettingsLanguage.ENGLISH
-                )
-            }
-        )
-
-        RadioButton(
-            text = strings.languageRussian(),
-            selected = settings.language == AppSettingsLanguage.RUSSIAN,
-            onSelect = {
-                appSettingsQueries.update(
-                    theme = settings.theme,
-                    language = AppSettingsLanguage.RUSSIAN
+                    theme = AppSettingsTheme.DARK
                 )
             }
         )

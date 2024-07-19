@@ -1,6 +1,10 @@
 package epicarchitect.breakbadhabits.environment.database
 
 import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
+import epicarchitect.breakbadhabits.database.AppSettings
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.database.HabitEventRecord
+import epicarchitect.breakbadhabits.database.HabitWidget
 
 operator fun AppDatabase.Companion.invoke(
     name: String
@@ -27,7 +31,6 @@ operator fun AppDatabase.Companion.invoke(
     ),
     AppSettingsAdapter = AppSettings.Adapter(
         idAdapter = IntColumnAdapter,
-        themeAdapter = AppSettingsThemeAdapter,
-        languageAdapter = AppSettingsLanguageAdapter
+        themeAdapter = AppSettingsThemeAdapter
     )
 )

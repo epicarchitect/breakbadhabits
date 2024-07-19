@@ -3,7 +3,7 @@ package epicarchitect.breakbadhabits.ui.component.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import epicarchitect.breakbadhabits.environment.database.AppSettings
+import epicarchitect.breakbadhabits.database.AppSettings
 import epicarchitect.breakbadhabits.environment.database.AppSettingsTheme
 
 object AppColorsSchemes {

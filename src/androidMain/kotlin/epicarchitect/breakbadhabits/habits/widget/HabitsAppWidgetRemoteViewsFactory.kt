@@ -5,7 +5,7 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import epicarchitect.breakbadhabits.R
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
+import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.operation.habits.abstinence
 import epicarchitect.breakbadhabits.ui.format.DurationFormattingAccuracy
 import epicarchitect.breakbadhabits.ui.format.formatted
@@ -17,12 +17,13 @@ class HabitsAppWidgetRemoteViewsFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private fun loadItems(): List<Item> {
-        val config = Environment.database.habitWidgetQueries.widgetBySystemId(widgetSystemId).executeAsOneOrNull()
+        val config = Environment.database.habitWidgetQueries.widgetBySystemId(widgetSystemId)
+            .executeAsOneOrNull()
 
         return if (config == null) {
             emptyList()
         } else {
-            val currentTime = Environment.dateTime.currentInstantState.value
+            val currentTime = Environment.dateTime.currentInstant()
             Environment.database.habitQueries.habits().executeAsList().mapNotNull {
                 if (config.habitIds.contains(it.id)) {
                     Item(
@@ -62,9 +63,8 @@ class HabitsAppWidgetRemoteViewsFactory(
         setTextViewText(
             R.id.abstinenceTime_textView,
             item.abstinence?.formatted(
-                strings = Environment.resources.strings.state.value.durationFormattingStrings,
                 accuracy = DurationFormattingAccuracy.HOURS
-            ) ?: Environment.resources.strings.state.value.appDashboardStrings.habitHasNoEvents()
+            ) ?: Environment.resources.strings.appDashboardStrings.habitHasNoEvents()
         )
     }
 

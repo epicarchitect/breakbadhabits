@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "214449382965",
+    "firebase_url": "https://break-bad-habits-213ca.firebaseio.com",
+    "project_id": "break-bad-habits-213ca",
+    "storage_bucket": "break-bad-habits-213ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214449382965:android:0f66d18b0ee6be56b3337c",
+        "android_client_info": {
+          "package_name": "kolmachikhin.alexander.breakbadhabits"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214449382965-23sbl3hunji0q4369boip12gi6qs9978.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kolmachikhin.alexander.breakbadhabits",
+            "certificate_hash": "3ffbd86f4d7bec2a64d2680ccfab137aadb83725"
+          }
+        },
+        {
+          "client_id": "214449382965-cajtm6ea5tjljgv7gb60c99mu9rdqu8m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kolmachikhin.alexander.breakbadhabits",
+            "certificate_hash": "a87d6448f0384ca6feb4978b71369f00cb378827"
+          }
+        },
+        {
+          "client_id": "214449382965-u7et9bims11g359g7j1fhsfgnnlhlab1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtNbGsKY8YOIfqpIKqPIbg_TggX1YpmgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214449382965-u7et9bims11g359g7j1fhsfgnnlhlab1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214449382965:android:bac3a30cff697852b3337c",
+        "android_client_info": {
+          "package_name": "kolmachikhin.alexander.breakbadhabits.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214449382965-u7et9bims11g359g7j1fhsfgnnlhlab1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtNbGsKY8YOIfqpIKqPIbg_TggX1YpmgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214449382965-u7et9bims11g359g7j1fhsfgnnlhlab1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

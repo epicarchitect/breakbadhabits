@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,8 +29,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
-import epicarchitect.breakbadhabits.environment.database.HabitEventRecord
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateRange
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
 import epicarchitect.breakbadhabits.operation.datetime.toMonthOfYear
@@ -88,10 +87,9 @@ private fun Content(
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val coroutineScope = rememberCoroutineScope()
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEventRecordsDashboardStrings
+    val strings = Environment.resources.strings.habitEventRecordsDashboardStrings
     val icons = Environment.resources.icons
-    val timeZone by Environment.dateTime.currentTimeZoneState.collectAsState()
+    val timeZone = Environment.dateTime.currentTimeZone()
 
     val epicCalendarState = rememberEpicCalendarPagerState()
     val groupedByMonthRecords = remember(records) { records.groupByMonth(timeZone) }
@@ -224,9 +222,8 @@ private fun Content(
 @Composable
 private fun LazyItemScope.RecordItem(record: HabitEventRecord) {
     val navigator = LocalNavigator.currentOrThrow
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitEventRecordsDashboardStrings
-    val timeZone by Environment.dateTime.currentTimeZoneState.collectAsState()
+    val strings = Environment.resources.strings.habitEventRecordsDashboardStrings
+    val timeZone = Environment.dateTime.currentTimeZone()
 
     Box(
         modifier = Modifier

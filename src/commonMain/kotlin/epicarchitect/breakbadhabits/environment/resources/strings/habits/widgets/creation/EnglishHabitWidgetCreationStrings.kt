@@ -5,5 +5,6 @@ class EnglishHabitWidgetCreationStrings : HabitWidgetCreationStrings {
     override fun habitsDescription() = "Choose habits for the widget."
     override fun nameDescription() = "Enter a name for the widget."
     override fun nameTitle() = "Widget name"
+    override fun habitsTitle() = "Habits"
     override fun finishButton() = "Done"
 }

@@ -14,10 +14,12 @@ fun App() {
     FlowStateContainer(
         state = stateOfOneOrNull { Environment.database.appSettingsQueries.settings() }
     ) { settings ->
-        AppTheme(
-            colorScheme = AppColorsSchemes.byAppSettings(settings!!)
-        ) {
-            Navigator(AppDashboardScreen())
+        if (settings != null) {
+            AppTheme(
+                colorScheme = AppColorsSchemes.byAppSettings(settings)
+            ) {
+                Navigator(AppDashboardScreen())
+            }
         }
     }
 }

@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.android.application)
     alias(libs.plugins.cashapp.sqldelight)
+    alias(libs.plugins.google.gms)
+    alias(libs.plugins.google.firebaseCrashlytics)
 }
 
 kotlin {
@@ -39,6 +41,9 @@ kotlin {
             implementation(libs.android.appcompat)
             implementation(libs.android.activityCompose)
             implementation(libs.cashapp.sqldelightAndroidDriver)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.crashlytics)
+            implementation(libs.firebase.analytics)
         }
         iosMain.dependencies {
             implementation(libs.cashapp.sqldelightNativeDriver)
@@ -54,7 +59,7 @@ android {
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         resourceConfigurations += setOf("en", "ru")
-        minSdk = 30
+        minSdk = 26
         targetSdk = 34
         versionCode = 80
         versionName = "4.0.0"
@@ -66,35 +71,18 @@ android {
         res.srcDirs("src/androidMain/res")
     }
 
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file("src/androidMain/signing/debug.jks")
-            storePassword = "epicdebug"
-            keyAlias = "epicdebug"
-            keyPassword = "epicdebug"
-        }
-
-        register("release") {
-            storeFile = rootProject.file("src/androidMain/signing/release.jks")
-            storePassword = "epicdebug"
-            keyAlias = "epicdebug"
-            keyPassword = "epicdebug"
-        }
-    }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "src/androidMain/proguard-rules.pro"
+//                "src/androidMain/proguard-rules.pro"
             )
         }
 
         debug {
-            signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
         }
     }

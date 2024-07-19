@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
+import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.ui.component.Checkbox
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
 import epicarchitect.breakbadhabits.ui.component.SimpleTopAppBar
@@ -38,8 +37,7 @@ fun HabitWidgetCreation(
     systemWidgetId: Int,
     onDone: () -> Unit
 ) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitWidgetCreationStrings
+    val strings = Environment.resources.strings.habitWidgetCreationStrings
     val habitQueries = Environment.database.habitQueries
 
     FlowStateContainer(
@@ -62,8 +60,7 @@ private fun ColumnScope.Content(
     systemWidgetId: Int,
     onDone: () -> Unit
 ) {
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.habitWidgetCreationStrings
+    val strings = Environment.resources.strings.habitWidgetCreationStrings
     val habitWidgetQueries = Environment.database.habitWidgetQueries
 
     val selectedHabitIds = remember { mutableStateListOf<Int>() }
@@ -90,7 +87,7 @@ private fun ColumnScope.Content(
             .fillMaxWidth()
             .weight(1f, fill = false)
             .padding(horizontal = 16.dp),
-        title = "Habits",
+        title = strings.habitsTitle(),
         description = strings.habitsDescription()
     ) {
         LazyColumn {

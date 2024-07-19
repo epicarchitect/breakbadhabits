@@ -1,53 +1,37 @@
 package epicarchitect.breakbadhabits
 
 import android.app.Application
-import android.content.ComponentCallbacks
-import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.language.ActualSystemLanguage
-import epicarchitect.breakbadhabits.environment.language.AppLanguage
-import epicarchitect.breakbadhabits.ui.format.updateFormatters
-import epicarchitect.breakbadhabits.ui.theme.handleDarkMode
+import epicarchitect.breakbadhabits.environment.database.AppSettingsTheme
+import epicarchitect.breakbadhabits.operation.sqldelight.flowOfOneOrNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import java.util.Locale
 
 class BreakBadHabitsApp : Application() {
+
     override fun onCreate() {
         super.onCreate()
         instance = this
-        val scope = CoroutineScope(Dispatchers.Main)
-
-        scope.launch {
-            handleDarkMode()
-        }
-
-        Environment.appLanguage.state.onEach {
-            updateFormatters(
-                this@BreakBadHabitsApp,
-                when (it) {
-                    AppLanguage.RUSSIAN -> Locale("ru")
-                    AppLanguage.ENGLISH -> Locale("en")
-                }
-            )
-        }.launchIn(scope)
-
-
-        registerComponentCallbacks(
-            object : ComponentCallbacks {
-                override fun onConfigurationChanged(newConfig: Configuration) {
-                    ActualSystemLanguage.update(newConfig.locales.get(0))
-                }
-
-                override fun onLowMemory() {}
-            }
-        )
+        MigrationToV4(this).executeIfNeeded()
+        handleDarkMode()
     }
 
     companion object {
         lateinit var instance: BreakBadHabitsApp
     }
+}
+
+private fun handleDarkMode() {
+    Environment.database.appSettingsQueries.settings().flowOfOneOrNull().onEach {
+        AppCompatDelegate.setDefaultNightMode(
+            when (it?.theme) {
+                AppSettingsTheme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+                AppSettingsTheme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+        )
+    }.launchIn(CoroutineScope(Dispatchers.Main))
 }

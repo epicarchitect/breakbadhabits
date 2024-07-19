@@ -26,7 +26,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.environment.Environment
-import epicarchitect.breakbadhabits.environment.database.Habit
+import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.operation.habits.abstinence
 import epicarchitect.breakbadhabits.ui.component.Card
 import epicarchitect.breakbadhabits.ui.component.FlowStateContainer
@@ -56,8 +56,7 @@ class AppDashboardScreen : Screen {
 @Composable
 fun AppDashboard() {
     val navigator = LocalNavigator.currentOrThrow
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.appDashboardStrings
+    val strings = Environment.resources.strings.appDashboardStrings
     val icons = Environment.resources.icons
     val habitQueries = Environment.database.habitQueries
 
@@ -90,8 +89,7 @@ private fun Content(
     items: List<Habit>
 ) {
     val navigator = LocalNavigator.currentOrThrow
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.appDashboardStrings
+    val strings = Environment.resources.strings.appDashboardStrings
     val icons = Environment.resources.icons
 
     Box(
@@ -141,8 +139,7 @@ private fun Content(
 @Composable
 private fun LazyItemScope.HabitCard(habit: Habit) {
     val navigator = LocalNavigator.currentOrThrow
-    val appStrings by Environment.resources.strings.state.collectAsState()
-    val strings = appStrings.appDashboardStrings
+    val strings = Environment.resources.strings.appDashboardStrings
     val icons = Environment.resources.icons
 
     Card(
@@ -188,13 +185,12 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
                             Environment.database.habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habit.id)
                         }
                     ) { record ->
-                        val currentTime by Environment.dateTime.currentInstantState.collectAsState()
+                        val currentTime by Environment.habits.timePulse.collectAsState()
                         val abstinence = record?.abstinence(currentTime)
 
                         Text(
                             modifier = Modifier.padding(start = 12.dp),
                             text = abstinence?.formatted(
-                                strings = appStrings.durationFormattingStrings,
                                 accuracy = DurationFormattingAccuracy.SECONDS
                             ) ?: strings.habitHasNoEvents(),
                             type = Text.Type.Description,

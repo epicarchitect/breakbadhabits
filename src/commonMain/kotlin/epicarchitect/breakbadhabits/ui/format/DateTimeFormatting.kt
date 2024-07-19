@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.ui.format
 
-import epicarchitect.breakbadhabits.environment.datetime.MonthOfYear
+import epicarchitect.breakbadhabits.operation.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.operation.datetime.toLocalDateTimeRange
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
