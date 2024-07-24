@@ -11,7 +11,7 @@ operator fun AppDatabase.Companion.invoke(
     ),
     HabitAdapter = Habit.Adapter(
         idAdapter = IntColumnAdapter,
-        iconIdAdapter = IntColumnAdapter
+        levelAdapter = IntColumnAdapter
     ),
     HabitWidgetAdapter = HabitWidget.Adapter(
         idAdapter = IntColumnAdapter,

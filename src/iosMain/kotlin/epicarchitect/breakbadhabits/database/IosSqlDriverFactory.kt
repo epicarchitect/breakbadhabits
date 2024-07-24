@@ -10,5 +10,12 @@ actual fun createSqlDriverFactory(
     databaseName: String
 ): SqlDriver = NativeSqliteDriver(
     schema = schema,
-    name = databaseName
+    name = databaseName,
+    onConfiguration = {
+        it.copy(
+            extendedConfig = it.extendedConfig.copy(
+                foreignKeyConstraints = true
+            )
+        )
+    }
 )

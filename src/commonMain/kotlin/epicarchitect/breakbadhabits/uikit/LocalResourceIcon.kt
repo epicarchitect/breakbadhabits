@@ -11,7 +11,6 @@ import androidx.compose.material3.Icon as MaterialIcon
 
 @Immutable
 data class VectorIcon(
-    override val id: Int,
     val vector: ImageVector
 ) : Icon
 

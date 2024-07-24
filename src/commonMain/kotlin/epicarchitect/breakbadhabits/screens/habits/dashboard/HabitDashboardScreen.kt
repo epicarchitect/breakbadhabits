@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,7 +34,6 @@ import epicarchitect.breakbadhabits.screens.habits.records.dashboard.HabitEventR
 import epicarchitect.breakbadhabits.uikit.Card
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Histogram
-import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.IconButton
 import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.uikit.Statistics
@@ -170,16 +168,9 @@ private fun HabitSection(
     modifier: Modifier = Modifier
 ) {
     val strings = Environment.resources.strings.habitDashboardStrings
-    val icons = Environment.resources.icons
     val navigator = LocalNavigator.currentOrThrow
 
     Column(modifier) {
-        Icon(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(44.dp),
-            icon = icons.habitIcons.getById(habit.iconId)
-        )
 
         Spacer(modifier = Modifier.height(8.dp))
 

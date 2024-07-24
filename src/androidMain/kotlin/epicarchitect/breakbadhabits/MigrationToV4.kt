@@ -42,7 +42,7 @@ class MigrationToV4(private val context: Context) {
                 Environment.database.habitQueries.insert(
                     id = it.getInt(it.getColumnIndexOrThrow("id")),
                     name = it.getString(it.getColumnIndexOrThrow("name")),
-                    iconId = it.getInt(it.getColumnIndexOrThrow("iconId"))
+                    level = 0
                 )
             }
         }

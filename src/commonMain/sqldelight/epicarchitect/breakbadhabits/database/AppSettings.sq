@@ -1,15 +1,17 @@
 import epicarchitect.breakbadhabits.database.AppSettingsTheme;
 import kotlin.Int;
+import kotlin.Boolean;
 
 CREATE TABLE IF NOT EXISTS AppSettings (
-  id       INTEGER AS Int NOT NULL PRIMARY KEY,
-  theme    INTEGER AS AppSettingsTheme NOT NULL
+  id                  INTEGER AS Int NOT NULL PRIMARY KEY,
+  theme               INTEGER AS AppSettingsTheme NOT NULL,
+  gamificationEnabled INTEGER AS Boolean NOT NULL
 );
 
-INSERT OR IGNORE INTO AppSettings VALUES (0, 0);
+INSERT OR IGNORE INTO AppSettings VALUES (0, 0, 1);
 
 update:
-UPDATE AppSettings SET theme = ? WHERE id = 0;
+UPDATE AppSettings SET theme = ?, gamificationEnabled = ? WHERE id = 0;
 
 settings:
 SELECT * FROM AppSettings LIMIT 1;
