@@ -2,6 +2,7 @@ package epicarchitect.breakbadhabits
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import epicarchitect.breakbadhabits.database.AppSettingsTheme
 import epicarchitect.breakbadhabits.sqldelight.flowOfOneOrNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,8 +27,8 @@ private fun handleDarkMode() {
     Environment.database.appSettingsQueries.settings().flowOfOneOrNull().onEach {
         AppCompatDelegate.setDefaultNightMode(
             when (it?.theme) {
-                epicarchitect.breakbadhabits.database.AppSettingsTheme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-                epicarchitect.breakbadhabits.database.AppSettingsTheme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+                AppSettingsTheme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+                AppSettingsTheme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
                 else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             }
         )
