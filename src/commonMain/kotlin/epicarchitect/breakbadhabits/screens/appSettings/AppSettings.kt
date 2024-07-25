@@ -125,6 +125,16 @@ private fun Loaded(settings: AppSettings) {
                 )
             }
         )
+
+    }
+    Spacer(Modifier.height(16.dp))
+    Environment.habitLevels.forEach {
+        Text("value: ${it.value}")
+        Text("requiredAbstinence: ${it.requiredAbstinence}")
+        Text("price: ${it.price}")
+        Text("accumulatedPrice: ${it.accumulatedPrice}")
+        Text("coinsPerSecond: ${it.coinsPerSecond}")
+        Spacer(Modifier.height(8.dp))
     }
 
     Spacer(Modifier.height(16.dp))

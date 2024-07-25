@@ -10,7 +10,9 @@ import epicarchitect.breakbadhabits.resources.AppResources
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-private const val MAGIC_COEFFICIENT = 1.5791829
+//private const val MAGIC_COEFFICIENT = 1.5791829
+//private const val MAGIC_COEFFICIENT = 2.0
+private const val MAGIC_COEFFICIENT = 1.42867
 private const val MAX_HABIT_LEVEL = 100
 private const val DATABASE_NAME = "breakbadhabits.db"
 

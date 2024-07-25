@@ -223,7 +223,7 @@ private fun GamifiedHabitCard(habit: Habit) {
     val gamificationData = abstinence?.let {
         habitGamificationData(
             habit = habit,
-            habitLevel = Environment.habitLevels.get(habit.level),
+            level = Environment.habitLevels.get(habit.level),
             abstinence = it
         )
     }
@@ -296,7 +296,7 @@ private fun GamifiedHabitCard(habit: Habit) {
                 if (gamificationData != null) {
                     Text(
                         modifier = Modifier.padding(top = 4.dp),
-                        text = "abstinence for upgrade: ${gamificationData.habitLevel.nextLevel?.accumulatedAbstinence}",
+                        text = "abstinence for upgrade: ${gamificationData.habitLevel.nextLevel?.requiredAbstinence}",
                         type = Text.Type.Description,
                         priority = Text.Priority.Medium
                     )
@@ -308,20 +308,22 @@ private fun GamifiedHabitCard(habit: Habit) {
                         priority = Text.Priority.Medium
                     )
 
-                    Button(
-                        modifier = Modifier.padding(top = 4.dp),
-                        onClick = {
-                            habitQueries.update(
-                                id = habit.id,
-                                name = habit.name,
-                                level = habit.level + 1,
-                                abstinenceWhenLevelUpgraded = abstinence,
-                                earnedCoinsFromPreviousLevel = gamificationData.earnedCoins
-                            )
-                        },
-                        text = "upgrade for ${gamificationData.habitLevel.nextLevel?.price} coins",
-                        enabled = gamificationData.upgradeAvailable
-                    )
+                    if (gamificationData.habitLevel.nextLevel != null) {
+                        Button(
+                            modifier = Modifier.padding(top = 4.dp),
+                            onClick = {
+                                habitQueries.update(
+                                    id = habit.id,
+                                    name = habit.name,
+                                    level = gamificationData.habitLevel.nextLevel.value,
+                                    abstinenceWhenLevelUpgraded = abstinence,
+                                    earnedCoinsFromPreviousLevel = gamificationData.earnedCoins - gamificationData.habitLevel.nextLevel.price
+                                )
+                            },
+                            text = "upgrade for ${gamificationData.habitLevel.nextLevel.price} coins",
+                            enabled = gamificationData.upgradeAvailable
+                        )
+                    }
                 }
             }
 

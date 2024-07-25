@@ -12,23 +12,20 @@ data class HabitGamificationData(
 
 fun habitGamificationData(
     habit: Habit,
-    habitLevel: HabitLevel,
+    level: HabitLevel,
     abstinence: Duration
 ): HabitGamificationData {
-    val progressToNextLevel = habitLevel.progressPercentToNextLevel(abstinence)
-    val timeInLevel = abstinence - habit.abstinenceWhenLevelUpgraded
-    val earnedCoins = habit.earnedCoinsFromPreviousLevel +
-            habitLevel.coinsPerSecond *
-            timeInLevel.inWholeSeconds -
-            habitLevel.accumulatedPrice
-
+    val progressToNextLevel = level.progressPercentToNextLevel(abstinence)
+    val abstinenceInLevel = abstinence - habit.abstinenceWhenLevelUpgraded
+    val earnedCoins =
+        habit.earnedCoinsFromPreviousLevel + level.coinsPerSecond * abstinenceInLevel.inWholeSeconds
 
     val upgradeAvailable = progressToNextLevel == 100 &&
-            habitLevel.nextLevel != null &&
-            habitLevel.nextLevel.price <= earnedCoins
+            level.nextLevel != null &&
+            level.nextLevel.price <= earnedCoins
 
     return HabitGamificationData(
-        habitLevel = habitLevel,
+        habitLevel = level,
         progressPercentToNextLevel = progressToNextLevel,
         earnedCoins = earnedCoins,
         upgradeAvailable = upgradeAvailable

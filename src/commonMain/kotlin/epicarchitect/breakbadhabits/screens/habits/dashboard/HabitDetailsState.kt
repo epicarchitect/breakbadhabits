@@ -84,7 +84,7 @@ fun rememberHabitDetailsState(
         if (appSettings.gamificationEnabled && abstinence != null) {
             habitGamificationData(
                 habit = habit,
-                habitLevel = Environment.habitLevels.get(habit.level),
+                level = Environment.habitLevels.get(habit.level),
                 abstinence = abstinence
             )
         } else {

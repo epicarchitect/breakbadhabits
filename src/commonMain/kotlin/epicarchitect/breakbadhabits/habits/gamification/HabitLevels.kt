@@ -3,62 +3,91 @@ package epicarchitect.breakbadhabits.habits.gamification
 import kotlin.math.pow
 import kotlin.math.roundToLong
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 class HabitLevels(
-    private val maxHabitLevel: Int,
-    private val magicCoefficient: Double
-) {
-    private val levels = generateLevels()
-    fun get(value: Int) = levels[value]
+    maxHabitLevel: Int,
+    magicCoefficient: Double
+) : List<HabitLevel> by generate(maxHabitLevel, magicCoefficient)
 
-    private fun generateLevels(): List<HabitLevel> {
-        val levels = mutableListOf<HabitLevel>()
+private fun generate(
+    maxHabitLevel: Int,
+    magicCoefficient: Double
+): List<HabitLevel> {
+    val levels = mutableListOf<HabitLevel>()
 
-        fun create(
-            level: Int,
-            prevAccumulatedPrice: Long,
-            prevAccumulatedAbstinence: Duration
-        ): HabitLevel {
-            val abstinence = habitLevelAbstinence(level)
-            val price = priceToLevelUp(abstinence, level)
-            val accumulatedPrice = prevAccumulatedPrice + price
-            val accumulatedAbstinence = prevAccumulatedAbstinence + abstinence
-            return HabitLevel(
-                value = level,
-                abstinence = abstinence,
-                accumulatedAbstinence = accumulatedAbstinence,
-                coinsPerSecond = coinsPerSecond(level),
-                price = price,
-                accumulatedPrice = accumulatedPrice,
-                nextLevel = if (level == maxHabitLevel) null else create(
-                    level = level + 1,
-                    prevAccumulatedPrice = accumulatedPrice,
-                    prevAccumulatedAbstinence = accumulatedAbstinence
-                )
-            ).also { levels.add(0, it) }
-        }
-
-        create(
-            level = 0,
-            prevAccumulatedPrice = 0,
-            prevAccumulatedAbstinence = Duration.ZERO
-        )
-
-        return levels
+    fun create(
+        level: Int,
+        previousAccumulatedPrice: Long
+    ): HabitLevel {
+        val abstinence = requiredAbstinence(magicCoefficient, level)
+        val coinsPerSecond = coinsPerSecond(magicCoefficient, level)
+        val price = price(abstinence, coinsPerSecond)
+        val accumulatedPrice = previousAccumulatedPrice + price
+        return HabitLevel(
+            value = level,
+            requiredAbstinence = abstinence,
+            coinsPerSecond = coinsPerSecond,
+            price = price,
+            accumulatedPrice = accumulatedPrice,
+            nextLevel = if (level == maxHabitLevel) null else create(
+                level = level + 1,
+                previousAccumulatedPrice = accumulatedPrice
+            )
+        ).also { levels.add(0, it) }
     }
 
-    private fun habitLevelAbstinence(level: Int): Duration {
-        val millis = 60000 * level * level.toDouble().pow(magicCoefficient)
-        return millis.milliseconds
+    create(
+        level = 0,
+        previousAccumulatedPrice = 0
+    )
+
+    return levels
+}
+
+private fun requiredAbstinence(
+    magicCoefficient: Double,
+    level: Int
+): Duration {
+    val minutes = level * level.toDouble().pow(magicCoefficient)
+    return minutes.minutes.roundToNice()
+}
+
+private fun coinsPerSecond(
+    magicCoefficient: Double,
+    level: Int
+): Long {
+    return (level * level + 2.0).pow(magicCoefficient).roundToLong().roundToNice()
+}
+
+private fun price(
+    abstinence: Duration,
+    coinsPerSecond: Long
+): Long {
+    return abstinence.inWholeSeconds * coinsPerSecond
+}
+
+private fun Duration.roundToNice() =
+    if (this > 1.days) {
+        inWholeHours.hours
+    } else {
+        inWholeMinutes.roundToNice().minutes
     }
 
-    private fun coinsPerSecond(level: Int): Long {
-        return ((level * level).toDouble().pow(magicCoefficient) + 1).roundToLong()
+private fun Long.roundToNice() = if (this < 10 || this % 10 == 5L) {
+    this
+} else if (this % 10 > 5) {
+    if (this % 10 < 7 || this % 10 < 3) {
+        this - this % 5 // round to smallest
+    } else {
+        this - this % 5 + 5 // round to greater
     }
-
-    private fun priceToLevelUp(abstinence: Duration, level: Int): Long {
-        if (level == 0) return 0
-        return abstinence.inWholeSeconds * coinsPerSecond(level - 1)
+} else {
+    if (this % 10 < 3) {
+        this - this % 5 // round to smallest
+    } else {
+        this - this % 5 + 5 // round to greater
     }
 }
