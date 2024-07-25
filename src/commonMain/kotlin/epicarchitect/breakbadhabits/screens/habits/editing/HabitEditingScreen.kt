@@ -129,7 +129,9 @@ private fun ColumnScope.Content(initialHabit: Habit) {
             habitQueries.update(
                 id = initialHabit.id,
                 name = habitName,
-                level = initialHabit.level
+                level = initialHabit.level,
+                abstinenceWhenLevelUpgraded = initialHabit.abstinenceWhenLevelUpgraded,
+                earnedCoinsFromPreviousLevel = initialHabit.earnedCoinsFromPreviousLevel
             )
             navigator.pop()
         },

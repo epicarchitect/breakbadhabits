@@ -122,6 +122,7 @@ private fun Content(
     val currentTime by Environment.habitsTimePulse.state.collectAsState()
     val timeZone = Environment.dateTime.currentTimeZone()
     val state = rememberHabitDetailsState(
+        habit = habit,
         habitEventRecords = habitEventRecords,
         lastTrack = lastHabitEventRecord,
         currentTime = currentTime,
@@ -199,13 +200,13 @@ private fun HabitSection(
                             shape = CircleShape
                         ),
                     progress = {
-                        state.gamificationData.habitLevelProgressPercent / 100f
+                        state.gamificationData.progressPercentToNextLevel / 100f
                     },
                     strokeCap = StrokeCap.Round
                 )
 
                 Text(
-                    text = state.gamificationData.habitLevel.level.toString(),
+                    text = state.gamificationData.habitLevel.value.toString(),
                     priority = Text.Priority.High,
                     type = Text.Type.Label
                 )

@@ -1,13 +1,21 @@
 import kotlin.Int;
+import kotlin.time.Duration;
 
 CREATE TABLE IF NOT EXISTS Habit (
   id    INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
   name  TEXT NOT NULL,
-  level INTEGER AS Int NOT NULL
+  level INTEGER AS Int NOT NULL,
+  abstinenceWhenLevelUpgraded INTEGER AS Duration NOT NULL,
+  earnedCoinsFromPreviousLevel INTEGER NOT NULL
 );
 
 update:
-UPDATE Habit SET name = ?, level = ? WHERE id = ?;
+UPDATE Habit SET
+name = ?,
+level = ?,
+abstinenceWhenLevelUpgraded = ?,
+earnedCoinsFromPreviousLevel = ?
+WHERE id = ?;
 
 deleteById:
 DELETE FROM Habit WHERE id = ?;
@@ -22,12 +30,14 @@ countWithName:
 SELECT count(*) FROM Habit WHERE name = ?;
 
 insert:
-INSERT INTO Habit(id, name, level) VALUES (?, ?, ?);
+INSERT INTO Habit(id, name, level, abstinenceWhenLevelUpgraded, earnedCoinsFromPreviousLevel) VALUES (?, ?, ?, ?, ?);
 
 insertWithEventRecord {
-    INSERT INTO Habit(id, name, level) VALUES (
+    INSERT INTO Habit(id, name, level, abstinenceWhenLevelUpgraded, earnedCoinsFromPreviousLevel) VALUES (
         NULL,
         :habitName,
+        0,
+        0,
         0
     );
 

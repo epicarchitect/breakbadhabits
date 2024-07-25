@@ -2,7 +2,9 @@ package epicarchitect.breakbadhabits.screens.habits.dashboard
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import epicarchitect.breakbadhabits.Environment
 import epicarchitect.breakbadhabits.database.AppSettings
+import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.datetime.duration
 import epicarchitect.breakbadhabits.datetime.toLocalDateRange
@@ -32,6 +34,7 @@ data class HabitDetailsState(
 
 @Composable
 fun rememberHabitDetailsState(
+    habit: Habit,
     habitEventRecords: List<HabitEventRecord>,
     appSettings: AppSettings,
     lastTrack: HabitEventRecord?,
@@ -72,9 +75,18 @@ fun rememberHabitDetailsState(
         )
     }
 
-    val gamificationData = remember(appSettings.gamificationEnabled, abstinence) {
+    val gamificationData = remember(
+        habit,
+        currentTime,
+        appSettings.gamificationEnabled,
+        abstinence
+    ) {
         if (appSettings.gamificationEnabled && abstinence != null) {
-            habitGamificationData(abstinence)
+            habitGamificationData(
+                habit = habit,
+                habitLevel = Environment.habitLevels.get(habit.level),
+                abstinence = abstinence
+            )
         } else {
             null
         }

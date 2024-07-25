@@ -11,7 +11,8 @@ operator fun AppDatabase.Companion.invoke(
     ),
     HabitAdapter = Habit.Adapter(
         idAdapter = IntColumnAdapter,
-        levelAdapter = IntColumnAdapter
+        levelAdapter = IntColumnAdapter,
+        abstinenceWhenLevelUpgradedAdapter = DurationAdapter
     ),
     HabitWidgetAdapter = HabitWidget.Adapter(
         idAdapter = IntColumnAdapter,

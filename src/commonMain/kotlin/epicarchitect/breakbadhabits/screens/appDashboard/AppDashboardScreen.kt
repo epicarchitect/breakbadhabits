@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -210,6 +212,7 @@ private fun HabitCard(habit: Habit) {
 @Composable
 private fun GamifiedHabitCard(habit: Habit) {
     val navigator = LocalNavigator.currentOrThrow
+    val habitQueries = Environment.database.habitQueries
     val strings = Environment.resources.strings.appDashboardStrings
     val icons = Environment.resources.icons
     val record by Environment.database.habitEventRecordQueries
@@ -217,7 +220,13 @@ private fun GamifiedHabitCard(habit: Habit) {
 
     val currentTime by Environment.habitsTimePulse.state.collectAsState()
     val abstinence = record?.abstinence(currentTime)
-    val gamificationData = abstinence?.let(::habitGamificationData)
+    val gamificationData = abstinence?.let {
+        habitGamificationData(
+            habit = habit,
+            habitLevel = Environment.habitLevels.get(habit.level),
+            abstinence = it
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth()
@@ -253,21 +262,22 @@ private fun GamifiedHabitCard(habit: Habit) {
                                         shape = CircleShape
                                     ),
                                 progress = {
-                                    gamificationData.habitLevelProgressPercent / 100f
+                                    gamificationData.progressPercentToNextLevel / 100f
                                 },
                                 strokeCap = StrokeCap.Round
                             )
 
                             Text(
-                                text = gamificationData.habitLevel.level.toString(),
+                                text = gamificationData.habitLevel.value.toString(),
                                 priority = Text.Priority.High,
                                 type = Text.Type.Label
                             )
                         }
+
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
 
                     Text(
-                        modifier = Modifier.padding(start = 8.dp),
                         text = habit.name,
                         type = Text.Type.Title,
                         priority = Text.Priority.Medium
@@ -275,7 +285,7 @@ private fun GamifiedHabitCard(habit: Habit) {
                 }
 
                 Text(
-                    modifier = Modifier.padding(top = 12.dp),
+                    modifier = Modifier.padding(top = 4.dp),
                     text = abstinence?.formatted(
                         accuracy = DurationFormattingAccuracy.SECONDS
                     ) ?: strings.habitHasNoEvents(),
@@ -285,10 +295,32 @@ private fun GamifiedHabitCard(habit: Habit) {
 
                 if (gamificationData != null) {
                     Text(
-                        modifier = Modifier.padding(top = 12.dp),
+                        modifier = Modifier.padding(top = 4.dp),
+                        text = "abstinence for upgrade: ${gamificationData.habitLevel.nextLevel?.accumulatedAbstinence}",
+                        type = Text.Type.Description,
+                        priority = Text.Priority.Medium
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(top = 4.dp),
                         text = "Coins: ${gamificationData.earnedCoins}, ${gamificationData.habitLevel.coinsPerSecond}/s",
                         type = Text.Type.Description,
                         priority = Text.Priority.Medium
+                    )
+
+                    Button(
+                        modifier = Modifier.padding(top = 4.dp),
+                        onClick = {
+                            habitQueries.update(
+                                id = habit.id,
+                                name = habit.name,
+                                level = habit.level + 1,
+                                abstinenceWhenLevelUpgraded = abstinence,
+                                earnedCoinsFromPreviousLevel = gamificationData.earnedCoins
+                            )
+                        },
+                        text = "upgrade for ${gamificationData.habitLevel.nextLevel?.price} coins",
+                        enabled = gamificationData.upgradeAvailable
                     )
                 }
             }
