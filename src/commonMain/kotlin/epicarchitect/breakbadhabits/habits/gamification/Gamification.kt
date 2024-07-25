@@ -53,6 +53,24 @@ object Gamification {
 
 }
 
+fun habitGamificationData(abstinence: Duration): HabitGamificationData {
+    val habitLevel = Gamification.habitLevelByAbstinence(abstinence)
+    val habitLevelProgress = Gamification.habitLevelProgressPercent(abstinence)
+    val earnedCoins = habitLevel.coinsPerSecond * abstinence.inWholeSeconds
+
+    return HabitGamificationData(
+        habitLevel = habitLevel,
+        habitLevelProgressPercent = habitLevelProgress,
+        earnedCoins = earnedCoins
+    )
+}
+
+data class HabitGamificationData(
+    val habitLevel: HabitLevel,
+    val habitLevelProgressPercent: Int,
+    val earnedCoins: Long
+)
+
 data class HabitLevel(
     val level: Int,
     val abstinence: Duration,

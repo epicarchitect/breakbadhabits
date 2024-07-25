@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.screens.habits.dashboard
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,7 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -16,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,6 +28,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.AppSettings
 import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.datetime.format.DurationFormattingAccuracy
@@ -61,12 +67,14 @@ class HabitDashboardScreen(private val habitId: Int) : Screen {
 fun HabitDashboard(habitId: Int) {
     val habitQueries = Environment.database.habitQueries
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
+    val appSettingsQueries = Environment.database.appSettingsQueries
 
     FlowStateContainer(
         state1 = stateOfOneOrNull { habitQueries.habitById(habitId) },
         state2 = stateOfList { habitEventRecordQueries.recordsByHabitId(habitId) },
-        state3 = stateOfOneOrNull { habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habitId) }
-    ) { habit, habitEventRecords, lastHabitEventRecord ->
+        state3 = stateOfOneOrNull { habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habitId) },
+        state4 = stateOfOneOrNull { appSettingsQueries.settings() },
+    ) { habit, habitEventRecords, lastHabitEventRecord, settings ->
         val icons = Environment.resources.icons
         val navigator = LocalNavigator.currentOrThrow
         val scrollState = rememberScrollState()
@@ -92,11 +100,12 @@ fun HabitDashboard(habitId: Int) {
                 }
             }
         ) {
-            if (habit != null) {
+            if (habit != null && settings != null) {
                 Content(
                     habit = habit,
                     habitEventRecords = habitEventRecords,
-                    lastHabitEventRecord = lastHabitEventRecord
+                    lastHabitEventRecord = lastHabitEventRecord,
+                    settings = settings
                 )
             }
         }
@@ -106,6 +115,7 @@ fun HabitDashboard(habitId: Int) {
 @Composable
 private fun Content(
     habit: Habit,
+    settings: AppSettings,
     habitEventRecords: List<HabitEventRecord>,
     lastHabitEventRecord: HabitEventRecord?
 ) {
@@ -115,7 +125,8 @@ private fun Content(
         habitEventRecords = habitEventRecords,
         lastTrack = lastHabitEventRecord,
         currentTime = currentTime,
-        timeZone = timeZone
+        timeZone = timeZone,
+        appSettings = settings
     )
 
     Spacer(Modifier.height(16.dp))
@@ -174,6 +185,35 @@ private fun HabitSection(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        if (state.gamificationData != null) {
+            Box(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .border(
+                            width = 1.dp,
+                            color = AppTheme.colorScheme.primary,
+                            shape = CircleShape
+                        ),
+                    progress = {
+                        state.gamificationData.habitLevelProgressPercent / 100f
+                    },
+                    strokeCap = StrokeCap.Round
+                )
+
+                Text(
+                    text = state.gamificationData.habitLevel.level.toString(),
+                    priority = Text.Priority.High,
+                    type = Text.Type.Label
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = habit.name,
@@ -193,6 +233,17 @@ private fun HabitSection(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        if (state.gamificationData != null) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = "Coins: ${state.gamificationData.earnedCoins}, ${state.gamificationData.habitLevel.coinsPerSecond}/s",
+                type = Text.Type.Description,
+                priority = Text.Priority.Medium
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
         Button(
             modifier = Modifier.align(Alignment.CenterHorizontally),

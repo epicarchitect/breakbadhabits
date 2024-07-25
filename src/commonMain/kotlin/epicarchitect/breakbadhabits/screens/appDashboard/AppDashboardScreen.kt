@@ -34,7 +34,7 @@ import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.datetime.format.DurationFormattingAccuracy
 import epicarchitect.breakbadhabits.datetime.format.formatted
 import epicarchitect.breakbadhabits.habits.abstinence
-import epicarchitect.breakbadhabits.habits.gamification.Gamification
+import epicarchitect.breakbadhabits.habits.gamification.habitGamificationData
 import epicarchitect.breakbadhabits.screens.appSettings.AppSettingsScreen
 import epicarchitect.breakbadhabits.screens.habits.creation.HabitCreationScreen
 import epicarchitect.breakbadhabits.screens.habits.dashboard.HabitDashboardScreen
@@ -180,13 +180,12 @@ private fun HabitCard(habit: Habit) {
                 )
             ) {
                 Text(
-                    modifier = Modifier.padding(12.dp),
                     text = habit.name,
                     type = Text.Type.Title,
                     priority = Text.Priority.Medium
                 )
                 Text(
-                    modifier = Modifier.padding(top = 12.dp),
+                    modifier = Modifier.padding(top = 4.dp),
                     text = abstinence?.formatted(
                         accuracy = DurationFormattingAccuracy.SECONDS
                     ) ?: strings.habitHasNoEvents(),
@@ -218,9 +217,7 @@ private fun GamifiedHabitCard(habit: Habit) {
 
     val currentTime by Environment.habitsTimePulse.state.collectAsState()
     val abstinence = record?.abstinence(currentTime)
-    val habitLevel = abstinence?.let(Gamification::habitLevelByAbstinence)
-    val habitLevelProgress = abstinence?.let(Gamification::habitLevelProgressPercent)
-    val earnedCoins = habitLevel?.coinsPerSecond?.times(abstinence.inWholeSeconds)
+    val gamificationData = abstinence?.let(::habitGamificationData)
 
     Card(
         modifier = Modifier.fillMaxWidth()
@@ -243,8 +240,7 @@ private fun GamifiedHabitCard(habit: Habit) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (habitLevel != null && habitLevelProgress != null) {
-
+                    if (gamificationData != null) {
                         Box(
                             contentAlignment = Alignment.Center
                         ) {
@@ -257,13 +253,13 @@ private fun GamifiedHabitCard(habit: Habit) {
                                         shape = CircleShape
                                     ),
                                 progress = {
-                                    habitLevelProgress / 100f
+                                    gamificationData.habitLevelProgressPercent / 100f
                                 },
                                 strokeCap = StrokeCap.Round
                             )
 
                             Text(
-                                text = habitLevel.level.toString(),
+                                text = gamificationData.habitLevel.level.toString(),
                                 priority = Text.Priority.High,
                                 type = Text.Type.Label
                             )
@@ -286,12 +282,15 @@ private fun GamifiedHabitCard(habit: Habit) {
                     type = Text.Type.Description,
                     priority = Text.Priority.Medium
                 )
-                Text(
-                    modifier = Modifier.padding(top = 12.dp),
-                    text = "Coins: $earnedCoins, ${habitLevel?.coinsPerSecond}/s",
-                    type = Text.Type.Description,
-                    priority = Text.Priority.Medium
-                )
+
+                if (gamificationData != null) {
+                    Text(
+                        modifier = Modifier.padding(top = 12.dp),
+                        text = "Coins: ${gamificationData.earnedCoins}, ${gamificationData.habitLevel.coinsPerSecond}/s",
+                        type = Text.Type.Description,
+                        priority = Text.Priority.Medium
+                    )
+                }
             }
 
             IconButton(
