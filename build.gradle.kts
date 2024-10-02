@@ -9,8 +9,6 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(17)
-
     androidTarget()
     listOf(
         iosX64(),
@@ -19,7 +17,7 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "KMPLib"
-            freeCompilerArgs = listOf("-Xbinary=bundleId=$baseName")
+            isStatic = true
         }
     }
 
@@ -34,7 +32,7 @@ kotlin {
             implementation(libs.cashapp.sqldelightPrimitiveAdapters)
             implementation(libs.adrielcafe.voyagerNavigator)
             implementation(libs.adrielcafe.voyagerTransitions)
-            implementation(libs.epicarchitect.calendarComposeDatePicker)
+            implementation("io.github.epicarchitect:epic-calendar-compose:1.0.6")
         }
         androidMain.dependencies {
             implementation(libs.android.coreKtx)
@@ -71,7 +69,6 @@ android {
         res.srcDirs("src/androidMain/res")
     }
 
-
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -87,10 +84,9 @@ android {
         }
     }
 
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
