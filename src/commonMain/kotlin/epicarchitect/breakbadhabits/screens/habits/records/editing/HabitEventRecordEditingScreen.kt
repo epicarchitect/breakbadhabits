@@ -29,6 +29,7 @@ import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
 import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
 import epicarchitect.breakbadhabits.habits.validation.checkHabitEventCount
 import epicarchitect.breakbadhabits.habits.validation.checkHabitEventRecordTimeRange
+import epicarchitect.breakbadhabits.math.ranges.ascended
 import epicarchitect.breakbadhabits.uikit.DateTimeRangeInputCard
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
@@ -142,7 +143,8 @@ private fun ColumnScope.Content(initialRecord: HabitEventRecord) {
         error = state.timeRangeError?.let(strings::timeRangeError),
         value = state.timeRange,
         onChanged = {
-            state.timeRange = it
+            state.timeRange = it.ascended()
+            state.timeRangeError = null
         },
         startTimeLabel = strings.startDateTimeLabel(),
         endTimeLabel = strings.endDateTimeLabel(),
