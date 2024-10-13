@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.resources.strings.habits.records.creation
 
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
 import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
 
 class EnglishHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
@@ -9,28 +9,24 @@ class EnglishHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     override fun commentTitle() = "Comment"
     override fun finishDescription() = "You can always change or delete this record."
     override fun finishButton() = "Done"
-    override fun dailyEventCountError(error: DailyHabitEventCountError) = when (error) {
-        DailyHabitEventCountError.Empty -> {
+    override fun eventCountError(error: HabitEventCountError) = when (error) {
+        HabitEventCountError.Empty -> {
             "Cant be empty"
         }
     }
 
     override fun timeRangeTitle() = "Time range"
-    override fun dailyEventCountSuffix(count: Int) = "Total: $count"
-    override fun dailyEventCountPrefix() = "Events per day: "
     override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
         HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "The date and time cannot be greater than the current time."
     }
 
-    override fun dailyEventCountDescription() =
-        "Indicate approximately how many habit events per day."
-
-    override fun dailyEventCountTitle() = "Number of events per day"
-    override fun timeRangeDescription() = "Select the time of the first and last habit event."
+    override fun eventCountDescription() = "Enter how many habit events there were."
+    override fun eventCountTitle() = "Number of events"
+    override fun timeRangeDescription() = "Enter the time range in which the habit events occurred."
     override fun now() = "Now"
     override fun yesterday() = "Yesterday"
     override fun yourTimeRange() = "Your interval"
-    override fun startDateTimeLabel() = "First event"
-    override fun endDateTimeLabel() = "Last event"
+    override fun startDateTimeLabel() = "Start"
+    override fun endDateTimeLabel() = "End"
     override fun done() = "Done"
 }

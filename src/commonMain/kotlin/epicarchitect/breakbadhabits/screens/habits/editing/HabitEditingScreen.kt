@@ -23,6 +23,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
+import epicarchitect.breakbadhabits.habits.validation.checkHabitNewName
+import epicarchitect.breakbadhabits.screens.appDashboard.AppDashboardScreen
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.Icon
@@ -34,10 +38,6 @@ import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.InputCard
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextInputCard
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
-import epicarchitect.breakbadhabits.habits.validation.checkHabitNewName
-import epicarchitect.breakbadhabits.screens.appDashboard.AppDashboardScreen
 
 class HabitEditingScreen(private val habitId: Int) : Screen {
     @Composable

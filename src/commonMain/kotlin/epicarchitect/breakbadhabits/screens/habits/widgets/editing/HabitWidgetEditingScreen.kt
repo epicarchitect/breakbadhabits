@@ -25,6 +25,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.database.HabitWidget
 import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.Dialog
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
@@ -36,8 +38,6 @@ import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.InputCard
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextInputCard
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.database.HabitWidget
 
 class HabitWidgetEditingScreen(private val widgetId: Int) : Screen {
     @Composable

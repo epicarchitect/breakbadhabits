@@ -46,13 +46,15 @@ fun LocalResourceIcon(
 @Composable
 fun Icon(
     icon: Icon,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tint: Color = LocalContentColor.current
 ) {
     if (icon is VectorIcon) {
         MaterialIcon(
             modifier = modifier,
             imageVector = icon.vector,
-            contentDescription = null
+            contentDescription = null,
+            tint = tint
         )
     }
 }

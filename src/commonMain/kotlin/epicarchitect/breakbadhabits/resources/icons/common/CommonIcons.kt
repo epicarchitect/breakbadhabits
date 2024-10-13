@@ -21,8 +21,6 @@ import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.FrontHand
 import androidx.compose.material.icons.filled.Games
 import androidx.compose.material.icons.filled.Grass
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LaptopChromebook
 import androidx.compose.material.icons.filled.Light
 import androidx.compose.material.icons.filled.LocalPizza

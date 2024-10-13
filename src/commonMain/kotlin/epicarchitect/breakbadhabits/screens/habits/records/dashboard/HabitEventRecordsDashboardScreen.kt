@@ -35,7 +35,6 @@ import epicarchitect.breakbadhabits.datetime.format.formatted
 import epicarchitect.breakbadhabits.datetime.toLocalDateRange
 import epicarchitect.breakbadhabits.datetime.toLocalDateTimeRange
 import epicarchitect.breakbadhabits.datetime.toMonthOfYear
-import epicarchitect.breakbadhabits.habits.dailyEventCount
 import epicarchitect.breakbadhabits.habits.groupByMonth
 import epicarchitect.breakbadhabits.habits.timeRange
 import epicarchitect.breakbadhabits.math.ranges.ascended
@@ -57,7 +56,6 @@ import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
 import kotlinx.coroutines.launch
-import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toLocalDateTime
 
 class HabitEventRecordsDashboardScreen(private val habitId: Int) : Screen {
@@ -202,7 +200,7 @@ private fun Content(
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
                 items(currentMonthRecords, key = { it.id }) { record ->
-                   RecordItem(record)
+                    RecordItem(record)
                 }
             }
         }
@@ -255,13 +253,6 @@ private fun LazyItemScope.RecordItem(record: HabitEventRecord) {
                 modifier = Modifier.padding(2.dp),
                 text = strings.eventCount(record.eventCount)
             )
-
-            if (startDate.daysUntil(endDate) > 0) {
-                Text(
-                    modifier = Modifier.padding(2.dp),
-                    text = strings.dailyEventCount(record.dailyEventCount(timeZone))
-                )
-            }
 
             if (record.comment.isNotBlank()) {
                 Text(

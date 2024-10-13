@@ -15,8 +15,8 @@ import java.util.Locale
 // похуй + поебать на смену конфигурации, мне то что
 @SuppressLint("ConstantLocale")
 private val locale = Locale.getDefault()
-private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM", locale)
-private val dateWithOutYearFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", locale)
+private val dateWithOutYearFormatter = DateTimeFormatter.ofPattern("d MMMM", locale)
+private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", locale)
 private val timePattern = if (DateFormat.is24HourFormat(BreakBadHabitsApp.instance)) "HH:mm" else "hh:mm a"
 private val timeFormatter = DateTimeFormatter.ofPattern(timePattern)
 

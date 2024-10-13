@@ -10,7 +10,7 @@ fun checkHabitEventRecordTimeRange(
         HabitEventRecordTimeRangeError.BiggestThenCurrentTime
     }
 
-    else                                                                  -> null
+    else -> null
 }
 
 sealed interface HabitEventRecordTimeRangeError {

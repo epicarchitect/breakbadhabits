@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.resources.strings.habits.records.editing
 
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
 import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
 
 class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
@@ -14,24 +14,22 @@ class RussianHabitEventRecordEditingStrings : HabitEventRecordEditingStrings {
     override fun cancel() = "Отмена"
     override fun deleteDescription() = "Вы можете удалить эту запись."
     override fun deleteButton() = "Удалить запись"
-    override fun dailyEventCountError(error: DailyHabitEventCountError) = when (error) {
-        DailyHabitEventCountError.Empty -> {
+    override fun startDateTimeLabel() = "Начало"
+    override fun endDateTimeLabel() = "Конец"
+    override fun done() = "Готово"
+    override fun eventCountError(error: HabitEventCountError) = when (error) {
+        HabitEventCountError.Empty -> {
             "Поле не может быть пустым"
         }
     }
+
+    override fun timeRangeTitle() = "Временной диапазон"
     override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
         HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "Дата и время не могут быть больше текущего времени."
     }
 
-    override fun timeRangeTitle() = "Временной диапазон"
-    override fun startDateTimeLabel() = "Первое событие"
-    override fun endDateTimeLabel() = "Последнее событие"
-    override fun done() = "Готово"
-
-    override fun dailyEventCountTitle() = "Число событий в день"
-    override fun dailyEventCountPrefix() = "Событий в день: "
-    override fun dailyEventCountSuffix(count: Int) = "Всего: $count"
-    override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки каждый день."
-    override fun totalEventCount(count: Int) = "Всего: $count"
-    override fun timeRangeDescription() = "Укажите время первого и последнего события привычки."
+    override fun eventCountTitle() = "Число событий"
+    override fun eventCountDescription() = "Введите сколько было событий привычки."
+    override fun timeRangeDescription() =
+        "Введите диапазон времени в котором происходили события привычки."
 }

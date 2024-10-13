@@ -182,7 +182,9 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
 
                     FlowStateContainer(
                         state = stateOfOneOrNull {
-                            Environment.database.habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habit.id)
+                            Environment.database.habitEventRecordQueries.recordByHabitIdAndMaxEndTime(
+                                habit.id
+                            )
                         }
                     ) { record ->
                         val currentTime by Environment.habitsTimePulse.state.collectAsState()

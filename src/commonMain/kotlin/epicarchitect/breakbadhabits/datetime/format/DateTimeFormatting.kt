@@ -16,9 +16,11 @@ expect fun LocalTime.formatted(): String
 
 fun MonthOfYear.formatted() = "${month.formatted()} $year"
 
-fun LocalDateTime.formatted(withYear: Boolean = false) = date.formatted(withYear) + ", " + time.formatted()
+fun LocalDateTime.formatted(withYear: Boolean = false) =
+    date.formatted(withYear) + ", " + time.formatted()
 
-fun Instant.formatted(timeZone: TimeZone, withYear: Boolean = false) = toLocalDateTime(timeZone).formatted(withYear)
+fun Instant.formatted(timeZone: TimeZone, withYear: Boolean = false) =
+    toLocalDateTime(timeZone).formatted(withYear)
 
 fun ClosedRange<LocalDateTime>.formatted(withYear: Boolean = false) = when {
     start == endInclusive -> start.formatted(withYear)

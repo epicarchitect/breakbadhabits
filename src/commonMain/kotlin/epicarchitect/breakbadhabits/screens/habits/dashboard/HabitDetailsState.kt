@@ -2,7 +2,6 @@ package epicarchitect.breakbadhabits.screens.habits.dashboard
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import epicarchitect.breakbadhabits.uikit.StatisticData
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.datetime.duration
 import epicarchitect.breakbadhabits.datetime.toLocalDateRange
@@ -12,6 +11,7 @@ import epicarchitect.breakbadhabits.habits.failedRanges
 import epicarchitect.breakbadhabits.habits.habitAbstinenceRangesByFailedRanges
 import epicarchitect.breakbadhabits.habits.timeRange
 import epicarchitect.breakbadhabits.math.ranges.ascended
+import epicarchitect.breakbadhabits.uikit.StatisticData
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone

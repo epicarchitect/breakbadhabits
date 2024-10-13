@@ -22,6 +22,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
+import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
+import epicarchitect.breakbadhabits.habits.validation.checkHabitEventCount
+import epicarchitect.breakbadhabits.habits.validation.checkHabitNewName
 import epicarchitect.breakbadhabits.uikit.Icon
 import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
@@ -31,11 +36,6 @@ import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.text.InputCard
 import epicarchitect.breakbadhabits.uikit.text.TextInputCard
-import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
-import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
-import epicarchitect.breakbadhabits.habits.validation.checkDailyHabitEventCount
-import epicarchitect.breakbadhabits.habits.validation.checkHabitNewName
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -94,7 +94,7 @@ private fun ColumnScope.Content() {
     }
 
     var dailyEventCount by rememberSaveable { mutableIntStateOf(0) }
-    var dailyEventCountError by remember { mutableStateOf<DailyHabitEventCountError?>(null) }
+    var dailyEventCountError by remember { mutableStateOf<HabitEventCountError?>(null) }
 
     Spacer(Modifier.height(16.dp))
 
@@ -189,7 +189,7 @@ private fun ColumnScope.Content() {
             )
             if (habitNameError != null) return@Button
 
-            dailyEventCountError = checkDailyHabitEventCount(dailyEventCount)
+            dailyEventCountError = checkHabitEventCount(dailyEventCount)
             if (dailyEventCountError != null) return@Button
 
             val endTime = Environment.dateTime.currentInstant()

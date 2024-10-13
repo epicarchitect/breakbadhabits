@@ -11,15 +11,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.AppSettings
+import epicarchitect.breakbadhabits.database.AppSettingsTheme
+import epicarchitect.breakbadhabits.screens.habits.widgets.dashboard.HabitWidgetsDashboardScreen
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.button.RadioButton
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.InputCard
-import epicarchitect.breakbadhabits.database.AppSettings
-import epicarchitect.breakbadhabits.database.AppSettingsTheme
-import epicarchitect.breakbadhabits.screens.habits.widgets.dashboard.HabitWidgetsDashboardScreen
 
 class AppSettingsScreen : Screen {
     @Composable

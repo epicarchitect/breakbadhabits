@@ -31,7 +31,10 @@ class HabitsAppWidgetConfigCreationActivity : AppCompatActivity() {
                         onDone = {
                             setResult(
                                 RESULT_OK,
-                                Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, systemWidgetId)
+                                Intent().putExtra(
+                                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                                    systemWidgetId
+                                )
                             )
                             finish()
                             HabitsAppWidgetProvider.sendUpdateBroadcast(this)

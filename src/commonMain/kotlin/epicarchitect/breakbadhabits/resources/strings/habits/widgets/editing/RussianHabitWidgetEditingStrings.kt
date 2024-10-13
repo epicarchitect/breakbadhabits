@@ -8,6 +8,7 @@ class RussianHabitWidgetEditingStrings : HabitWidgetEditingStrings {
     override fun habitsTitle() = "Привычки"
     override fun deleteConfirmation() =
         "Вы уверены что хотите удалить этот виджет? Вам придется удалить виджет с главного экрана вручную."
+
     override fun yes() = "Да"
     override fun cancel() = "Отмена"
     override fun deleteDescription() = "Вы можете удалить этот виджет."

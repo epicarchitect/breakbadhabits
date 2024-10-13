@@ -41,8 +41,8 @@ object AppColorsSchemes {
 
     @Composable
     fun byAppSettings(appSettings: AppSettings) = when (appSettings.theme) {
-        AppSettingsTheme.LIGHT  -> light
-        AppSettingsTheme.DARK   -> dark
+        AppSettingsTheme.LIGHT -> light
+        AppSettingsTheme.DARK -> dark
         AppSettingsTheme.SYSTEM -> system
     }
 }

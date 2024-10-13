@@ -1,19 +1,21 @@
 package epicarchitect.breakbadhabits.uikit
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -24,15 +26,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.math.ranges.ascended
+import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.datetime.format.formatted
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
 import epicarchitect.breakbadhabits.uikit.text.InputCard
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.theme.AppTheme
-import epicarchitect.breakbadhabits.datetime.format.formatted
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -42,11 +43,6 @@ import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
-private const val HIDE_PICKER = 0
-private const val SHOW_PICKER_START = 1
-private const val SHOW_PICKER_END = 2
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateTimeRangeInputCard(
     title: String,
@@ -59,99 +55,122 @@ fun DateTimeRangeInputCard(
     error: String? = null,
     modifier: Modifier = Modifier,
 ) {
-    var dateSelectionState by rememberSaveable { mutableStateOf(HIDE_PICKER) }
-    var timeSelectionState by rememberSaveable { mutableStateOf(HIDE_PICKER) }
-
     val startDateTime = value.start.toLocalDateTime(timeZone)
-    val endDateTime = value.endInclusive.toLocalDateTime(timeZone)
+    val currentDateTime = Environment.dateTime.currentInstant().toLocalDateTime(timeZone)
 
-    var selectedStartDate = startDateTime.date
-    var selectedStartTime = startDateTime.time
+    InputCard(
+        modifier = modifier,
+        title = title,
+        description = description,
+        error = error
+    ) {
+        Column {
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = startTimeLabel,
+                type = Text.Type.Title,
+                priority = Text.Priority.Low
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            DateTimeInputRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                value = value.start,
+                onChanged = {
+                    onChanged(it..value.endInclusive)
+                },
+                isSelectableDate = {
+                    it <= currentDateTime.date
+                },
+                timeZone = timeZone
+            )
+        }
 
-    var selectedEndDate = endDateTime.date
-    var selectedEndTime = endDateTime.time
+        Spacer(modifier = Modifier.height(8.dp))
 
-    val textFieldColors = TextFieldDefaults.colors(
-        disabledTextColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.9f),
-        disabledContainerColor = Color.Transparent,
-        disabledIndicatorColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-        disabledLeadingIconColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-        selectionColors = TextSelectionColors(Color.Transparent, Color.Transparent)
-    )
+        Column {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = endTimeLabel,
+                type = Text.Type.Title,
+                priority = Text.Priority.Low
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            DateTimeInputRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                value = value.endInclusive,
+                onChanged = {
+                    onChanged(value.start..it)
+                },
+                isSelectableDate = {
+                    it >= startDateTime.date && it <= currentDateTime.date
+                },
+                timeZone = timeZone
+            )
+        }
+    }
+}
 
-    if (dateSelectionState != HIDE_PICKER) {
-        val date =
-            if (dateSelectionState == SHOW_PICKER_START) selectedStartDate else selectedEndDate
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DateTimeInputRow(
+    value: Instant,
+    isSelectableDate: (LocalDate) -> Boolean,
+    timeZone: TimeZone,
+    onChanged: (Instant) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val dateTime = value.toLocalDateTime(timeZone)
+    var dateSelectionVisible by rememberSaveable { mutableStateOf(false) }
+    var timeSelectionVisible by rememberSaveable { mutableStateOf(false) }
+    val borderColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+    val textColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+
+    if (dateSelectionVisible) {
+        val date = dateTime.date
         val state = rememberDatePickerState(
             initialSelectedDateMillis = date.toEpochMillis(),
             selectableDates = object : SelectableDates {
-                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    return if (dateSelectionState == SHOW_PICKER_START) {
-                        utcTimeMillis <= epicarchitect.breakbadhabits.Environment.dateTime.currentInstant()
-                            .toLocalDateTime(timeZone)
-                            .date
-                            .toEpochMillis()
-                    } else {
-                        utcTimeMillis >= selectedStartDate.toEpochMillis()
-                                && utcTimeMillis <= epicarchitect.breakbadhabits.Environment.dateTime.currentInstant()
-                            .toLocalDateTime(timeZone).date.toEpochMillis()
-                    }
-                }
+                override fun isSelectableDate(utcTimeMillis: Long) = isSelectableDate(
+                    Instant.fromEpochMilliseconds(utcTimeMillis).toLocalDateTime(timeZone).date
+                )
             }
         )
 
-        Dialog(
-            onDismiss = {
-                dateSelectionState = HIDE_PICKER
-            }
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                DatePicker(state)
-
+        DatePickerDialog(
+            onDismissRequest = {
+                dateSelectionVisible = false
+            },
+            confirmButton = {
                 Button(
-                    modifier = Modifier.align(Alignment.End),
                     text = "OK", // nice
                     style = ButtonStyles.regular.copy(elevation = 0.dp),
                     onClick = {
                         val newDate = Instant.fromEpochMilliseconds(state.selectedDateMillis!!)
                             .toLocalDateTime(timeZone).date
-
-                        if (dateSelectionState == SHOW_PICKER_START) {
-                            selectedStartDate = newDate
-                            if (newDate > selectedEndDate) selectedEndDate = newDate
-                        } else {
-                            selectedEndDate = newDate
-                        }
-
-                        dateSelectionState = HIDE_PICKER
-
-                        onChanged(
-                            (LocalDateTime(
-                                selectedStartDate,
-                                selectedStartTime
-                            ).toInstant(timeZone)..LocalDateTime(
-                                selectedEndDate,
-                                selectedEndTime
-                            ).toInstant(timeZone)).ascended()
-                        )
+                        dateSelectionVisible = false
+                        onChanged(LocalDateTime(newDate, dateTime.time).toInstant(timeZone))
                     }
                 )
             }
+        ) {
+            DatePicker(state)
         }
     }
 
-    if (timeSelectionState != HIDE_PICKER) {
-        val time =
-            if (timeSelectionState == SHOW_PICKER_START) selectedStartTime else selectedEndTime
+    if (timeSelectionVisible) {
+        val time = dateTime.time
         val state = rememberTimePickerState(
             initialHour = time.hour,
             initialMinute = time.minute
         )
         Dialog(
             onDismiss = {
-                timeSelectionState = HIDE_PICKER
+                timeSelectionVisible = false
             }
         ) {
             Column(
@@ -165,134 +184,69 @@ fun DateTimeRangeInputCard(
                     text = "OK", // :)
                     onClick = {
                         val newTime = LocalTime(state.hour, state.minute, 0)
-
-                        if (timeSelectionState == SHOW_PICKER_START) selectedStartTime = newTime
-                        else selectedEndTime = newTime
-
-                        timeSelectionState = HIDE_PICKER
-
-                        onChanged(
-                            (LocalDateTime(
-                                selectedStartDate,
-                                selectedStartTime
-                            ).toInstant(timeZone)..LocalDateTime(
-                                selectedEndDate,
-                                selectedEndTime
-                            ).toInstant(timeZone)).ascended()
-                        )
+                        timeSelectionVisible = false
+                        onChanged(LocalDateTime(dateTime.date, newTime).toInstant(timeZone))
                     }
                 )
             }
         }
     }
 
-    InputCard(
-        modifier = modifier,
-        title = title,
-        description = description,
-        error = error
+    Row(
+        modifier = modifier
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = MaterialTheme.shapes.small
+            )
+            .clip(MaterialTheme.shapes.small),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = startTimeLabel + " — " + startDateTime.formatted(withYear = true),
-                type = Text.Type.Title,
-                priority = Text.Priority.Low
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .height(56.dp)
+                .clickable {
+                    dateSelectionVisible = true
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(Modifier.width(16.dp))
+            Icon(
+                icon = Environment.resources.icons.commonIcons.calendar,
+                tint = textColor
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(start = 14.dp, end = 4.dp)
-                        .weight(0.6f)
-                        .clip(MaterialTheme.shapes.small)
-                        .clickable {
-                            dateSelectionState = SHOW_PICKER_START
-                        },
-                    value = selectedStartDate.formatted(),
-                    onValueChange = {},
-                    readOnly = true,
-                    enabled = false,
-                    colors = textFieldColors,
-                    leadingIcon = {
-                        Icon(epicarchitect.breakbadhabits.Environment.resources.icons.commonIcons.calendar)
-                    },
-                    shape = MaterialTheme.shapes.small,
-                )
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(start = 4.dp, end = 14.dp)
-                        .weight(0.5f)
-                        .clip(MaterialTheme.shapes.small)
-                        .clickable {
-                            timeSelectionState = SHOW_PICKER_START
-                        },
-                    value = selectedStartTime.formatted(),
-                    onValueChange = {},
-                    readOnly = true,
-                    enabled = false,
-                    colors = textFieldColors,
-                    leadingIcon = {
-                        Icon(epicarchitect.breakbadhabits.Environment.resources.icons.commonIcons.time)
-                    },
-                    shape = MaterialTheme.shapes.small
-                )
-            }
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = dateTime.date.formatted(withYear = true),
+                color = textColor
+            )
+            Spacer(Modifier.width(16.dp))
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Column {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = endTimeLabel + " — " + endDateTime.formatted(withYear = true),
-                type = Text.Type.Title,
-                priority = Text.Priority.Low
+        VerticalDivider(
+            modifier = Modifier.height(56.dp),
+            thickness = 1.5.dp,
+            color = borderColor
+        )
+        Row(
+            modifier = Modifier
+                .height(56.dp)
+                .clickable {
+                    timeSelectionVisible = true
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(Modifier.width(16.dp))
+            Icon(
+                icon = Environment.resources.icons.commonIcons.time,
+                tint = textColor
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(start = 14.dp, end = 4.dp)
-                        .weight(0.6f)
-                        .clip(MaterialTheme.shapes.small)
-                        .clickable {
-                            dateSelectionState = SHOW_PICKER_END
-                        },
-                    value = selectedEndDate.formatted(),
-                    onValueChange = {},
-                    readOnly = true,
-                    enabled = false,
-                    colors = textFieldColors,
-                    leadingIcon = {
-                        Icon(epicarchitect.breakbadhabits.Environment.resources.icons.commonIcons.calendar)
-                    },
-                    shape = MaterialTheme.shapes.small,
-                )
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(start = 4.dp, end = 14.dp)
-                        .weight(0.5f)
-                        .clip(MaterialTheme.shapes.small)
-                        .clickable {
-                            timeSelectionState = SHOW_PICKER_END
-                        },
-                    value = selectedEndTime.formatted(),
-                    onValueChange = {},
-                    readOnly = true,
-                    enabled = false,
-                    colors = textFieldColors,
-                    leadingIcon = {
-                        Icon(epicarchitect.breakbadhabits.Environment.resources.icons.commonIcons.time)
-                    },
-                    shape = MaterialTheme.shapes.small,
-                )
-            }
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = dateTime.time.formatted(),
+                color = textColor
+            )
+            Spacer(Modifier.width(16.dp))
         }
     }
 }

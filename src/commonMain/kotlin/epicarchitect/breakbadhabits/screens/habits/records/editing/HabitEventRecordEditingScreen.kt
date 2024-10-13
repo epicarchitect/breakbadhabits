@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,12 +24,10 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
 import epicarchitect.breakbadhabits.database.HabitEventRecord
-import epicarchitect.breakbadhabits.habits.dailyEventCount
 import epicarchitect.breakbadhabits.habits.timeRange
-import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
 import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
-import epicarchitect.breakbadhabits.habits.validation.checkDailyHabitEventCount
+import epicarchitect.breakbadhabits.habits.validation.checkHabitEventCount
 import epicarchitect.breakbadhabits.habits.validation.checkHabitEventRecordTimeRange
 import epicarchitect.breakbadhabits.uikit.DateTimeRangeInputCard
 import epicarchitect.breakbadhabits.uikit.Dialog
@@ -48,6 +45,24 @@ class HabitEventRecordEditingScreen(private val habitEventRecordId: Int) : Scree
     override fun Content() {
         HabitEventRecordEditing(habitEventRecordId)
     }
+}
+
+class HabitEventRecordEditingState(
+    initialRecord: HabitEventRecord
+) {
+    var timeRange by mutableStateOf(initialRecord.timeRange())
+    var timeRangeError by mutableStateOf<HabitEventRecordTimeRangeError?>(null)
+    var eventCount by mutableIntStateOf(initialRecord.eventCount)
+    var eventCountError by mutableStateOf<HabitEventCountError?>(null)
+    var comment by mutableStateOf(initialRecord.comment)
+}
+
+// TODO: should be savable
+@Composable
+fun rememberHabitEventRecordEditingState(
+    initialRecord: HabitEventRecord
+) = remember(initialRecord) {
+    HabitEventRecordEditingState(initialRecord)
 }
 
 @Composable
@@ -80,26 +95,18 @@ fun HabitEventRecordEditing(habitEventRecordId: Int) {
 }
 
 @Composable
-private fun ColumnScope.Content(record: HabitEventRecord) {
+private fun ColumnScope.Content(initialRecord: HabitEventRecord) {
     val strings = Environment.resources.strings.habitEventRecordEditingStrings
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
     val navigator = LocalNavigator.currentOrThrow
+    val state = rememberHabitEventRecordEditingState(initialRecord)
 
     val timeZone = Environment.dateTime.currentTimeZone()
     var showDeletion by remember { mutableStateOf(false) }
-    var selectedTimeRange by remember { mutableStateOf(record.timeRange()) }
-
-    var timeRangeError by remember(selectedTimeRange) {
-        mutableStateOf<HabitEventRecordTimeRangeError?>(null)
-    }
-    var dailyEventCount by rememberSaveable(record) { mutableIntStateOf(record.dailyEventCount(timeZone)) }
-    var dailyHabitEventCountError by remember { mutableStateOf<DailyHabitEventCountError?>(null) }
-
-    var comment by rememberSaveable(record) { mutableStateOf(record.comment) }
 
     if (showDeletion) {
         DeletionDialog(
-            record = record,
+            record = initialRecord,
             onDismiss = { showDeletion = false }
         )
     }
@@ -107,21 +114,21 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
     Spacer(Modifier.height(16.dp))
 
     TextInputCard(
-        title = strings.dailyEventCountTitle(),
-        description = strings.dailyEventCountDescription(),
+        title = strings.eventCountTitle(),
+        description = strings.eventCountDescription(),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        value = dailyEventCount.toString(),
+        value = state.eventCount.toString(),
         onValueChange = {
-            dailyEventCount = it.toIntOrNull() ?: 0
-            dailyHabitEventCountError = null
+            state.eventCount = it.toIntOrNull() ?: 0
+            state.eventCountError = null
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
         regex = Regexps.integersOrEmpty(maxCharCount = 4),
-        error = dailyHabitEventCountError?.let(strings::dailyEventCountError)
+        error = state.eventCountError?.let(strings::eventCountError)
     )
 
     Spacer(Modifier.height(16.dp))
@@ -132,10 +139,10 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
             .padding(horizontal = 16.dp),
         title = strings.timeRangeTitle(),
         description = strings.timeRangeDescription(),
-        error = timeRangeError?.let(strings::timeRangeError),
-        value = selectedTimeRange,
+        error = state.timeRangeError?.let(strings::timeRangeError),
+        value = state.timeRange,
         onChanged = {
-            selectedTimeRange = it
+            state.timeRange = it
         },
         startTimeLabel = strings.startDateTimeLabel(),
         endTimeLabel = strings.endDateTimeLabel(),
@@ -150,9 +157,9 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
             .padding(horizontal = 16.dp),
         title = strings.commentTitle(),
         description = strings.commentDescription(),
-        value = comment,
+        value = state.comment,
         onValueChange = {
-            comment = it
+            state.comment = it
         },
         multiline = true
     )
@@ -179,25 +186,21 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
         text = strings.finishButton(),
         style = ButtonStyles.primary,
         onClick = {
-            dailyHabitEventCountError = checkDailyHabitEventCount(dailyEventCount)
-            if (dailyHabitEventCountError != null) return@Button
+            state.eventCountError = checkHabitEventCount(state.eventCount)
+            if (state.eventCountError != null) return@Button
 
-            timeRangeError = checkHabitEventRecordTimeRange(
-                timeRange = selectedTimeRange,
+            state.timeRangeError = checkHabitEventRecordTimeRange(
+                timeRange = state.timeRange,
                 currentTime = Environment.dateTime.currentInstant()
             )
-            if (timeRangeError != null) return@Button
+            if (state.timeRangeError != null) return@Button
 
             habitEventRecordQueries.update(
-                id = record.id,
-                startTime = selectedTimeRange.start,
-                endTime = selectedTimeRange.endInclusive,
-                eventCount = totalHabitEventCountByDaily(
-                    dailyEventCount = dailyEventCount,
-                    timeRange = selectedTimeRange,
-                    timeZone = timeZone
-                ),
-                comment = comment
+                id = initialRecord.id,
+                startTime = state.timeRange.start,
+                endTime = state.timeRange.endInclusive,
+                eventCount = state.eventCount,
+                comment = state.comment
             )
             navigator.pop()
         }

@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.resources.strings.habits.records.creation
 
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
 import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
 
 class RussianHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
@@ -9,24 +9,26 @@ class RussianHabitEventRecordCreationStrings : HabitEventRecordCreationStrings {
     override fun commentTitle() = "Комментарий"
     override fun finishDescription() = "Вы всегда сможете изменить или удалить эту запись."
     override fun finishButton() = "Готово"
-    override fun dailyEventCountError(error: DailyHabitEventCountError) = when (error) {
-        DailyHabitEventCountError.Empty -> {
+    override fun eventCountError(error: HabitEventCountError) = when (error) {
+        HabitEventCountError.Empty -> {
             "Поле не может быть пустым"
         }
     }
+
     override fun timeRangeTitle() = "Временной диапазон"
     override fun timeRangeError(error: HabitEventRecordTimeRangeError) = when (error) {
         HabitEventRecordTimeRangeError.BiggestThenCurrentTime -> "Дата и время не могут быть больше текущего времени."
     }
-    override fun dailyEventCountTitle() = "Число событий в день"
-    override fun dailyEventCountPrefix() = "Событий в день: "
-    override fun dailyEventCountSuffix(count: Int) = "Всего: $count"
-    override fun dailyEventCountDescription() = "Укажите сколько примерно было событий привычки в день."
-    override fun timeRangeDescription() = "Укажите время первого и последнего события привычки."
+
+    override fun eventCountTitle() = "Число событий"
+    override fun eventCountDescription() = "Введите сколько было событий привычки."
+    override fun timeRangeDescription() =
+        "Введите диапазон времени в котором происходили события привычки."
+
     override fun now() = "Сейчас"
     override fun yesterday() = "Вчера"
     override fun yourTimeRange() = "Свой интервал"
-    override fun startDateTimeLabel() = "Первое событие"
-    override fun endDateTimeLabel() = "Последнее событие"
+    override fun startDateTimeLabel() = "Начало"
+    override fun endDateTimeLabel() = "Конец"
     override fun done() = "Готово"
 }

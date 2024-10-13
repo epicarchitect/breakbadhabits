@@ -8,6 +8,7 @@ class EnglishHabitWidgetEditingStrings : HabitWidgetEditingStrings {
     override fun habitsTitle() = "Habits"
     override fun deleteConfirmation() =
         "Are you sure you want to delete this widget? You will have to manually remove the widget from the home screen."
+
     override fun yes() = "Yes"
     override fun cancel() = "Cancel"
     override fun deleteDescription() = "You can delete this widget."

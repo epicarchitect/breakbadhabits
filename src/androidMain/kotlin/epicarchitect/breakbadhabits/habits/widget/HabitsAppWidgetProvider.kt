@@ -44,7 +44,11 @@ class HabitsAppWidgetProvider : AppWidgetProvider() {
         }
     }
 
-    private fun updateAppWidget(context: Context, manager: AppWidgetManager, widgetSystemId: Int) = runBlocking {
+    private fun updateAppWidget(
+        context: Context,
+        manager: AppWidgetManager,
+        widgetSystemId: Int
+    ) = runBlocking {
         val isDarkModeEnabled = isSystemDarkModeEnabled()
 
         val widget = Environment.database.habitWidgetQueries

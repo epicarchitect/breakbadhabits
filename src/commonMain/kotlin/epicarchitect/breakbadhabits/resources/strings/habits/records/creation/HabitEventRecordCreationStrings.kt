@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.resources.strings.habits.records.creation
 
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
 import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
 
 interface HabitEventRecordCreationStrings {
@@ -9,11 +9,9 @@ interface HabitEventRecordCreationStrings {
     fun commentDescription(): String
     fun finishDescription(): String
     fun finishButton(): String
-    fun dailyEventCountTitle(): String
-    fun dailyEventCountPrefix(): String
-    fun dailyEventCountSuffix(count: Int): String
-    fun dailyEventCountDescription(): String
-    fun dailyEventCountError(error: DailyHabitEventCountError): String
+    fun eventCountTitle(): String
+    fun eventCountDescription(): String
+    fun eventCountError(error: HabitEventCountError): String
     fun timeRangeTitle(): String
     fun timeRangeDescription(): String
     fun timeRangeError(error: HabitEventRecordTimeRangeError): String

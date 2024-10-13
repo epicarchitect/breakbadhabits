@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.uikit.Checkbox
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
@@ -30,7 +31,6 @@ import epicarchitect.breakbadhabits.uikit.stateOfList
 import epicarchitect.breakbadhabits.uikit.text.InputCard
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextInputCard
-import epicarchitect.breakbadhabits.database.Habit
 
 @Composable
 fun HabitWidgetCreation(

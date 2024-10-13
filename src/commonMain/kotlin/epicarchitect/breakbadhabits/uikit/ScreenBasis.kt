@@ -108,7 +108,8 @@ fun LazyListState.animatedShadowElevation(
         derivedStateOf {
             with(density) {
                 firstVisibleItemIndex > 0 ||
-                    -(layoutInfo.visibleItemsInfo.firstOrNull()?.offset?.toDp() ?: 0.dp) > triggerScrollValue
+                        -(layoutInfo.visibleItemsInfo.firstOrNull()?.offset?.toDp()
+                            ?: 0.dp) > triggerScrollValue
             }
         }
     }

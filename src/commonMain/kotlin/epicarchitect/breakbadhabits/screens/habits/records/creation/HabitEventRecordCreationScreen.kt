@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +20,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
+import epicarchitect.breakbadhabits.habits.validation.checkHabitEventCount
+import epicarchitect.breakbadhabits.habits.validation.checkHabitEventRecordTimeRange
 import epicarchitect.breakbadhabits.uikit.DateTimeRangeInputCard
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
@@ -29,12 +33,6 @@ import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.TextInputCard
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
-import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
-import epicarchitect.breakbadhabits.habits.validation.checkDailyHabitEventCount
-import epicarchitect.breakbadhabits.habits.validation.checkHabitEventRecordTimeRange
 import kotlin.time.Duration.Companion.hours
 
 class HabitEventRecordCreationScreen(private val habitId: Int) : Screen {
@@ -46,7 +44,7 @@ class HabitEventRecordCreationScreen(private val habitId: Int) : Screen {
 
 @Composable
 fun HabitEventRecordCreation(habitId: Int) {
-    val strings = Environment.resources.strings.habitEventRecordEditingStrings
+    val strings = Environment.resources.strings.habitEventRecordCreationStrings
     val habitQueries = Environment.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
 
@@ -64,25 +62,29 @@ fun HabitEventRecordCreation(habitId: Int) {
     }
 }
 
+class HabitEventRecordCreationState {
+    var timeRange by mutableStateOf(defaultTimeRange())
+    var timeRangeError by mutableStateOf<HabitEventRecordTimeRangeError?>(null)
+    var eventCount by mutableIntStateOf(1)
+    var eventCountError by mutableStateOf<HabitEventCountError?>(null)
+    var comment by mutableStateOf("")
+
+    private fun defaultTimeRange() =
+        Environment.dateTime.currentInstant().let { (it - 1.hours)..it }
+}
+
+// TODO: should be savable
+@Composable
+fun rememberHabitEventRecordCreationState() = remember {
+    HabitEventRecordCreationState()
+}
+
 @Composable
 private fun ColumnScope.Content(habit: Habit) {
+    val state = rememberHabitEventRecordCreationState()
     val strings = Environment.resources.strings.habitEventRecordCreationStrings
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
     val navigator = LocalNavigator.currentOrThrow
-
-    var selectedTimeRange by remember {
-        val currentInstant = Environment.dateTime.currentInstant()
-        mutableStateOf((currentInstant - 1.hours)..currentInstant)
-    }
-
-    var timeRangeError by remember(selectedTimeRange) {
-        mutableStateOf<HabitEventRecordTimeRangeError?>(null)
-    }
-
-    var dailyEventCount by rememberSaveable { mutableIntStateOf(0) }
-    var dailyEventCountError by remember { mutableStateOf<DailyHabitEventCountError?>(null) }
-
-    var comment by rememberSaveable { mutableStateOf("") }
 
     Spacer(Modifier.height(16.dp))
 
@@ -90,22 +92,21 @@ private fun ColumnScope.Content(habit: Habit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        title = strings.dailyEventCountTitle(),
-        description = strings.dailyEventCountDescription(),
-        value = dailyEventCount.toString(),
+        title = strings.eventCountTitle(),
+        description = strings.eventCountDescription(),
+        value = state.eventCount.toString(),
         onValueChange = {
-            dailyEventCount = it.toIntOrNull() ?: 0
-            dailyEventCountError = null
+            state.eventCount = it.toIntOrNull() ?: 0
+            state.eventCountError = null
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
         regex = Regexps.integersOrEmpty(maxCharCount = 4),
-        error = dailyEventCountError?.let(strings::dailyEventCountError),
+        error = state.eventCountError?.let(strings::eventCountError),
     )
 
     Spacer(Modifier.height(16.dp))
-
 
     DateTimeRangeInputCard(
         modifier = Modifier
@@ -113,10 +114,11 @@ private fun ColumnScope.Content(habit: Habit) {
             .padding(horizontal = 16.dp),
         title = strings.timeRangeTitle(),
         description = strings.timeRangeDescription(),
-        error = timeRangeError?.let(strings::timeRangeError),
-        value = selectedTimeRange,
+        error = state.timeRangeError?.let(strings::timeRangeError),
+        value = state.timeRange,
         onChanged = {
-            selectedTimeRange = it
+            state.timeRange = it
+            state.timeRangeError = null
         },
         startTimeLabel = strings.startDateTimeLabel(),
         endTimeLabel = strings.endDateTimeLabel(),
@@ -131,9 +133,9 @@ private fun ColumnScope.Content(habit: Habit) {
             .padding(horizontal = 16.dp),
         title = strings.commentTitle(),
         description = strings.commentDescription(),
-        value = comment,
+        value = state.comment,
         onValueChange = {
-            comment = it
+            state.comment = it
         },
         multiline = true
     )
@@ -149,25 +151,26 @@ private fun ColumnScope.Content(habit: Habit) {
         text = strings.finishButton(),
         style = ButtonStyles.primary,
         onClick = {
-            dailyEventCountError = checkDailyHabitEventCount(dailyEventCount)
-            if (dailyEventCountError != null) return@Button
+            state.eventCountError = checkHabitEventCount(state.eventCount)
+            if (state.eventCountError != null) return@Button
 
-            timeRangeError = checkHabitEventRecordTimeRange(
-                timeRange = selectedTimeRange,
+            state.timeRangeError = checkHabitEventRecordTimeRange(
+                timeRange = state.timeRange,
                 currentTime = Environment.dateTime.currentInstant()
             )
-            if (timeRangeError != null) return@Button
+            if (state.timeRangeError != null) return@Button
 
             habitEventRecordQueries.insert(
                 habitId = habit.id,
-                startTime = selectedTimeRange.start,
-                endTime = selectedTimeRange.endInclusive,
-                eventCount = totalHabitEventCountByDaily(
-                    dailyEventCount = dailyEventCount,
-                    timeRange = selectedTimeRange,
-                    timeZone = Environment.dateTime.currentTimeZone()
-                ),
-                comment = comment
+                startTime = state.timeRange.start,
+                endTime = state.timeRange.endInclusive,
+//                eventCount = totalHabitEventCountByDaily(
+//                    dailyEventCount = dailyEventCount,
+//                    timeRange = selectedTimeRange,
+//                    timeZone = Environment.dateTime.currentTimeZone()
+//                ),
+                eventCount = state.eventCount,
+                comment = state.comment
             )
             navigator.pop()
         }

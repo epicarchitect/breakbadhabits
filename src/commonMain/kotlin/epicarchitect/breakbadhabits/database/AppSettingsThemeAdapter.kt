@@ -4,8 +4,8 @@ import app.cash.sqldelight.ColumnAdapter
 
 object AppSettingsThemeAdapter : ColumnAdapter<AppSettingsTheme, Long> {
     override fun decode(databaseValue: Long) = when (databaseValue) {
-        1L   -> AppSettingsTheme.LIGHT
-        2L   -> AppSettingsTheme.DARK
+        1L -> AppSettingsTheme.LIGHT
+        2L -> AppSettingsTheme.DARK
         else -> AppSettingsTheme.SYSTEM
     }
 

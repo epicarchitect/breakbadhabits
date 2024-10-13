@@ -10,10 +10,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 object Environment {
-    private val coroutineScope = CoroutineScope(Dispatchers.Default)
     val database = AppDatabase(name = "breakbadhabits.db")
     val resources = AppResources()
     val dateTime = AppDateTime()
     val habitsRules = HabitsRules()
-    val habitsTimePulse = HabitsTimePulse(coroutineScope, dateTime)
+    val habitsTimePulse = HabitsTimePulse(
+        coroutineScope = CoroutineScope(Dispatchers.Default),
+        appDateTime = dateTime
+    )
 }

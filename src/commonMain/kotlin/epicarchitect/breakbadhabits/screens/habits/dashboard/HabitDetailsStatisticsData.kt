@@ -1,7 +1,6 @@
 package epicarchitect.breakbadhabits.screens.habits.dashboard
 
 import epicarchitect.breakbadhabits.Environment
-import epicarchitect.breakbadhabits.uikit.StatisticData
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.datetime.averageDuration
 import epicarchitect.breakbadhabits.datetime.format.DurationFormattingAccuracy
@@ -14,6 +13,7 @@ import epicarchitect.breakbadhabits.datetime.previous
 import epicarchitect.breakbadhabits.habits.countEvents
 import epicarchitect.breakbadhabits.habits.countEventsInMonth
 import epicarchitect.breakbadhabits.habits.habitAbstinenceDurationSinceFirstTrack
+import epicarchitect.breakbadhabits.uikit.StatisticData
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 
@@ -28,15 +28,18 @@ fun habitDetailsStatisticsData(
     listOf(
         StatisticData(
             name = strings.statisticsAverageAbstinenceTime(),
-            value = abstinenceRanges.averageDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
+            value = abstinenceRanges.averageDuration().orZero()
+                .formatted(DurationFormattingAccuracy.HOURS)
         ),
         StatisticData(
             name = strings.statisticsMaxAbstinenceTime(),
-            value = abstinenceRanges.maxDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
+            value = abstinenceRanges.maxDuration().orZero()
+                .formatted(DurationFormattingAccuracy.HOURS)
         ),
         StatisticData(
             name = strings.statisticsMinAbstinenceTime(),
-            value = abstinenceRanges.minDuration().orZero().formatted(DurationFormattingAccuracy.HOURS)
+            value = abstinenceRanges.minDuration().orZero()
+                .formatted(DurationFormattingAccuracy.HOURS)
         ),
         StatisticData(
             name = strings.statisticsDurationSinceFirstTrack(),

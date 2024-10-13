@@ -6,9 +6,9 @@
         android:name="epicarchitect.breakbadhabits.BreakBadHabitsApp"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/App.Theme"
         android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/App.Theme"
         tools:ignore="UnusedAttribute">
 
         <activity

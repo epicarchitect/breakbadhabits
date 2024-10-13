@@ -62,7 +62,9 @@ val LocalDate.monthOfYear get() = MonthOfYear(year, month)
 
 fun Instant.monthOfYear(timeZone: TimeZone) = toLocalDateTime(timeZone).date.monthOfYear
 
-fun ClosedRange<Instant>.monthOfYearRange(timeZone: TimeZone) = start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
+fun ClosedRange<Instant>.monthOfYearRange(timeZone: TimeZone) =
+    start.monthOfYear(timeZone)..endInclusive.monthOfYear(timeZone)
+
 data class MonthOfYear(
     val year: Int,
     val month: Month

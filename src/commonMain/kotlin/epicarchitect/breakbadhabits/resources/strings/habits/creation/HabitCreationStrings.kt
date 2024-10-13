@@ -1,6 +1,6 @@
 package epicarchitect.breakbadhabits.resources.strings.habits.creation
 
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventCountError
 import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
 import epicarchitect.breakbadhabits.screens.habits.creation.HabitDuration
 
@@ -16,6 +16,6 @@ interface HabitCreationStrings {
     fun habitNameError(error: HabitNewNameError): String
     fun habitDuration(duration: HabitDuration): String // move to duration formatting?
     fun habitDurationDescription(): String
-    fun trackEventCountError(reason: DailyHabitEventCountError): String
+    fun trackEventCountError(reason: HabitEventCountError): String
     fun trackEventCountDescription(): String
 }

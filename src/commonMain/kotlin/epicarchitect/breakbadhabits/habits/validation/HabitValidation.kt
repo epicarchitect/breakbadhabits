@@ -6,11 +6,11 @@ fun checkHabitNewName(
     maxLength: Int,
     nameIsExists: (String) -> Boolean
 ) = when {
-    initialName == newName     -> null
-    newName.isEmpty()          -> HabitNewNameError.Empty
+    initialName == newName -> null
+    newName.isEmpty() -> HabitNewNameError.Empty
     newName.length > maxLength -> HabitNewNameError.TooLong(maxLength)
-    nameIsExists(newName)      -> HabitNewNameError.AlreadyUsed
-    else                       -> null
+    nameIsExists(newName) -> HabitNewNameError.AlreadyUsed
+    else -> null
 }
 
 sealed interface HabitNewNameError {

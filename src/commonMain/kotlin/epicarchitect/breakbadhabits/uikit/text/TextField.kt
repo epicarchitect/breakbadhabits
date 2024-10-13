@@ -63,9 +63,9 @@ fun TextField(
     OutlinedTextField(
         modifier = modifier,
         value = when {
-            regex == null        -> value.toString()
+            regex == null -> value.toString()
             regex.matches(value) -> value.toString()
-            else                 -> ""
+            else -> ""
         },
         onValueChange = if (regex == null) {
             onValueChange
@@ -197,9 +197,9 @@ fun TextInputCard(
                 .fillMaxWidth()
                 .padding(it),
             value = when {
-                regex == null        -> value.toString()
+                regex == null -> value.toString()
                 regex.matches(value) -> value.toString()
-                else                 -> ""
+                else -> ""
             },
             onValueChange = if (regex == null) {
                 onValueChange
