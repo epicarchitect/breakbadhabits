@@ -34,7 +34,7 @@ kotlin {
             implementation(libs.cashapp.sqldelightPrimitiveAdapters)
             implementation(libs.adrielcafe.voyagerNavigator)
             implementation(libs.adrielcafe.voyagerTransitions)
-            implementation(libs.epicarchitect.calendarComposeDatePicker)
+            implementation(libs.epicarchitect.epicCalendarCompose)
         }
         androidMain.dependencies {
             implementation(libs.android.coreKtx)
@@ -76,10 +76,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "src/android-proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
 
         debug {
