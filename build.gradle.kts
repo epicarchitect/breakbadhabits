@@ -61,7 +61,7 @@ android {
         resourceConfigurations += setOf("en", "ru")
         minSdk = 26
         targetSdk = 34
-        versionCode = 83
+        versionCode = 84
         versionName = "4.2.0"
         base.archivesName.set("breakbadhabits-$versionName")
     }
