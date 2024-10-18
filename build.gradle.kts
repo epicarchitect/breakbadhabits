@@ -1,3 +1,5 @@
+import org.jetbrains.compose.ExperimentalComposeLibrary
+
 plugins {
     alias(libs.plugins.jetbrains.multiplatform)
     alias(libs.plugins.jetbrains.composeCompiler)
@@ -36,6 +38,9 @@ kotlin {
             implementation(libs.adrielcafe.voyagerTransitions)
             implementation(libs.epicarchitect.epicCalendarCompose)
         }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
         androidMain.dependencies {
             implementation(libs.android.coreKtx)
             implementation(libs.android.appcompat)
@@ -70,7 +75,6 @@ android {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
         res.srcDirs("src/androidMain/res")
     }
-
 
     buildTypes {
         release {

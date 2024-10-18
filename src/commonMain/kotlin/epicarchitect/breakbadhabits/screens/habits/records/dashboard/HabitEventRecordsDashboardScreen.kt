@@ -229,7 +229,7 @@ private fun LazyItemScope.RecordItem(record: HabitEventRecord) {
 
     Box(
         modifier = Modifier
-            .animateItemPlacement()
+            .animateItem()
             .fillMaxWidth()
             .clickable {
                 navigator += HabitEventRecordEditingScreen(record.id)

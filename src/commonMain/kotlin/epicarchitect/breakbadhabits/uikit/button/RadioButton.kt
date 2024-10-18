@@ -3,6 +3,7 @@ package epicarchitect.breakbadhabits.uikit.button
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +29,8 @@ fun RadioButton(
             onClick = onSelect
         )
 
-        ClickableText(
-            text = AnnotatedString(text),
-            onClick = {
-                onSelect()
-            },
+        Text(
+            text = text,
             style = TextStyle.Default.copy(
                 color = AppTheme.colorScheme.onBackground
             )

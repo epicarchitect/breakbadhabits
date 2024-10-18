@@ -145,7 +145,7 @@ private fun LazyItemScope.HabitCard(habit: Habit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .animateItemPlacement()
+            .animateItem()
     ) {
         Box(
             modifier = Modifier
