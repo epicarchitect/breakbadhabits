@@ -6,15 +6,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.uikit.text.Text
 
 data class StatisticData(
-    val name: CharSequence,
-    val value: CharSequence
+    val name: String,
+    val value: String
 )
 
 @Composable
@@ -36,13 +37,11 @@ fun Statistics(
                         .padding(end = 16.dp)
                         .weight(1f),
                     text = item.name,
-                    type = Text.Type.Description,
-                    priority = Text.Priority.Medium
+                    style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
                     text = item.value,
-                    type = Text.Type.Label,
-                    priority = Text.Priority.High
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
 

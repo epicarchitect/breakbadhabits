@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.uikit
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -9,11 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberDatePickerState
@@ -27,13 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.Environment
-import epicarchitect.breakbadhabits.datetime.format.formatted
-import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
-import epicarchitect.breakbadhabits.uikit.text.InputCard
-import epicarchitect.breakbadhabits.uikit.text.Text
-import epicarchitect.breakbadhabits.uikit.theme.AppTheme
+import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -54,9 +56,13 @@ fun DateTimeRangeInputCard(
     timeZone: TimeZone,
     error: String? = null,
     modifier: Modifier = Modifier,
+    showAsRangeMode: Boolean,
+    onRangeModeChanged: (Boolean) -> Unit
 ) {
+    val environment = LocalAppEnvironment.current
+    val strings = environment.resources.strings.habitEventRecordEditingStrings
     val startDateTime = value.start.toLocalDateTime(timeZone)
-    val currentDateTime = Environment.dateTime.currentInstant().toLocalDateTime(timeZone)
+    val currentDateTime = environment.dateTime.currentInstant().toLocalDateTime(timeZone)
 
     InputCard(
         modifier = modifier,
@@ -65,20 +71,23 @@ fun DateTimeRangeInputCard(
         error = error
     ) {
         Column {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = startTimeLabel,
-                type = Text.Type.Title,
-                priority = Text.Priority.Low
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+            AnimatedVisibility(visible = showAsRangeMode) {
+                Text(
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    text = startTimeLabel,
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
             DateTimeInputRow(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxWidth(),
                 value = value.start,
                 onChanged = {
-                    onChanged(it..value.endInclusive)
+                    if (!showAsRangeMode) {
+                        onChanged(it..it)
+                    } else {
+                        onChanged(it..value.endInclusive)
+                    }
                 },
                 isSelectableDate = {
                     it <= currentDateTime.date
@@ -87,29 +96,60 @@ fun DateTimeRangeInputCard(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        AnimatedVisibility(visible = showAsRangeMode) {
+            Column(
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(
+                    text = endTimeLabel,
+                    style = MaterialTheme.typography.titleSmall
+                )
 
-        Column {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = endTimeLabel,
-                type = Text.Type.Title,
-                priority = Text.Priority.Low
+                DateTimeInputRow(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .fillMaxWidth(),
+                    value = value.endInclusive,
+                    onChanged = {
+                        onChanged(value.start..it)
+                    },
+                    isSelectableDate = {
+                        it >= startDateTime.date && it <= currentDateTime.date
+                    },
+                    timeZone = timeZone
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val onViewModeChanged = { checked: Boolean ->
+            if (!checked) {
+                onChanged(value.start..value.start)
+            }
+
+            onRangeModeChanged(checked)
+        }
+
+        Row(
+            Modifier
+                .clickable(
+                    indication = null,
+                    interactionSource = null
+                ) {
+                    onViewModeChanged(!showAsRangeMode)
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = showAsRangeMode,
+                onCheckedChange = onViewModeChanged
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            DateTimeInputRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                value = value.endInclusive,
-                onChanged = {
-                    onChanged(value.start..it)
-                },
-                isSelectableDate = {
-                    it >= startDateTime.date && it <= currentDateTime.date
-                },
-                timeZone = timeZone
+
+            Text(
+                modifier = Modifier.padding(start = 4.dp),
+                text = strings.inputDateTimeAsRangeCheckbox(),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
@@ -124,11 +164,13 @@ private fun DateTimeInputRow(
     onChanged: (Instant) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val environment = LocalAppEnvironment.current
+    val dateTimeFormatter = environment.format.dateTimeFormatter
     val dateTime = value.toLocalDateTime(timeZone)
     var dateSelectionVisible by rememberSaveable { mutableStateOf(false) }
     var timeSelectionVisible by rememberSaveable { mutableStateOf(false) }
-    val borderColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-    val textColor = AppTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+    val borderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+    val textColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
 
     if (dateSelectionVisible) {
         val date = dateTime.date
@@ -147,15 +189,15 @@ private fun DateTimeInputRow(
             },
             confirmButton = {
                 Button(
-                    text = "OK", // nice
-                    style = ButtonStyles.regular.copy(elevation = 0.dp),
                     onClick = {
                         val newDate = Instant.fromEpochMilliseconds(state.selectedDateMillis!!)
                             .toLocalDateTime(timeZone).date
                         dateSelectionVisible = false
                         onChanged(LocalDateTime(newDate, dateTime.time).toInstant(timeZone))
                     }
-                )
+                ) {
+                    Text(text = "OK")
+                }
             }
         ) {
             DatePicker(state)
@@ -180,14 +222,14 @@ private fun DateTimeInputRow(
 
                 Button(
                     modifier = Modifier.align(Alignment.End),
-                    style = ButtonStyles.regular.copy(elevation = 0.dp),
-                    text = "OK", // :)
                     onClick = {
                         val newTime = LocalTime(state.hour, state.minute, 0)
                         timeSelectionVisible = false
                         onChanged(LocalDateTime(dateTime.date, newTime).toInstant(timeZone))
                     }
-                )
+                ) {
+                    Text(text = "OK")
+                }
             }
         }
     }
@@ -213,12 +255,13 @@ private fun DateTimeInputRow(
         ) {
             Spacer(Modifier.width(16.dp))
             Icon(
-                icon = Environment.resources.icons.commonIcons.calendar,
-                tint = textColor
+                imageVector = Icons.Filled.CalendarToday,
+                tint = textColor,
+                contentDescription = null
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                text = dateTime.date.formatted(withYear = true),
+                text = dateTimeFormatter.format(dateTime.date),
                 color = textColor
             )
             Spacer(Modifier.width(16.dp))
@@ -238,12 +281,13 @@ private fun DateTimeInputRow(
         ) {
             Spacer(Modifier.width(16.dp))
             Icon(
-                icon = Environment.resources.icons.commonIcons.time,
-                tint = textColor
+                imageVector = Icons.Filled.AccessTime,
+                tint = textColor,
+                contentDescription = null
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                text = dateTime.time.formatted(),
+                text = dateTimeFormatter.format(dateTime.time),
                 color = textColor
             )
             Spacer(Modifier.width(16.dp))

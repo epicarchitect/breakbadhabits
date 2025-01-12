@@ -6,28 +6,22 @@ import epicarchitect.breakbadhabits.datetime.duration
 import epicarchitect.breakbadhabits.datetime.monthOfYear
 import epicarchitect.breakbadhabits.datetime.monthOfYearRange
 import epicarchitect.breakbadhabits.datetime.mountsBetween
-import epicarchitect.breakbadhabits.math.ranges.combineIntersections
+import epicarchitect.breakbadhabits.math.ranges.mergedByOverlappingRanges
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.daysUntil
-import kotlinx.datetime.toLocalDateTime
-import kotlin.math.roundToInt
-
 
 fun List<HabitEventRecord>.failedRanges() = map {
     it.startTime..it.endTime
-}.combineIntersections()
+}.mergedByOverlappingRanges()
 
 fun habitAbstinenceRangesByFailedRanges(
     failedRanges: List<ClosedRange<Instant>>,
     currentTime: Instant
-): List<ClosedRange<Instant>> {
-    return List(failedRanges.size) { index ->
-        if (index == failedRanges.lastIndex) {
-            failedRanges[index].endInclusive..currentTime
-        } else {
-            failedRanges[index].endInclusive..failedRanges[index + 1].start
-        }
+) = List(failedRanges.size) { index ->
+    if (index == failedRanges.lastIndex) {
+        failedRanges[index].endInclusive..currentTime
+    } else {
+        failedRanges[index].endInclusive..failedRanges[index + 1].start
     }
 }
 
@@ -56,27 +50,7 @@ fun List<HabitEventRecord>.filterByMonth(
 
 fun HabitEventRecord.timeRange() = startTime..endTime
 
-fun HabitEventRecord.dailyEventCount(timeZone: TimeZone): Int {
-    val startDate = startTime.toLocalDateTime(timeZone).date
-    val endDate = endTime.toLocalDateTime(timeZone).date
-    val days = startDate.daysUntil(endDate) + 1
-
-    if (days < 1) return eventCount
-    return (eventCount.toFloat() / days).roundToInt()
-}
-
-fun totalHabitEventCountByDaily(
-    dailyEventCount: Int,
-    timeRange: ClosedRange<Instant>,
-    timeZone: TimeZone
-): Int {
-    val startDate = timeRange.start.toLocalDateTime(timeZone).date
-    val endDate = timeRange.endInclusive.toLocalDateTime(timeZone).date
-    val days = startDate.daysUntil(endDate) + 1
-    return days * dailyEventCount
-}
-
-fun List<HabitEventRecord>.groupByMonth(timeZone: TimeZone): Map<MonthOfYear, Collection<HabitEventRecord>> {
+fun List<HabitEventRecord>.groupByMonth(timeZone: TimeZone): Map<MonthOfYear, Set<HabitEventRecord>> {
     val map = mutableMapOf<MonthOfYear, MutableSet<HabitEventRecord>>()
     forEach { track ->
         val startMonth = track.startTime.monthOfYear(timeZone)

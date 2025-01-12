@@ -7,8 +7,8 @@
 *.apk
 *.ap_
 
-android/app/release
-android/app/debug
+/release
+/debug
 .kotlin
 
 # Files for the ART/Dalvik VM

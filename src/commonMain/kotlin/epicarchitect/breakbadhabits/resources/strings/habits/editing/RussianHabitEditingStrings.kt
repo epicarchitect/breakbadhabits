@@ -1,9 +1,11 @@
 package epicarchitect.breakbadhabits.resources.strings.habits.editing
 
-import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
+import epicarchitect.breakbadhabits.habits.HabitNewNameError
 
 class RussianHabitEditingStrings : HabitEditingStrings {
-    override fun titleText() = "Редактирование привычки"
+    override fun titleText(isNewHabit: Boolean) =
+        if (isNewHabit) "Новая привычка" else "Редактирование привычки"
+
     override fun habitNameDescription() = "Введите название привычки, например курение."
     override fun habitNameTitle() = "Название привычки"
     override fun habitIconTitle() = "Иконка"

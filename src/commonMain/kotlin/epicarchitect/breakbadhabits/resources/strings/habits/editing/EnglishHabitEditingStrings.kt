@@ -1,9 +1,11 @@
 package epicarchitect.breakbadhabits.resources.strings.habits.editing
 
-import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
+import epicarchitect.breakbadhabits.habits.HabitNewNameError
 
 class EnglishHabitEditingStrings : HabitEditingStrings {
-    override fun titleText() = "Editing a habit"
+    override fun titleText(isNewHabit: Boolean) =
+        if (isNewHabit) "New habit" else "Editing a habit"
+
     override fun habitNameDescription() = "Enter a name for the habit, such as smoking."
     override fun habitNameTitle() = "Habit name"
     override fun habitIconTitle() = "Icon"

@@ -2,7 +2,7 @@ package epicarchitect.breakbadhabits.resources.strings.habits.dashboard
 
 interface HabitDashboardStrings {
     fun habitHasNoEvents(): String
-    fun showAllTracks(): String
+    fun showAllEventRecords(): String
     fun addHabitEventRecord(): String
     fun abstinenceChartTitle(): String
     fun statisticsTitle(): String

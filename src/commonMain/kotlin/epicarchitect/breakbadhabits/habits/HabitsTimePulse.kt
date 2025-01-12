@@ -12,13 +12,17 @@ import kotlin.time.Duration.Companion.seconds
 
 class HabitsTimePulse(
     coroutineScope: CoroutineScope,
-    appDateTime: AppDateTime
+    dateTime: AppDateTime
 ) {
     val state = flow {
         while (currentCoroutineContext().isActive) {
             delay(1.seconds)
-            emit(appDateTime.currentInstant())
+            emit(dateTime.currentInstant())
         }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, appDateTime.currentInstant())
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.Eagerly,
+        initialValue = dateTime.currentInstant()
+    )
 }
 

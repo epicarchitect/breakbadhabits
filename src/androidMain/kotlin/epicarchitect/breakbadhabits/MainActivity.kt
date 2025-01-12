@@ -1,22 +1,24 @@
 package epicarchitect.breakbadhabits
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
+import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import epicarchitect.breakbadhabits.habits.widget.HabitsAppWidgetProvider
-import epicarchitect.breakbadhabits.screens.app.App
+import androidx.annotation.MainThread
+import epicarchitect.breakbadhabits.screens.root.RootScreen
+import kotlinx.coroutines.Dispatchers
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            App()
+            RootScreen(
+                environment = appEnvironment
+            )
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        HabitsAppWidgetProvider.sendUpdateBroadcast(this)
     }
 }

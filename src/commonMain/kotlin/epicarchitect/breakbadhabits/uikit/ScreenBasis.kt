@@ -17,7 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -29,22 +35,17 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import epicarchitect.breakbadhabits.Environment
-import epicarchitect.breakbadhabits.uikit.text.Text
-import epicarchitect.breakbadhabits.uikit.theme.AppTheme
 
 @Composable
 fun SimpleTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
-    shadowElevation: Dp = 0.dp,
     onBackClick: (() -> Unit)? = null,
     actions: @Composable () -> Unit = {}
 ) {
     Surface(
         modifier = Modifier.zIndex(2f).then(modifier),
-        shadowElevation = shadowElevation,
-        color = AppTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.background
     ) {
         Row(
             modifier = Modifier.height(46.dp),
@@ -52,9 +53,13 @@ fun SimpleTopAppBar(
         ) {
             if (onBackClick != null) {
                 IconButton(
-                    icon = Environment.resources.icons.commonIcons.navigationBack,
                     onClick = onBackClick
-                )
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null
+                    )
+                }
             } else {
                 Spacer(modifier = Modifier.padding(start = 24.dp))
             }
@@ -67,7 +72,7 @@ fun SimpleTopAppBar(
             ) {
                 Text(
                     text = it,
-                    type = Text.Type.Title
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
@@ -76,46 +81,6 @@ fun SimpleTopAppBar(
             actions()
         }
     }
-}
-
-@Composable
-fun ScrollState.animatedShadowElevation(
-    triggerScrollValue: Dp = 16.dp,
-    targetValue: Dp = 2.dp
-): State<Dp> {
-    val density = LocalDensity.current
-
-    val showShadow by remember {
-        derivedStateOf {
-            with(density) {
-                value.toDp() >= triggerScrollValue
-            }
-        }
-    }
-    return animateDpAsState(
-        targetValue = if (showShadow) targetValue else 0.dp
-    )
-}
-
-@Composable
-fun LazyListState.animatedShadowElevation(
-    triggerScrollValue: Dp = 16.dp,
-    shadowElevation: Dp = 2.dp
-): State<Dp> {
-    val density = LocalDensity.current
-
-    val showShadow by remember {
-        derivedStateOf {
-            with(density) {
-                firstVisibleItemIndex > 0 ||
-                        -(layoutInfo.visibleItemsInfo.firstOrNull()?.offset?.toDp()
-                            ?: 0.dp) > triggerScrollValue
-            }
-        }
-    }
-    return animateDpAsState(
-        targetValue = if (showShadow) shadowElevation else 0.dp
-    )
 }
 
 @Composable
@@ -128,11 +93,8 @@ fun SimpleScrollableScreen(
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(modifier) {
-        val shadowElevation by scrollState.animatedShadowElevation()
-
         SimpleTopAppBar(
             title = title,
-            shadowElevation = shadowElevation,
             onBackClick = onBackClick,
             actions = actions
         )

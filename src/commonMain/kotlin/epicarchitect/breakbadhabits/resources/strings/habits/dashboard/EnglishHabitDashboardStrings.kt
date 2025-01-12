@@ -2,7 +2,7 @@ package epicarchitect.breakbadhabits.resources.strings.habits.dashboard
 
 class EnglishHabitDashboardStrings : HabitDashboardStrings {
     override fun habitHasNoEvents() = "No events"
-    override fun showAllTracks() = "Show all events"
+    override fun showAllEventRecords() = "Show all events"
     override fun addHabitEventRecord() = "Add record"
     override fun abstinenceChartTitle() = "Abstinence chart"
     override fun statisticsTitle() = "Statistics"

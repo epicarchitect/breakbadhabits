@@ -1,14 +1,15 @@
 package epicarchitect.breakbadhabits.resources
 
-import androidx.compose.ui.text.intl.Locale
-import epicarchitect.breakbadhabits.resources.icons.AppIcons
+import epicarchitect.breakbadhabits.language.AppLanguage
+import epicarchitect.breakbadhabits.language.PlatformLanguageProvider
 import epicarchitect.breakbadhabits.resources.strings.app.EnglishAppStrings
 import epicarchitect.breakbadhabits.resources.strings.app.RussianAppStrings
 
-class AppResources {
-    val strings = when (Locale.current.language) {
-        "ru" -> RussianAppStrings()
-        else -> EnglishAppStrings()
+class AppResources(
+    languageProvider: PlatformLanguageProvider
+) {
+    val strings = when (languageProvider.language) {
+        AppLanguage.RUSSIAN -> RussianAppStrings()
+        AppLanguage.ENGLISH -> EnglishAppStrings()
     }
-    val icons = AppIcons()
 }

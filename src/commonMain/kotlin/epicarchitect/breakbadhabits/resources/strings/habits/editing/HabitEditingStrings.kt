@@ -1,9 +1,9 @@
 package epicarchitect.breakbadhabits.resources.strings.habits.editing
 
-import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
+import epicarchitect.breakbadhabits.habits.HabitNewNameError
 
 interface HabitEditingStrings {
-    fun titleText(): String
+    fun titleText(isNewHabit: Boolean): String
     fun habitNameDescription(): String
     fun habitNameTitle(): String
     fun habitIconTitle(): String

@@ -1,17 +1,16 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
-    alias(libs.plugins.jetbrains.multiplatform)
+    alias(libs.plugins.jetbrains.kotlinMultiplatform)
     alias(libs.plugins.jetbrains.composeCompiler)
     alias(libs.plugins.jetbrains.compose)
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.serialization)
     alias(libs.plugins.cashapp.sqldelight)
+    alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms)
     alias(libs.plugins.google.firebaseCrashlytics)
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 
     androidTarget()
     listOf(
@@ -30,20 +29,19 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
-            implementation(libs.jetbrains.datetime)
-            implementation(libs.jetbrains.coroutinesCore)
+            implementation(libs.jetbrains.kotlinDatetime)
+            implementation(libs.jetbrains.kotlinCoroutinesCore)
+            implementation(libs.jetbrains.navigationCompose)
+            implementation(libs.jetbrains.serializationJson)
             implementation(libs.cashapp.sqldelightCoroutinesExtensions)
             implementation(libs.cashapp.sqldelightPrimitiveAdapters)
-            implementation(libs.adrielcafe.voyagerNavigator)
-            implementation(libs.adrielcafe.voyagerTransitions)
             implementation(libs.epicarchitect.epicCalendarCompose)
         }
         commonTest.dependencies {
-            implementation(kotlin("test"))
+            implementation(libs.jetbrains.kotlinTest)
         }
         androidMain.dependencies {
             implementation(libs.android.coreKtx)
-            implementation(libs.android.appcompat)
             implementation(libs.android.activityCompose)
             implementation(libs.cashapp.sqldelightAndroidDriver)
             implementation(project.dependencies.platform(libs.firebase.bom))
@@ -59,21 +57,16 @@ kotlin {
 android {
     namespace = "epicarchitect.breakbadhabits"
     bundle.storeArchive.enable = true
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         resourceConfigurations += setOf("en", "ru")
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 84
         versionName = "4.2.0"
         base.archivesName.set("breakbadhabits-$versionName")
-    }
-
-    sourceSets["main"].apply {
-        manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        res.srcDirs("src/androidMain/res")
     }
 
     buildTypes {
@@ -85,12 +78,6 @@ android {
 
         debug {
             applicationIdSuffix = ".debug"
-        }
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
