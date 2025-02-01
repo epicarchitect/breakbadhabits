@@ -24,6 +24,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.habits.dailyEventCount
 import epicarchitect.breakbadhabits.habits.timeRange
@@ -42,6 +43,7 @@ import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.Text
 import epicarchitect.breakbadhabits.uikit.text.TextInputCard
+import kotlin.time.Duration
 
 class HabitEventRecordEditingScreen(private val habitEventRecordId: Int) : Screen {
     @Composable
@@ -71,7 +73,7 @@ fun HabitEventRecordEditing(habitEventRecordId: Int) {
                     onBackClick = navigator::pop
                 ) {
                     if (habit != null) {
-                        Content(habitEventRecord)
+                        Content(habit, habitEventRecord)
                     }
                 }
             }
@@ -80,9 +82,10 @@ fun HabitEventRecordEditing(habitEventRecordId: Int) {
 }
 
 @Composable
-private fun ColumnScope.Content(record: HabitEventRecord) {
+private fun ColumnScope.Content(habit: Habit, record: HabitEventRecord) {
     val strings = Environment.resources.strings.habitEventRecordEditingStrings
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
+    val habitQueries = Environment.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
 
     val timeZone = Environment.dateTime.currentTimeZone()
@@ -92,13 +95,20 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
     var timeRangeError by remember(selectedTimeRange) {
         mutableStateOf<HabitEventRecordTimeRangeError?>(null)
     }
-    var dailyEventCount by rememberSaveable(record) { mutableIntStateOf(record.dailyEventCount(timeZone)) }
+    var dailyEventCount by rememberSaveable(record) {
+        mutableIntStateOf(
+            record.dailyEventCount(
+                timeZone
+            )
+        )
+    }
     var dailyHabitEventCountError by remember { mutableStateOf<DailyHabitEventCountError?>(null) }
 
     var comment by rememberSaveable(record) { mutableStateOf(record.comment) }
 
     if (showDeletion) {
         DeletionDialog(
+            habit = habit,
             record = record,
             onDismiss = { showDeletion = false }
         )
@@ -188,6 +198,9 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
             )
             if (timeRangeError != null) return@Button
 
+            val lastRecord = habitEventRecordQueries
+                .recordByHabitIdAndMaxEndTime(habit.id).executeAsOne()
+
             habitEventRecordQueries.update(
                 id = record.id,
                 startTime = selectedTimeRange.start,
@@ -199,6 +212,21 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
                 ),
                 comment = comment
             )
+
+            val shouldEraseGamificationProgress = lastRecord.id == record.id
+                    || selectedTimeRange.start > lastRecord.endTime
+                    || selectedTimeRange.endInclusive > lastRecord.endTime
+
+            if (shouldEraseGamificationProgress) {
+                habitQueries.update(
+                    id = habit.id,
+                    name = habit.name,
+                    level = 0,
+                    earnedCoinsFromPreviousLevel = 0,
+                    abstinenceWhenLevelUpgraded = Duration.ZERO
+                )
+            }
+
             navigator.pop()
         }
     )
@@ -208,11 +236,13 @@ private fun ColumnScope.Content(record: HabitEventRecord) {
 
 @Composable
 private fun DeletionDialog(
+    habit: Habit,
     record: HabitEventRecord,
     onDismiss: () -> Unit
 ) {
     val strings = Environment.resources.strings.habitEventRecordEditingStrings
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
+    val habitQueries = Environment.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
 
     Dialog(onDismiss) {
@@ -241,6 +271,21 @@ private fun DeletionDialog(
                     text = strings.yes(),
                     style = ButtonStyles.primary,
                     onClick = {
+                        val lastRecord = habitEventRecordQueries
+                            .recordByHabitIdAndMaxEndTime(habit.id).executeAsOne()
+
+                        val shouldEraseGamificationProgress = lastRecord.id == record.id
+
+                        if (shouldEraseGamificationProgress) {
+                            habitQueries.update(
+                                id = habit.id,
+                                name = habit.name,
+                                level = 0,
+                                earnedCoinsFromPreviousLevel = 0,
+                                abstinenceWhenLevelUpgraded = Duration.ZERO
+                            )
+                        }
+
                         habitEventRecordQueries.deleteById(record.id)
                         navigator.pop()
                     }

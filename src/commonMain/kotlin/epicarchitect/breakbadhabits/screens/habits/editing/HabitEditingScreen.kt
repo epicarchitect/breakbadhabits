@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,21 +21,18 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
-import epicarchitect.breakbadhabits.uikit.Dialog
-import epicarchitect.breakbadhabits.uikit.FlowStateContainer
-import epicarchitect.breakbadhabits.uikit.Icon
-import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
-import epicarchitect.breakbadhabits.uikit.SingleSelectionGrid
-import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
-import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
-import epicarchitect.breakbadhabits.uikit.text.InputCard
-import epicarchitect.breakbadhabits.uikit.text.Text
-import epicarchitect.breakbadhabits.uikit.text.TextInputCard
 import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
 import epicarchitect.breakbadhabits.habits.validation.checkHabitNewName
 import epicarchitect.breakbadhabits.screens.appDashboard.AppDashboardScreen
+import epicarchitect.breakbadhabits.uikit.Dialog
+import epicarchitect.breakbadhabits.uikit.FlowStateContainer
+import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
+import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
+import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
+import epicarchitect.breakbadhabits.uikit.text.Text
+import epicarchitect.breakbadhabits.uikit.text.TextInputCard
 
 class HabitEditingScreen(private val habitId: Int) : Screen {
     @Composable
@@ -76,8 +71,6 @@ private fun ColumnScope.Content(initialHabit: Habit) {
 
     var habitName by rememberSaveable(initialHabit) { mutableStateOf(initialHabit.name) }
     var habitNameError by remember { mutableStateOf<HabitNewNameError?>(null) }
-    var selectedIconId by rememberSaveable(initialHabit) { mutableIntStateOf(initialHabit.iconId) }
-    val selectedIcon = remember(selectedIconId) { icons.habitIcons.getById(selectedIconId) }
 
     var showDeletion by remember { mutableStateOf(false) }
     if (showDeletion) {
@@ -102,31 +95,6 @@ private fun ColumnScope.Content(initialHabit: Habit) {
         description = strings.habitNameDescription(),
         error = habitNameError?.let(strings::habitNameError)
     )
-
-    Spacer(Modifier.height(16.dp))
-
-    InputCard(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth(),
-        title = strings.habitIconTitle(),
-        description = strings.habitIconDescription()
-    ) {
-        SingleSelectionGrid(
-            modifier = Modifier.padding(it),
-            items = icons.habitIcons,
-            selectedItem = selectedIcon,
-            cell = { icon ->
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    icon = icon
-                )
-            },
-            onSelect = {
-                selectedIconId = it.id
-            }
-        )
-    }
 
     Spacer(Modifier.height(16.dp))
 
@@ -161,7 +129,9 @@ private fun ColumnScope.Content(initialHabit: Habit) {
             habitQueries.update(
                 id = initialHabit.id,
                 name = habitName,
-                iconId = selectedIconId
+                level = initialHabit.level,
+                abstinenceWhenLevelUpgraded = initialHabit.abstinenceWhenLevelUpgraded,
+                earnedCoinsFromPreviousLevel = initialHabit.earnedCoinsFromPreviousLevel
             )
             navigator.pop()
         },

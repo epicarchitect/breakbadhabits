@@ -9,6 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.crashlytics.crashlytics
 import epicarchitect.breakbadhabits.database.ListOfIntAdapter
 import kotlinx.datetime.Instant
+import kotlin.time.Duration
 
 class MigrationToV4(private val context: Context) {
 
@@ -42,7 +43,9 @@ class MigrationToV4(private val context: Context) {
                 Environment.database.habitQueries.insert(
                     id = it.getInt(it.getColumnIndexOrThrow("id")),
                     name = it.getString(it.getColumnIndexOrThrow("name")),
-                    iconId = it.getInt(it.getColumnIndexOrThrow("iconId"))
+                    level = 0,
+                    abstinenceWhenLevelUpgraded = Duration.ZERO,
+                    earnedCoinsFromPreviousLevel = 0
                 )
             }
         }

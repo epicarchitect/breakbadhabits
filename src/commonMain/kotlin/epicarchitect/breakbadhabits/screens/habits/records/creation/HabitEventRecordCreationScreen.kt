@@ -21,6 +21,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
+import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
+import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
+import epicarchitect.breakbadhabits.habits.validation.checkDailyHabitEventCount
+import epicarchitect.breakbadhabits.habits.validation.checkHabitEventRecordTimeRange
 import epicarchitect.breakbadhabits.uikit.DateTimeRangeInputCard
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
@@ -29,12 +35,7 @@ import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
 import epicarchitect.breakbadhabits.uikit.regex.Regexps
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.TextInputCard
-import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
-import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
-import epicarchitect.breakbadhabits.habits.validation.HabitEventRecordTimeRangeError
-import epicarchitect.breakbadhabits.habits.validation.checkDailyHabitEventCount
-import epicarchitect.breakbadhabits.habits.validation.checkHabitEventRecordTimeRange
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
 class HabitEventRecordCreationScreen(private val habitId: Int) : Screen {
@@ -68,6 +69,7 @@ fun HabitEventRecordCreation(habitId: Int) {
 private fun ColumnScope.Content(habit: Habit) {
     val strings = Environment.resources.strings.habitEventRecordCreationStrings
     val habitEventRecordQueries = Environment.database.habitEventRecordQueries
+    val habitQueries = Environment.database.habitQueries
     val navigator = LocalNavigator.currentOrThrow
 
     var selectedTimeRange by remember {
@@ -158,6 +160,9 @@ private fun ColumnScope.Content(habit: Habit) {
             )
             if (timeRangeError != null) return@Button
 
+            val lastRecord =
+                habitEventRecordQueries.recordByHabitIdAndMaxEndTime(habit.id).executeAsOneOrNull()
+
             habitEventRecordQueries.insert(
                 habitId = habit.id,
                 startTime = selectedTimeRange.start,
@@ -169,6 +174,24 @@ private fun ColumnScope.Content(habit: Habit) {
                 ),
                 comment = comment
             )
+
+            val shouldEraseGamificationProgress = if (lastRecord != null) {
+                selectedTimeRange.start > lastRecord.endTime ||
+                        selectedTimeRange.endInclusive > lastRecord.endTime
+            } else {
+                false
+            }
+
+            if (shouldEraseGamificationProgress) {
+                habitQueries.update(
+                    id = habit.id,
+                    name = habit.name,
+                    level = 0,
+                    earnedCoinsFromPreviousLevel = 0,
+                    abstinenceWhenLevelUpgraded = Duration.ZERO
+                )
+            }
+
             navigator.pop()
         }
     )

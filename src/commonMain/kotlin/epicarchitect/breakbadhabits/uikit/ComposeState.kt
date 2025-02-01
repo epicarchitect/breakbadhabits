@@ -124,3 +124,29 @@ fun <T1, T2, T3> FlowStateContainer(
         }
     )
 }
+
+@Suppress("UNCHECKED_CAST")
+@Composable
+fun <T1, T2, T3, T4> FlowStateContainer(
+    state1: State<FlowState<T1>>,
+    state2: State<FlowState<T2>>,
+    state3: State<FlowState<T3>>,
+    state4: State<FlowState<T4>>,
+    modifier: Modifier = Modifier,
+    emptyContent: @Composable () -> Unit = { Box(modifier = Modifier.fillMaxSize()) },
+    content: @Composable (T1, T2, T3, T4) -> Unit,
+) {
+    FlowStateContainer(
+        modifier = modifier,
+        states = listOf(state1, state2, state3, state4),
+        emptyContent = emptyContent,
+        content = {
+            content(
+                it[0] as T1,
+                it[1] as T2,
+                it[2] as T3,
+                it[3] as T4
+            )
+        }
+    )
+}

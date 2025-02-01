@@ -54,15 +54,15 @@ kotlin {
 android {
     namespace = "epicarchitect.breakbadhabits"
     bundle.storeArchive.enable = true
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         resourceConfigurations += setOf("en", "ru")
         minSdk = 26
-        targetSdk = 34
-        versionCode = 82
-        versionName = "4.1.0"
+        targetSdk = 35
+        versionCode = 100
+        versionName = "5.0.0"
         base.archivesName.set("breakbadhabits-$versionName")
     }
 

@@ -1,25 +1,32 @@
 package epicarchitect.breakbadhabits.screens.appSettings
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import epicarchitect.breakbadhabits.CurrentPlatform
 import epicarchitect.breakbadhabits.Environment
+import epicarchitect.breakbadhabits.Platform
+import epicarchitect.breakbadhabits.database.AppSettings
+import epicarchitect.breakbadhabits.database.AppSettingsTheme
+import epicarchitect.breakbadhabits.screens.habits.widgets.dashboard.HabitWidgetsDashboardScreen
 import epicarchitect.breakbadhabits.uikit.FlowStateContainer
 import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.uikit.button.Button
 import epicarchitect.breakbadhabits.uikit.button.RadioButton
 import epicarchitect.breakbadhabits.uikit.stateOfOneOrNull
 import epicarchitect.breakbadhabits.uikit.text.InputCard
-import epicarchitect.breakbadhabits.database.AppSettings
-import epicarchitect.breakbadhabits.database.AppSettingsTheme
-import epicarchitect.breakbadhabits.screens.habits.widgets.dashboard.HabitWidgetsDashboardScreen
+import epicarchitect.breakbadhabits.uikit.text.Text
 
 class AppSettingsScreen : Screen {
     @Composable
@@ -56,6 +63,29 @@ private fun Loaded(settings: AppSettings) {
 
     Spacer(Modifier.height(16.dp))
 
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Switch(
+            checked = settings.gamificationEnabled,
+            onCheckedChange = {
+                appSettingsQueries.update(
+                    theme = settings.theme,
+                    gamificationEnabled = it
+                )
+            }
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(text = "Gamification")
+    }
+
+    Spacer(Modifier.height(16.dp))
+
     InputCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -68,7 +98,8 @@ private fun Loaded(settings: AppSettings) {
             selected = settings.theme == AppSettingsTheme.SYSTEM,
             onSelect = {
                 appSettingsQueries.update(
-                    theme = AppSettingsTheme.SYSTEM
+                    theme = AppSettingsTheme.SYSTEM,
+                    gamificationEnabled = settings.gamificationEnabled
                 )
             }
         )
@@ -78,7 +109,8 @@ private fun Loaded(settings: AppSettings) {
             selected = settings.theme == AppSettingsTheme.LIGHT,
             onSelect = {
                 appSettingsQueries.update(
-                    theme = AppSettingsTheme.LIGHT
+                    theme = AppSettingsTheme.LIGHT,
+                    gamificationEnabled = settings.gamificationEnabled
                 )
             }
         )
@@ -88,19 +120,32 @@ private fun Loaded(settings: AppSettings) {
             selected = settings.theme == AppSettingsTheme.DARK,
             onSelect = {
                 appSettingsQueries.update(
-                    theme = AppSettingsTheme.DARK
+                    theme = AppSettingsTheme.DARK,
+                    gamificationEnabled = settings.gamificationEnabled
                 )
             }
         )
+
+    }
+    Spacer(Modifier.height(16.dp))
+    Environment.habitLevels.forEach {
+        Text("value: ${it.value}")
+        Text("requiredAbstinence: ${it.requiredAbstinence}")
+        Text("price: ${it.price}")
+        Text("accumulatedPrice: ${it.accumulatedPrice}")
+        Text("coinsPerSecond: ${it.coinsPerSecond}")
+        Spacer(Modifier.height(8.dp))
     }
 
     Spacer(Modifier.height(16.dp))
 
-    Button(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        onClick = { navigator += HabitWidgetsDashboardScreen() },
-        text = strings.widgetsButton()
-    )
+    if (CurrentPlatform == Platform.ANDROID) {
+        Button(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            onClick = { navigator += HabitWidgetsDashboardScreen() },
+            text = strings.widgetsButton()
+        )
 
-    Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
+    }
 }

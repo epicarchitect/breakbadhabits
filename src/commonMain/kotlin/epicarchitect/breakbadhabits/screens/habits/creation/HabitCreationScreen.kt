@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,20 +21,18 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import epicarchitect.breakbadhabits.Environment
-import epicarchitect.breakbadhabits.uikit.Icon
-import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
-import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
-import epicarchitect.breakbadhabits.uikit.SingleSelectionGrid
-import epicarchitect.breakbadhabits.uikit.button.Button
-import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
-import epicarchitect.breakbadhabits.uikit.regex.Regexps
-import epicarchitect.breakbadhabits.uikit.text.InputCard
-import epicarchitect.breakbadhabits.uikit.text.TextInputCard
 import epicarchitect.breakbadhabits.habits.totalHabitEventCountByDaily
 import epicarchitect.breakbadhabits.habits.validation.DailyHabitEventCountError
 import epicarchitect.breakbadhabits.habits.validation.HabitNewNameError
 import epicarchitect.breakbadhabits.habits.validation.checkDailyHabitEventCount
 import epicarchitect.breakbadhabits.habits.validation.checkHabitNewName
+import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
+import epicarchitect.breakbadhabits.uikit.SingleSelectionChipRow
+import epicarchitect.breakbadhabits.uikit.button.Button
+import epicarchitect.breakbadhabits.uikit.button.ButtonStyles
+import epicarchitect.breakbadhabits.uikit.regex.Regexps
+import epicarchitect.breakbadhabits.uikit.text.InputCard
+import epicarchitect.breakbadhabits.uikit.text.TextInputCard
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -85,9 +82,6 @@ private fun ColumnScope.Content() {
     var habitName by rememberSaveable { mutableStateOf("") }
     var habitNameError by remember { mutableStateOf<HabitNewNameError?>(null) }
 
-    var selectedIconId by rememberSaveable { mutableIntStateOf(0) }
-    val selectedIcon = remember(selectedIconId) { icons.habitIcons.getById(selectedIconId) }
-
     var selectedDurationIndex by rememberSaveable { mutableIntStateOf(0) }
     val selectedHabitDuration = remember(selectedDurationIndex) {
         HabitDuration.entries[selectedDurationIndex].duration + 1.days
@@ -111,31 +105,6 @@ private fun ColumnScope.Content() {
         error = habitNameError?.let(strings::habitNameError),
         description = strings.habitNameDescription()
     )
-
-    Spacer(Modifier.height(16.dp))
-
-    InputCard(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth(),
-        title = strings.habitIconTitle(),
-        description = strings.habitIconDescription()
-    ) {
-        SingleSelectionGrid(
-            modifier = Modifier.padding(it),
-            items = icons.habitIcons,
-            selectedItem = selectedIcon,
-            cell = { icon ->
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    icon = icon
-                )
-            },
-            onSelect = {
-                selectedIconId = it.id
-            }
-        )
-    }
 
     Spacer(Modifier.height(16.dp))
 
@@ -197,7 +166,6 @@ private fun ColumnScope.Content() {
 
             habitQueries.insertWithEventRecord(
                 habitName = habitName,
-                habitIconId = selectedIconId,
                 trackEventCount = totalHabitEventCountByDaily(
                     dailyEventCount = dailyEventCount,
                     timeRange = startTime..endTime,
