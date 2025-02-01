@@ -1,9 +1,9 @@
-package epicarchitect.breakbadhabits.database
+package epicarchitect.breakbadhabits.database.adapter
 
 import app.cash.sqldelight.ColumnAdapter
 import kotlinx.datetime.Instant
 
-object InstantAdapter : ColumnAdapter<Instant, Long> {
+object InstantColumnAdapter : ColumnAdapter<Instant, Long> {
     override fun decode(databaseValue: Long) = Instant.fromEpochSeconds(databaseValue)
 
     override fun encode(value: Instant) = value.epochSeconds

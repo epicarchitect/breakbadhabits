@@ -2,14 +2,16 @@ package epicarchitect.breakbadhabits.environment
 
 import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import epicarchitect.breakbadhabits.database.AppDatabase
+import epicarchitect.breakbadhabits.database.adapter.DurationColumnAdapter
 import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.database.HabitEventRecord
-import epicarchitect.breakbadhabits.database.InstantAdapter
+import epicarchitect.breakbadhabits.database.adapter.InstantColumnAdapter
 import epicarchitect.breakbadhabits.database.PlatformSqlDriverFactory
 import epicarchitect.breakbadhabits.datetime.AppDateTime
 import epicarchitect.breakbadhabits.format.AppFormat
 import epicarchitect.breakbadhabits.format.PlatformDateTimeFormatter
 import epicarchitect.breakbadhabits.habits.HabitsEnvironment
+import epicarchitect.breakbadhabits.habits.gamification.HabitLevels
 import epicarchitect.breakbadhabits.language.PlatformLanguageProvider
 import epicarchitect.breakbadhabits.resources.AppResources
 import kotlinx.coroutines.CoroutineScope
@@ -27,13 +29,16 @@ class AppEnvironment(
         ),
         HabitAdapter = Habit.Adapter(
             idAdapter = IntColumnAdapter,
-            iconIdAdapter = IntColumnAdapter
+            iconIdAdapter = IntColumnAdapter,
+            levelAdapter = IntColumnAdapter,
+            earnedCoinsFromPreviousLevelAdapter = IntColumnAdapter,
+            abstinenceWhenLevelUpgradedAdapter = DurationColumnAdapter
         ),
         HabitEventRecordAdapter = HabitEventRecord.Adapter(
             idAdapter = IntColumnAdapter,
             habitIdAdapter = IntColumnAdapter,
-            startTimeAdapter = InstantAdapter,
-            endTimeAdapter = InstantAdapter,
+            startTimeAdapter = InstantColumnAdapter,
+            endTimeAdapter = InstantColumnAdapter,
             eventCountAdapter = IntColumnAdapter
         )
     )
@@ -46,5 +51,9 @@ class AppEnvironment(
     val format = AppFormat(
         resources = resources,
         platformDateTimeFormatter = platformDateTimeFormatter
+    )
+    val habitLevels = HabitLevels(
+        maxHabitLevel = 100,
+        magicCoefficient = 1.5791829
     )
 }

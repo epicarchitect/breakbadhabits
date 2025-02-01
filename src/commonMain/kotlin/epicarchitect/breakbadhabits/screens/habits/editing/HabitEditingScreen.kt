@@ -25,6 +25,7 @@ import epicarchitect.breakbadhabits.uikit.InputCard
 import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
 import epicarchitect.breakbadhabits.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.uikit.TextInputCard
+import kotlin.time.Duration
 
 @Composable
 fun HabitEditingScreen(habitId: Int? = null) {
@@ -130,13 +131,19 @@ fun HabitEditingScreen(habitId: Int? = null) {
                     habitQueries.update(
                         id = state.initialHabit.id,
                         name = state.habitName,
-                        iconId = state.selectedIconId
+                        iconId = state.selectedIconId,
+                        level = state.initialHabit.level,
+                        earnedCoinsFromPreviousLevel = state.initialHabit.earnedCoinsFromPreviousLevel,
+                        abstinenceWhenLevelUpgraded = state.initialHabit.abstinenceWhenLevelUpgraded
                     )
                 } else {
                     habitQueries.insert(
                         id = null,
                         name = state.habitName,
-                        iconId = state.selectedIconId
+                        iconId = state.selectedIconId,
+                        level = 1,
+                        earnedCoinsFromPreviousLevel = 0,
+                        abstinenceWhenLevelUpgraded = Duration.ZERO
                     )
                 }
 
