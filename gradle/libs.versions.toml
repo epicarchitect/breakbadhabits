@@ -1,38 +1,41 @@
 [versions]
-android-gradlePlugin = "8.7.3"
-firebaseBom = "33.8.0"
-jetbrains-kotlin = "2.1.0"
-jetbrains-coroutinesCore = "1.9.0"
-jetbrains-compose = "1.7.3"
-jetbrains-navigationCompose = "2.8.0-alpha11"
-jetbrains-serializationJson = "1.7.3"
-jetbrains-datetime = "0.6.1"
-android-activityCompose = "1.10.0"
-android-coreKtx = "1.15.0"
-cashapp-sqldelight = "2.0.2"
-epicarchitect-epicCalendarCompose = "1.0.8"
-google-firebaseCrashlytics = "3.0.2"
-google-gms = "4.4.2"
+android-gradlePlugin = "9.3.1"
+firebaseBom = "34.16.0"
+jetbrains-kotlin = "2.4.10"
+jetbrains-coroutinesCore = "1.11.0"
+jetbrains-compose = "1.11.1"
+jetbrains-composeFoundation = "1.11.1"
+jetbrains-composeMaterial3 = "1.11.0-alpha07"
+jetbrains-composeMaterialIconsExtended = "1.7.3"
+jetbrains-navigationCompose = "2.9.2"
+jetbrains-serializationJson = "1.11.0"
+jetbrains-datetime = "0.8.0"
+android-activityCompose = "1.13.0"
+cashapp-sqldelight = "2.3.2"
+google-firebaseCrashlytics = "3.0.7"
+google-gms = "4.5.0"
 
 [libraries]
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+jetbrains-composeFoundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jetbrains-composeFoundation" }
+jetbrains-composeMaterial3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "jetbrains-composeMaterial3" }
+jetbrains-composeMaterialIconsExtended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "jetbrains-composeMaterialIconsExtended" }
 jetbrains-kotlinDatetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "jetbrains-datetime" }
 jetbrains-kotlinCoroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "jetbrains-coroutinesCore" }
 jetbrains-navigationCompose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "jetbrains-navigationCompose" }
 jetbrains-serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "jetbrains-serializationJson" }
 jetbrains-kotlinTest = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "jetbrains-kotlin" }
 android-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "android-activityCompose" }
-android-coreKtx = { module = "androidx.core:core-ktx", version.ref = "android-coreKtx" }
 cashapp-sqldelightAndroidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "cashapp-sqldelight" }
 cashapp-sqldelightNativeDriver = { module = "app.cash.sqldelight:native-driver", version.ref = "cashapp-sqldelight" }
 cashapp-sqldelightCoroutinesExtensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "cashapp-sqldelight" }
 cashapp-sqldelightPrimitiveAdapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "cashapp-sqldelight" }
-epicarchitect-epicCalendarCompose = { module = "io.github.epicarchitect:epic-calendar-compose", version.ref = "epicarchitect-epicCalendarCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradlePlugin" }
+android-kotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "android-gradlePlugin" }
 jetbrains-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "jetbrains-kotlin" }
 jetbrains-composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "jetbrains-kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
