@@ -18,8 +18,8 @@ android {
         applicationId = "kolmachikhin.alexander.breakbadhabits"
         minSdk = 26
         targetSdk = 37
-        versionCode = 85
-        versionName = "4.3.0"
+        versionCode = 86
+        versionName = "4.3.1"
         base.archivesName.set("breakbadhabits-$versionName")
     }
 
