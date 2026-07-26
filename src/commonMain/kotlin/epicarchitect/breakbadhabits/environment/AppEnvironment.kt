@@ -2,11 +2,11 @@ package epicarchitect.breakbadhabits.environment
 
 import app.cash.sqldelight.adapter.primitive.IntColumnAdapter
 import epicarchitect.breakbadhabits.database.AppDatabase
-import epicarchitect.breakbadhabits.database.adapter.DurationColumnAdapter
 import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.database.adapter.InstantColumnAdapter
 import epicarchitect.breakbadhabits.database.PlatformSqlDriverFactory
+import epicarchitect.breakbadhabits.datastore.PlatformDataStoreFactory
 import epicarchitect.breakbadhabits.datetime.AppDateTime
 import epicarchitect.breakbadhabits.format.AppFormat
 import epicarchitect.breakbadhabits.format.PlatformDateTimeFormatter
@@ -19,20 +19,18 @@ import kotlinx.coroutines.Dispatchers
 
 class AppEnvironment(
     platformSqlDriverFactory: PlatformSqlDriverFactory,
+    platformDataStoreFactory: PlatformDataStoreFactory,
     platformLanguageProvider: PlatformLanguageProvider,
     platformDateTimeFormatter: PlatformDateTimeFormatter
 ) {
     val database = AppDatabase(
         driver = platformSqlDriverFactory.create(
             schema = AppDatabase.Schema,
-            databaseName = "breakbadhabits.db"
+            name = "breakbadhabits.db"
         ),
         HabitAdapter = Habit.Adapter(
             idAdapter = IntColumnAdapter,
-            iconIdAdapter = IntColumnAdapter,
-            levelAdapter = IntColumnAdapter,
-            earnedCoinsFromPreviousLevelAdapter = IntColumnAdapter,
-            abstinenceWhenLevelUpgradedAdapter = DurationColumnAdapter
+            iconIdAdapter = IntColumnAdapter
         ),
         HabitEventRecordAdapter = HabitEventRecord.Adapter(
             idAdapter = IntColumnAdapter,
@@ -56,4 +54,5 @@ class AppEnvironment(
         maxHabitLevel = 100,
         magicCoefficient = 1.5791829
     )
+    val dataStore = platformDataStoreFactory.create(name = "default")
 }

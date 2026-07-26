@@ -10,7 +10,12 @@ import kotlin.time.Duration.Companion.minutes
 class HabitLevels(
     maxHabitLevel: Int,
     magicCoefficient: Double
-) : List<HabitLevel> by generate(maxHabitLevel, magicCoefficient)
+) : List<HabitLevel> by generate(maxHabitLevel, magicCoefficient) {
+    fun getByAbstinence(abstinence: Duration): HabitLevel {
+        val nextLevelIndex = indexOfFirst { it.requiredAbstinence > abstinence }
+        return get(nextLevelIndex - 1)
+    }
+}
 
 private fun generate(
     maxHabitLevel: Int,
@@ -19,28 +24,28 @@ private fun generate(
     val levels = mutableListOf<HabitLevel>()
 
     fun create(
-        level: Int,
+        levelIndex: Int,
         previousAccumulatedPrice: Long
     ): HabitLevel {
-        val abstinence = requiredAbstinence(magicCoefficient, level)
-        val coinsPerSecond = coinsPerSecond(magicCoefficient, level)
+        val abstinence = requiredAbstinence(magicCoefficient, levelIndex)
+        val coinsPerSecond = coinsPerSecond(magicCoefficient, levelIndex)
         val price = price(abstinence, coinsPerSecond)
         val accumulatedPrice = previousAccumulatedPrice + price
         return HabitLevel(
-            value = level,
+            index = levelIndex,
             requiredAbstinence = abstinence,
             coinsPerSecond = coinsPerSecond,
-            price = price,
-            accumulatedPrice = accumulatedPrice,
-            nextLevel = if (level == maxHabitLevel) null else create(
-                level = level + 1,
+            coinsCanBeEarnedInLevel = price,
+            accumulatedCoinsCanBeEarnedInLevelChain = accumulatedPrice,
+            nextLevel = if (levelIndex == maxHabitLevel) null else create(
+                levelIndex = levelIndex + 1,
                 previousAccumulatedPrice = accumulatedPrice
             )
         ).also { levels.add(0, it) }
     }
 
     create(
-        level = 0,
+        levelIndex = 0,
         previousAccumulatedPrice = 0
     )
 
@@ -49,17 +54,17 @@ private fun generate(
 
 private fun requiredAbstinence(
     magicCoefficient: Double,
-    level: Int
+    levelIndex: Int
 ): Duration {
-    val minutes = level * level.toDouble().pow(magicCoefficient)
+    val minutes = levelIndex * levelIndex.toDouble().pow(magicCoefficient)
     return minutes.minutes.roundToNice()
 }
 
 private fun coinsPerSecond(
     magicCoefficient: Double,
-    level: Int
+    levelIndex: Int
 ): Long {
-    return (level * level + 2.0).pow(magicCoefficient).roundToLong().roundToNice()
+    return (levelIndex * levelIndex + 2.0).pow(magicCoefficient).roundToLong().roundToNice()
 }
 
 private fun price(

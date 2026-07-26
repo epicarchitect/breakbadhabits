@@ -4,10 +4,10 @@ import kotlin.math.roundToInt
 import kotlin.time.Duration
 
 data class HabitLevel(
-    val value: Int,
+    val index: Int,
     val requiredAbstinence: Duration,
-    val price: Long,
-    val accumulatedPrice: Long,
+    val coinsCanBeEarnedInLevel: Long,
+    val accumulatedCoinsCanBeEarnedInLevelChain: Long,
     val coinsPerSecond: Long,
     val nextLevel: HabitLevel?
 )

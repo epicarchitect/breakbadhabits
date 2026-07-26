@@ -36,6 +36,8 @@ kotlin {
             implementation(libs.cashapp.sqldelightCoroutinesExtensions)
             implementation(libs.cashapp.sqldelightPrimitiveAdapters)
             implementation(libs.epicarchitect.epicCalendarCompose)
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastorePreferences)
         }
         commonTest.dependencies {
             implementation(libs.jetbrains.kotlinTest)

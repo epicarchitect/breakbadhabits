@@ -1,11 +1,12 @@
 [versions]
 android-gradlePlugin = "8.7.3"
+androidx-datastore = "1.1.2"
 firebaseBom = "33.8.0"
 jetbrains-kotlin = "2.1.0"
-jetbrains-coroutinesCore = "1.9.0"
+jetbrains-coroutinesCore = "1.10.1"
 jetbrains-compose = "1.7.3"
 jetbrains-navigationCompose = "2.8.0-alpha11"
-jetbrains-serializationJson = "1.7.3"
+jetbrains-serializationJson = "1.8.0"
 jetbrains-datetime = "0.6.1"
 android-activityCompose = "1.10.0"
 android-coreKtx = "1.15.0"
@@ -15,6 +16,8 @@ google-firebaseCrashlytics = "3.0.2"
 google-gms = "4.4.2"
 
 [libraries]
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
+androidx-datastorePreferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }

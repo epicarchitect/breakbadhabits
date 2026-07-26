@@ -61,7 +61,8 @@ fun DashboardScreen() {
                         items = state.habits,
                         key = { it.id }
                     ) {
-                        HabitCard(it)
+//                        HabitCard(it)
+                        GamifiedHabitCard(it)
                     }
                 }
             }

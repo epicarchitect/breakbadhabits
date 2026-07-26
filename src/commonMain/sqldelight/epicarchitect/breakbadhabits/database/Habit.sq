@@ -1,22 +1,15 @@
 import kotlin.Int;
-import kotlin.time.Duration;
 
 CREATE TABLE IF NOT EXISTS Habit (
   id INTEGER AS Int NOT NULL PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
-  iconId INTEGER AS Int NOT NULL,
-  level INTEGER AS Int NOT NULL,
-  abstinenceWhenLevelUpgraded INTEGER AS Duration NOT NULL,
-  earnedCoinsFromPreviousLevel INTEGER AS Int NOT NULL
+  iconId INTEGER AS Int NOT NULL
 );
 
 update:
 UPDATE Habit SET
 name = ?,
-iconId = ?,
-level = ?,
-abstinenceWhenLevelUpgraded = ?,
-earnedCoinsFromPreviousLevel = ?
+iconId = ?
 WHERE id = ?;
 
 deleteById:
@@ -35,8 +28,5 @@ insert:
 INSERT INTO Habit(
 id,
 name,
-iconId,
-level,
-abstinenceWhenLevelUpgraded,
-earnedCoinsFromPreviousLevel
-) VALUES (?, ?, ?, ?, ?, ?);
+iconId
+) VALUES (?, ?, ?);

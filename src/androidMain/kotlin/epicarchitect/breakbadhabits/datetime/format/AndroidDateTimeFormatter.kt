@@ -1,5 +1,6 @@
 package epicarchitect.breakbadhabits.datetime.format
 
+import android.app.Application
 import android.content.Context
 import android.text.format.DateFormat
 import epicarchitect.breakbadhabits.utils.asJavaLocale
@@ -12,7 +13,7 @@ import kotlinx.datetime.toJavaLocalTime
 import java.time.format.DateTimeFormatter
 
 class AndroidDateTimeFormatter(
-    private val context: Context,
+    private val application: Application,
     private val languageProvider: PlatformLanguageProvider
 ) : PlatformDateTimeFormatter {
     override fun format(date: LocalDate): String {
@@ -22,7 +23,7 @@ class AndroidDateTimeFormatter(
     }
 
     override fun format(time: LocalTime): String {
-        val timePattern = if (DateFormat.is24HourFormat(context)) "HH:mm" else "hh:mm a"
+        val timePattern = if (DateFormat.is24HourFormat(application)) "HH:mm" else "hh:mm a"
         val timeFormatter = DateTimeFormatter.ofPattern(timePattern)
         return timeFormatter.format(time.toJavaLocalTime())
     }

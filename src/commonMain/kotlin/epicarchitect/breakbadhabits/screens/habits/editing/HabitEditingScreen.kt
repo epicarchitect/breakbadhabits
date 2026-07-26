@@ -131,19 +131,13 @@ fun HabitEditingScreen(habitId: Int? = null) {
                     habitQueries.update(
                         id = state.initialHabit.id,
                         name = state.habitName,
-                        iconId = state.selectedIconId,
-                        level = state.initialHabit.level,
-                        earnedCoinsFromPreviousLevel = state.initialHabit.earnedCoinsFromPreviousLevel,
-                        abstinenceWhenLevelUpgraded = state.initialHabit.abstinenceWhenLevelUpgraded
+                        iconId = state.selectedIconId
                     )
                 } else {
                     habitQueries.insert(
                         id = null,
                         name = state.habitName,
-                        iconId = state.selectedIconId,
-                        level = 1,
-                        earnedCoinsFromPreviousLevel = 0,
-                        abstinenceWhenLevelUpgraded = Duration.ZERO
+                        iconId = state.selectedIconId
                     )
                 }
 

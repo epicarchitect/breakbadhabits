@@ -7,9 +7,9 @@ import app.cash.sqldelight.driver.native.NativeSqliteDriver
 class IosSqlDriverFactory : PlatformSqlDriverFactory {
     override fun create(
         schema: SqlSchema<QueryResult.Value<Unit>>,
-        databaseName: String
+        name: String
     ) = NativeSqliteDriver(
         schema = schema,
-        name = databaseName
+        name = name
     )
 }
