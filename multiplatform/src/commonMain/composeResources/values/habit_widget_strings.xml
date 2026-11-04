@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="habit_widget_creation_title">Widget setup</string>
+    <string name="habit_widget_habits_title">Habits</string>
+    <string name="habit_widget_habits_description">Choose what to show in the widget.</string>
+    <string name="habit_widget_add">Add widget</string>
+    <string name="habit_widget_save">Save</string>
+    <string name="habit_widget_empty_habits">Add a habit in the app first.</string>
+    <string name="habit_widget_screen_title">Habit widget</string>
+    <string name="habit_widget_preview_habit_smoking">Smoking</string>
+    <string name="habit_widget_preview_habit_sweets">Sweets after lunch</string>
+    <string name="habit_widget_facts_title">What it shows</string>
+    <string name="habit_widget_fact_time_title">Time without slips</string>
+    <string name="habit_widget_fact_time_subtitle">for each habit</string>
+    <string name="habit_widget_fact_stage_title">Stage and progress</string>
+    <string name="habit_widget_fact_stage_subtitle">current stage and 90-day scale</string>
+    <string name="habit_widget_fact_composition_title">Habit selection</string>
+    <string name="habit_widget_fact_composition_subtitle">choose which habits appear</string>
+    <string name="habit_widget_premium_open">Get premium</string>
+    <string name="habit_widget_preview_label">Example widget</string>
+</resources>

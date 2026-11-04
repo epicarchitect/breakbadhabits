@@ -1,0 +1,13 @@
+<resources>
+    <string name="habit_editing_title_new">Новая привычка</string>
+    <string name="habit_editing_title_editing">Редактирование привычки</string>
+    <string name="habit_name_title">Название привычки</string>
+    <string name="habit_name_description">Введите название привычки, например курение.</string>
+    <string name="habit_icon_title">Иконка</string>
+    <string name="habit_icon_description">Выберите подходящую иконку для привычки.</string>
+    <string name="habit_name_error_already_used">Это название уже используется.</string>
+    <string name="habit_name_error_empty">Название не может быть пустым.</string>
+    <string name="habit_name_error_too_long">Название не может быть длиннее чем %1$d символов.</string>
+    <string name="habit_delete_confirmation">Вы уверены, что хотите удалить эту привычку?</string>
+    <string name="habit_delete_button">Удалить эту привычку</string>
+</resources>

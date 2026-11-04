@@ -13,6 +13,13 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
+        // RuStore Pay SDK: репозиторий ограничен группой ru.rustore.sdk и нужен только rustore-flavor.
+        maven {
+            url = uri("https://nexus-external.rustore.ru/repository/maven-rustore-exposed")
+            content {
+                includeGroup("ru.rustore.sdk")
+            }
+        }
     }
 }
 

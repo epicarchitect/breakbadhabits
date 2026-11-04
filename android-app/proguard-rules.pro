@@ -1,0 +1,1 @@
+-keep enum epicarchitect.breakbadhabits.** { *; }

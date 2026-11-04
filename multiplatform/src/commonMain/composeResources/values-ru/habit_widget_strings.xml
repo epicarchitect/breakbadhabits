@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="habit_widget_creation_title">Настройка виджета</string>
+    <string name="habit_widget_habits_title">Привычки</string>
+    <string name="habit_widget_habits_description">Выберите, что показывать в виджете.</string>
+    <string name="habit_widget_add">Добавить виджет</string>
+    <string name="habit_widget_save">Сохранить</string>
+    <string name="habit_widget_empty_habits">Сначала добавь привычку в приложении.</string>
+    <string name="habit_widget_screen_title">Виджет привычек</string>
+    <string name="habit_widget_preview_habit_smoking">Курение</string>
+    <string name="habit_widget_preview_habit_sweets">Сладкое после обеда</string>
+    <string name="habit_widget_facts_title">Что показывает</string>
+    <string name="habit_widget_fact_time_title">Время без срывов</string>
+    <string name="habit_widget_fact_time_subtitle">по каждой привычке</string>
+    <string name="habit_widget_fact_stage_title">Этап и прогресс</string>
+    <string name="habit_widget_fact_stage_subtitle">текущая стадия и шкала 90 дней</string>
+    <string name="habit_widget_fact_composition_title">Выбор привычек</string>
+    <string name="habit_widget_fact_composition_subtitle">какие привычки показывать в виджете</string>
+    <string name="habit_widget_premium_open">Получить премиум</string>
+    <string name="habit_widget_preview_label">Пример виджета</string>
+</resources>

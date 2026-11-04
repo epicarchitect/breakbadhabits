@@ -1,0 +1,1320 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V1 — варианты блока «Что показывает»</title>
+<style>
+    :root {
+        --page-bg: #080706;
+        --ink: #F7F0EC;
+        --muted: #A79A94;
+        --screen-bg: #090807;
+        --card: #1E1816;
+        --accent: #F0A7A0;
+        --accent-ink: #2A1210;
+        --line: rgba(255, 255, 255, .09);
+        --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background:
+                radial-gradient(circle at 10% 0%, rgba(240, 167, 160, .08), transparent 34rem),
+                radial-gradient(circle at 90% 30%, rgba(180, 95, 82, .05), transparent 30rem),
+                var(--page-bg);
+        color: var(--ink);
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    .page-header {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 58px 24px 30px;
+    }
+
+    .page-kicker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+    }
+
+    .page-kicker::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 18px rgba(240, 167, 160, .8);
+    }
+
+    .page-header h1 {
+        max-width: 760px;
+        margin: 0;
+        font-size: clamp(38px, 5vw, 60px);
+        line-height: .98;
+        letter-spacing: -.055em;
+        font-weight: 500;
+    }
+
+    .page-header p {
+        max-width: 680px;
+        margin: 20px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.55;
+    }
+
+    .page-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 24px;
+    }
+
+    .page-meta span {
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #C8BBB4;
+        font-size: 11px;
+        letter-spacing: .04em;
+    }
+
+    .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 54px 40px;
+        justify-content: center;
+        padding: 30px 32px 90px;
+    }
+
+    .concept {
+        width: 390px;
+    }
+
+    .concept-meta {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        min-height: 76px;
+        margin-bottom: 16px;
+    }
+
+    .concept-num {
+        padding-top: 4px;
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .18em;
+    }
+
+    .concept-meta h2 {
+        margin: 0 0 6px;
+        font-size: 21px;
+        line-height: 1.1;
+        letter-spacing: -.025em;
+        font-weight: 600;
+    }
+
+    .concept-meta p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.45;
+    }
+
+    .phone {
+        position: relative;
+        width: 390px;
+        height: 844px;
+        padding: 8px;
+        border: 1px solid rgba(255, 255, 255, .13);
+        border-radius: 50px;
+        background: #030303;
+        box-shadow:
+                0 35px 90px rgba(0, 0, 0, .55),
+                0 2px 0 rgba(255, 255, 255, .04) inset,
+                0 -1px 0 rgba(0, 0, 0, .9) inset;
+    }
+
+    .phone::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 16px;
+        width: 122px;
+        height: 4px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, .28);
+        transform: translateX(-50%);
+        z-index: 20;
+        pointer-events: none;
+    }
+
+    .phone-screen {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 42px;
+        background:
+                radial-gradient(circle at 50% 108%, rgba(240, 167, 160, .12), transparent 46%),
+                var(--screen-bg);
+        color: var(--ink);
+    }
+
+    .statusbar {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex: 0 0 45px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .status-icons {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        opacity: .9;
+    }
+
+    .status-icons svg {
+        display: block;
+    }
+
+    .screen-body {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        flex-direction: column;
+        padding: 0 22px 38px;
+    }
+
+    .nav {
+        display: grid;
+        flex: 0 0 48px;
+        grid-template-columns: 38px 1fr 38px;
+        align-items: center;
+    }
+
+    .nav-title {
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .nav-spacer {
+        width: 38px;
+        height: 38px;
+    }
+
+    .icon-btn {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .04);
+        color: var(--ink);
+    }
+
+    .icon-btn svg {
+        display: block;
+    }
+
+    .widget-card {
+        position: relative;
+        flex-shrink: 0;
+        margin-top: 20px;
+        padding: 15px 16px 13px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, .1);
+        border-radius: 27px;
+        background:
+                radial-gradient(circle at 100% 0%, rgba(240, 167, 160, .11), transparent 45%),
+                linear-gradient(145deg, #211A17, #181311);
+        box-shadow:
+                0 22px 54px rgba(0, 0, 0, .42),
+                0 1px 0 rgba(255, 255, 255, .06) inset;
+    }
+
+    .widget-card::before {
+        content: "";
+        position: absolute;
+        top: -70px;
+        right: -50px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: rgba(240, 167, 160, .08);
+        filter: blur(34px);
+        pointer-events: none;
+    }
+
+    .widget-head {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 5px;
+    }
+
+    .widget-kicker {
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+
+    .widget-live {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #9A8C85;
+        font-size: 9px;
+        letter-spacing: .03em;
+    }
+
+    .live-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #8FCFA5;
+        box-shadow: 0 0 9px rgba(143, 207, 165, .8);
+    }
+
+    .habit {
+        position: relative;
+        padding: 9px 0;
+        border-top: 1px solid rgba(255, 255, 255, .07);
+    }
+
+    .habit:first-of-type {
+        border-top: 0;
+    }
+
+    .habit-top {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .habit-name {
+        min-width: 0;
+        overflow: hidden;
+        color: #F4EEEA;
+        font-size: 13.5px;
+        font-weight: 700;
+        letter-spacing: -.01em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .habit-time {
+        flex: 0 0 auto;
+        color: #F4EEEA;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .habit-meta {
+        margin-top: 3px;
+        overflow: hidden;
+        color: #A89B94;
+        font-size: 10px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .segments {
+        display: flex;
+        height: 4px;
+        gap: 2px;
+        margin-top: 7px;
+    }
+
+    .seg {
+        position: relative;
+        overflow: hidden;
+        border-radius: 99px;
+        background: rgba(240, 167, 160, .14);
+    }
+
+    .seg::after {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--fill, 0%);
+        border-radius: inherit;
+        background: var(--accent);
+    }
+
+    .fact-head {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 9px;
+        margin-top: 18px;
+        margin-bottom: 8px;
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+    }
+
+    .fact-head::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(240, 167, 160, .35), transparent);
+    }
+
+    .fact-icon {
+        display: grid;
+        flex: 0 0 28px;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border: 1px solid rgba(240, 167, 160, .18);
+        border-radius: 9px;
+        background: #15100E;
+        color: var(--accent);
+        box-shadow: 0 0 18px rgba(240, 167, 160, .08);
+    }
+
+    .fact-icon svg {
+        display: block;
+    }
+
+    .premium-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        color: #C5B7B1;
+        font-size: 10.5px;
+    }
+
+    .premium-badge {
+        display: inline-flex;
+        align-items: center;
+        height: 20px;
+        padding: 0 8px;
+        border: 1px solid rgba(240, 167, 160, .3);
+        border-radius: 99px;
+        background: rgba(240, 167, 160, .08);
+        color: var(--accent);
+        font-size: 8.5px;
+        font-weight: 800;
+        letter-spacing: .14em;
+    }
+
+    .cta-dock {
+        margin-top: auto;
+        padding-top: 16px;
+    }
+
+    .cta {
+        display: flex;
+        width: 100%;
+        height: 55px;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        border: 0;
+        border-radius: 18px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: -.01em;
+        box-shadow:
+                0 12px 30px rgba(240, 167, 160, .18),
+                0 1px 0 rgba(255, 255, 255, .35) inset;
+    }
+
+    .cta .arrow {
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 1;
+    }
+
+    .fine {
+        margin-top: 10px;
+        color: #867A74;
+        font-size: 10px;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    .fact-grid {
+        display: grid;
+        flex-shrink: 0;
+        grid-template-columns: 1fr 1fr;
+        border-top: 1px solid rgba(255, 255, 255, .09);
+    }
+
+    .fact-cell {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        padding: 11px 10px 11px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, .065);
+    }
+
+    .fact-cell:nth-child(odd) {
+        padding-right: 12px;
+        border-right: 1px solid rgba(255, 255, 255, .085);
+    }
+
+    .fact-cell:nth-child(even) {
+        padding-left: 12px;
+    }
+
+    .fact-cell div,
+    .fact-col div {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .fact-cell strong,
+    .fact-col strong {
+        color: #F7F0EC;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: -.015em;
+    }
+
+    .fact-cell span,
+    .fact-col span {
+        color: #B9AAA3;
+        font-size: 9.5px;
+        line-height: 1.3;
+    }
+
+    .fact-columns {
+        display: grid;
+        flex-shrink: 0;
+        grid-template-columns: repeat(3, 1fr);
+        border-top: 1px solid rgba(255, 255, 255, .09);
+        border-bottom: 1px solid rgba(255, 255, 255, .065);
+    }
+
+    .fact-col {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 7px;
+        padding: 12px 10px;
+        border-left: 1px solid rgba(255, 255, 255, .085);
+    }
+
+    .fact-col:first-child {
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    .fact-col:last-child {
+        padding-right: 0;
+    }
+
+    .fact-col .fact-icon {
+        margin-bottom: 1px;
+    }
+
+    .fact-col strong {
+        font-size: 10.5px;
+        line-height: 1.2;
+    }
+
+    .fact-col span {
+        font-size: 9px;
+        line-height: 1.28;
+    }
+
+    .num-facts {
+        flex-shrink: 0;
+        border-top: 1px solid rgba(255, 255, 255, .09);
+    }
+
+    .num-item {
+        display: flex;
+        gap: 12px;
+        padding: 11px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, .065);
+    }
+
+    .num-index {
+        flex: 0 0 20px;
+        padding-top: 2px;
+        color: var(--accent);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .1em;
+    }
+
+    .num-item div {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .num-item strong {
+        color: #F7F0EC;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: -.02em;
+    }
+
+    .num-item span {
+        color: #B9AAA3;
+        font-size: 10.5px;
+        line-height: 1.25;
+    }
+
+    .bento-facts {
+        display: grid;
+        flex-shrink: 0;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        border-top: 1px solid rgba(255, 255, 255, .09);
+        border-bottom: 1px solid rgba(255, 255, 255, .065);
+        background: rgba(255, 255, 255, .085);
+    }
+
+    .bento-cell {
+        display: flex;
+        min-width: 0;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px;
+        background: #090807;
+    }
+
+    .bento-cell.hero {
+        grid-column: 1 / -1;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 10px;
+    }
+
+    .bento-cell.hero .bento-icon {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+    }
+
+    .bento-icon {
+        display: grid;
+        flex: 0 0 24px;
+        width: 24px;
+        height: 24px;
+        place-items: center;
+        border: 1px solid rgba(240, 167, 160, .16);
+        border-radius: 8px;
+        background: #15100E;
+        color: var(--accent);
+    }
+
+    .bento-icon svg {
+        display: block;
+    }
+
+    .bento-copy {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .bento-copy strong {
+        color: #F7F0EC;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: -.01em;
+    }
+
+    .bento-copy span {
+        color: #A99A93;
+        font-size: 9px;
+        line-height: 1.25;
+    }
+
+    .bento-cell.hero .bento-copy strong {
+        font-size: 12.5px;
+    }
+
+    .bento-cell.hero .bento-copy span {
+        font-size: 9.5px;
+    }
+
+    .check-grid {
+        display: grid;
+        flex-shrink: 0;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 18px;
+        row-gap: 11px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, .09);
+    }
+
+    .check-item {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 8px;
+        color: #E5D9D2;
+        font-size: 10.5px;
+        font-weight: 550;
+        line-height: 1.2;
+    }
+
+    .check-mark {
+        display: grid;
+        flex: 0 0 16px;
+        width: 16px;
+        height: 16px;
+        place-items: center;
+        border: 1px solid rgba(240, 167, 160, .18);
+        border-radius: 50%;
+        background: rgba(240, 167, 160, .1);
+        color: var(--accent);
+    }
+
+    .check-mark svg {
+        display: block;
+    }
+
+    .group-grid {
+        display: grid;
+        flex-shrink: 0;
+        grid-template-columns: 1fr 1fr;
+        border-top: 1px solid rgba(255, 255, 255, .09);
+        border-bottom: 1px solid rgba(255, 255, 255, .065);
+    }
+
+    .group {
+        min-width: 0;
+        padding: 11px 12px;
+        border-left: 1px solid rgba(255, 255, 255, .085);
+    }
+
+    .group:first-child {
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    .group:last-child {
+        padding-right: 0;
+    }
+
+    .group-title {
+        margin-bottom: 7px;
+        color: var(--accent);
+        font-size: 8.5px;
+        font-weight: 800;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+    }
+
+    .group-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+        padding: 4px 0;
+        color: #E5D9D2;
+        font-size: 10.5px;
+        line-height: 1.25;
+    }
+
+    .group-dot {
+        flex: 0 0 auto;
+        width: 4px;
+        height: 4px;
+        margin-top: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+    }
+
+    @media (max-width: 900px) {
+        .gallery {
+            padding-right: 18px;
+            padding-left: 18px;
+        }
+
+        .page-header {
+            padding-top: 38px;
+        }
+    }
+
+    @media (max-width: 430px) {
+        body {
+            overflow-x: hidden;
+        }
+
+        .concept {
+            width: min(100%, 390px);
+        }
+
+        .phone {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 390 / 844;
+        }
+
+        .phone-screen {
+            min-height: 0;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+    <div class="page-kicker">V1 · Fact block</div>
+    <h1>Шесть вариантов блока «Что показывает».</h1>
+    <p>
+        Верх, виджет и CTA одинаковые. Меняется только подача фактов: от сетки и колонок
+        до чек-листа и смысловых групп. В вариантах 04–06 пунктов больше, но они короче.
+    </p>
+    <div class="page-meta">
+        <span>6 вариантов</span>
+        <span>390 × 844</span>
+        <span>без карточки</span>
+    </div>
+</header>
+
+<main class="gallery">
+
+    <section class="concept">
+        <div class="concept-meta">
+            <span class="concept-num">1</span>
+            <div>
+                <h2>Сетка 2×2</h2>
+                <p>Четыре коротких факта с иконками. Больше структуры и воздуха, чем в списке.</p>
+            </div>
+        </div>
+        <div class="phone">
+            <div class="phone-screen">
+                <div class="statusbar">
+                    <span>9:41</span>
+                    <div class="status-icons">
+                        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M1 8.5V10h2V8.5H1ZM4.5 6.5V10h2V6.5h-2ZM8 4V10h2V4H8ZM11.5 1.5V10h2V1.5h-2Z" fill="currentColor"/></svg>
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M1 4.5A10.5 10.5 0 0 1 15 4.5M3.5 7A7 7 0 0 1 12.5 7M6.2 9.2a3 3 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="15" height="7" rx="1.2" fill="currentColor"/><path d="M22 4v3a1.7 1.7 0 0 0 0-3Z" fill="currentColor"/></svg>
+                    </div>
+                </div>
+                <div class="screen-body">
+                    <div class="nav">
+                        <span class="icon-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="nav-title">Виджет привычек</span>
+                        <span class="nav-spacer"></span>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-head">
+                            <span class="widget-kicker">Мой путь</span>
+                            <span class="widget-live"><i class="live-dot"></i>на главном</span>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Курение</span><span class="habit-time">46 д 4 ч</span></div>
+                            <div class="habit-meta">Этап 3 из 5 · Перестройка</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:100%"></span>
+                                <span class="seg" style="flex:24;--fill:42%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Сладкое после обеда</span><span class="habit-time">18 д 7 ч</span></div>
+                            <div class="habit-meta">Этап 2 из 5 · Отвыкание</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:78%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fact-head">Что показывает</div>
+                    <div class="fact-grid">
+                        <div class="fact-cell">
+                            <span class="fact-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5.2V8l2 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                            <div><strong>Время без срывов</strong><span>по каждой привычке</span></div>
+                        </div>
+                        <div class="fact-cell">
+                            <span class="fact-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 12V9M8 12V5M13 12V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+                            <div><strong>Этап</strong><span>текущая стадия</span></div>
+                        </div>
+                        <div class="fact-cell">
+                            <span class="fact-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M2.5 8h7M2.5 11.5h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                            <div><strong>Прогресс</strong><span>шкала 90 дней</span></div>
+                        </div>
+                        <div class="fact-cell">
+                            <span class="fact-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2.5 5h5M10.5 5h3M2.5 11h2M7.5 11h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="5" r="1.7" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="11" r="1.7" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                            <div><strong>Состав</strong><span>привычки и подпись</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cta-dock">
+                        <div class="premium-line"><span class="premium-badge">Premium</span><span>Виджет, безлимит привычек, аналитика</span></div>
+                        <button class="cta">Попробовать 7 дней <span class="arrow">→</span></button>
+                        <div class="fine">Далее 690 ₽/год · отмена в любой момент</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="concept">
+        <div class="concept-meta">
+            <span class="concept-num">2</span>
+            <div>
+                <h2>Три колонки</h2>
+                <p>Самый быстрый для сканирования вариант: меньше текста, иконки задают ритм.</p>
+            </div>
+        </div>
+        <div class="phone">
+            <div class="phone-screen">
+                <div class="statusbar">
+                    <span>9:41</span>
+                    <div class="status-icons">
+                        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M1 8.5V10h2V8.5H1ZM4.5 6.5V10h2V6.5h-2ZM8 4V10h2V4H8ZM11.5 1.5V10h2V1.5h-2Z" fill="currentColor"/></svg>
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M1 4.5A10.5 10.5 0 0 1 15 4.5M3.5 7A7 7 0 0 1 12.5 7M6.2 9.2a3 3 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="15" height="7" rx="1.2" fill="currentColor"/><path d="M22 4v3a1.7 1.7 0 0 0 0-3Z" fill="currentColor"/></svg>
+                    </div>
+                </div>
+                <div class="screen-body">
+                    <div class="nav">
+                        <span class="icon-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="nav-title">Виджет привычек</span>
+                        <span class="nav-spacer"></span>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-head">
+                            <span class="widget-kicker">Мой путь</span>
+                            <span class="widget-live"><i class="live-dot"></i>на главном</span>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Курение</span><span class="habit-time">46 д 4 ч</span></div>
+                            <div class="habit-meta">Этап 3 из 5 · Перестройка</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:100%"></span>
+                                <span class="seg" style="flex:24;--fill:42%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Сладкое после обеда</span><span class="habit-time">18 д 7 ч</span></div>
+                            <div class="habit-meta">Этап 2 из 5 · Отвыкание</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:78%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fact-head">Что показывает</div>
+                    <div class="fact-columns">
+                        <div class="fact-col">
+                            <span class="fact-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5.2V8l2 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                            <div><strong>Время без срывов</strong><span>по каждой привычке</span></div>
+                        </div>
+                        <div class="fact-col">
+                            <span class="fact-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 12V9M8 12V5M13 12V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+                            <div><strong>Этап и прогресс</strong><span>стадия и шкала 90 дней</span></div>
+                        </div>
+                        <div class="fact-col">
+                            <span class="fact-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2.5 5h5M10.5 5h3M2.5 11h2M7.5 11h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="5" r="1.7" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="11" r="1.7" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                            <div><strong>Кастомизация</strong><span>Только те привычки, которые вы выберите</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cta-dock">
+                        <div class="premium-line"><span class="premium-badge">Premium</span><span>Виджет, безлимит привычек, аналитика</span></div>
+                        <button class="cta">Попробовать 7 дней <span class="arrow">→</span></button>
+                        <div class="fine">Далее 690 ₽/год · отмена в любой момент</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="concept">
+        <div class="concept-meta">
+            <span class="concept-num">3</span>
+            <div>
+                <h2>Editorial-номера</h2>
+                <p>Без иконок и декоративных линий: только крупные номера, факты и воздух.</p>
+            </div>
+        </div>
+        <div class="phone">
+            <div class="phone-screen">
+                <div class="statusbar">
+                    <span>9:41</span>
+                    <div class="status-icons">
+                        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M1 8.5V10h2V8.5H1ZM4.5 6.5V10h2V6.5h-2ZM8 4V10h2V4H8ZM11.5 1.5V10h2V1.5h-2Z" fill="currentColor"/></svg>
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M1 4.5A10.5 10.5 0 0 1 15 4.5M3.5 7A7 7 0 0 1 12.5 7M6.2 9.2a3 3 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="15" height="7" rx="1.2" fill="currentColor"/><path d="M22 4v3a1.7 1.7 0 0 0 0-3Z" fill="currentColor"/></svg>
+                    </div>
+                </div>
+                <div class="screen-body">
+                    <div class="nav">
+                        <span class="icon-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="nav-title">Виджет привычек</span>
+                        <span class="nav-spacer"></span>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-head">
+                            <span class="widget-kicker">Мой путь</span>
+                            <span class="widget-live"><i class="live-dot"></i>на главном</span>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Курение</span><span class="habit-time">46 д 4 ч</span></div>
+                            <div class="habit-meta">Этап 3 из 5 · Перестройка</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:100%"></span>
+                                <span class="seg" style="flex:24;--fill:42%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Сладкое после обеда</span><span class="habit-time">18 д 7 ч</span></div>
+                            <div class="habit-meta">Этап 2 из 5 · Отвыкание</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:78%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fact-head">Что показывает</div>
+                    <div class="num-facts">
+                        <div class="num-item">
+                            <span class="num-index">1</span>
+                            <div><strong>Время без срывов</strong><span>по каждой привычке</span></div>
+                        </div>
+                        <div class="num-item">
+                            <span class="num-index">2</span>
+                            <div><strong>Этап и прогресс</strong><span>текущая стадия и шкала 90 дней</span></div>
+                        </div>
+                        <div class="num-item">
+                            <span class="num-index">3</span>
+                            <div><strong>Кастомизация</strong><span>Только те привычки, которые вы выберите</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cta-dock">
+                        <div class="premium-line"><span class="premium-badge">Premium</span><span>Виджет, безлимит привычек, аналитика</span></div>
+                        <button class="cta">Попробовать 7 дней <span class="arrow">→</span></button>
+                        <div class="fine">Далее 690 ₽/год · отмена в любой момент</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="concept">
+        <div class="concept-meta">
+            <span class="concept-num">04</span>
+            <div>
+                <h2>Bento без карточек</h2>
+                <p>Один главный тезис и четыре поддерживающих. Hairline-сетка вместо карточек, как в bento-секциях.</p>
+            </div>
+        </div>
+        <div class="phone">
+            <div class="phone-screen">
+                <div class="statusbar">
+                    <span>9:41</span>
+                    <div class="status-icons">
+                        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M1 8.5V10h2V8.5H1ZM4.5 6.5V10h2V6.5h-2ZM8 4V10h2V4H8ZM11.5 1.5V10h2V1.5h-2Z" fill="currentColor"/></svg>
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M1 4.5A10.5 10.5 0 0 1 15 4.5M3.5 7A7 7 0 0 1 12.5 7M6.2 9.2a3 3 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="15" height="7" rx="1.2" fill="currentColor"/><path d="M22 4v3a1.7 1.7 0 0 0 0-3Z" fill="currentColor"/></svg>
+                    </div>
+                </div>
+                <div class="screen-body">
+                    <div class="nav">
+                        <span class="icon-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="nav-title">Виджет привычек</span>
+                        <span class="nav-spacer"></span>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-head">
+                            <span class="widget-kicker">Мой путь</span>
+                            <span class="widget-live"><i class="live-dot"></i>на главном</span>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Курение</span><span class="habit-time">46 д 4 ч</span></div>
+                            <div class="habit-meta">Этап 3 из 5 · Перестройка</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:100%"></span>
+                                <span class="seg" style="flex:24;--fill:42%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Сладкое после обеда</span><span class="habit-time">18 д 7 ч</span></div>
+                            <div class="habit-meta">Этап 2 из 5 · Отвыкание</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:78%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fact-head">Что показывает</div>
+                    <div class="bento-facts">
+                        <div class="bento-cell hero">
+                            <span class="bento-icon"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                            <div class="bento-copy"><strong>Главный экран</strong><span>Выбранные привычки и прогресс в одном месте</span></div>
+                        </div>
+                        <div class="bento-cell">
+                            <span class="bento-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 5.2V8l2 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                            <div class="bento-copy"><strong>Время</strong><span>без срывов</span></div>
+                        </div>
+                        <div class="bento-cell">
+                            <span class="bento-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 12V9M8 12V5M13 12V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+                            <div class="bento-copy"><strong>Этап</strong><span>из пяти</span></div>
+                        </div>
+                        <div class="bento-cell">
+                            <span class="bento-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2.5 4.5h11M2.5 8h7M2.5 11.5h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                            <div class="bento-copy"><strong>90 дней</strong><span>прогресс по стадиям</span></div>
+                        </div>
+                        <div class="bento-cell">
+                            <span class="bento-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2.5 5h5M10.5 5h3M2.5 11h2M7.5 11h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="9" cy="5" r="1.7" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="11" r="1.7" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                            <div class="bento-copy"><strong>Состав</strong><span>привычки и подпись</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cta-dock">
+                        <div class="premium-line"><span class="premium-badge">Premium</span><span>Виджет, безлимит привычек, аналитика</span></div>
+                        <button class="cta">Попробовать 7 дней <span class="arrow">→</span></button>
+                        <div class="fine">Далее 690 ₽/год · отмена в любой момент</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="concept">
+        <div class="concept-meta">
+            <span class="concept-num">05</span>
+            <div>
+                <h2>Чек-лист</h2>
+                <p>Больше пунктов, минимум текста. Самый распространённый паттерн paywall по исследованиям.</p>
+            </div>
+        </div>
+        <div class="phone">
+            <div class="phone-screen">
+                <div class="statusbar">
+                    <span>9:41</span>
+                    <div class="status-icons">
+                        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M1 8.5V10h2V8.5H1ZM4.5 6.5V10h2V6.5h-2ZM8 4V10h2V4H8ZM11.5 1.5V10h2V1.5h-2Z" fill="currentColor"/></svg>
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M1 4.5A10.5 10.5 0 0 1 15 4.5M3.5 7A7 7 0 0 1 12.5 7M6.2 9.2a3 3 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="15" height="7" rx="1.2" fill="currentColor"/><path d="M22 4v3a1.7 1.7 0 0 0 0-3Z" fill="currentColor"/></svg>
+                    </div>
+                </div>
+                <div class="screen-body">
+                    <div class="nav">
+                        <span class="icon-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="nav-title">Виджет привычек</span>
+                        <span class="nav-spacer"></span>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-head">
+                            <span class="widget-kicker">Мой путь</span>
+                            <span class="widget-live"><i class="live-dot"></i>на главном</span>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Курение</span><span class="habit-time">46 д 4 ч</span></div>
+                            <div class="habit-meta">Этап 3 из 5 · Перестройка</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:100%"></span>
+                                <span class="seg" style="flex:24;--fill:42%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Сладкое после обеда</span><span class="habit-time">18 д 7 ч</span></div>
+                            <div class="habit-meta">Этап 2 из 5 · Отвыкание</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:78%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fact-head">Что даёт виджет</div>
+                    <div class="check-grid">
+                        <div class="check-item"><span class="check-mark"><svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="m1 4 2.2 2.2L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Время без срывов</div>
+                        <div class="check-item"><span class="check-mark"><svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="m1 4 2.2 2.2L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Текущий этап</div>
+                        <div class="check-item"><span class="check-mark"><svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="m1 4 2.2 2.2L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Шкала 90 дней</div>
+                        <div class="check-item"><span class="check-mark"><svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="m1 4 2.2 2.2L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Выбранные привычки</div>
+                        <div class="check-item"><span class="check-mark"><svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="m1 4 2.2 2.2L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Своя подпись</div>
+                        <div class="check-item"><span class="check-mark"><svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="m1 4 2.2 2.2L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Размер 3×2</div>
+                        <div class="check-item"><span class="check-mark"><svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="m1 4 2.2 2.2L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Тёмное оформление</div>
+                        <div class="check-item"><span class="check-mark"><svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="m1 4 2.2 2.2L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Несколько виджетов</div>
+                    </div>
+
+                    <div class="cta-dock">
+                        <div class="premium-line"><span class="premium-badge">Premium</span><span>Виджет, безлимит привычек, аналитика</span></div>
+                        <button class="cta">Попробовать 7 дней <span class="arrow">→</span></button>
+                        <div class="fine">Далее 690 ₽/год · отмена в любой момент</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="concept">
+        <div class="concept-meta">
+            <span class="concept-num">06</span>
+            <div>
+                <h2>Смысловые группы</h2>
+                <p>Не просто список, а две категории: что видно сразу и что можно настроить.</p>
+            </div>
+        </div>
+        <div class="phone">
+            <div class="phone-screen">
+                <div class="statusbar">
+                    <span>9:41</span>
+                    <div class="status-icons">
+                        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M1 8.5V10h2V8.5H1ZM4.5 6.5V10h2V6.5h-2ZM8 4V10h2V4H8ZM11.5 1.5V10h2V1.5h-2Z" fill="currentColor"/></svg>
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none"><path d="M1 4.5A10.5 10.5 0 0 1 15 4.5M3.5 7A7 7 0 0 1 12.5 7M6.2 9.2a3 3 0 0 1 3.6 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <svg width="24" height="11" viewBox="0 0 24 11" fill="none"><rect x=".5" y=".5" width="20" height="10" rx="2.5" stroke="currentColor"/><rect x="2" y="2" width="15" height="7" rx="1.2" fill="currentColor"/><path d="M22 4v3a1.7 1.7 0 0 0 0-3Z" fill="currentColor"/></svg>
+                    </div>
+                </div>
+                <div class="screen-body">
+                    <div class="nav">
+                        <span class="icon-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <span class="nav-title">Виджет привычек</span>
+                        <span class="nav-spacer"></span>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-head">
+                            <span class="widget-kicker">Мой путь</span>
+                            <span class="widget-live"><i class="live-dot"></i>на главном</span>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Курение</span><span class="habit-time">46 д 4 ч</span></div>
+                            <div class="habit-meta">Этап 3 из 5 · Перестройка</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:100%"></span>
+                                <span class="seg" style="flex:24;--fill:42%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                        <div class="habit">
+                            <div class="habit-top"><span class="habit-name">Сладкое после обеда</span><span class="habit-time">18 д 7 ч</span></div>
+                            <div class="habit-meta">Этап 2 из 5 · Отвыкание</div>
+                            <div class="segments">
+                                <span class="seg" style="flex:7;--fill:100%"></span>
+                                <span class="seg" style="flex:14;--fill:78%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:24;--fill:0%"></span>
+                                <span class="seg" style="flex:21;--fill:0%"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fact-head">Что внутри</div>
+                    <div class="group-grid">
+                        <div class="group">
+                            <div class="group-title">Видно сразу</div>
+                            <div class="group-item"><span class="group-dot"></span>Время без срывов</div>
+                            <div class="group-item"><span class="group-dot"></span>Текущий этап</div>
+                            <div class="group-item"><span class="group-dot"></span>Шкала 90 дней</div>
+                        </div>
+                        <div class="group">
+                            <div class="group-title">Можно настроить</div>
+                            <div class="group-item"><span class="group-dot"></span>Выбранные привычки</div>
+                            <div class="group-item"><span class="group-dot"></span>Своя подпись</div>
+                            <div class="group-item"><span class="group-dot"></span>Несколько виджетов</div>
+                        </div>
+                    </div>
+
+                    <div class="cta-dock">
+                        <div class="premium-line"><span class="premium-badge">Premium</span><span>Виджет, безлимит привычек, аналитика</span></div>
+                        <button class="cta">Попробовать 7 дней <span class="arrow">→</span></button>
+                        <div class="fine">Далее 690 ₽/год · отмена в любой момент</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

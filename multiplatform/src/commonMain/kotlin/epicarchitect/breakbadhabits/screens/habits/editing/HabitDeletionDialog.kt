@@ -10,28 +10,35 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
+import epicarchitect.breakbadhabits.infrastructure.AppDatabase
+import epicarchitect.breakbadhabits.resources.Res
+import epicarchitect.breakbadhabits.resources.cancel
+import epicarchitect.breakbadhabits.resources.habit_delete_confirmation
+import epicarchitect.breakbadhabits.resources.yes
 import epicarchitect.breakbadhabits.uikit.Dialog
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import kotlin.uuid.Uuid
 
 @Composable
 fun HabitDeletionDialog(
-    habitId: Int,
+    habitId: Uuid,
     onDismiss: () -> Unit,
     onDeleted: () -> Unit
 ) {
-    val environment = LocalAppEnvironment.current
-    val habitQueries = environment.database.habitQueries
-    val strings = environment.resources.strings.habitEditingStrings
+    val habitsDao = AppDatabase.habitsDao
+    val coroutineScope = rememberCoroutineScope()
 
     Dialog(onDismiss) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = strings.deleteConfirmation(),
+                text = stringResource(Res.string.habit_delete_confirmation),
                 style = MaterialTheme.typography.bodyLarge
             )
 
@@ -44,7 +51,7 @@ fun HabitDeletionDialog(
                     onClick = onDismiss
                 ) {
                     Text(
-                        text = strings.cancel()
+                        text = stringResource(Res.string.cancel)
                     )
                 }
 
@@ -52,12 +59,14 @@ fun HabitDeletionDialog(
 
                 Button(
                     onClick = {
-                        habitQueries.deleteById(habitId)
-                        onDeleted()
+                        coroutineScope.launch {
+                            habitsDao.deleteById(habitId)
+                            onDeleted()
+                        }
                     }
                 ) {
                     Text(
-                        text = strings.yes()
+                        text = stringResource(Res.string.yes)
                     )
                 }
             }

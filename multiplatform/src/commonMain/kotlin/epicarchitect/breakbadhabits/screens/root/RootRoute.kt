@@ -1,30 +1,46 @@
 package epicarchitect.breakbadhabits.screens.root
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
+import kotlin.uuid.Uuid
 
-sealed interface RootRoute {
+@Serializable
+sealed interface RootRoute : NavKey {
 
     @Serializable
     data object Dashboard : RootRoute
 
     @Serializable
+    data class Paywall(
+        val source: String = "unknown"
+    ) : RootRoute
+
+    @Serializable
+    data object Settings : RootRoute
+
+    @Serializable
     data class HabitDetails(
-        val habitId: Int
+        val habitId: Uuid
     ) : RootRoute
 
     @Serializable
     data class HabitEditing(
-        val habitId: Int?
+        val habitId: Uuid?
     ) : RootRoute
 
     @Serializable
     data class HabitEventRecordEditing(
-        val habitEventRecordId: Int?,
-        val habitId: Int
+        val habitEventRecordId: Uuid?,
+        val habitId: Uuid
     ) : RootRoute
 
     @Serializable
     data class HabitEventRecordsDetails(
-        val habitId: Int
+        val habitId: Uuid
+    ) : RootRoute
+
+    @Serializable
+    data class HabitStages(
+        val habitId: Uuid
     ) : RootRoute
 }

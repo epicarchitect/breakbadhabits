@@ -1,0 +1,46 @@
+<resources>
+    <string name="habit_details_show_all_events">Show all events</string>
+    <string name="abstinence_chart_title">Abstinence chart</string>
+    <string name="statistics_title">Statistics</string>
+    <string name="statistics_average_abstinence_time">Average time of abstinence</string>
+    <string name="statistics_max_abstinence_time">Maximum abstinence time</string>
+    <string name="statistics_min_abstinence_time">Minimum abstinence time</string>
+    <string name="statistics_duration_since_first_event">Time since the first event</string>
+    <string name="statistics_events_in_current_month">Number of events in the current month</string>
+    <string name="statistics_events_in_previous_month">Number of events in the last month</string>
+    <string name="statistics_total_events">Total events</string>
+    <string name="habit_record_slip">Record a slip</string>
+
+    <string name="risk_map_title">Risk map</string>
+    <string name="risk_map_description">The risk map highlights the days of the week and times when you slip most often. One way to prevent a slip is to know in advance when it will happen.</string>
+    <string name="risk_map_open">Open risk map</string>
+    <string name="risk_map_day_mon">Mon</string>
+    <string name="risk_map_day_tue">Tue</string>
+    <string name="risk_map_day_wed">Wed</string>
+    <string name="risk_map_day_thu">Thu</string>
+    <string name="risk_map_day_fri">Fri</string>
+    <string name="risk_map_day_sat">Sat</string>
+    <string name="risk_map_day_sun">Sun</string>
+    <string name="risk_map_period_night">Night</string>
+    <string name="risk_map_period_morning">Morning</string>
+    <string name="risk_map_period_day">Day</string>
+    <string name="risk_map_period_evening">Evening</string>
+    <string name="risk_map_period_morning_range">06–12</string>
+    <string name="risk_map_period_day_range">12–18</string>
+    <string name="risk_map_period_evening_range">18–24</string>
+    <string name="risk_map_period_night_range">00–06</string>
+    <string name="risk_map_summary_prefix">Over the last 90 days, slips most often happened</string>
+    <string name="risk_map_summary_zone_pattern">on %1$s %2$s</string>
+    <string name="risk_map_summary_and">and</string>
+    <string name="risk_map_summary_day_mon">Mondays</string>
+    <string name="risk_map_summary_day_tue">Tuesdays</string>
+    <string name="risk_map_summary_day_wed">Wednesdays</string>
+    <string name="risk_map_summary_day_thu">Thursdays</string>
+    <string name="risk_map_summary_day_fri">Fridays</string>
+    <string name="risk_map_summary_day_sat">Saturdays</string>
+    <string name="risk_map_summary_day_sun">Sundays</string>
+    <string name="risk_map_summary_period_morning">in the morning</string>
+    <string name="risk_map_summary_period_day">in the afternoon</string>
+    <string name="risk_map_summary_period_evening">in the evening</string>
+    <string name="risk_map_summary_period_night">at night</string>
+</resources>

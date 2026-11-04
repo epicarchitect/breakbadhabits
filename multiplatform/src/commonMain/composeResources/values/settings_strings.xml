@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="settings_data_title">Data</string>
+    <string name="settings_data_description">CSV stores habits and records in plain text. Import adds them to your current data.</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_about_title">About</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_support">Support</string>
+    <string name="settings_rate_app">Rate app</string>
+    <string name="settings_delete_all_data">Delete all data</string>
+    <string name="settings_delete_data_dialog_title">Delete all data?</string>
+    <string name="settings_delete_data_dialog_message">This will permanently delete all habits, records and widget configurations. Your purchase will remain.</string>
+    <string name="settings_delete_data_confirm">Delete</string>
+    <string name="settings_delete_data_cancel">Cancel</string>
+    <string name="settings_import_button">Import CSV</string>
+    <string name="settings_import_dialog_title">Import CSV</string>
+    <string name="settings_import_invalid">This file doesn't look like a CSV with habits.</string>
+    <string name="settings_import_error">Couldn't import the CSV.</string>
+    <string name="settings_import_dialog_ok">OK</string>
+    <string name="settings_import_success">Imported %1$d habits and %2$d records.</string>
+    <string name="settings_analytics_short">Analytics</string>
+    <string name="settings_premium_active">Active</string>
+    <string name="settings_premium_unlock">Unlock</string>
+</resources>

@@ -1,0 +1,14 @@
+<resources>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="save_changes">Save changes</string>
+    <string name="habit_has_no_events">No events</string>
+    <string name="add_event_record">Add record</string>
+    <string name="duration_seconds">s</string>
+    <string name="duration_minutes">m</string>
+    <string name="duration_hours">h</string>
+    <string name="duration_days">d</string>
+    <string name="back">Back</string>
+    <string name="settings">Settings</string>
+    <string name="common_ok">OK</string>
+</resources>

@@ -1,0 +1,46 @@
+<resources>
+    <string name="habit_details_show_all_events">Перейти к событиям</string>
+    <string name="abstinence_chart_title">График воздержания</string>
+    <string name="statistics_title">Статистика</string>
+    <string name="statistics_average_abstinence_time">Среднее время воздержания</string>
+    <string name="statistics_max_abstinence_time">Максимальное время воздержания</string>
+    <string name="statistics_min_abstinence_time">Минимальное время воздержания</string>
+    <string name="statistics_duration_since_first_event">Времени с первого события</string>
+    <string name="statistics_events_in_current_month">Количество событий в текущем месяце</string>
+    <string name="statistics_events_in_previous_month">Количество событий в прошлом месяце</string>
+    <string name="statistics_total_events">Всего событий</string>
+    <string name="habit_record_slip">Записать срыв</string>
+
+    <string name="risk_map_title">Карта риска</string>
+    <string name="risk_map_description">Карта риска подсвечивает дни недели и время, когда ты чаще всего срываешься. Один из способов предотвратить срыв — знать заранее, когда он произойдет.</string>
+    <string name="risk_map_open">Открыть карту риска</string>
+    <string name="risk_map_day_mon">Пн</string>
+    <string name="risk_map_day_tue">Вт</string>
+    <string name="risk_map_day_wed">Ср</string>
+    <string name="risk_map_day_thu">Чт</string>
+    <string name="risk_map_day_fri">Пт</string>
+    <string name="risk_map_day_sat">Сб</string>
+    <string name="risk_map_day_sun">Вс</string>
+    <string name="risk_map_period_night">Ночь</string>
+    <string name="risk_map_period_morning">Утро</string>
+    <string name="risk_map_period_day">День</string>
+    <string name="risk_map_period_evening">Вечер</string>
+    <string name="risk_map_period_morning_range">06–12</string>
+    <string name="risk_map_period_day_range">12–18</string>
+    <string name="risk_map_period_evening_range">18–24</string>
+    <string name="risk_map_period_night_range">00–06</string>
+    <string name="risk_map_summary_prefix">За последние 90 дней срывы чаще всего происходили</string>
+    <string name="risk_map_summary_zone_pattern">по %1$s %2$s</string>
+    <string name="risk_map_summary_and">и</string>
+    <string name="risk_map_summary_day_mon">понедельникам</string>
+    <string name="risk_map_summary_day_tue">вторникам</string>
+    <string name="risk_map_summary_day_wed">средам</string>
+    <string name="risk_map_summary_day_thu">четвергам</string>
+    <string name="risk_map_summary_day_fri">пятницам</string>
+    <string name="risk_map_summary_day_sat">субботам</string>
+    <string name="risk_map_summary_day_sun">воскресеньям</string>
+    <string name="risk_map_summary_period_morning">утром</string>
+    <string name="risk_map_summary_period_day">днём</string>
+    <string name="risk_map_summary_period_evening">вечером</string>
+    <string name="risk_map_summary_period_night">ночью</string>
+</resources>

@@ -1,10 +1,10 @@
 package epicarchitect.breakbadhabits.datetime
 
-import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToLong
 import kotlin.time.DurationUnit
+import kotlin.time.Instant
 import kotlin.time.toDuration
 
 fun ClosedRange<Instant>.toLocalDateTimeRange(

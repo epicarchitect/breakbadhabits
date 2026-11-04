@@ -7,17 +7,15 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.database.HabitEventRecord
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
 import epicarchitect.breakbadhabits.habits.HabitEventCountError
 import epicarchitect.breakbadhabits.habits.HabitEventRecordTimeRangeError
 import epicarchitect.breakbadhabits.habits.timeRange
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import epicarchitect.breakbadhabits.infrastructure.AppDatabase
+import kotlin.time.Clock
 import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 class HabitEventRecordEditingScreenState(
     val initialRecord: HabitEventRecord?,
@@ -34,21 +32,18 @@ class HabitEventRecordEditingScreenState(
 
 @Composable
 fun rememberHabitEventRecordEditingState(
-    eventRecordId: Int?,
-    habitId: Int
+    eventRecordId: Uuid?,
+    habitId: Uuid
 ): HabitEventRecordEditingScreenState? {
-    val environment = LocalAppEnvironment.current
-    val habitQueries = environment.database.habitQueries
-    val eventRecordQueries = environment.database.habitEventRecordQueries
+    val habitsDao = AppDatabase.habitsDao
+    val habitEventRecordsDao = AppDatabase.habitEventRecordsDao
 
     val habitState = remember {
-        habitQueries.habitById(habitId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
+        habitsDao.habitById(habitId)
     }.collectAsState(null)
 
     val habit = habitState.value ?: return null
-    val defaultTimeRange = environment.dateTime.currentInstant().let { it..it }
+    val defaultTimeRange = Clock.System.now().let { it..it }
 
     return if (eventRecordId == null) {
         remember {
@@ -60,9 +55,7 @@ fun rememberHabitEventRecordEditingState(
         }
     } else {
         val eventRecordState = remember {
-            eventRecordQueries.recordById(eventRecordId)
-                .asFlow()
-                .mapToOneOrNull(Dispatchers.IO)
+            habitEventRecordsDao.recordById(eventRecordId)
         }.collectAsState(null)
         val eventRecord = eventRecordState.value ?: return null
 

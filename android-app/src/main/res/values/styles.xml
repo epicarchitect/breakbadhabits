@@ -1,11 +1,48 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="App.Theme" parent="@android:style/Theme.Material.NoActionBar">
-        <item name="android:colorBackground">@android:color/black</item>
-        <item name="android:statusBarColor">@android:color/black</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
-        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <item name="android:colorBackground">#000000</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:windowSplashScreenBackground">#000000</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+
+    <style name="WidgetProgressSegment" parent="@android:style/Widget.Material.ProgressBar.Horizontal">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">4dp</item>
+        <item name="android:layout_marginEnd">3dp</item>
+        <item name="android:indeterminate">false</item>
+        <item name="android:progressDrawable">@drawable/widget_progress_segment</item>
+    </style>
+
+    <style name="WidgetProgressSegment.Acute">
+        <item name="android:layout_weight">7</item>
+        <item name="android:max">7</item>
+    </style>
+
+    <style name="WidgetProgressSegment.Withdrawal">
+        <item name="android:layout_weight">14</item>
+        <item name="android:max">14</item>
+    </style>
+
+    <style name="WidgetProgressSegment.Rebuilding">
+        <item name="android:layout_weight">24</item>
+        <item name="android:max">24</item>
+    </style>
+
+    <style name="WidgetProgressSegment.Consolidation">
+        <item name="android:layout_weight">24</item>
+        <item name="android:max">24</item>
+    </style>
+
+    <style name="WidgetProgressSegment.FinalConsolidation">
+        <item name="android:layout_weight">21</item>
+        <item name="android:max">21</item>
     </style>
 </resources>

@@ -1,3 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Break Bad Habits</string>
+    <string name="widget_name">Habits</string>
+    <string name="widget_not_configured">Widget is not configured</string>
+    <string name="widget_premium_required">Available in Premium\nOpen the app to subscribe</string>
+    <string name="widget_no_habits">Choose habits in widget settings</string>
+    <string name="widget_has_no_events">No events</string>
+    <string name="widget_preview_habit">Smoking</string>
+    <string name="widget_preview_stage">Rebuilding</string>
+    <string name="widget_preview_day">34d</string>
+    <string name="widget_preview_hours">4h</string>
+    <string name="widget_preview_habit_second">Sweets after lunch</string>
+    <string name="widget_preview_stage_second">Withdrawal</string>
+    <string name="widget_preview_day_second">18d</string>
+    <string name="widget_preview_hours_second">7h</string>
 </resources>

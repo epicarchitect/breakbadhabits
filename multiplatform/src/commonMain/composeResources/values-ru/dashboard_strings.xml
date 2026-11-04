@@ -1,0 +1,5 @@
+<resources>
+    <string name="dashboard_empty_title">Начните с одного</string>
+    <string name="dashboard_new_add">Новая привычка</string>
+    <string name="dashboard_today_title">Сегодня</string>
+</resources>

@@ -1,3 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Сломай Плохие Привычки</string>
+    <string name="widget_name">Привычки</string>
+    <string name="widget_not_configured">Виджет не настроен</string>
+    <string name="widget_premium_required">Доступно в Premium\nОткройте приложение, чтобы оформить</string>
+    <string name="widget_no_habits">Выберите привычки в настройках виджета</string>
+    <string name="widget_has_no_events">События отсутствуют</string>
+    <string name="widget_preview_habit">Курение</string>
+    <string name="widget_preview_stage">Перестройка</string>
+    <string name="widget_preview_day">34д</string>
+    <string name="widget_preview_hours">4ч</string>
+    <string name="widget_preview_habit_second">Сладкое после обеда</string>
+    <string name="widget_preview_stage_second">Отвыкание</string>
+    <string name="widget_preview_day_second">18д</string>
+    <string name="widget_preview_hours_second">7ч</string>
 </resources>
