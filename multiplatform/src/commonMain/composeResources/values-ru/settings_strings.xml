@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="settings_data_title">Данные</string>
+    <string name="settings_data_description">CSV хранит привычки и записи в открытом виде. Импорт добавляет их к текущим данным.</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_about_title">О приложении</string>
+    <string name="settings_version">Версия %1$s</string>
+    <string name="settings_support">Поддержка</string>
+    <string name="settings_rate_app">Оценить приложение</string>
+    <string name="settings_delete_all_data">Удалить все данные</string>
+    <string name="settings_delete_data_dialog_title">Удалить все данные?</string>
+    <string name="settings_delete_data_dialog_message">Все привычки, записи и настройки виджетов будут удалены безвозвратно. Покупка сохранится.</string>
+    <string name="settings_delete_data_confirm">Удалить</string>
+    <string name="settings_delete_data_cancel">Отмена</string>
+    <string name="settings_import_button">Импорт CSV</string>
+    <string name="settings_import_dialog_title">Импорт CSV</string>
+    <string name="settings_import_invalid">Файл не похож на CSV с привычками.</string>
+    <string name="settings_import_error">Не удалось импортировать CSV.</string>
+    <string name="settings_import_dialog_ok">ОК</string>
+    <string name="settings_import_success">Импортировано привычек: %1$d, записей: %2$d.</string>
+    <string name="settings_analytics_short">Аналитика</string>
+    <string name="settings_premium_active">Активен</string>
+    <string name="settings_premium_unlock">Открыть</string>
+</resources>

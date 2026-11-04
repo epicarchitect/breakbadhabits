@@ -1,0 +1,13 @@
+<resources>
+    <string name="habit_details_show_all_events">Перейти к событиям</string>
+    <string name="abstinence_chart_title">График воздержания</string>
+    <string name="statistics_title">Статистика</string>
+    <string name="statistics_average_abstinence_time">Среднее время воздержания</string>
+    <string name="statistics_max_abstinence_time">Максимальное время воздержания</string>
+    <string name="statistics_min_abstinence_time">Минимальное время воздержания</string>
+    <string name="statistics_duration_since_first_event">Времени с первого события</string>
+    <string name="statistics_events_in_current_month">Количество событий в текущем месяце</string>
+    <string name="statistics_events_in_previous_month">Количество событий в прошлом месяце</string>
+    <string name="statistics_total_events">Всего событий</string>
+    <string name="habit_record_slip">Записать срыв</string>
+</resources>

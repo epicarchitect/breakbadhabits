@@ -1,0 +1,15 @@
+<resources>
+    <string name="yes">Да</string>
+    <string name="cancel">Отмена</string>
+    <string name="save_changes">Сохранить изменения</string>
+    <string name="done">Готово</string>
+    <string name="habit_has_no_events">События отсутствуют</string>
+    <string name="add_event_record">Добавить запись</string>
+    <string name="duration_seconds">с</string>
+    <string name="duration_minutes">м</string>
+    <string name="duration_hours">ч</string>
+    <string name="duration_days">д</string>
+    <string name="back">Назад</string>
+    <string name="settings">Настройки</string>
+    <string name="common_ok">ОК</string>
+</resources>

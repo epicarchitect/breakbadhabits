@@ -1,0 +1,17 @@
+<resources>
+    <string name="event_record_editing_title_new">New record — %1$s</string>
+    <string name="event_record_editing_title_editing">Editing a record — %1$s</string>
+    <string name="event_record_delete_confirmation">Are you sure you want to delete this record?</string>
+    <string name="event_record_delete_button">Delete this record</string>
+    <string name="comment_title">Comment</string>
+    <string name="comment_description">You can write a comment, but you don't have to.</string>
+    <string name="event_count_title">Number of events</string>
+    <string name="event_count_description">Enter how many habit events there were.</string>
+    <string name="event_count_error_empty">Cant be empty</string>
+    <string name="time_range_title">Date and time</string>
+    <string name="time_range_description">Select the time when the habit events occurred.</string>
+    <string name="time_range_error_future">The date and time cannot be greater than the current time.</string>
+    <string name="start_label">Start</string>
+    <string name="end_label">End</string>
+    <string name="input_datetime_as_range_checkbox">Specify as time range</string>
+</resources>

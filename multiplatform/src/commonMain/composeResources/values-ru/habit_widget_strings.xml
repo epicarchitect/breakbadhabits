@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="habit_widget_creation_title">Создание виджета</string>
+    <string name="habit_widget_name_title">Название виджета</string>
+    <string name="habit_widget_name_description">Введите название виджета.</string>
+    <string name="habit_widget_habits_title">Привычки</string>
+    <string name="habit_widget_habits_description">Выберите привычки для виджета.</string>
+</resources>

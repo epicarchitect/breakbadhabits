@@ -14,27 +14,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.datetime.toLocalDateTimeRange
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
+import epicarchitect.breakbadhabits.format.format
 import epicarchitect.breakbadhabits.habits.timeRange
-import epicarchitect.breakbadhabits.screens.root.LocalRootNavController
+import epicarchitect.breakbadhabits.infrastructure.DateTimeFormatter
+import epicarchitect.breakbadhabits.resources.Res
+import epicarchitect.breakbadhabits.resources.event_records_total_count
+import epicarchitect.breakbadhabits.screens.root.LocalRootBackStack
 import epicarchitect.breakbadhabits.screens.root.RootRoute
+import epicarchitect.breakbadhabits.screens.root.push
+import kotlinx.datetime.TimeZone
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LazyItemScope.HabitRecordItem(
     item: HabitEventRecord
 ) {
-    val environment = LocalAppEnvironment.current
-    val navController = LocalRootNavController.current
-    val dateTimeFormatter = environment.format.dateTimeFormatter
-    val strings = environment.resources.strings.habitEventRecordsDashboardStrings
-    val timeZone = environment.dateTime.currentTimeZone()
+    val backStack = LocalRootBackStack.current
+    val dateTimeFormatter = DateTimeFormatter
+    val timeZone = TimeZone.currentSystemDefault()
 
     Box(
         modifier = Modifier
             .animateItem()
             .fillMaxWidth()
             .clickable {
-                navController.navigate(
+                backStack.push(
                     RootRoute.HabitEventRecordEditing(
                         habitEventRecordId = item.id,
                         habitId = item.habitId
@@ -58,7 +62,7 @@ fun LazyItemScope.HabitRecordItem(
 
             Text(
                 modifier = Modifier.padding(2.dp),
-                text = strings.eventCount(item.eventCount),
+                text = stringResource(Res.string.event_records_total_count, item.eventCount),
                 style = MaterialTheme.typography.bodySmall
             )
 

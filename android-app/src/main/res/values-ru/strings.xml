@@ -1,3 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Сломай Плохие Привычки</string>
+    <string name="widget_name">Привычки</string>
+    <string name="widget_not_configured">Виджет не настроен</string>
+    <string name="widget_has_no_events">События отсутствуют</string>
+    <string name="widget_abstinence_days">%1$d д</string>
+    <string name="widget_abstinence_hours">%1$d ч</string>
+    <string name="widget_abstinence_minutes">%1$d мин</string>
+    <string name="widget_abstinence_days_hours">%1$d д %2$d ч</string>
+    <string name="widget_abstinence_hours_minutes">%1$d ч %2$d мин</string>
+    <string name="widget_abstinence_less_than_minute">меньше минуты</string>
+    <string name="widget_habit_stage_progress">%1$s · %2$d / 90 дней</string>
+    <string name="widget_habit_stage_acute">Острая фаза</string>
+    <string name="widget_habit_stage_withdrawal">Отвыкание</string>
+    <string name="widget_habit_stage_rebuilding">Перестройка</string>
+    <string name="widget_habit_stage_consolidation">Закрепление</string>
+    <string name="widget_habit_stage_final_consolidation">Финишная прямая</string>
+    <string name="widget_habit_stage_freedom">Свобода</string>
 </resources>

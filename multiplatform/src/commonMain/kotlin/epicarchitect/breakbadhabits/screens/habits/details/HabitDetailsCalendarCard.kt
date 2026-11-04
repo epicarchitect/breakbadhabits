@@ -16,26 +16,26 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import epicarchitect.breakbadhabits.datetime.toMonthOfYear
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
-import epicarchitect.breakbadhabits.screens.root.LocalRootNavController
+import epicarchitect.breakbadhabits.format.formatted
+import epicarchitect.breakbadhabits.resources.Res
+import epicarchitect.breakbadhabits.resources.habit_details_show_all_events
+import epicarchitect.breakbadhabits.screens.root.LocalRootBackStack
 import epicarchitect.breakbadhabits.screens.root.RootRoute
+import epicarchitect.breakbadhabits.screens.root.push
 import epicarchitect.calendar.compose.basis.contains
 import epicarchitect.calendar.compose.basis.state.LocalBasisEpicCalendarState
 import epicarchitect.calendar.compose.pager.EpicCalendarPager
 import epicarchitect.calendar.compose.pager.state.rememberEpicCalendarPagerState
 import epicarchitect.calendar.compose.ranges.drawEpicRanges
-import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HabitDetailsCalendarCard(
     modifier: Modifier = Modifier,
     state: HabitDetailsScreenState
 ) {
-    val environment = LocalAppEnvironment.current
-    val navController = LocalRootNavController.current
-    val monthFormatter = environment.format.monthFormatter
+    val backStack = LocalRootBackStack.current
     val rangeColor = MaterialTheme.colorScheme.primary
-    val strings = environment.resources.strings.habitDashboardStrings
     val calendarState = rememberEpicCalendarPagerState()
 
     Card(modifier) {
@@ -46,7 +46,7 @@ fun HabitDetailsCalendarCard(
                 bottom = 12.dp,
                 top = 16.dp
             ),
-            text = monthFormatter.format(calendarState.currentMonth.toMonthOfYear()),
+            text = calendarState.currentMonth.toMonthOfYear().formatted(),
             style = MaterialTheme.typography.titleMedium
         )
 
@@ -64,8 +64,11 @@ fun HabitDetailsCalendarCard(
                     ),
                     text = date.day.toString(),
                     textAlign = TextAlign.Center,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary
-                    else MaterialTheme.colorScheme.onSurface
+                    color = if (isSelected) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    }
                 )
             },
             state = calendarState
@@ -78,7 +81,7 @@ fun HabitDetailsCalendarCard(
                 .fillMaxWidth()
                 .height(44.dp)
                 .clickable {
-                    navController.navigate(
+                    backStack.push(
                         RootRoute.HabitEventRecordsDetails(
                             habitId = state.habit.id
                         )
@@ -87,7 +90,7 @@ fun HabitDetailsCalendarCard(
         ) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
-                text = strings.showAllEventRecords(),
+                text = stringResource(Res.string.habit_details_show_all_events),
                 style = MaterialTheme.typography.bodyMedium
             )
         }

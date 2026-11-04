@@ -35,8 +35,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
-import kotlin.time.Instant
+import epicarchitect.breakbadhabits.infrastructure.DateTimeFormatter
+import epicarchitect.breakbadhabits.resources.Res
+import epicarchitect.breakbadhabits.resources.common_ok
+import epicarchitect.breakbadhabits.resources.input_datetime_as_range_checkbox
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -44,6 +46,9 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.stringResource
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 @Composable
 fun DateTimeRangeInputCard(
@@ -59,10 +64,8 @@ fun DateTimeRangeInputCard(
     showAsRangeMode: Boolean,
     onRangeModeChanged: (Boolean) -> Unit
 ) {
-    val environment = LocalAppEnvironment.current
-    val strings = environment.resources.strings.habitEventRecordEditingStrings
     val startDateTime = value.start.toLocalDateTime(timeZone)
-    val currentDateTime = environment.dateTime.currentInstant().toLocalDateTime(timeZone)
+    val currentDateTime = Clock.System.now().toLocalDateTime(timeZone)
 
     InputCard(
         modifier = modifier,
@@ -148,7 +151,7 @@ fun DateTimeRangeInputCard(
 
             Text(
                 modifier = Modifier.padding(start = 4.dp),
-                text = strings.inputDateTimeAsRangeCheckbox(),
+                text = stringResource(Res.string.input_datetime_as_range_checkbox),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -164,8 +167,7 @@ private fun DateTimeInputRow(
     onChanged: (Instant) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val environment = LocalAppEnvironment.current
-    val dateTimeFormatter = environment.format.dateTimeFormatter
+    val dateTimeFormatter = DateTimeFormatter
     val dateTime = value.toLocalDateTime(timeZone)
     var dateSelectionVisible by rememberSaveable { mutableStateOf(false) }
     var timeSelectionVisible by rememberSaveable { mutableStateOf(false) }
@@ -196,7 +198,7 @@ private fun DateTimeInputRow(
                         onChanged(LocalDateTime(newDate, dateTime.time).toInstant(timeZone))
                     }
                 ) {
-                    Text(text = "OK")
+                    Text(text = stringResource(Res.string.common_ok))
                 }
             }
         ) {
@@ -228,7 +230,7 @@ private fun DateTimeInputRow(
                         onChanged(LocalDateTime(dateTime.date, newTime).toInstant(timeZone))
                     }
                 ) {
-                    Text(text = "OK")
+                    Text(text = stringResource(Res.string.common_ok))
                 }
             }
         }

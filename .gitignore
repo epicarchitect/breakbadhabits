@@ -200,6 +200,14 @@ fastlane/test_output
 # Code Injection
 #
 # After new code Injection tools there's a generated folder /iOSInjectionProject
-# https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+# Secrets and local environment files (never commit)
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+.env*
+google-services.json
+.kilo/

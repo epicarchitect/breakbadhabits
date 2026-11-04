@@ -1,0 +1,3 @@
+<resources>
+    <string name="event_records_total_count">Всего событий: %1$d</string>
+</resources>

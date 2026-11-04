@@ -1,0 +1,5 @@
+<resources>
+    <string name="dashboard_empty_title">Start with one</string>
+    <string name="dashboard_new_add">New habit</string>
+    <string name="dashboard_today_title">Today</string>
+</resources>

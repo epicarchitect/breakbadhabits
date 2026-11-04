@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_progress">#A6403C</color>
+    <color name="widget_progress_track">#1FA6403C</color>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="habit_widget_creation_title">Create a widget</string>
+    <string name="habit_widget_name_title">Widget name</string>
+    <string name="habit_widget_name_description">Enter a name for the widget.</string>
+    <string name="habit_widget_habits_title">Habits</string>
+    <string name="habit_widget_habits_description">Choose habits for the widget.</string>
+</resources>

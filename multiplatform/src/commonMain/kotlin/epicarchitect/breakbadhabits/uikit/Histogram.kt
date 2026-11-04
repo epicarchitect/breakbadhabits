@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 fun Histogram(
     modifier: Modifier = Modifier,
     values: List<Float>,
-    valueFormatter: (Float) -> CharSequence,
+    valueFormatter: @Composable (Float) -> CharSequence,
     barPadding: Dp = 12.dp,
     startPadding: Dp = 12.dp,
     endPadding: Dp = 12.dp,
@@ -49,6 +49,11 @@ fun Histogram(
     val valueTextSizePx = with(LocalDensity.current) { valueTextSize.toPx() }
     val valueTextPaddingPx = with(LocalDensity.current) { valueTextPadding.toPx() }
     val textMeasurer = rememberTextMeasurer()
+
+    val valueTexts = ArrayList<CharSequence>(values.size)
+    for (value in values) {
+        valueTexts.add(valueFormatter(value))
+    }
 
     Box(
         modifier = modifier.onSizeChanged {
@@ -106,7 +111,7 @@ fun Histogram(
 
                     drawText(
                         textMeasurer = textMeasurer,
-                        text = valueFormatter(barValue).toString(),
+                        text = valueTexts[index].toString(),
                         topLeft = Offset(
                             barOffset.x + barWidthPx / 2 - valueTextSizePx / 2,
                             barOffset.y - valueTextPaddingPx - valueTextSizePx,

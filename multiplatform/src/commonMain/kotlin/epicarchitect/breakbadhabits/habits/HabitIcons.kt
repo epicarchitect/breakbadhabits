@@ -30,7 +30,7 @@ import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.WineBar
 
-class HabitIcons {
+object HabitIcons {
     val items = listOf(
         HabitIcon(0, Icons.Filled.SmokingRooms),
         HabitIcon(1, Icons.Filled.PhoneAndroid),

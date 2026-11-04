@@ -1,0 +1,13 @@
+<resources>
+    <string name="habit_details_show_all_events">Show all events</string>
+    <string name="abstinence_chart_title">Abstinence chart</string>
+    <string name="statistics_title">Statistics</string>
+    <string name="statistics_average_abstinence_time">Average time of abstinence</string>
+    <string name="statistics_max_abstinence_time">Maximum abstinence time</string>
+    <string name="statistics_min_abstinence_time">Minimum abstinence time</string>
+    <string name="statistics_duration_since_first_event">Time since the first event</string>
+    <string name="statistics_events_in_current_month">Number of events in the current month</string>
+    <string name="statistics_events_in_previous_month">Number of events in the last month</string>
+    <string name="statistics_total_events">Total events</string>
+    <string name="habit_record_slip">Record a slip</string>
+</resources>
