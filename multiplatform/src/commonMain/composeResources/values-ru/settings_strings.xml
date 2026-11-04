@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="settings_data_title">Данные</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_delete_all_data">Удалить все данные</string>
+    <string name="settings_delete_data_dialog_title">Удалить все данные?</string>
+    <string name="settings_delete_data_dialog_message">Все привычки, записи и настройки виджетов будут удалены безвозвратно.</string>
+    <string name="settings_delete_data_confirm">Удалить</string>
+    <string name="settings_delete_data_cancel">Отмена</string>
+    <string name="settings_import_button">Импорт данных</string>
+    <string name="settings_import_dialog_title">Импорт данных</string>
+    <string name="settings_import_error">Не удалось импортировать данные.</string>
+    <string name="settings_import_dialog_ok">ОК</string>
+    <string name="settings_analytics_short">Диагностика и аналитика</string>
+    <string name="settings_premium_active">Активен</string>
+    <string name="settings_premium_unlock">Открыть</string>
+    <string name="settings_privacy_title">Приватность</string>
+    <string name="settings_analytics_description">Помогает находить сбои и улучшать приложение</string>
+    <string name="settings_premium_active_description">Активен</string>
+    <string name="settings_premium_unlock_description">Открыть все возможности</string>
+    <string name="settings_export_error">Не удалось экспортировать данные.</string>
+    <string name="settings_import_success">Данные успешно импортированы.</string>
+</resources>

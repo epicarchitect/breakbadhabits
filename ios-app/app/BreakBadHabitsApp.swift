@@ -3,19 +3,17 @@ import KMPLib
 
 @main
 struct BreakBadHabitsApp: App {
+
+    init() {
+        IosAppInitializer().initialize()
+    }
+
     var body: some Scene {
         WindowGroup {
             AppView()
                 .ignoresSafeArea()
+                .preferredColorScheme(.dark)
+                .hidesWhenInactive()
         }
     }
-}
-
-struct AppView: UIViewControllerRepresentable {
-    
-    func makeUIViewController(context: Context) -> UIViewController {
-        IosAppKt.createAppViewController()
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }

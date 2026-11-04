@@ -7,13 +7,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.database.Habit
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
 import epicarchitect.breakbadhabits.habits.HabitNewNameError
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import epicarchitect.breakbadhabits.infrastructure.AppDatabase
+import kotlin.uuid.Uuid
 
 class HabitEditingScreenState(
     val initialHabit: Habit?
@@ -25,19 +22,16 @@ class HabitEditingScreenState(
 
 @Composable
 fun rememberHabitEditingScreenState(
-    habitId: Int? = null
+    habitId: Uuid? = null
 ): HabitEditingScreenState? {
     if (habitId == null) {
         return remember {
             HabitEditingScreenState(initialHabit = null)
         }
     } else {
-        val environment = LocalAppEnvironment.current
-        val habitQueries = environment.database.habitQueries
+        val habitsDao = AppDatabase.habitsDao
         val habitState = remember {
-            habitQueries.habitById(habitId)
-                .asFlow()
-                .mapToOneOrNull(Dispatchers.IO)
+            habitsDao.habitById(habitId)
         }.collectAsState(null)
         val habit = habitState.value ?: return null
         return remember {

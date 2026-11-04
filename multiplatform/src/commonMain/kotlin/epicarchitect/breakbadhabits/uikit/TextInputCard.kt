@@ -13,6 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 @Stable
 private val DefaultKeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
@@ -81,6 +87,23 @@ fun TextInputCard(
                     )
                 }
             }
+        )
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 250, name = "TextInputCard")
+@Composable
+private fun TextInputCardPreview() {
+    var value by remember { mutableStateOf("Курение") }
+    PreviewTheme {
+        TextInputCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            title = "Название привычки",
+            description = "Введите название",
+            value = value,
+            onValueChange = { value = it }
         )
     }
 }

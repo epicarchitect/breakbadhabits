@@ -35,8 +35,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
-import kotlin.time.Instant
+import epicarchitect.breakbadhabits.format.formatted
+import epicarchitect.breakbadhabits.resources.Res
+import epicarchitect.breakbadhabits.resources.common_ok
+import epicarchitect.breakbadhabits.resources.input_datetime_as_range_checkbox
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -44,6 +46,12 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.stringResource
+import kotlin.time.Clock
+import kotlin.time.Instant
+import androidx.compose.runtime.remember
+import androidx.compose.ui.tooling.preview.Preview
+import kotlin.time.Duration.Companion.hours
 
 @Composable
 fun DateTimeRangeInputCard(
@@ -54,15 +62,13 @@ fun DateTimeRangeInputCard(
     value: ClosedRange<Instant>,
     onChanged: (ClosedRange<Instant>) -> Unit,
     timeZone: TimeZone,
-    error: String? = null,
     modifier: Modifier = Modifier,
+    error: String? = null,
     showAsRangeMode: Boolean,
     onRangeModeChanged: (Boolean) -> Unit
 ) {
-    val environment = LocalAppEnvironment.current
-    val strings = environment.resources.strings.habitEventRecordEditingStrings
     val startDateTime = value.start.toLocalDateTime(timeZone)
-    val currentDateTime = environment.dateTime.currentInstant().toLocalDateTime(timeZone)
+    val currentDateTime = Clock.System.now().toLocalDateTime(timeZone)
 
     InputCard(
         modifier = modifier,
@@ -148,7 +154,7 @@ fun DateTimeRangeInputCard(
 
             Text(
                 modifier = Modifier.padding(start = 4.dp),
-                text = strings.inputDateTimeAsRangeCheckbox(),
+                text = stringResource(Res.string.input_datetime_as_range_checkbox),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -164,8 +170,6 @@ private fun DateTimeInputRow(
     onChanged: (Instant) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val environment = LocalAppEnvironment.current
-    val dateTimeFormatter = environment.format.dateTimeFormatter
     val dateTime = value.toLocalDateTime(timeZone)
     var dateSelectionVisible by rememberSaveable { mutableStateOf(false) }
     var timeSelectionVisible by rememberSaveable { mutableStateOf(false) }
@@ -196,7 +200,7 @@ private fun DateTimeInputRow(
                         onChanged(LocalDateTime(newDate, dateTime.time).toInstant(timeZone))
                     }
                 ) {
-                    Text(text = "OK")
+                    Text(text = stringResource(Res.string.common_ok))
                 }
             }
         ) {
@@ -228,7 +232,7 @@ private fun DateTimeInputRow(
                         onChanged(LocalDateTime(dateTime.date, newTime).toInstant(timeZone))
                     }
                 ) {
-                    Text(text = "OK")
+                    Text(text = stringResource(Res.string.common_ok))
                 }
             }
         }
@@ -261,7 +265,7 @@ private fun DateTimeInputRow(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                text = dateTimeFormatter.format(dateTime.date),
+                text = dateTime.date.formatted(),
                 color = textColor
             )
             Spacer(Modifier.width(16.dp))
@@ -287,7 +291,7 @@ private fun DateTimeInputRow(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                text = dateTimeFormatter.format(dateTime.time),
+                text = dateTime.time.formatted(),
                 color = textColor
             )
             Spacer(Modifier.width(16.dp))
@@ -303,3 +307,27 @@ private fun LocalDate.toEpochMillis() = LocalDateTime(
         second = 0
     )
 ).toInstant(offset = UtcOffset.ZERO).toEpochMilliseconds()
+
+@Preview(widthDp = 360, heightDp = 420, name = "DateTimeRangeInputCard")
+@Composable
+private fun DateTimeRangeInputCardPreview() {
+    val now = Clock.System.now()
+    var range by remember { mutableStateOf((now - 3.hours)..now) }
+    var rangeMode by remember { mutableStateOf(true) }
+    PreviewTheme {
+        DateTimeRangeInputCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            title = "Когда случился срыв",
+            description = "Укажите дату и время",
+            startTimeLabel = "Начало",
+            endTimeLabel = "Конец",
+            value = range,
+            onChanged = { range = it },
+            timeZone = TimeZone.currentSystemDefault(),
+            showAsRangeMode = rangeMode,
+            onRangeModeChanged = { rangeMode = it }
+        )
+    }
+}

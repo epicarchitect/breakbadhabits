@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 
 data class StatisticData(
     val name: String,
@@ -49,5 +50,22 @@ fun Statistics(
                 HorizontalDivider()
             }
         }
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 240, name = "Statistics")
+@Composable
+private fun StatisticsPreview() {
+    PreviewTheme {
+        Statistics(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            statistics = listOf(
+                StatisticData("Среднее воздержание", "3 д 8 ч"),
+                StatisticData("Максимум", "12 д 2 ч"),
+                StatisticData("Срывов", "7")
+            )
+        )
     }
 }

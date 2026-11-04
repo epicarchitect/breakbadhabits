@@ -7,8 +7,8 @@ import epicarchitect.breakbadhabits.datetime.monthOfYear
 import epicarchitect.breakbadhabits.datetime.monthOfYearRange
 import epicarchitect.breakbadhabits.datetime.mountsBetween
 import epicarchitect.breakbadhabits.math.ranges.mergedByOverlappingRanges
-import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
+import kotlin.time.Instant
 
 fun List<HabitEventRecord>.failedRanges() = map {
     it.startTime..it.endTime

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="settings_data_title">Data</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_delete_all_data">Delete all data</string>
+    <string name="settings_delete_data_dialog_title">Delete all data?</string>
+    <string name="settings_delete_data_dialog_message">This will permanently delete all habits, records and widget configurations.</string>
+    <string name="settings_delete_data_confirm">Delete</string>
+    <string name="settings_delete_data_cancel">Cancel</string>
+    <string name="settings_import_button">Import data</string>
+    <string name="settings_import_dialog_title">Import data</string>
+    <string name="settings_import_error">Couldn't import the data.</string>
+    <string name="settings_import_dialog_ok">OK</string>
+    <string name="settings_analytics_short">Diagnostics &amp; analytics</string>
+    <string name="settings_premium_active">Active</string>
+    <string name="settings_premium_unlock">Unlock</string>
+    <string name="settings_privacy_title">Privacy</string>
+    <string name="settings_analytics_description">Helps find crashes and improve the app</string>
+    <string name="settings_premium_active_description">Active</string>
+    <string name="settings_premium_unlock_description">Unlock all features</string>
+    <string name="settings_export_error">Couldn't export the data.</string>
+    <string name="settings_import_success">Data imported successfully.</string>
+</resources>

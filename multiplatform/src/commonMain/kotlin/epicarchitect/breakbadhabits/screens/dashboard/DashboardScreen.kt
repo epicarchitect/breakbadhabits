@@ -2,85 +2,222 @@ package epicarchitect.breakbadhabits.screens.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
-import epicarchitect.breakbadhabits.screens.root.LocalRootNavController
+import epicarchitect.breakbadhabits.infrastructure.AppDatabase
+import epicarchitect.breakbadhabits.infrastructure.Monetization
+import epicarchitect.breakbadhabits.resources.Res
+import epicarchitect.breakbadhabits.resources.dashboard_empty_title
+import epicarchitect.breakbadhabits.resources.dashboard_new_add
+import epicarchitect.breakbadhabits.resources.dashboard_title
+import epicarchitect.breakbadhabits.resources.premium_active
+import epicarchitect.breakbadhabits.resources.settings
+import epicarchitect.breakbadhabits.screens.root.LocalNavBackStack
 import epicarchitect.breakbadhabits.screens.root.RootRoute
-import epicarchitect.breakbadhabits.uikit.SimpleTopAppBar
+import epicarchitect.breakbadhabits.screens.root.openHabitDetails
+import epicarchitect.breakbadhabits.screens.root.push
+import epicarchitect.breakbadhabits.settings.orderedBy
+import epicarchitect.breakbadhabits.settings.rememberAppSettings
+import epicarchitect.breakbadhabits.uikit.AppScaffold
+import epicarchitect.breakbadhabits.uikit.LocalAppTopBarScrollConnection
+import epicarchitect.breakbadhabits.uikit.PremiumProfileButton
+import epicarchitect.breakbadhabits.uikit.dragDropContainer
+import epicarchitect.breakbadhabits.uikit.dragDropItem
+import epicarchitect.breakbadhabits.uikit.dragDropVisuals
+import epicarchitect.breakbadhabits.uikit.rememberDragDropMotion
+import epicarchitect.breakbadhabits.uikit.rememberEnterAlwaysTopBarScrollBehavior
+import epicarchitect.breakbadhabits.uikit.rememberDragDropState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import kotlin.time.Clock
+
+private const val FREE_HABIT_LIMIT = 2
 
 @Composable
 fun DashboardScreen() {
-    val state = rememberDashboardScreenState() ?: return
+    val state = rememberDashboardScreenState()
+    val premium by Monetization.premiumCache.collectAsState()
+    val isPremium = premium?.expiresAt?.let { it > Clock.System.now() } == true
+    val purchasesAvailable = Monetization.purchasesAvailable
+    val settings = rememberAppSettings()
+    val settingsDescription = stringResource(Res.string.settings)
+    val premiumActiveDescription = stringResource(Res.string.premium_active)
+    val profileDescription = if (isPremium) {
+        "$settingsDescription. $premiumActiveDescription"
+    } else {
+        settingsDescription
+    }
+    val navBackStack = LocalNavBackStack.current
+    val coroutineScope = rememberCoroutineScope()
+    val hapticFeedback = LocalHapticFeedback.current
+    val lazyListState = rememberLazyListState()
+    val navigationBarBottom = WindowInsets.navigationBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+    val addHabitDescription = stringResource(Res.string.dashboard_new_add)
+    val motion = rememberDragDropMotion()
+    val baseHabits = state?.habits.orEmpty()
+        .orderedBy(settings.habitOrder) { it.habit.id.toString() }
+    var habits by remember { mutableStateOf(baseHabits) }
+    var orderBeforeDrag by remember { mutableStateOf(baseHabits) }
+    var suppressClick by remember { mutableStateOf(false) }
+    LaunchedEffect(baseHabits) {
+        habits = baseHabits
+        orderBeforeDrag = baseHabits
+    }
 
-    val environment = LocalAppEnvironment.current
-    val navController = LocalRootNavController.current
-    val strings = environment.resources.strings.appDashboardStrings
+    fun saveOrder() {
+        val newOrder = habits.map { it.habit.id.toString() }
+        if (newOrder == orderBeforeDrag.map { it.habit.id.toString() }) return
 
-    Column {
-        SimpleTopAppBar(
-            modifier = Modifier.fillMaxWidth(),
-            title = strings.titleText()
-        )
+        coroutineScope.launch {
+            AppDatabase.appSettingsDao.save(
+                settings.copy(habitOrder = newOrder)
+            )
+        }
+    }
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            if (state.habits.isEmpty()) {
-                Text(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.Center),
-                    textAlign = TextAlign.Center,
-                    text = strings.emptyHabitsText()
-                )
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 16.dp,
-                        bottom = 100.dp
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(
-                        items = state.habits,
-                        key = { it.id }
-                    ) {
-                        HabitCard(it)
-                    }
-                }
-            }
+    val topBarScrollBehavior = rememberEnterAlwaysTopBarScrollBehavior(lazyListState)
 
-            Button(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
+    AppScaffold(
+        title = stringResource(Res.string.dashboard_title),
+        topBarScrollBehavior = topBarScrollBehavior,
+        navigationIcon = {
+            PremiumProfileButton(
+                isPremium = isPremium,
+                contentDescription = profileDescription,
+                onClick = { navBackStack.push(RootRoute.Settings) }
+            )
+        },
+        actions = {
+            IconButton(
+                modifier = Modifier.size(48.dp),
                 onClick = {
-                    navController.navigate(
-                        RootRoute.HabitEditing(
-                            habitId = null
-                        )
+                    val canAdd = isPremium ||
+                            !purchasesAvailable ||
+                            habits.size < FREE_HABIT_LIMIT
+                    navBackStack.push(
+                        if (canAdd) RootRoute.HabitEditing(habitId = null)
+                        else RootRoute.Paywall(source = "habit_limit")
                     )
                 }
             ) {
-                Text(
-                    text = strings.newHabitButtonText(),
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = addHabitDescription
                 )
+            }
+        }
+    ) { topBarHeight ->
+        val topBarScrollConnection = LocalAppTopBarScrollConnection.current
+        val dragDropState = rememberDragDropState(
+            onMove = { fromIndex, toIndex ->
+                if (fromIndex in habits.indices && toIndex in habits.indices) {
+                    habits = habits.toMutableList().apply {
+                        add(toIndex, removeAt(fromIndex))
+                    }
+                }
+            },
+            lazyListState = lazyListState,
+            autoScrollConnection = topBarScrollConnection,
+            motion = motion
+        )
+
+        LazyColumn(
+            state = lazyListState,
+            modifier = Modifier
+                .fillMaxSize()
+                .dragDropContainer(dragDropState),
+            contentPadding = PaddingValues(
+                top = topBarHeight,
+                bottom = 24.dp + navigationBarBottom
+            ),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            if (habits.isEmpty()) {
+                item(key = "empty_state") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillParentMaxHeight(0.7f)
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            textAlign = TextAlign.Center,
+                            text = stringResource(Res.string.dashboard_empty_title)
+                        )
+                    }
+                }
+            } else {
+                itemsIndexed(
+                    items = habits,
+                    key = { _, habit -> habit.habit.id.toString() }
+                ) { index, habit ->
+                    val key = habit.habit.id.toString()
+                    HabitCard(
+                        habitWithLastEvent = habit,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .dragDropItem(
+                                state = dragDropState,
+                                key = key,
+                                index = index,
+                                onDragStarted = {
+                                    suppressClick = true
+                                    orderBeforeDrag = habits
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                },
+                                onDragStopped = {
+                                    saveOrder()
+                                    coroutineScope.launch {
+                                        delay(150)
+                                        suppressClick = false
+                                    }
+                                }
+                            )
+                            .dragDropVisuals(
+                                isDragging = dragDropState.isActive(key),
+                                motion = motion
+                            ),
+                        onClick = {
+                            if (suppressClick.not()) {
+                                navBackStack.openHabitDetails(
+                                    RootRoute.HabitDetails(habit.habit.id)
+                                )
+                            }
+                        }
+                    )
+                }
             }
         }
     }

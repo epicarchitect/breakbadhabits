@@ -1,27 +1,27 @@
 package epicarchitect.breakbadhabits.datetime
 
-import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToLong
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
+import kotlin.time.Instant
 import kotlin.time.toDuration
 
 fun ClosedRange<Instant>.toLocalDateTimeRange(
     timeZone: TimeZone
 ) = start.toLocalDateTime(timeZone)..endInclusive.toLocalDateTime(timeZone)
 
-fun List<ClosedRange<Instant>>.averageDuration() = map {
-    it.endInclusive.epochSeconds - it.start.epochSeconds
-}.let {
-    if (it.size > 1) {
-        it.average().roundToLong()
-    } else if (it.size == 1) {
-        it.first()
-    } else {
-        null
+fun List<ClosedRange<Instant>>.averageDuration(): Duration? {
+    val durations = map {
+        it.endInclusive.epochSeconds - it.start.epochSeconds
     }
-}?.toDuration(DurationUnit.SECONDS)
+    return when {
+        durations.size > 1 -> durations.average().roundToLong()
+        durations.size == 1 -> durations.first()
+        else -> null
+    }?.toDuration(DurationUnit.SECONDS)
+}
 
 fun List<ClosedRange<Instant>>.maxDuration() = maxOfOrNull { it.endInclusive - it.start }
 
