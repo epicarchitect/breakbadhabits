@@ -30,7 +30,7 @@ import androidx.compose.material.icons.filled.Whatshot
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.WineBar
 
-class HabitIcons {
+object HabitIcons {
     val items = listOf(
         HabitIcon(0, Icons.Filled.SmokingRooms),
         HabitIcon(1, Icons.Filled.PhoneAndroid),
@@ -62,5 +62,5 @@ class HabitIcons {
         HabitIcon(27, Icons.Filled.Grass)
     )
 
-    fun getById(id: Int) = items.first { it.id == id }
+    fun getById(id: Int) = items.firstOrNull { it.id == id } ?: items.first()
 }

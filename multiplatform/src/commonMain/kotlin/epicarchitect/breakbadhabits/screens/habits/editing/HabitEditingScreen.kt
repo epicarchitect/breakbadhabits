@@ -1,153 +1,267 @@
 package epicarchitect.breakbadhabits.screens.habits.editing
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
+import epicarchitect.breakbadhabits.database.Habit
+import epicarchitect.breakbadhabits.habits.HabitIcons
+import epicarchitect.breakbadhabits.habits.HabitNewNameError
+import epicarchitect.breakbadhabits.habits.HabitsRules
 import epicarchitect.breakbadhabits.habits.checkHabitNewName
-import epicarchitect.breakbadhabits.screens.root.LocalRootNavController
-import epicarchitect.breakbadhabits.screens.root.RootRoute
+import epicarchitect.breakbadhabits.infrastructure.AppDatabase
+import epicarchitect.breakbadhabits.resources.Res
+import epicarchitect.breakbadhabits.resources.habit_delete_button
+import epicarchitect.breakbadhabits.resources.habit_editing_title_editing
+import epicarchitect.breakbadhabits.resources.habit_editing_title_new
+import epicarchitect.breakbadhabits.resources.habit_icon_description
+import epicarchitect.breakbadhabits.resources.habit_icon_title
+import epicarchitect.breakbadhabits.resources.habit_name_description
+import epicarchitect.breakbadhabits.resources.habit_name_error_already_used
+import epicarchitect.breakbadhabits.resources.habit_name_error_empty
+import epicarchitect.breakbadhabits.resources.habit_name_error_too_long
+import epicarchitect.breakbadhabits.resources.habit_name_title
+import epicarchitect.breakbadhabits.resources.save_changes
+import epicarchitect.breakbadhabits.screens.root.LocalNavBackStack
+import epicarchitect.breakbadhabits.uikit.AppBackButton
+import epicarchitect.breakbadhabits.uikit.AdaptiveContent
+import epicarchitect.breakbadhabits.uikit.AsyncAction
+import epicarchitect.breakbadhabits.uikit.AsyncPrimaryButton
+import epicarchitect.breakbadhabits.uikit.AppTopBar
 import epicarchitect.breakbadhabits.uikit.InputCard
-import epicarchitect.breakbadhabits.uikit.SimpleScrollableScreen
+import epicarchitect.breakbadhabits.uikit.PreviewTheme
+import epicarchitect.breakbadhabits.uikit.SecondaryButton
 import epicarchitect.breakbadhabits.uikit.SingleSelectionGrid
 import epicarchitect.breakbadhabits.uikit.TextInputCard
+import epicarchitect.breakbadhabits.uikit.rememberAsyncAction
+import org.jetbrains.compose.resources.stringResource
+import kotlin.uuid.Uuid
 
 @Composable
-fun HabitEditingScreen(habitId: Int? = null) {
+fun HabitEditingScreen(habitId: Uuid?) {
     val state = rememberHabitEditingScreenState(habitId) ?: return
-    val environment = LocalAppEnvironment.current
-    val navController = LocalRootNavController.current
-    val strings = environment.resources.strings.habitEditingStrings
-    val habitIcons = environment.habits.icons
-    val habitQueries = environment.database.habitQueries
-
+    val navBackStack = LocalNavBackStack.current
     var showDeletion by remember { mutableStateOf(false) }
-    if (showDeletion) {
+    val editingHabitId = state.initialHabit?.id
+    val saveAction = rememberAsyncAction {
+        state.habitNameError = checkHabitNewName(
+            newName = state.habitName,
+            initialName = state.initialHabit?.name,
+            maxLength = HabitsRules.maxHabitNameLength,
+            nameIsExists = { AppDatabase.habitsDao.countWithName(it) > 0L }
+        )
+        if (state.habitNameError != null) {
+            return@rememberAsyncAction
+        }
+
+        val habitId = state.initialHabit?.id ?: Uuid.generateV7()
+        if (state.initialHabit != null) {
+            AppDatabase.habitsDao.update(
+                id = habitId,
+                name = state.habitName,
+                iconId = state.selectedIconId
+            )
+        } else {
+            AppDatabase.habitsDao.insert(
+                id = habitId,
+                name = state.habitName,
+                iconId = state.selectedIconId
+            )
+        }
+
+        navBackStack.removeLastOrNull()
+    }
+    if (showDeletion && editingHabitId != null) {
         HabitDeletionDialog(
-            habitId = habitId!!,
+            habitId = editingHabitId,
             onDismiss = { showDeletion = false },
             onDeleted = {
-                navController.popBackStack(
-                    route = RootRoute.Dashboard,
-                    inclusive = false
-                )
+                while (navBackStack.size > 1) navBackStack.removeLastOrNull()
             }
         )
     }
 
-    SimpleScrollableScreen(
-        title = strings.titleText(isNewHabit = habitId == null),
-        onBackClick = navController::popBackStack
+    HabitEditingScreenContent(
+        state = state,
+        isNew = habitId == null,
+        saveAction = saveAction,
+        onBack = { navBackStack.removeLastOrNull() },
+        onDelete = { showDeletion = true }
+    )
+}
+
+@Composable
+internal fun HabitEditingScreenContent(
+    state: HabitEditingScreenState,
+    isNew: Boolean,
+    saveAction: AsyncAction,
+    onBack: () -> Unit,
+    onDelete: () -> Unit
+) {
+    val habitIcons = HabitIcons
+    val listState = rememberLazyListState()
+    val navigationBarBottom = WindowInsets.navigationBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .imePadding(),
+        contentPadding = PaddingValues(
+            bottom = navigationBarBottom
+        ),
+        state = listState
     ) {
-        Spacer(Modifier.height(16.dp))
-
-        TextInputCard(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            value = state.habitName,
-            onValueChange = {
-                state.habitName = it
-                state.habitNameError = null
-            },
-            title = strings.habitNameTitle(),
-            description = strings.habitNameDescription(),
-            error = state.habitNameError?.let(strings::habitNameError)
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        InputCard(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            title = strings.habitIconTitle(),
-            description = strings.habitIconDescription()
-        ) {
-            SingleSelectionGrid(
-                items = habitIcons.items,
-                selectedItem = habitIcons.getById(state.selectedIconId),
-                cell = { icon ->
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = icon.imageVector,
-                        contentDescription = null
-                    )
-                },
-                onSelect = {
-                    state.selectedIconId = it.id
+        item(key = "top_bar") {
+            AppTopBar(
+                title = stringResource(
+                    if (isNew) Res.string.habit_editing_title_new
+                    else Res.string.habit_editing_title_editing
+                ),
+                navigationIcon = {
+                    AppBackButton(onClick = onBack)
                 }
             )
         }
 
-        Spacer(Modifier.height(16.dp))
+        item(key = "content") {
+            AdaptiveContent {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Spacer(Modifier.height(12.dp))
 
-        if (state.initialHabit != null) {
-            OutlinedButton(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                onClick = {
-                    showDeletion = true
+                    TextInputCard(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        value = state.habitName,
+                        onValueChange = {
+                            state.habitName = it
+                            state.habitNameError = null
+                        },
+                        title = stringResource(Res.string.habit_name_title),
+                        description = stringResource(Res.string.habit_name_description),
+                        error = state.habitNameError?.let { error ->
+                            when (error) {
+                                HabitNewNameError.AlreadyUsed -> stringResource(
+                                    Res.string.habit_name_error_already_used
+                                )
+
+                                HabitNewNameError.Empty -> stringResource(
+                                    Res.string.habit_name_error_empty
+                                )
+
+                                is HabitNewNameError.TooLong -> stringResource(
+                                    Res.string.habit_name_error_too_long,
+                                    error.maxLength
+                                )
+                            }
+                        }
+                    )
+
+                    Spacer(Modifier.height(12.dp))
+
+                    InputCard(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        title = stringResource(Res.string.habit_icon_title),
+                        description = stringResource(Res.string.habit_icon_description)
+                    ) {
+                        SingleSelectionGrid(
+                            items = habitIcons.items,
+                            selectedItem = habitIcons.getById(state.selectedIconId),
+                            cell = { icon ->
+                                Icon(
+                                    modifier = Modifier.size(24.dp),
+                                    imageVector = icon.imageVector,
+                                    contentDescription = null
+                                )
+                            },
+                            onSelect = {
+                                state.selectedIconId = it.id
+                            }
+                        )
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+
+                    if (state.initialHabit != null) {
+                        SecondaryButton(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            text = stringResource(Res.string.habit_delete_button),
+                            onClick = onDelete
+                        )
+                    }
+
+                    Spacer(Modifier.height(24.dp))
+
+                    AsyncPrimaryButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        action = saveAction,
+                        text = stringResource(Res.string.save_changes)
+                    )
+
+                    Spacer(Modifier.height(12.dp))
+
                 }
-            ) {
-                Text(
-                    text = strings.deleteButton()
-                )
             }
         }
-
-        Spacer(modifier = Modifier.weight(1.0f))
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .align(Alignment.End),
-            onClick = {
-                state.habitNameError = checkHabitNewName(
-                    newName = state.habitName,
-                    initialName = state.initialHabit?.name,
-                    maxLength = environment.habits.rules.maxHabitNameLength,
-                    nameIsExists = { habitQueries.countWithName(it).executeAsOne() > 0L }
-                )
-                if (state.habitNameError != null) return@Button
-
-                if (state.initialHabit != null) {
-                    habitQueries.update(
-                        id = state.initialHabit.id,
-                        name = state.habitName,
-                        iconId = state.selectedIconId
-                    )
-                } else {
-                    habitQueries.insert(
-                        id = null,
-                        name = state.habitName,
-                        iconId = state.selectedIconId
-                    )
-                }
-
-                navController.popBackStack()
-            }
-        ) {
-            Text(
-                text = strings.finishButtonText()
-            )
-        }
-
-        Spacer(Modifier.height(16.dp))
     }
+}
+
+@Preview(widthDp = 360, heightDp = 900, name = "HabitEditingScreen")
+@Composable
+private fun HabitEditingScreenPreview() {
+    PreviewTheme {
+        val state = remember {
+            HabitEditingScreenState(
+                initialHabit = Habit(
+                    id = Uuid.random(),
+                    name = "Smoking",
+                    iconId = 0
+                )
+            )
+        }
+        HabitEditingScreenContent(
+            state = state,
+            isNew = false,
+            saveAction = PreviewIdleHabitEditingSaveAction,
+            onBack = {},
+            onDelete = {}
+        )
+    }
+}
+
+private object PreviewIdleHabitEditingSaveAction : AsyncAction {
+    override val isRunning = false
+    override fun invoke() = Unit
 }

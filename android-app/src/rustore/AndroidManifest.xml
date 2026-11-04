@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <meta-data
+            android:name="console_app_id_value"
+            android:value="${consoleAppId}" />
+        <meta-data
+            android:name="sdk_pay_scheme_value"
+            android:value="${payScheme}" />
+
+        <activity
+            android:name="epicarchitect.breakbadhabits.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="${payScheme}" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

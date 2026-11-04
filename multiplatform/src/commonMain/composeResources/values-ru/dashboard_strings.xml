@@ -1,0 +1,9 @@
+<resources>
+    <string name="dashboard_empty_title">У вас нет плохих привычек!.. Или есть?</string>
+    <string name="dashboard_empty_hint">Чтобы создать привычку, нажмите кнопку «+» в левом верхнем углу.</string>
+    <string name="dashboard_habit_limit_title">Больше привычек с Premium</string>
+    <string name="dashboard_habit_limit_dialog_title">Больше привычек доступно в Premium</string>
+    <string name="dashboard_habit_limit_description">С Premium можно создавать больше двух привычек.</string>
+    <string name="dashboard_habit_limit_action">Открыть премиум</string>
+    <string name="dashboard_new_add">Новая привычка</string>
+</resources>

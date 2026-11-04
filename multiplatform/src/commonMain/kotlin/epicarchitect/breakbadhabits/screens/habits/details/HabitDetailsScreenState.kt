@@ -1,66 +1,51 @@
 package epicarchitect.breakbadhabits.screens.habits.details
 
+import epicarchitect.breakbadhabits.infrastructure.Ticks
+import epicarchitect.breakbadhabits.infrastructure.AppTimeZone
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOneOrNull
 import epicarchitect.breakbadhabits.database.Habit
 import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.datetime.duration
 import epicarchitect.breakbadhabits.datetime.toLocalDateRange
 import epicarchitect.breakbadhabits.datetime.toLocalDateTimeRange
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
 import epicarchitect.breakbadhabits.habits.abstinence
 import epicarchitect.breakbadhabits.habits.failedRanges
 import epicarchitect.breakbadhabits.habits.habitAbstinenceRangesByFailedRanges
 import epicarchitect.breakbadhabits.habits.timeRange
+import epicarchitect.breakbadhabits.infrastructure.AppDatabase
 import epicarchitect.breakbadhabits.math.ranges.ascended
-import epicarchitect.breakbadhabits.uikit.StatisticData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlin.time.Duration
+import kotlin.uuid.Uuid
 
 @Immutable
 data class HabitDetailsScreenState(
     val habit: Habit,
     val habitEventRecords: List<HabitEventRecord>,
-    val abstinenceRanges: List<ClosedRange<Instant>>,
     val abstinence: Duration?,
     val calendarRanges: List<ClosedRange<LocalDate>>,
     val abstinenceHistogramValues: List<Float>,
-    val statistics: List<StatisticData>
+    val riskMap: HabitRiskMapData?
 )
 
 @Composable
-fun rememberHabitDetailsScreenState(habitId: Int): HabitDetailsScreenState? {
-    val environment = LocalAppEnvironment.current
-    val habitQueries = environment.database.habitQueries
-    val eventRecordQueries = environment.database.habitEventRecordQueries
-    val currentTime by environment.habits.timePulse.state.collectAsState()
-    val timeZone = environment.dateTime.currentTimeZone()
+fun rememberHabitDetailsScreenState(habitId: Uuid): HabitDetailsScreenState? {
+    val now by Ticks.collectAsState()
 
     val habitState = remember(habitId) {
-        habitQueries.habitById(habitId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
+        AppDatabase.habitsDao.habitById(habitId)
     }.collectAsState(null)
 
     val eventRecordsState = remember(habitId) {
-        eventRecordQueries.recordsByHabitId(habitId)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
+        AppDatabase.habitEventRecordsDao.recordsByHabitId(habitId)
     }.collectAsState(null)
 
     val lastRecordState = remember(habitId) {
-        eventRecordQueries.recordByHabitIdAndMaxEndTime(habitId)
-            .asFlow()
-            .mapToOneOrNull(Dispatchers.IO)
+        AppDatabase.habitEventRecordsDao.recordByHabitIdAndMaxEndTime(habitId)
     }.collectAsState(null)
 
     val habit = habitState.value ?: return null
@@ -70,53 +55,44 @@ fun rememberHabitDetailsScreenState(habitId: Int): HabitDetailsScreenState? {
     val failedRanges = remember(eventRecords) {
         eventRecords.failedRanges()
     }
-    val abstinenceRanges = remember(failedRanges, eventRecords, currentTime) {
-        habitAbstinenceRangesByFailedRanges(failedRanges, currentTime)
+    val abstinenceRanges = remember(failedRanges, eventRecords, now) {
+        habitAbstinenceRangesByFailedRanges(failedRanges, now)
     }
-    val abstinence = remember(lastRecord, currentTime) {
-        lastRecord?.abstinence(currentTime)
+    val abstinence = remember(lastRecord, now) {
+        lastRecord?.abstinence(now)
     }
-    val calendarRanges = remember(eventRecords, timeZone) {
+    val calendarRanges = remember(eventRecords, AppTimeZone) {
         eventRecords.map {
-            it.timeRange().toLocalDateTimeRange(timeZone).toLocalDateRange().ascended()
+            it.timeRange().toLocalDateTimeRange(AppTimeZone).toLocalDateRange().ascended()
         }
     }
     val abstinenceHistogramValues = remember(abstinenceRanges) {
         abstinenceRanges.map { it.duration().inWholeSeconds.toFloat() }
     }
 
-    val statisticsData = remember(
-        eventRecords,
-        abstinenceRanges,
-        failedRanges,
-        currentTime
-    ) {
-        habitDetailsStatisticsData(
-            environment = environment,
-            habitEventRecords = eventRecords,
-            abstinenceRanges = abstinenceRanges,
-            failedRanges = failedRanges,
-            currentTime = currentTime
+    val riskMap = remember(eventRecords, AppTimeZone, now) {
+        buildHabitRiskMapData(
+            records = eventRecords,
+            timeZone = AppTimeZone,
+            currentTime = now
         )
     }
 
     return remember(
         habit,
         eventRecords,
-        abstinenceRanges,
         abstinence,
         calendarRanges,
         abstinenceHistogramValues,
-        statisticsData
+        riskMap
     ) {
         HabitDetailsScreenState(
-            habit,
-            eventRecords,
-            abstinenceRanges,
-            abstinence,
-            calendarRanges,
-            abstinenceHistogramValues,
-            statisticsData
+            habit = habit,
+            habitEventRecords = eventRecords,
+            abstinence = abstinence,
+            calendarRanges = calendarRanges,
+            abstinenceHistogramValues = abstinenceHistogramValues,
+            riskMap = riskMap
         )
     }
 }

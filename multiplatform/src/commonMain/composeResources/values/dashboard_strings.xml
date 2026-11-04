@@ -1,0 +1,9 @@
+<resources>
+    <string name="dashboard_empty_title">You have no bad habits!.. Or do you?</string>
+    <string name="dashboard_empty_hint">To create a habit, tap the “+” button in the top left corner.</string>
+    <string name="dashboard_habit_limit_title">More habits with Premium</string>
+    <string name="dashboard_habit_limit_dialog_title">More habits available in Premium</string>
+    <string name="dashboard_habit_limit_description">Premium lets you create more than two habits.</string>
+    <string name="dashboard_habit_limit_action">Open Premium</string>
+    <string name="dashboard_new_add">New habit</string>
+</resources>

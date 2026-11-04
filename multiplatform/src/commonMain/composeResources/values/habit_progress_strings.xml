@@ -1,0 +1,30 @@
+<resources>
+    <string name="habit_progress_stage">Stage %1$d of 5 · %2$s</string>
+    <string name="habit_progress_days">%1$d / 90 days</string>
+
+    <string name="habit_stage_resistance">Resistance</string>
+    <string name="habit_stage_adjustment">Adjustment</string>
+    <string name="habit_stage_rewiring">Rewiring</string>
+    <string name="habit_stage_consolidation">Consolidation</string>
+    <string name="habit_stage_liberation">Liberation</string>
+    <string name="habit_freedom">Freedom</string>
+
+    <string name="habit_stage_resistance_description">Discomfort and irritability peak right now — this is a normal withdrawal response. Acute cravings usually last 5–10 minutes; you just need to ride them out. Don't rely on willpower alone: remove any triggers from sight in advance, and try to set up an environment where slipping up is difficult.</string>
+    <string name="habit_stage_adjustment_description">Your body is adapting, yet the habit still lingers in your daily routines. The main risk right now is slipping up on autopilot during moments of stress or downtime. Pay attention to the situations that bring the urge back, and try to switch to a pre-planned alternative.</string>
+    <string name="habit_stage_rewiring_description">Your brain is gradually rewiring and learning to handle stress and boredom without the old habit. Cravings come up less often, though they can still resurface in unfamiliar situations — like traveling or extreme fatigue. Keep reinforcing your new routines, and try not to let early progress lower your guard.</string>
+    <string name="habit_stage_consolidation_description">Your new behaviors have become familiar, and staying off the habit no longer takes constant effort. The biggest risk at this stage is a false sense of complete control — thinking that one slip won't change anything. Stick to the routines that are already working, and try not to test your limits.</string>
+    <string name="habit_stage_liberation_description">The old habit no longer drives your decisions, and living without it has become your natural baseline. You can now handle daily tasks and stress without constant self-control or old crutches. Protect this progress — you don't have to fight yourself anymore, just maintain the healthy rhythm you've built.</string>
+
+    <plurals name="habit_stage_days_done">
+        <item quantity="one">%1$d day done</item>
+        <item quantity="other">%1$d days done</item>
+    </plurals>
+    <plurals name="habit_stage_days_current">
+        <item quantity="one">%1$d of %2$d day done</item>
+        <item quantity="other">%1$d of %2$d days done</item>
+    </plurals>
+    <plurals name="habit_stage_days_total">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+</resources>

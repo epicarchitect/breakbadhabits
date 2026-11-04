@@ -1,10 +1,10 @@
 package epicarchitect.breakbadhabits.habits
 
-fun checkHabitNewName(
+suspend fun checkHabitNewName(
     newName: String,
     initialName: String? = null,
     maxLength: Int,
-    nameIsExists: (String) -> Boolean
+    nameIsExists: suspend (String) -> Boolean
 ) = when {
     initialName == newName -> null
     newName.isEmpty() -> HabitNewNameError.Empty

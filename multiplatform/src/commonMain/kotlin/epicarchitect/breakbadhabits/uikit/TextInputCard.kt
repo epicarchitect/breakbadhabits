@@ -1,18 +1,25 @@
 package epicarchitect.breakbadhabits.uikit
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 @Stable
 private val DefaultKeyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
@@ -64,7 +71,19 @@ fun TextInputCard(
             keyboardActions = finalKeyboardActions,
             isError = error != null,
             readOnly = readOnly,
-            shape = MaterialTheme.shapes.small,
+            shape = MaterialTheme.shapes.medium,
+            textStyle = MaterialTheme.typography.bodyLarge,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
             prefix = prefixText?.let {
                 {
                     Text(
@@ -81,6 +100,23 @@ fun TextInputCard(
                     )
                 }
             }
+        )
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 250, name = "TextInputCard")
+@Composable
+private fun TextInputCardPreview() {
+    var value by remember { mutableStateOf("Курение") }
+    PreviewTheme {
+        TextInputCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            title = "Название привычки",
+            description = "Введите название",
+            value = value,
+            onValueChange = { value = it }
         )
     }
 }

@@ -1,13 +1,17 @@
 package epicarchitect.breakbadhabits.uikit
 
+import epicarchitect.breakbadhabits.infrastructure.AppTimeZone
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -29,14 +33,18 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import epicarchitect.breakbadhabits.environment.LocalAppEnvironment
-import kotlin.time.Instant
+import epicarchitect.breakbadhabits.format.formatted
+import epicarchitect.breakbadhabits.resources.Res
+import epicarchitect.breakbadhabits.resources.common_ok
+import epicarchitect.breakbadhabits.resources.input_datetime_as_range_checkbox
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -44,6 +52,10 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.stringResource
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Instant
 
 @Composable
 fun DateTimeRangeInputCard(
@@ -54,15 +66,13 @@ fun DateTimeRangeInputCard(
     value: ClosedRange<Instant>,
     onChanged: (ClosedRange<Instant>) -> Unit,
     timeZone: TimeZone,
-    error: String? = null,
     modifier: Modifier = Modifier,
+    error: String? = null,
     showAsRangeMode: Boolean,
     onRangeModeChanged: (Boolean) -> Unit
 ) {
-    val environment = LocalAppEnvironment.current
-    val strings = environment.resources.strings.habitEventRecordEditingStrings
     val startDateTime = value.start.toLocalDateTime(timeZone)
-    val currentDateTime = environment.dateTime.currentInstant().toLocalDateTime(timeZone)
+    val currentDateTime = Clock.System.now().toLocalDateTime(timeZone)
 
     InputCard(
         modifier = modifier,
@@ -75,7 +85,8 @@ fun DateTimeRangeInputCard(
                 Text(
                     modifier = Modifier.padding(bottom = 4.dp),
                     text = startTimeLabel,
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             DateTimeInputRow(
@@ -102,7 +113,8 @@ fun DateTimeRangeInputCard(
             ) {
                 Text(
                     text = endTimeLabel,
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 DateTimeInputRow(
@@ -148,7 +160,7 @@ fun DateTimeRangeInputCard(
 
             Text(
                 modifier = Modifier.padding(start = 4.dp),
-                text = strings.inputDateTimeAsRangeCheckbox(),
+                text = stringResource(Res.string.input_datetime_as_range_checkbox),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -164,13 +176,11 @@ private fun DateTimeInputRow(
     onChanged: (Instant) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val environment = LocalAppEnvironment.current
-    val dateTimeFormatter = environment.format.dateTimeFormatter
     val dateTime = value.toLocalDateTime(timeZone)
     var dateSelectionVisible by rememberSaveable { mutableStateOf(false) }
     var timeSelectionVisible by rememberSaveable { mutableStateOf(false) }
-    val borderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-    val textColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+    val borderColor = MaterialTheme.colorScheme.outlineVariant
+    val textColor = MaterialTheme.colorScheme.onSurface
 
     if (dateSelectionVisible) {
         val date = dateTime.date
@@ -178,7 +188,7 @@ private fun DateTimeInputRow(
             initialSelectedDateMillis = date.toEpochMillis(),
             selectableDates = object : SelectableDates {
                 override fun isSelectableDate(utcTimeMillis: Long) = isSelectableDate(
-                    Instant.fromEpochMilliseconds(utcTimeMillis).toLocalDateTime(timeZone).date
+                    utcDateFromEpochMilliseconds(utcTimeMillis)
                 )
             }
         )
@@ -190,13 +200,12 @@ private fun DateTimeInputRow(
             confirmButton = {
                 Button(
                     onClick = {
-                        val newDate = Instant.fromEpochMilliseconds(state.selectedDateMillis!!)
-                            .toLocalDateTime(timeZone).date
+                        val newDate = utcDateFromEpochMilliseconds(state.selectedDateMillis!!)
                         dateSelectionVisible = false
                         onChanged(LocalDateTime(newDate, dateTime.time).toInstant(timeZone))
                     }
                 ) {
-                    Text(text = "OK")
+                    Text(text = stringResource(Res.string.common_ok))
                 }
             }
         ) {
@@ -228,7 +237,7 @@ private fun DateTimeInputRow(
                         onChanged(LocalDateTime(dateTime.date, newTime).toInstant(timeZone))
                     }
                 ) {
-                    Text(text = "OK")
+                    Text(text = stringResource(Res.string.common_ok))
                 }
             }
         }
@@ -236,18 +245,19 @@ private fun DateTimeInputRow(
 
     Row(
         modifier = modifier
+            .height(IntrinsicSize.Min)
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = MaterialTheme.shapes.small
+                shape = MaterialTheme.shapes.medium
             )
-            .clip(MaterialTheme.shapes.small),
+            .clip(MaterialTheme.shapes.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier
                 .weight(1f)
-                .height(56.dp)
+                .heightIn(min = 56.dp)
                 .clickable {
                     dateSelectionVisible = true
                 },
@@ -261,19 +271,20 @@ private fun DateTimeInputRow(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                text = dateTimeFormatter.format(dateTime.date),
-                color = textColor
+                text = dateTime.date.formatted(),
+                color = textColor,
+                style = MaterialTheme.typography.bodyLarge
             )
             Spacer(Modifier.width(16.dp))
         }
         VerticalDivider(
-            modifier = Modifier.height(56.dp),
+            modifier = Modifier.fillMaxHeight(),
             thickness = 1.5.dp,
             color = borderColor
         )
         Row(
             modifier = Modifier
-                .height(56.dp)
+                .heightIn(min = 56.dp)
                 .clickable {
                     timeSelectionVisible = true
                 },
@@ -287,8 +298,9 @@ private fun DateTimeInputRow(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                text = dateTimeFormatter.format(dateTime.time),
-                color = textColor
+                text = dateTime.time.formatted(),
+                color = textColor,
+                style = MaterialTheme.typography.bodyLarge
             )
             Spacer(Modifier.width(16.dp))
         }
@@ -303,3 +315,32 @@ private fun LocalDate.toEpochMillis() = LocalDateTime(
         second = 0
     )
 ).toInstant(offset = UtcOffset.ZERO).toEpochMilliseconds()
+
+internal fun utcDateFromEpochMilliseconds(epochMilliseconds: Long): LocalDate =
+    Instant.fromEpochMilliseconds(epochMilliseconds)
+        .toLocalDateTime(TimeZone.UTC)
+        .date
+
+@Preview(widthDp = 360, heightDp = 420, name = "DateTimeRangeInputCard")
+@Composable
+private fun DateTimeRangeInputCardPreview() {
+    val now = Clock.System.now()
+    var range by remember { mutableStateOf((now - 3.hours)..now) }
+    var rangeMode by remember { mutableStateOf(true) }
+    PreviewTheme {
+        DateTimeRangeInputCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            title = "Когда случился срыв",
+            description = "Укажите дату и время",
+            startTimeLabel = "Начало",
+            endTimeLabel = "Конец",
+            value = range,
+            onChanged = { range = it },
+            timeZone = AppTimeZone,
+            showAsRangeMode = rangeMode,
+            onRangeModeChanged = { rangeMode = it }
+        )
+    }
+}

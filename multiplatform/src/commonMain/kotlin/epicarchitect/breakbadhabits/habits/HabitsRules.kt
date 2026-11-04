@@ -1,6 +1,8 @@
 package epicarchitect.breakbadhabits.habits
 
-class HabitsRules {
+object HabitsRules {
+    val freeHabitLimit = 2
     val maxHabitNameLength = 30
     val maxEventCount = 99999
+    val maxEventCommentLength = 1000
 }

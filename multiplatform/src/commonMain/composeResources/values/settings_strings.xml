@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="settings_data_title">Data</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_terms_of_use">Terms of use</string>
+    <string name="settings_delete_all_data">Delete all data</string>
+    <string name="settings_delete_data_dialog_title">Delete all data?</string>
+    <string name="settings_delete_data_dialog_message">This will permanently delete all habits, records and widget configurations.</string>
+    <string name="settings_delete_data_confirm">Delete</string>
+    <string name="settings_delete_data_cancel">Cancel</string>
+    <string name="settings_backup_create">Create backup</string>
+    <string name="settings_backup_create_error">Couldn't create the backup.</string>
+    <string name="settings_backup_too_large_error">The backup is too large. Maximum size is 20 MB.</string>
+    <string name="settings_backup_restore">Restore from backup</string>
+    <string name="settings_backup_restore_file">File: %1$s</string>
+    <string name="settings_backup_restore_exported_at">Exported: %1$s</string>
+    <string name="settings_backup_restore_unknown_date">Unknown date</string>
+    <string name="settings_backup_restored">Backup restored.</string>
+    <string name="settings_backup_restore_dialog_title">Restore from backup?</string>
+    <string name="settings_backup_replace_description">Replacing will delete your current habits, records and widget configurations, then restore the backup.</string>
+    <string name="settings_backup_replace">Replace all</string>
+    <string name="settings_backup_restoring">Restoring…</string>
+    <string name="settings_backup_restore_result_title">Restore from backup</string>
+    <string name="settings_backup_invalid_file">This file isn't a valid Break Bad Habits backup.</string>
+    <string name="settings_backup_newer_version">This backup was created by a newer version of the app. Update the app to restore it.</string>
+    <string name="settings_backup_restore_error">Couldn't restore the backup.</string>
+    <string name="settings_dialog_ok">OK</string>
+    <string name="settings_analytics_short">Diagnostics &amp; analytics</string>
+    <string name="settings_privacy_title">Privacy</string>
+    <string name="settings_analytics_description">Helps find crashes and improve the app</string>
+    <string name="settings_premium_active_description">Active</string>
+    <string name="settings_premium_unlock_description">Unlock all features</string>
+</resources>

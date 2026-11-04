@@ -4,11 +4,10 @@ import epicarchitect.breakbadhabits.database.HabitEventRecord
 import epicarchitect.breakbadhabits.datetime.MonthOfYear
 import epicarchitect.breakbadhabits.datetime.duration
 import epicarchitect.breakbadhabits.datetime.monthOfYear
-import epicarchitect.breakbadhabits.datetime.monthOfYearRange
 import epicarchitect.breakbadhabits.datetime.mountsBetween
 import epicarchitect.breakbadhabits.math.ranges.mergedByOverlappingRanges
-import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
+import kotlin.time.Instant
 
 fun List<HabitEventRecord>.failedRanges() = map {
     it.startTime..it.endTime
@@ -23,29 +22,6 @@ fun habitAbstinenceRangesByFailedRanges(
     } else {
         failedRanges[index].endInclusive..failedRanges[index + 1].start
     }
-}
-
-fun habitAbstinenceDurationSinceFirstTrack(
-    failedRanges: List<ClosedRange<Instant>>,
-    currentTime: Instant
-) = failedRanges.minOfOrNull(ClosedRange<Instant>::start)?.let {
-    (it..currentTime).duration()
-}
-
-fun List<HabitEventRecord>.countEventsInMonth(
-    monthOfYear: MonthOfYear,
-    timeZone: TimeZone
-) = filterByMonth(monthOfYear, timeZone).countEvents()
-
-fun List<HabitEventRecord>.countEvents() = fold(0) { total, track ->
-    total + track.eventCount
-}
-
-fun List<HabitEventRecord>.filterByMonth(
-    monthOfYear: MonthOfYear,
-    timeZone: TimeZone
-) = filter {
-    monthOfYear in it.timeRange().monthOfYearRange(timeZone)
 }
 
 fun HabitEventRecord.timeRange() = startTime..endTime

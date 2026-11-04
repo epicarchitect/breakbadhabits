@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_background">#FF1B161C</color>
+    <color name="widget_divider">#2A222A</color>
+    <color name="widget_progress">#C05A5F</color>
+    <color name="widget_progress_track">#2A222A</color>
+    <color name="widget_progress_track_active">#33C05A5F</color>
+    <color name="widget_text_primary">#F7F1F3</color>
+    <color name="widget_text_stage">#BCADB4</color>
+    <color name="widget_text_secondary">#88747D</color>
+</resources>

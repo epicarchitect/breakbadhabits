@@ -1,0 +1,36 @@
+<resources>
+    <string name="habit_progress_stage">Этап %1$d из 5 · %2$s</string>
+    <string name="habit_progress_days">%1$d / 90 дней</string>
+
+    <string name="habit_stage_resistance">Сопротивление</string>
+    <string name="habit_stage_adjustment">Отвыкание</string>
+    <string name="habit_stage_rewiring">Перестройка</string>
+    <string name="habit_stage_consolidation">Закрепление</string>
+    <string name="habit_stage_liberation">Освобождение</string>
+    <string name="habit_freedom">Свобода</string>
+
+    <string name="habit_stage_resistance_description">Сейчас пик дискомфорта и раздражения — это нормальная реакция организма на отмену. Острый приступ тяги обычно длится 5–10 минут, его нужно просто переждать. Не полагайтесь только на силу воли: заранее уберите с глаз всё, что связано с привычкой, и постарайтесь создать вокруг себя условия, в которых сорваться будет сложно.</string>
+    <string name="habit_stage_adjustment_description">Тело постепенно адаптируется, но привычка ещё сидит в повседневных сценариях и ритуалах. Главный риск сейчас — сорваться на автомате в момент стресса или отдыха. Отслеживайте ситуации, в которых тяга возвращается, и старайтесь переключаться на заранее выбранное занятие.</string>
+    <string name="habit_stage_rewiring_description">Мозг постепенно перестраивается и учится справляться со стрессом и скукой без старой привычки. Тяга возникает реже, но всё ещё может вернуться в нестандартных ситуациях — например, в поездках или при сильной усталости. Продолжайте закреплять новые сценарии поведения и старайтесь не терять бдительность из-за первых успехов.</string>
+    <string name="habit_stage_consolidation_description">Новые модели поведения уже стали привычными, и отказ больше не требует постоянных усилий. Главный риск на этом этапе — иллюзия полного контроля и мысль, что один раз ничего не изменит. Продолжайте придерживаться рабочих сценариев и старайтесь не проверять себя на прочность.</string>
+    <string name="habit_stage_liberation_description">Старая привычка больше не управляет вашими решениями, а жизнь без неё стала естественной нормой. С повседневными задачами и стрессом теперь можно справляться без прежнего костыля и постоянного самоконтроля. Берегите этот результат: вам больше не нужно бороться с собой, достаточно просто сохранять привычный здоровый ритм.</string>
+
+    <plurals name="habit_stage_days_done">
+        <item quantity="one">%1$d день пройден</item>
+        <item quantity="few">%1$d дня пройдено</item>
+        <item quantity="many">%1$d дней пройдено</item>
+        <item quantity="other">%1$d дня пройдено</item>
+    </plurals>
+    <plurals name="habit_stage_days_current">
+        <item quantity="one">%1$d из %2$d дня пройден</item>
+        <item quantity="few">%1$d из %2$d дней пройдено</item>
+        <item quantity="many">%1$d из %2$d дней пройдено</item>
+        <item quantity="other">%1$d из %2$d дней пройдено</item>
+    </plurals>
+    <plurals name="habit_stage_days_total">
+        <item quantity="one">%1$d день</item>
+        <item quantity="few">%1$d дня</item>
+        <item quantity="many">%1$d дней</item>
+        <item quantity="other">%1$d дня</item>
+    </plurals>
+</resources>

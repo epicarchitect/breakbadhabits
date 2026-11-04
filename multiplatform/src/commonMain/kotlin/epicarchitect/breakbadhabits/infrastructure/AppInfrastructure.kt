@@ -1,0 +1,23 @@
+package epicarchitect.breakbadhabits.infrastructure
+
+import androidx.navigation3.runtime.NavKey
+import epicarchitect.breakbadhabits.analytics.AnalyticsOperator
+import epicarchitect.breakbadhabits.database.AppDatabaseFactory
+import epicarchitect.breakbadhabits.export.DataExporter
+import epicarchitect.breakbadhabits.monetization.MonetizationEnvironment
+import kotlinx.coroutines.channels.Channel
+
+var appVersion: String = ""
+
+lateinit var AppDatabaseFactory: AppDatabaseFactory
+lateinit var AnalyticsOperator: AnalyticsOperator
+lateinit var Monetization: MonetizationEnvironment
+lateinit var DataExporter: DataExporter
+
+val AppDatabase by lazy {
+    AppDatabaseFactory.create(databaseName = "breakbadhabits.db")
+}
+
+val DeepLinkChannel = Channel<NavKey>(Channel.BUFFERED)
+
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="settings_data_title">Данные</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_terms_of_use">Условия использования</string>
+    <string name="settings_delete_all_data">Удалить все данные</string>
+    <string name="settings_delete_data_dialog_title">Удалить все данные?</string>
+    <string name="settings_delete_data_dialog_message">Все привычки, записи и настройки виджетов будут удалены безвозвратно.</string>
+    <string name="settings_delete_data_confirm">Удалить</string>
+    <string name="settings_delete_data_cancel">Отмена</string>
+    <string name="settings_backup_create">Создать резервную копию</string>
+    <string name="settings_backup_create_error">Не удалось создать резервную копию.</string>
+    <string name="settings_backup_too_large_error">Копия слишком большая. Максимальный размер — 20 МБ.</string>
+    <string name="settings_backup_restore">Восстановить из резервной копии</string>
+    <string name="settings_backup_restore_file">Файл: %1$s</string>
+    <string name="settings_backup_restore_exported_at">Экспортировано: %1$s</string>
+    <string name="settings_backup_restore_unknown_date">Дата неизвестна</string>
+    <string name="settings_backup_restored">Данные восстановлены.</string>
+    <string name="settings_backup_restore_dialog_title">Восстановить из резервной копии?</string>
+    <string name="settings_backup_replace_description">Замена удалит текущие привычки, записи и настройки виджетов, затем установит данные из копии.</string>
+    <string name="settings_backup_replace">Заменить всё</string>
+    <string name="settings_backup_restoring">Восстановление…</string>
+    <string name="settings_backup_restore_result_title">Восстановление из копии</string>
+    <string name="settings_backup_invalid_file">Этот файл не является корректной резервной копией Break Bad Habits.</string>
+    <string name="settings_backup_newer_version">Копия создана более новой версией приложения. Обновите приложение, чтобы восстановить данные.</string>
+    <string name="settings_backup_restore_error">Не удалось восстановить данные из копии.</string>
+    <string name="settings_dialog_ok">ОК</string>
+    <string name="settings_analytics_short">Диагностика и аналитика</string>
+    <string name="settings_privacy_title">Приватность</string>
+    <string name="settings_analytics_description">Помогает находить сбои и улучшать приложение</string>
+    <string name="settings_premium_active_description">Активен</string>
+    <string name="settings_premium_unlock_description">Открыть все возможности</string>
+</resources>
